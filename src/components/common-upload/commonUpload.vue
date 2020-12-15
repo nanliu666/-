@@ -12,6 +12,7 @@
     :http-request="httpRequest"
     :before-upload="beforeUpload"
     :file-list="value"
+    v-bind="$attrs"
   >
     <slot />
     <slot
@@ -22,7 +23,7 @@
 </template>
 
 <script>
-import { uploadQiniu } from '@/util/uploadQiniu'
+import { uploadQiniu } from '@/util/upload-qiniu'
 
 export default {
   name: 'CommonUpload',

@@ -134,11 +134,6 @@
             v-model="model[column.prop]"
             v-bind="itemAttrs(column)"
           />
-          <tinymce
-            v-if="column.itemType == 'richtext'"
-            v-model="model[column.prop]"
-            v-bind="itemAttrs(column)"
-          />
           <slot
             v-if="column.itemType == 'slot'"
             v-bind="itemAttrs(column)"
@@ -164,12 +159,12 @@
 
 <script>
 import { elFormAttrs, elFormItemAttrs, noneItemAttrs, defaultAttrs } from './config'
-import LazySelect from '@/components/lazy-select/lazySelect'
-const inputTypes = ['input', 'inputNumber', 'richtext']
+import LazySelect from '@/components/lazy-select/lazy-select'
+const inputTypes = ['input', 'inputNumber']
 export default {
   name: 'CommonForm',
   components: {
-    elTreeSelect: () => import('@/components/elTreeSelect/elTreeSelect'),
+    ElTreeSelect: () => import('@/components/el-tree-select/el-tree-select'),
     LazySelect
   },
   props: {
