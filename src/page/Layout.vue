@@ -37,7 +37,7 @@ export default {
     min-height: calc(100vh - 56px);
     width: 1200px;
     margin: auto;
-
+    padding: 0;
     padding-bottom: 44px; // 留出footer的高度
     &--fullscreen {
       min-height: 100vh;

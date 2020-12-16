@@ -1,4 +1,4 @@
-import request from '@/router/axios'
+import request from '@/util/axios'
 import website from '@/config/website'
 
 export const loginByUsername = (tenantId, username, password, type, key, code, account) =>

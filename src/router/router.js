@@ -9,7 +9,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import ViewsRouter from './views/' // 页面路由
-
+import guardFunc from './router-guards' // 路由守卫
 Vue.use(VueRouter)
 //创建路由
 export const createRouter = () =>
@@ -35,5 +35,7 @@ export const createRouter = () =>
     routes: [...ViewsRouter]
   })
 const Router = createRouter() // 获得 route 实例
+
+guardFunc(Router)
 
 export default Router
