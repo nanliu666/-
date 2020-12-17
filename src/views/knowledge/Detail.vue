@@ -1,20 +1,9 @@
 <template>
   <div>
-    <el-breadcrumb
-      separator="/"
-      style="margin-top:24px"
-    >
-      <el-breadcrumb-item
-        v-for="(item, index) in breadcrumbColumns"
-        :key="index"
-        :to="{ path: item.path }"
-      >
-        {{ item.meta.title }}
-      </el-breadcrumb-item>
-    </el-breadcrumb>
+    <common-breadcrumb ref="breadcrumb" />
     <el-card class="middle-card">
       <div class="card-title">
-        Java函数式编程
+        {{ konwledgeDetail.title }}
       </div>
       <ul class="detail-ul">
         <li class="detail-li">
@@ -112,14 +101,16 @@
 
 <script>
 import styles from '@/styles/variables.scss'
-import CommonEmpty from '@/components/common-empty/empty'
 import Comment from './Comment'
+import CommonBreadcrumb from '@/components/common-breadcrumb/breadcrumb'
+import CommonEmpty from '@/components/common-empty/empty'
 export default {
   name: 'KnowledgeDetail',
   components: {
     CommonImageView: '@/components/common-image-viewer/viewer',
-    Comment,
-    CommonEmpty
+    CommonEmpty,
+    CommonBreadcrumb,
+    Comment
   },
   data() {
     return {
@@ -127,16 +118,16 @@ export default {
       fileGroup: {},
       activeColor: styles.primaryColor,
       activeIndex: '1',
-      breadcrumbColumns: [],
-      konwledgeDetail: {}
+      konwledgeDetail: {
+        title: 'Java 函数式编程'
+      }
     }
   },
-  beforeRouteEnter(to, form, next) {
-    next((vm) => {
-      vm.breadcrumbColumns = [form, to]
+  mounted() {
+    this.$nextTick(() => {
+      this.$refs.breadcrumb.setBreadcrumbTitle(this.konwledgeDetail.title)
     })
   },
-  created() {},
   methods: {
     downloadAll() {},
     /**

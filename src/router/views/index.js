@@ -8,6 +8,7 @@ import EmptyLayout from '@/page/EmptyLayout'
  * component 路由容器
  * redirect 因为模块不直接写页面组件，所以要重定向到模块内的某个页面，一般是列表页
  * children 模块内所有的页面配置
+ * title 给面包屑用的首级title
  *
  * 页面路由,属性包括:
  * path 页面路径，注意不要以/开头,这样路径会自动拼上模块的根路径
@@ -41,6 +42,7 @@ export default [
         path: '/course',
         redirect: '/course/list',
         component: EmptyLayout,
+        title: '课程',
         children: [
           {
             path: 'list',
@@ -56,13 +58,14 @@ export default [
         path: '/knowledge',
         redirect: '/knowledge/list',
         component: EmptyLayout,
+        title: '知识库',
         children: [
           {
             name: 'KnowledgeList',
             path: '/knowledge/list',
             component: () => import(/* webpackChunkName: "page"*/ '@/views/knowledge/List.vue'),
             meta: {
-              title: '知识库列表'
+              title: '知识库'
             }
           },
           {
