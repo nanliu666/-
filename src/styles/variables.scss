@@ -1,6 +1,9 @@
 // 主颜色
 $primaryColor: #01aafc;
 
+// 标准文字颜色
+$primaryFontColor: #000b15;
+
 // 主背景灰色
 $mainBackGray: #fafafa;
 
@@ -11,4 +14,5 @@ $mainLineGray: #ebeced;
   primaryColor: $primaryColor;
   mainBackGray: $mainBackGray;
   mainLineGray: $mainLineGray;
+  primaryFontColor: $primaryFontColor;
 }
