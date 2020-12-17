@@ -51,6 +51,29 @@ export default [
             }
           }
         ]
+      },
+      {
+        path: '/knowledge',
+        redirect: '/knowledge/list',
+        component: EmptyLayout,
+        children: [
+          {
+            name: 'KnowledgeList',
+            path: '/knowledge/list',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/knowledge/List.vue'),
+            meta: {
+              title: '知识库列表'
+            }
+          },
+          {
+            path: '/knowledge/detail',
+            name: 'KnowledgeDetail',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/knowledge/Detail.vue'),
+            meta: {
+              title: '知识详情'
+            }
+          }
+        ]
       }
     ]
   },
