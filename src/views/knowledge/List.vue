@@ -1,51 +1,65 @@
 <template>
-  <el-card class="table-style">
-    <el-menu
-      class="el-menu"
-      :default-active="activeIndex"
-      :active-text-color="activeColor"
-      mode="horizontal"
-      @select="handleSelect"
-    >
-      <el-menu-item index="0">
-        综合排序
-      </el-menu-item>
-      <el-menu-item index="1">
-        最新上传
-      </el-menu-item>
-      <el-menu-item index="2">
-        评分最高
-      </el-menu-item>
-    </el-menu>
-    <common-table
-      id="demo"
-      ref="table"
-      :columns="columnsVisible"
-      :config="tableConfig"
-      :data="tableData"
-      :loading="tableLoading"
-      :page-config="tablePageConfig"
-      :page="page"
-      @current-page-change="handleCurrentPageChange"
-      @page-size-change="handlePageSizeChange"
-    >
-      <template #handler="{row}">
-        <el-button
-          type="text"
-          @click="handleView(row)"
-        >
-          查看
-        </el-button>
-        <el-button
-          type="text"
-          :disabled="row.allowDownload === 0 ? false : true"
-          @click="handleDownload(row)"
-        >
-          下载
-        </el-button>
-      </template>
-    </common-table>
-  </el-card>
+  <div>
+    <el-card style="margin-top: 20px">
+      <el-input
+        v-model="queryInfo.knowledgeName"
+        placeholder="请输入知识库名称搜索"
+        style="width: 380px"
+      >
+        <i
+          slot="suffix"
+          class="el-input__icon el-icon-search"
+        ></i>
+      </el-input>
+    </el-card>
+    <el-card class="table-style">
+      <el-menu
+        class="el-menu"
+        :default-active="activeIndex"
+        :active-text-color="activeColor"
+        mode="horizontal"
+        @select="handleSelect"
+      >
+        <el-menu-item index="0">
+          综合排序
+        </el-menu-item>
+        <el-menu-item index="1">
+          最新上传
+        </el-menu-item>
+        <el-menu-item index="2">
+          评分最高
+        </el-menu-item>
+      </el-menu>
+      <common-table
+        id="demo"
+        ref="table"
+        :columns="columnsVisible"
+        :config="tableConfig"
+        :data="tableData"
+        :loading="tableLoading"
+        :page-config="tablePageConfig"
+        :page="page"
+        @current-page-change="handleCurrentPageChange"
+        @page-size-change="handlePageSizeChange"
+      >
+        <template #handler="{row}">
+          <el-button
+            type="text"
+            @click="handleView(row)"
+          >
+            查看
+          </el-button>
+          <el-button
+            type="text"
+            :disabled="row.allowDownload === 0 ? false : true"
+            @click="handleDownload(row)"
+          >
+            下载
+          </el-button>
+        </template>
+      </common-table>
+    </el-card>
+  </div>
 </template>
 
 <script>

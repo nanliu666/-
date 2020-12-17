@@ -53,47 +53,47 @@
         </el-menu-item>
       </el-menu>
       <div style="padding: 20px 0; min-height:50vh">
-        <div v-if="activeIndex === '1'">
+        <div v-show="activeIndex === '1'">
           <div
-            v-if="konwledgeDetail.introduction"
+            v-show="konwledgeDetail.introduction"
             v-html="_.unescape(konwledgeDetail.introduction)"
           />
-          <common-empty
-            v-else
-            style="height: 35vh;"
-          />
+          <common-empty v-show="!konwledgeDetail.introduction" />
         </div>
-        <section v-if="activeIndex === '2'">
-          <div class="image-ul">
-            <div
-              v-for="(item, index) in fileGroup.true"
+        <section v-show="activeIndex === '2'">
+          <div v-if="!_.isEmpty(fileGroup)">
+            <div class="image-ul">
+              <div
+                v-for="(item, index) in fileGroup.true"
+                :key="index"
+              >
+                <common-image-view
+                  :url="item.url"
+                  :file-name="item.fileName"
+                  :is-download="konwledgeDetail.allowDownload === 1"
+                  :preview-src-list="previewSrcList"
+                  @downloadFile="downloadFile"
+                />
+              </div>
+            </div>
+            <ul
+              v-for="(item, index) in fileGroup.false"
               :key="index"
             >
-              <common-image-view
-                :url="item.url"
-                :file-name="item.fileName"
-                :is-download="konwledgeDetail.allowDownload === 1"
-                :preview-src-list="previewSrcList"
-                @downloadFile="downloadFile"
-              />
-            </div>
+              <li class="file-title">
+                <span>{{ item.fileName }}</span>
+                <i
+                  v-if="konwledgeDetail.allowDownload === 1"
+                  class="el-icon-download"
+                  style="margin-left: 10px; cursor: pointer"
+                  @click.stop="downloadFile(item.url)"
+                ></i>
+              </li>
+            </ul>
           </div>
-          <ul
-            v-for="(item, index) in fileGroup.false"
-            :key="index"
-          >
-            <li class="file-title">
-              <span>{{ item.fileName }}</span>
-              <i
-                v-if="konwledgeDetail.allowDownload === 1"
-                class="el-icon-download"
-                style="margin-left: 10px; cursor: pointer"
-                @click.stop="downloadFile(item.url)"
-              ></i>
-            </li>
-          </ul>
+          <common-empty v-if="_.isEmpty(fileGroup)" />
         </section>
-        <Comment v-if="activeIndex === '3'" />
+        <Comment v-show="activeIndex === '3'" />
       </div>
     </el-card>
   </div>
