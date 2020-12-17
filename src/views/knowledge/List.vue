@@ -11,6 +11,7 @@
           class="el-input__icon el-icon-search"
         ></i>
       </el-input>
+      <div class="split"></div>
     </el-card>
     <el-card class="table-style">
       <el-menu
@@ -191,5 +192,9 @@ export default {
   /deep/ .el-menu--horizontal {
     border-bottom: 1px solid #ebeced !important;
   }
+}
+.split {
+  border-bottom: 1px solid #ebeced;
+  margin: 16px 0;
 }
 </style>
