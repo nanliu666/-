@@ -6,12 +6,12 @@
           给该课程打分：
         </div>
         <el-rate
-          v-model="value1"
+          v-model="scopeParams.scope"
           allow-half
         ></el-rate>
       </div>
       <el-input
-        v-model="textarea"
+        v-model="scopeParams.remark"
         type="textarea"
         :rows="2"
         placeholder="评论一下吧"
@@ -22,7 +22,7 @@
       >
       </el-input>
       <el-button
-        v-if="hasPublish"
+        :disabled="hasPublish"
         class="button-box"
         type="primary"
         size="medium"
@@ -31,11 +31,11 @@
         发布
       </el-button>
     </div>
-    <div class="comment-bottom">
-      <ul
-        v-if="!_.isEmpty(commentList)"
-        class="comment-ul"
-      >
+    <div
+      v-if="!_.isEmpty(commentList)"
+      class="comment-bottom"
+    >
+      <ul class="comment-ul">
         <li
           v-for="(item, index) in commentList"
           :key="index"
@@ -44,55 +44,104 @@
           <div class="li-top">
             <el-avatar
               size="small"
-              :src="item.circleUrl || circleUrl"
+              :src="item.avatarUrl || circleUrl"
             ></el-avatar>
-            <span class="title-name">{{ item.name }}</span>
+            <span class="title-name">{{ item.userName }}</span>
           </div>
           <div style="padding-left:36px">
             <div class="li-middle">
-              2020-10-15 15:32
+              {{ item.createTime }}
             </div>
             <el-rate
-              v-model="item.rate"
+              v-model="item.scope"
               disabled
               allow-half
             ></el-rate>
             <div class="li-bottom">
-              {{ item.comment }}
+              {{ item.remark }}
             </div>
           </div>
         </li>
       </ul>
+      <el-pagination
+        class="pagination-box"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="listParams.pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="totalNum"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      >
+      </el-pagination>
     </div>
   </div>
 </template>
 
 <script>
+import { getEvaluateList, addCourseScope } from '@/api/knowledge'
 export default {
   name: 'Comment',
   data() {
     return {
       circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
-      hasPublish: false,
-      value1: 0,
-      textarea: '',
-      commentList: [
-        // {
-        //   name: 'VIP用户A',
-        //   circleUrl: '',
-        //   rate: 4,
-        //   comment: '讲的哈'
-        // }
-      ]
+      hasPublish: true,
+      totalNum: 100,
+      scopeParams: {
+        knowledgeId: '',
+        scope: 0,
+        remark: ''
+      },
+      listParams: {
+        pageNo: 1,
+        pageSize: 10,
+        knowledgeId: ''
+      },
+      commentList: []
     }
   },
-  created() {},
+  computed: {
+    id() {
+      return this.$route.query.id || null
+    }
+  },
+  watch: {
+    'scopeParams.scope': {
+      handler(val) {
+        if (val > 0) {
+          this.hasPublish = false
+        }
+      },
+      deep: true
+    }
+  },
+  created() {
+    this.loadList()
+  },
   methods: {
+    handleSizeChange(val) {
+      this.listParams.pageSize = val
+      this.loadList()
+    },
+    handleCurrentChange(val) {
+      this.listParams.pageNo = val
+      this.loadList()
+    },
+    loadList() {
+      getEvaluateList(_.assign(this.listParams, { knowledgeId: this.id })).then(
+        ({ data, totalNum }) => {
+          this.commentList = data
+          this.totalNum = totalNum
+        }
+      )
+    },
     inputFocus() {
-      this.hasPublish = true
+      this.hasPublish = false
     },
     publish() {
-      this.hasPublish = false
+      addCourseScope(_.assign(this.scopeParams, { knowledgeId: this.id })).then(() => {
+        this.hasPublish = true
+        this.loadList()
+      })
     }
   }
 }
@@ -150,6 +199,9 @@ export default {
           margin-top: 8px;
         }
       }
+    }
+    .pagination-box {
+      float: right;
     }
   }
 }

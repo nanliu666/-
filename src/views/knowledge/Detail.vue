@@ -3,34 +3,34 @@
     <common-breadcrumb ref="breadcrumb" />
     <el-card class="middle-card">
       <div class="card-title">
-        {{ konwledgeDetail.title }}
+        {{ konwledgeDetail.resName }}
       </div>
       <ul class="detail-ul">
         <li class="detail-li">
           <span class="li-label">提供人：</span>
-          <span class="li-value">张大轩</span>
+          <span class="li-value">{{ konwledgeDetail.providerName }}</span>
         </li>
         <li class="detail-li">
           <span class="li-label">所在目录：</span>
-          <span class="li-value">Java技能课程/Java高级培训</span>
+          <span class="li-value">{{ konwledgeDetail.catalogName }}</span>
         </li>
         <li class="detail-li">
           <span class="li-label">更新时间：</span>
-          <span class="li-value">2020-10-10 12:12</span>
+          <span class="li-value">{{ konwledgeDetail.updateTime }}</span>
         </li>
       </ul>
       <ul class="person">
         <li>
           <i class="iconimage_icon_Preview1 iconfont" />
-          <span>25</span>
+          <span>{{ konwledgeDetail.watchNum }}</span>
         </li>
         <li>
           <i class="iconimage_icon_comment iconfont" />
-          <span>99</span>
+          <span>{{ konwledgeDetail.commentNum }}</span>
         </li>
         <li>
           <i class="iconimage_icon_download iconfont" />
-          <span>16</span>
+          <span>{{ konwledgeDetail.downloadNum }}</span>
         </li>
       </ul>
     </el-card>
@@ -104,10 +104,12 @@ import styles from '@/styles/variables.scss'
 import Comment from './Comment'
 import CommonBreadcrumb from '@/components/common-breadcrumb/breadcrumb'
 import CommonEmpty from '@/components/common-empty/empty'
+import CommonImageView from '@/components/common-image-viewer/viewer'
+import { getKnowledgeDetails, putWatchOperate, putDownloadOperate } from '@/api/knowledge'
 export default {
   name: 'KnowledgeDetail',
   components: {
-    CommonImageView: '@/components/common-image-viewer/viewer',
+    CommonImageView,
     CommonEmpty,
     CommonBreadcrumb,
     Comment
@@ -119,16 +121,43 @@ export default {
       activeColor: styles.primaryColor,
       activeIndex: '1',
       konwledgeDetail: {
-        title: 'Java 函数式编程'
+        resName: 'Java 函数式编程'
       }
     }
   },
   mounted() {
-    this.$nextTick(() => {
-      this.$refs.breadcrumb.setBreadcrumbTitle(this.konwledgeDetail.title)
-    })
+    this.initData()
   },
   methods: {
+    // 下载
+    downloadFile(data) {
+      putDownloadOperate({ knowledgeId: this.$route.query.id })
+      window.open(data)
+    },
+    initData() {
+      putWatchOperate({ knowledgeId: this.$route.query.id })
+      getKnowledgeDetails({ id: this.$route.query.id }).then((res) => {
+        this.konwledgeDetail = res
+        this.$refs.breadcrumb.setBreadcrumbTitle(this.konwledgeDetail.resName)
+        this.fileGroup = _.groupBy(this.konwledgeDetail.attachments, (item) => {
+          return this.fileTypeIsImage(item.fileName)
+        })
+        _.each(this.fileGroup.true, (item) => {
+          this.previewSrcList.push(item.url)
+        })
+      })
+    },
+    // 判断当前格式是否为图片类型的格式
+    fileTypeIsImage(fileName) {
+      const lastIndex = fileName.lastIndexOf('.')
+      const fileType = fileName.substr(lastIndex + 1, fileName.length)
+      const imageType = ['png', 'jpg', 'jpeg', 'bmp', 'gif', 'webp', 'psd', 'svg', 'tiff']
+      if (imageType.includes(fileType)) {
+        return true
+      } else {
+        return false
+      }
+    },
     downloadAll() {},
     /**
      * 处理nav切换
@@ -141,6 +170,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.image-ul {
+  display: flex;
+  align-items: center;
+}
 .middle-card {
   margin-top: 16px;
   .card-title {
@@ -168,6 +201,7 @@ export default {
       }
     }
   }
+
   .person {
     font-family: PingFangSC-Regular;
     font-size: 14px;

@@ -3,10 +3,7 @@
     shadow="never"
     style="border: 0"
   >
-    <div
-      :style="{ height: emptyHeight }"
-      class="empty-class"
-    >
+    <div class="empty-class">
       <el-image
         class="empty-image"
         :src="emptyOption.src"
@@ -37,11 +34,6 @@ export default {
     return {
       emptyHeight: ''
     }
-  },
-  mounted() {
-    // 因为element的card组件默认padding为24px，经过多次测试，估摸着4.6倍是最佳显示比例
-    const elCardPadding = 24
-    this.emptyHeight = `${this.$parent.$el.offsetHeight - elCardPadding * 4.6}px`
   }
 }
 </script>

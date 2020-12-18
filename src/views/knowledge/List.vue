@@ -5,6 +5,7 @@
         v-model="queryInfo.knowledgeName"
         placeholder="请输入知识库名称搜索"
         style="width: 380px"
+        @input="searchFun"
       >
         <i
           slot="suffix"
@@ -12,6 +13,10 @@
         ></i>
       </el-input>
       <div class="split"></div>
+      <category-select
+        :load="loadCategory"
+        @change="handleCategoryChange"
+      ></category-select>
     </el-card>
     <el-card class="table-style">
       <el-menu
@@ -21,13 +26,13 @@
         mode="horizontal"
         @select="handleSelect"
       >
-        <el-menu-item index="0">
+        <el-menu-item index="1">
           综合排序
         </el-menu-item>
-        <el-menu-item index="1">
+        <el-menu-item index="2">
           最新上传
         </el-menu-item>
-        <el-menu-item index="2">
+        <el-menu-item index="3">
           评分最高
         </el-menu-item>
       </el-menu>
@@ -49,13 +54,6 @@
             @click="handleView(row)"
           >
             查看
-          </el-button>
-          <el-button
-            type="text"
-            :disabled="row.allowDownload === 0 ? false : true"
-            @click="handleDownload(row)"
-          >
-            下载
           </el-button>
         </template>
       </common-table>
@@ -101,13 +99,17 @@ const TABLE_CONFIG = {
   enablePagination: true,
   enableMultiSelect: false,
   handlerColumn: {
-    minWidth: 100
+    minWidth: 50
   }
 }
 import styles from '@/styles/variables.scss'
-import { getKnowledgeList } from '@/api/knowledge'
+import { getKnowledgeList, getKnowledgeCatalog } from '@/api/knowledge'
+import CategorySelect from '../course/components/CategorySelect'
 export default {
   name: 'KnowledgeList',
+  components: {
+    CategorySelect
+  },
   data() {
     return {
       tablePageConfig: {},
@@ -117,22 +119,34 @@ export default {
         total: 0
       },
       queryInfo: {
-        pageNo: '',
-        pageSize: '',
-        knowledgeName: ''
+        pageNo: 1,
+        pageSize: 10,
+        catalogId: '',
+        knowledgeName: '',
+        sortChoice: '' //排序选项 1：综合排序；2：最新上传；3：评分最高
       },
       activeColor: styles.primaryColor,
-      activeIndex: '0',
+      activeIndex: '1',
       columnsVisible: TABLE_COLUMNS,
       tableConfig: TABLE_CONFIG,
-      tableData: [{ resName: 'Java函数式编程' }],
+      tableData: [{ resName: 'Java函数式编程', id: '1154' }],
       tableLoading: false
     }
   },
   activated() {
-    // this.loadTableData()
+    this.loadTableData()
   },
   methods: {
+    searchFun: _.debounce(function() {
+      this.loadTableData()
+    }, 500),
+    loadCategory(id) {
+      return getKnowledgeCatalog(id)
+    },
+    handleCategoryChange(category) {
+      this.queryInfo.catalogId = category.id
+      this.loadTableData()
+    },
     /**
      * 处理页码改变
      */
@@ -150,8 +164,7 @@ export default {
     // 切换nav
     handleSelect(key) {
       this.activeIndex = key
-      this.handleSearch({ type: Number(key) })
-      this.setConfig()
+      this.handleSearch({ sortChoice: Number(key) })
     },
     handleView(row) {
       this.$router.push({ name: 'KnowledgeDetail', query: { id: row.id } })
@@ -174,10 +187,8 @@ export default {
       } catch (error) {
         this.tableLoading = false
         this.$message.error(error.message)
+        window.console.error(JSON.stringify(this.queryInfo))
       }
-    },
-    handleDownload(row) {
-      window.open(row.resUrl)
     }
   }
 }
