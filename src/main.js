@@ -17,6 +17,7 @@ import Permission from '@/directive/pcheck'
 import _ from 'lodash'
 import loadmore from './directive/loadmore'
 import '@/assets/iconfont/iconfont.css'
+
 Vue.prototype._ = _
 Vue.component('commonTable', commonTable)
 

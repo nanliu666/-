@@ -23,7 +23,9 @@
 const menu = [
   { label: '首页', path: '/home' },
   { label: '课程', path: '/course' },
-  { label: '新闻', path: '/pressList' }
+  { label: '新闻', path: '/pressList' },
+  { label: '个人中心', path: '/personal' },
+  { label: '我的档案', path: '/record' }
 ]
 export default {
   name: 'Header',
