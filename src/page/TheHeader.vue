@@ -22,6 +22,7 @@
 <script>
 const menu = [
   { label: '首页', path: '/home' },
+  { label: '学习', path: '/learn' },
   { label: '课程', path: '/course' },
   { label: '知识库', path: '/knowledge' }
 ]
