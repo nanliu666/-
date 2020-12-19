@@ -37,7 +37,7 @@
       <slot name="selected"></slot>
     </div>
     <div
-      v-if="!_.isEmpty(categoryList)"
+      v-show="!_.isEmpty(categoryList)"
       class="category__list"
     >
       <span class="category__label">
