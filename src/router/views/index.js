@@ -39,6 +39,22 @@ export default [
         ]
       },
       {
+        path: '/learn',
+        redirect: '/learn/list',
+        component: EmptyLayout,
+        title: '学习',
+        children: [
+          {
+            path: 'list',
+            name: 'LearnList',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/learn/List.vue'),
+            meta: {
+              title: '学习列表'
+            }
+          }
+        ]
+      },
+      {
         path: '/course',
         redirect: '/course/list',
         component: EmptyLayout,
