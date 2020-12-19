@@ -22,7 +22,8 @@
 <script>
 const menu = [
   { label: '首页', path: '/home' },
-  { label: '课程', path: '/course' }
+  { label: '课程', path: '/course' },
+  { label: '新闻', path: '/pressList' }
 ]
 export default {
   name: 'Header',

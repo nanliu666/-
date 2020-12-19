@@ -43,6 +43,9 @@ export default {
       min-height: 100vh;
       width: 100%;
     }
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
 </style>

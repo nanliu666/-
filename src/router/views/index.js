@@ -51,6 +51,37 @@ export default [
             }
           }
         ]
+      },
+
+      {
+        path: '/pressList',
+        component: EmptyLayout,
+        children: [
+          {
+            path: '',
+            name: 'pressList',
+            component: () =>
+              import(/* webpackChunkName: "page" */ '@/views/pressCenter/pressList.vue'),
+            meta: {
+              title: '新闻'
+            }
+          }
+        ]
+      },
+      {
+        path: '/pressDetails',
+        component: EmptyLayout,
+        children: [
+          {
+            path: '',
+            name: 'pressDetails',
+            component: () =>
+              import(/* webpackChunkName: "page" */ '@/views/pressCenter/pressDetails.vue'),
+            meta: {
+              title: '文章详情'
+            }
+          }
+        ]
       }
     ]
   },
