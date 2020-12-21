@@ -175,7 +175,6 @@ export default {
   align-items: center;
 }
 .middle-card {
-  margin-top: 16px;
   .card-title {
     font-family: PingFangSC-Medium;
     font-size: 18px;
