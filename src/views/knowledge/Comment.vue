@@ -3,7 +3,7 @@
     <div class="comment-top">
       <div class="top-title">
         <div class="title">
-          给该课程打分：
+          给该知识打分：
         </div>
         <el-rate
           v-model="scopeParams.scope"
