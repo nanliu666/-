@@ -2,7 +2,7 @@
   <el-breadcrumb
     v-if="!_.isEmpty(configs)"
     :separator="separator"
-    style="margin-top:24px"
+    style="margin-top:24px; margin-bottom: 16px;"
   >
     <el-breadcrumb-item
       v-for="(item, index) in configs"

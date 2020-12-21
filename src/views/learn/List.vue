@@ -8,7 +8,7 @@
       <div class="course-list">
         <div
           class="course-title"
-          :class="{ active: currentFirstType === 'required' }"
+          :class="{ active: currentFirstType.includes('required') && currentRequiredNav === -1 }"
           @click="toggleShow('required')"
         >
           <span>
@@ -16,11 +16,13 @@
             <span>（15）</span>
           </span>
           <i
-            :class="[currentFirstType === 'required' ? 'el-icon-arrow-up' : 'el-icon-arrow-down']"
+            :class="[
+              currentFirstType.includes('required') ? 'el-icon-arrow-up' : 'el-icon-arrow-down'
+            ]"
           />
         </div>
         <ul
-          v-if="currentFirstType === 'required'"
+          v-if="currentFirstType.includes('required')"
           class="course-ul"
         >
           <li
@@ -38,7 +40,7 @@
       <div class="course-list">
         <div
           class="course-title "
-          :class="{ active: currentFirstType === 'elective' }"
+          :class="{ active: currentFirstType.includes('elective') && currentElectiveNav === -1 }"
           @click="toggleShow('elective')"
         >
           <span>
@@ -46,11 +48,13 @@
             <span>（15）</span>
           </span>
           <i
-            :class="[currentFirstType === 'elective' ? 'el-icon-arrow-up' : 'el-icon-arrow-down']"
+            :class="[
+              currentFirstType.includes('elective') ? 'el-icon-arrow-up' : 'el-icon-arrow-down'
+            ]"
           />
         </div>
         <ul
-          v-if="currentFirstType === 'elective'"
+          v-if="currentFirstType.includes('elective')"
           class="course-ul"
         >
           <li
@@ -83,7 +87,7 @@
         <div class="status-box">
           <span class="label">状态</span>
           <el-radio-group
-            v-model="queryInfo.radio"
+            v-model="queryInfo.sradio"
             class="status-radio"
           >
             <el-radio :label="0">
@@ -135,7 +139,10 @@
                   src="https://image.zhangxinxu.com/image/blog/202012/css-touch-scroll-cover.png"
                   class="left-image"
                 />
-                <span class="icon-box">
+                <span
+                  class="icon-box"
+                  @click="playVideo"
+                >
                   <i class="el-icon-caret-right" />
                 </span>
               </div>
@@ -162,13 +169,37 @@
                     </div>
                   </div>
                   <div class="file-button">
-                    <el-button size="small">
-                      <span style="margin-right: 6px">考试4</span>
-                      <i class="el-icon-arrow-down" />
+                    <el-button
+                      size="small"
+                      @click="expandMore('test', index)"
+                    >
+                      <span style="margin-right: 6px">
+                        <span>考试</span>
+                        <span>{{ _.size(item.test) }}</span>
+                      </span>
+                      <i
+                        :class="[
+                          currentTestExpand.includes(index) && currentExpandType === 'test'
+                            ? 'el-icon-arrow-up'
+                            : 'el-icon-arrow-down'
+                        ]"
+                      />
                     </el-button>
-                    <el-button size="small">
-                      <span style="margin-right: 6px">附件4</span>
-                      <i class="el-icon-arrow-up" />
+                    <el-button
+                      size="small"
+                      @click="expandMore('file', index)"
+                    >
+                      <span style="margin-right: 6px">
+                        <span>附件</span>
+                        <span>{{ _.size(item.file) }}</span>
+                      </span>
+                      <i
+                        :class="[
+                          currentFileExpand.includes(index) && currentExpandType === 'file'
+                            ? 'el-icon-arrow-up'
+                            : 'el-icon-arrow-down'
+                        ]"
+                      />
                     </el-button>
                   </div>
                 </div>
@@ -177,28 +208,34 @@
                     type="primary"
                     style="margin-left: 10px"
                     size="medium"
-                    @click="search"
+                    @click="startStudy"
                   >
                     开始学习
                   </el-button>
                 </div>
               </div>
             </div>
-            <el-card class="file-card">
+            <el-card
+              v-if="!_.isEmpty(currentTestExpand) || !_.isEmpty(currentFileExpand)"
+              class="file-card"
+            >
               <li
-                v-for="(fileItem, fileIndex) in item.test"
+                v-for="(fileItem, fileIndex) in expandList"
                 :key="fileIndex"
                 class="file-card-li"
               >
                 <div class="file-left">
                   <div class="file-title">
-                    <span style="margin-right: 8px">{{ fileItem.name2 }}</span>
-                    <el-tag type="success">
+                    <span style="margin-right: 8px">{{ fileItem.name }}</span>
+                    <el-tag
+                      v-if="currentExpandType === 'test'"
+                      type="success"
+                    >
                       未开始
                     </el-tag>
                   </div>
                   <div class="file-time">
-                    <span>考试期限：</span>
+                    <span>{{ currentExpandType === 'test' ? '考试' : '下载' }}期限：</span>
                     <span>{{ fileItem.time[0] }} - {{ fileItem.time[1] }}</span>
                   </div>
                 </div>
@@ -207,15 +244,22 @@
                   type="primary"
                   plain
                 >
-                  参加
+                  {{ currentExpandType === 'test' ? '参加' : '下载' }}
                 </el-button>
               </li>
               <div
-                v-if="_.size(item.test) > 3"
+                v-if="
+                  (currentExpandType === 'test' && _.size(item.test) - _.size(expandList) > 0) ||
+                    (currentExpandType === 'file' && _.size(item.file) - _.size(expandList) > 0)
+                "
                 class="more-file"
-                @click="getMore"
+                @click="getMore(index)"
               >
-                <span style="margin-right: 10px">展开更多{{ _.size(item.test) - 3 }}个考试</span>
+                <span
+                  style="margin-right: 10px; cursor: pointer"
+                >展开更多{{
+                  _.size(currentExpandType === 'test' ? item.test : item.file) - 3
+                }}个{{ currentExpandType === 'test' ? '考试' : '附件' }}</span>
                 <i
                   :class="[
                     currentFirstType === 'required' ? 'el-icon-arrow-up' : 'el-icon-arrow-down'
@@ -245,9 +289,13 @@ export default {
   name: 'LearnList',
   data() {
     return {
-      currentFirstType: 'required',
-      currentRequiredNav: 0,
-      currentElectiveNav: 0,
+      expandList: [],
+      currentExpandType: '',
+      currentTestExpand: [],
+      currentFileExpand: [],
+      currentFirstType: ['required'],
+      currentRequiredNav: -1,
+      currentElectiveNav: -1,
       obligatoryList: [
         {
           name: '新员工入职',
@@ -267,7 +315,7 @@ export default {
         pageNo: 1,
         pageSize: 10,
         search: '',
-        radio: 0,
+        sradio: 0,
         time: ''
       },
       courseList: [
@@ -280,30 +328,40 @@ export default {
           progress: '60',
           test: [
             {
-              name2: '企业文化考试',
+              name: '企业文化考试',
               time: ['2019-10-02 12:14', '2020-01-02 13:12'],
               status: 0
             },
             {
-              name2: '企业文化考试',
+              name: '企业文化考试',
               time: ['2019-10-02 12:14', '2020-01-02 13:12'],
               status: 0
             },
             {
-              name2: '企业文化考试',
+              name: '企业文化考试',
               time: ['2019-10-02 12:14', '2020-01-02 13:12'],
               status: 0
             },
             {
-              name2: '企业文化考试',
+              name: '企业文化考试',
+              time: ['2019-10-02 12:14', '2020-01-02 13:12'],
+              status: 0
+            },
+            {
+              name: '企业文化考试2',
+              time: ['2019-10-02 12:14', '2020-01-02 13:12'],
+              status: 0
+            },
+            {
+              name: '企业文化考试3',
               time: ['2019-10-02 12:14', '2020-01-02 13:12'],
               status: 0
             }
           ],
-          attachments: [
+          file: [
             {
-              name1: '员工行为守则',
-              time1: ['2019-10-02 12:14', '2020-01-02 13:12']
+              name: '员工行为守则',
+              time: ['2019-10-02 12:14', '2020-01-02 13:12']
             }
           ]
         }
@@ -312,8 +370,24 @@ export default {
   },
   created() {},
   methods: {
+    getMore(index) {
+      this.expandList = this.courseList[index][this.currentExpandType]
+    },
+    expandMore(type, index) {
+      this.expandList = this.courseList[index][type].slice(0, 3)
+      this.currentExpandType = type
+      if (type === 'test') {
+        this.currentTestExpand = this.currentTestExpand.includes(index) ? [] : [index]
+        this.currentFileExpand = []
+      } else {
+        this.currentTestExpand = []
+        this.currentFileExpand = this.currentFileExpand.includes(index) ? [] : [index]
+      }
+    },
+    startStudy() {},
+    playVideo() {},
     toggleShow(type) {
-      this.currentFirstType = type
+      this.currentFirstType = this.currentFirstType.includes(type) ? [] : type
     },
     selectLi(index, type) {
       if (type === 'required') {
@@ -336,8 +410,7 @@ export default {
     handleCurrentChange(val) {
       this.queryInfo.pageNo = val
       this.loadTableData()
-    },
-    getMore() {}
+    }
   }
 }
 </script>
@@ -348,6 +421,9 @@ export default {
   line-height: 20px;
 }
 .learn-list-style {
+  /deep/ .el-range__icon {
+    margin-top: -5px;
+  }
   margin-top: 20px;
   display: flex;
   justify-content: space-between;
@@ -447,6 +523,7 @@ export default {
               height: 100%;
             }
             .icon-box {
+              cursor: pointer;
               position: absolute;
               background-color: rgba(0, 11, 21, 0.45);
               width: 32px;
