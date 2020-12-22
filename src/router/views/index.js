@@ -39,6 +39,46 @@ export default [
         ]
       },
       {
+        path: '/course',
+        redirect: '/course/list',
+        component: EmptyLayout,
+        title: '课程',
+        children: [
+          {
+            path: 'list',
+            name: 'CourseList',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/course/CourseList.vue'),
+            meta: {
+              title: '课程列表'
+            }
+          }
+        ]
+      },
+      {
+        path: '/knowledge',
+        redirect: '/knowledge/list',
+        component: EmptyLayout,
+        title: '知识库',
+        children: [
+          {
+            name: 'KnowledgeList',
+            path: '/knowledge/list',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/knowledge/List.vue'),
+            meta: {
+              title: '知识库'
+            }
+          },
+          {
+            path: '/knowledge/detail',
+            name: 'KnowledgeDetail',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/knowledge/Detail.vue'),
+            meta: {
+              title: '知识详情'
+            }
+          }
+        ]
+      },
+      {
         path: '/learn',
         redirect: '/learn/list',
         component: EmptyLayout,
@@ -56,12 +96,12 @@ export default [
       },
       {
         path: '/news',
-        redirect: '/news',
+        redirect: '/news/list',
         component: EmptyLayout,
         title: '新闻',
         children: [
           {
-            path: 'news',
+            path: 'list',
             name: 'list',
             component: () => import(/* webpackChunkName: "page" */ '@/views/news/news.vue'),
             meta: {
