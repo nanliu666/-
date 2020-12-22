@@ -99,14 +99,21 @@ export default {
       data: []
     }
   },
+
+  watch: {
+    searchInput: function() {
+      this.isnewsList()
+    }
+  },
   created() {
     // console.log(11111111)
     this.isnewsList()
   },
+
   methods: {
     // 拿数据
     async isnewsList() {
-      let params = { ...this.page, isHot: this.pitch }
+      let params = { ...this.page, isHot: this.pitch, search: this.searchInput }
       let res = await newsList(params)
       this.data = res.data
       this.total = res.totalNum

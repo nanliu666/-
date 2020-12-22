@@ -1,18 +1,5 @@
 <template>
   <div>
-    <!-- <basic-container>
-      <el-row
-        type="flex"
-        justify="center"
-        style="padding-top:40px;"
-      >
-        <el-col
-          :xl="16"
-          :lg="16"
-          :md="18"
-          :sm="20"
-          :xs="22"
-        > -->
     <common-form
       ref="form"
       :model="form"
@@ -98,17 +85,9 @@
         保存
       </el-button>
     </div>
-    <!-- </el-col>
-      </el-row>
-    </basic-container> -->
   </div>
 </template>
 <script>
-// import { provinceAndCityData } from 'element-china-area-data'
-// import { getRecruitmentList } from '@/api/personnel/person'
-// import { getOrgTreeSimple } from '@/api/org/org'
-// import  commonForm  from '@/components/common-form/commonForm'
-
 export default {
   name: 'DemoForm',
   components: {
