@@ -123,7 +123,7 @@ export default {
       // this.$router.push({ path: '/pressDetails' })
 
       this.$router.push({
-        path: '/news/newsDetails',
+        path: '/news/Details',
         query: {
           id: row.id,
           hits: row.hits,

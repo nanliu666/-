@@ -56,7 +56,7 @@ export default [
       },
       {
         path: '/news',
-        redirect: '/news/news',
+        redirect: '/news',
         component: EmptyLayout,
         title: '新闻',
         children: [

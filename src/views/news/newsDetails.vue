@@ -167,7 +167,7 @@ export default {
     },
 
     tonewsList() {
-      this.$router.push({ path: '/news/newsList' })
+      this.$router.push({ path: '/news/news' })
     }
   }
 }

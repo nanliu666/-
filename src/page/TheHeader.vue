@@ -22,10 +22,11 @@
 <script>
 const menu = [
   { label: '首页', path: '/home' },
-  { label: '新闻', path: '/news/news' },
+  { label: '新闻', path: '/news' },
   { label: '个人中心', path: '/my/info' },
   { label: '我的档案', path: '/my/record' },
   { label: '学习', path: '/learn' },
+  { label: '课程', path: '/course' },
   { label: '知识库', path: '/knowledge' }
 ]
 export default {
