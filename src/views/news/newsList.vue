@@ -1,5 +1,5 @@
 <template>
-  <div class="pressList">
+  <div class="newsList">
     <div class="title">
       <div class="search">
         <el-input
@@ -34,7 +34,7 @@
       v-for="(item, index) in data"
       :key="index"
       class="list"
-      @click="topressDetails(item, index)"
+      @click="tonewsDetails(item, index)"
     >
       <div class="list_box_l">
         <img
@@ -86,7 +86,7 @@
 <script>
 import { newsList } from '@/api/pressCenter/pressCenter'
 export default {
-  name: 'PressList',
+  name: 'NewsList',
   data() {
     return {
       searchInput: '',
@@ -119,11 +119,11 @@ export default {
       this.total = res.totalNum
     },
 
-    topressDetails(row, index) {
+    tonewsDetails(row, index) {
       // this.$router.push({ path: '/pressDetails' })
 
       this.$router.push({
-        path: '/pressDetails',
+        path: '/news/newsDetails',
         query: {
           id: row.id,
           hits: row.hits,
@@ -149,7 +149,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.pressList {
+.newsList {
   width: 100%;
   height: 100vh;
   margin-bottom: -600px;

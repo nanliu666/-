@@ -55,184 +55,60 @@ export default [
         ]
       },
       {
-        path: '/pressList',
+        path: '/news',
+        redirect: '/news/newsList',
         component: EmptyLayout,
+        title: '新闻',
         children: [
           {
-            path: '',
-            name: 'pressList',
-            component: () =>
-              import(/* webpackChunkName: "page" */ '@/views/pressCenter/pressList.vue'),
+            path: 'newsList',
+            name: 'newsList',
+            component: () => import(/* webpackChunkName: "page" */ '@/views/news/newsList.vue'),
             meta: {
               title: '新闻'
             }
           },
           {
-            path: '/pressDetails',
-            component: EmptyLayout,
-            children: [
-              {
-                path: '',
-                name: 'pressDetails',
-                component: () =>
-                  import(/* webpackChunkName: "page" */ '@/views/pressCenter/pressDetails.vue'),
-                meta: {
-                  title: '文章详情'
-                }
-              }
-            ]
+            path: 'newsDetails',
+            name: 'newsDetails',
+            component: () => import(/* webpackChunkName: "page" */ '@/views/news/newsDetails.vue'),
+            meta: {
+              title: '文章详情'
+            }
           }
         ]
       },
       {
-        path: '/personalInfo',
+        path: '/personalCenter',
+        redirect: '/personalCenter/personal',
         component: EmptyLayout,
+        title: '个人中心',
         children: [
           {
-            path: '',
-            name: 'personalInfo',
+            path: 'personal',
+            name: 'personal',
             component: () =>
-              import(
-                /* webpackChunkName: "page" */ '@/views/personalCenter/personal/components/personalInfo.vue'
-              ),
+              import(/* webpackChunkName: "page" */ '@/views/personalCenter/personal/personal.vue'),
             meta: {
               title: '个人信息'
             }
-          },
+          }
+        ]
+      },
+      {
+        path: '/personalCenter',
+        redirect: '/personalCenter/record',
+        component: EmptyLayout,
+        title: '我的档案',
+        children: [
           {
-            path: '/changePassword',
-            component: EmptyLayout,
-            children: [
-              {
-                path: '',
-                name: 'changePassword',
-                component: () =>
-                  import(
-                    /* webpackChunkName: "page" */ '@/views/personalCenter/personal/components/changePassword.vue'
-                  ),
-                meta: {
-                  title: '修改密码'
-                }
-              }
-            ]
-          },
-          {
-            path: '/certificate',
-            component: EmptyLayout,
-            children: [
-              {
-                path: '',
-                name: 'certificate',
-                component: () =>
-                  import(
-                    /* webpackChunkName: "page" */ '@/views/personalCenter/record/components/certificate.vue'
-                  ),
-                meta: {
-                  title: '我的证书'
-                }
-              }
-            ]
-          },
-          {
-            path: '/course',
-            component: EmptyLayout,
-            children: [
-              {
-                path: '',
-                name: 'course',
-                component: () =>
-                  import(
-                    /* webpackChunkName: "page" */ '@/views/personalCenter/record/components/course.vue'
-                  ),
-                meta: {
-                  title: '我的课程'
-                }
-              }
-            ]
-          },
-          {
-            path: '/credit',
-            component: EmptyLayout,
-            children: [
-              {
-                path: '',
-                name: 'credit',
-                component: () =>
-                  import(
-                    /* webpackChunkName: "page" */ '@/views/personalCenter/record/components/credit.vue'
-                  ),
-                meta: {
-                  title: '我的学分'
-                }
-              }
-            ]
-          },
-          {
-            path: '/cultivate',
-            component: EmptyLayout,
-            children: [
-              {
-                path: '',
-                name: 'cultivate',
-                component: () =>
-                  import(
-                    /* webpackChunkName: "page" */ '@/views/personalCenter/record/components/cultivate.vue'
-                  ),
-                meta: {
-                  title: '我的培训'
-                }
-              }
-            ]
-          },
-          {
-            path: '/examination',
-            component: EmptyLayout,
-            children: [
-              {
-                path: '',
-                name: 'examination',
-                component: () =>
-                  import(
-                    /* webpackChunkName: "page" */ '@/views/personalCenter/record/components/examination.vue'
-                  ),
-                meta: {
-                  title: '我的考试'
-                }
-              }
-            ]
-          },
-          {
-            path: '/personal',
-            component: EmptyLayout,
-            children: [
-              {
-                path: '',
-                name: 'personal',
-                component: () =>
-                  import(
-                    /* webpackChunkName: "page" */ '@/views/personalCenter/personal/personal.vue'
-                  ),
-                meta: {
-                  title: '个人信息'
-                }
-              }
-            ]
-          },
-
-          {
-            path: '/record',
-            component: EmptyLayout,
-            children: [
-              {
-                path: '',
-                name: 'record',
-                component: () =>
-                  import(/* webpackChunkName: "page" */ '@/views/personalCenter/record/record.vue'),
-                meta: {
-                  title: '我的档案'
-                }
-              }
-            ]
+            path: 'record',
+            name: 'record',
+            component: () =>
+              import(/* webpackChunkName: "page" */ '@/views/personalCenter/record/record.vue'),
+            meta: {
+              title: '我的档案'
+            }
           }
         ]
       }

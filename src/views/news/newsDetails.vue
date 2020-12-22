@@ -1,8 +1,8 @@
 <template>
-  <div class="pressDetails">
+  <div class="newsDetails">
     <div class="breadcrumb">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/pressList' }">
+        <el-breadcrumb-item :to="{ path: '/newsList' }">
           新闻中心
         </el-breadcrumb-item>
         <el-breadcrumb-item style="color:rgba(0,11,21,0.85);">
@@ -16,7 +16,7 @@
         <div>
           <el-button
             size="small"
-            @click="topressList"
+            @click="tonewsList"
           >
             &nbsp; <i class="icon-fanhui fanhuiicon"></i> &nbsp; 返回上一级
           </el-button>
@@ -97,7 +97,7 @@
 <script>
 import { newsInfo } from '@/api/pressCenter/pressCenter'
 export default {
-  name: 'PressDetails',
+  name: 'NewsDetails',
   data() {
     return {
       data: {},
@@ -166,15 +166,15 @@ export default {
       this.$refs.file[index].click()
     },
 
-    topressList() {
-      this.$router.push({ path: '/pressList' })
+    tonewsList() {
+      this.$router.push({ path: '/news/newsList' })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.pressDetails {
+.newsDetails {
   .breadcrumb {
     font-size: 14px;
     color: rgba(0, 11, 21, 0.45);
