@@ -19,10 +19,10 @@ import loadmore from './directive/loadmore'
 Vue.prototype._ = _
 Vue.component('commonTable', commonTable)
 
-if (process.env.NODE_ENV !== 'production') {
-  const mock = require('@/mock')
-  mock.default(true)
-}
+// if (process.env.NODE_ENV !== 'production') {
+//   const mock = require('@/mock')
+//   mock.default(true)
+// }
 const $message = (options) => {
   return Message({
     ...options,
