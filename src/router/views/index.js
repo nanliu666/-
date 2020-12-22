@@ -106,7 +106,7 @@ export default [
             component: () =>
               import(/* webpackChunkName: "page"*/ '@/views/message/messageCenter.vue'),
             meta: {
-              title: '知识库'
+              title: '消息列表'
             }
           }
         ]
