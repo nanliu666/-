@@ -108,8 +108,7 @@ export default {
   },
   computed: {
     ...mapState({
-      newsCount: (state) => state.user.newsCount,
-      newsList: (state) => state.user.newsList
+      newsCount: (state) => state.user.newsCount
     })
   },
   mounted() {
