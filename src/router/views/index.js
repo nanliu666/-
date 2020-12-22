@@ -93,6 +93,23 @@ export default [
             }
           }
         ]
+      },
+      {
+        path: '/message',
+        redirect: '/message/messageCenter',
+        component: EmptyLayout,
+        title: '消息列表',
+        children: [
+          {
+            name: 'MessageCenter',
+            path: '/message/messageCenter',
+            component: () =>
+              import(/* webpackChunkName: "page"*/ '@/views/message/messageCenter.vue'),
+            meta: {
+              title: '知识库'
+            }
+          }
+        ]
       }
     ]
   },
