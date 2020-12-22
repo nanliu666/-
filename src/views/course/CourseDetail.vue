@@ -53,6 +53,7 @@
         <el-button
           type="primary"
           size="medium"
+          @click="jumpToLearn(id, null)"
         >
           立即学习
         </el-button>
@@ -77,6 +78,7 @@
             <li
               v-for="(chapter, index) in chapters"
               :key="index"
+              @click="jumpToLearn(id, chapter.contentId)"
             >
               <div class="course-detail__chapters--wrap">
                 <span
@@ -139,17 +141,7 @@ export default {
   data() {
     return {
       activeName: 'first',
-      chapters: [
-        {
-          content: 'Java初级培训',
-          contentId: '',
-          localName: 'Java初级培训',
-          name: 'Java初级培训',
-          progress: 20,
-          sort: 1,
-          type: '1'
-        }
-      ],
+      chapters: [],
       courseData: {
         url: null
       }
@@ -164,7 +156,8 @@ export default {
   },
   activated() {
     this.loadDetail()
-    // this.loadChapters()
+    this.loadChapters()
+    this.activeName = 'first'
   },
   methods: {
     calcProcess(chapter) {
@@ -201,6 +194,9 @@ export default {
       }
       getCourseDetail({ courseId: this.id }).then((res) => {
         this.courseData = res
+        this.$nextTick(() => {
+          this.$refs.breadcrumb.setBreadcrumbTitle(res.name)
+        })
       })
     },
     loadChapters() {
@@ -216,6 +212,9 @@ export default {
     },
     submitComment(params) {
       return addComment({ ...params, courseId: this.id })
+    },
+    jumpToLearn(courseId, chapterId = null) {
+      this.$router.push({ path: '/course/learn', query: { courseId, chapterId } })
     }
   }
 }
