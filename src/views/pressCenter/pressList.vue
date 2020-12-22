@@ -53,7 +53,7 @@
           </div>
           <div class="info_box">
             <span class="info_title">创建时间 :&nbsp;</span>
-            <span class="info_val">{{ item.createTime }}</span>
+            <span class="info_val">{{ item.beginPublishTime }}</span>
           </div>
           <div class="info_box">
             <span class="info_title">阅读量 :&nbsp;</span>
