@@ -93,7 +93,12 @@
           </div>
           <common-empty v-if="_.isEmpty(fileGroup)" />
         </section>
-        <Comment v-show="activeIndex === '3'" />
+        <Comment
+          v-show="activeIndex === '3'"
+          :load="loadCommentList"
+          :submit="submitComment"
+          name="知识"
+        />
       </div>
     </el-card>
   </div>
@@ -105,7 +110,13 @@ import Comment from './Comment'
 import CommonBreadcrumb from '@/components/common-breadcrumb/breadcrumb'
 import CommonEmpty from '@/components/common-empty/empty'
 import CommonImageView from '@/components/common-image-viewer/viewer'
-import { getKnowledgeDetails, putWatchOperate, putDownloadOperate } from '@/api/knowledge'
+import {
+  getKnowledgeDetails,
+  putWatchOperate,
+  putDownloadOperate,
+  getEvaluateList,
+  addCourseScope
+} from '@/api/knowledge'
 export default {
   name: 'KnowledgeDetail',
   components: {
@@ -125,6 +136,11 @@ export default {
       }
     }
   },
+  computed: {
+    id() {
+      return this.$route.query.id
+    }
+  },
   mounted() {
     this.initData()
   },
@@ -135,8 +151,8 @@ export default {
       window.open(data)
     },
     initData() {
-      putWatchOperate({ knowledgeId: this.$route.query.id })
-      getKnowledgeDetails({ id: this.$route.query.id }).then((res) => {
+      putWatchOperate({ knowledgeId: this.id })
+      getKnowledgeDetails({ id: this.id }).then((res) => {
         this.konwledgeDetail = res
         this.$refs.breadcrumb.setBreadcrumbTitle(this.konwledgeDetail.resName)
         this.fileGroup = _.groupBy(this.konwledgeDetail.attachments, (item) => {
@@ -164,6 +180,12 @@ export default {
      */
     handleSelect(key) {
       this.activeIndex = key
+    },
+    loadCommentList(params) {
+      return getEvaluateList({ ...params, knowledgeId: this.id })
+    },
+    submitComment(params) {
+      return addCourseScope({ ...params, knowledgeId: this.id })
     }
   }
 }

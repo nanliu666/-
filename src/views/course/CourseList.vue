@@ -96,6 +96,7 @@
           <li
             v-for="item in courseList"
             :key="item.courseId"
+            @click="handleCourseClick(item)"
           >
             <div class="course-list__list__img">
               <el-image :src="item.coverUrl">
@@ -136,7 +137,7 @@
         </ul>
         <el-pagination
           :current-page="pageNo"
-          :page-sizes="[8, 16, 24]"
+          :page-sizes="[10, 20, 30, 40]"
           :page-size="params.pageSize"
           layout="total, sizes, prev, pager, next, jumper"
           :total="totalNum"
@@ -188,7 +189,7 @@ export default {
         catalogId: null,
         courseName: '',
         type: '',
-        pageSize: 8,
+        pageSize: 20,
         choice: '1'
       },
       extraParams: {
@@ -219,6 +220,9 @@ export default {
     this.refreshData()
   },
   methods: {
+    handleCourseClick(item) {
+      this.$router.push({ path: '/course/detail', query: { id: item.courseId } })
+    },
     handleSizeChange(val) {
       this.params.pageSize = val
       this.refreshData()
@@ -239,7 +243,7 @@ export default {
     },
     loadCourseList() {
       this.loading = true
-      getCourseList({ ...this.params, ...this.extraParams })
+      getCourseList({ ...this.params, ...this.extraParams, pageNo: this.pageNo })
         .then((res) => {
           this.courseList = res.data
           this.totalNum = res.totalNum

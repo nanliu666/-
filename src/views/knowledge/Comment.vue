@@ -3,7 +3,7 @@
     <div class="comment-top">
       <div class="top-title">
         <div class="title">
-          给该知识打分：
+          给该{{ name }}打分：
         </div>
         <el-rate
           v-model="scopeParams.scope"
@@ -78,30 +78,36 @@
 </template>
 
 <script>
-import { getEvaluateList, addCourseScope } from '@/api/knowledge'
 export default {
   name: 'Comment',
+  props: {
+    load: {
+      type: Function,
+      default: () => new Promise((resolve) => resolve({}))
+    },
+    submit: {
+      type: Function,
+      default: () => new Promise((resolve) => resolve({}))
+    },
+    name: {
+      type: String,
+      default: '课程'
+    }
+  },
   data() {
     return {
       circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
       hasPublish: true,
       totalNum: 100,
       scopeParams: {
-        knowledgeId: '',
         scope: 0,
         remark: ''
       },
       listParams: {
         pageNo: 1,
-        pageSize: 10,
-        knowledgeId: ''
+        pageSize: 10
       },
       commentList: []
-    }
-  },
-  computed: {
-    id() {
-      return this.$route.query.id || null
     }
   },
   watch: {
@@ -127,18 +133,16 @@ export default {
       this.loadList()
     },
     loadList() {
-      getEvaluateList(_.assign(this.listParams, { knowledgeId: this.id })).then(
-        ({ data, totalNum }) => {
-          this.commentList = data
-          this.totalNum = totalNum
-        }
-      )
+      this.load(this.listParams).then(({ data, totalNum }) => {
+        this.commentList = data
+        this.totalNum = totalNum
+      })
     },
     inputFocus() {
       this.hasPublish = false
     },
     publish() {
-      addCourseScope(_.assign(this.scopeParams, { knowledgeId: this.id })).then(() => {
+      this.submit(this.scopeParams).then(() => {
         this.hasPublish = true
         this.loadList()
       })

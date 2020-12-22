@@ -67,6 +67,15 @@ export default [
             meta: {
               title: '课程列表'
             }
+          },
+          {
+            path: 'detail',
+            name: 'CourseDetail',
+            component: () =>
+              import(/* webpackChunkName: "page"*/ '@/views/course/CourseDetail.vue'),
+            meta: {
+              title: '课程详情'
+            }
           }
         ]
       },
