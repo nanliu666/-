@@ -1,8 +1,12 @@
 import { get } from '@/util/axios'
 
 /**
- * 根据课程分类查询下一级分类
+ * 新闻列表
  * @param {Object} params
- * @param {String} params.id 分类ID
  */
 export const newsList = (params) => get('/manage/v1/web/newsList', params)
+/**
+ * 新闻详情
+ * @param {Object} params
+ */
+export const newsInfo = (params) => get('/manage/v1/web/newsInfo', params)

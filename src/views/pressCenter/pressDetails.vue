@@ -26,12 +26,18 @@
             <el-button
               size="small"
               icon="el-icon-arrow-left"
+              :disabled="disabledTop"
+              @click="cutInfo(0)"
             >
               &nbsp;上一页
             </el-button>
           </div>
-          <div style="margin-left: -1px;">
-            <el-button size="small">
+          <div>
+            <el-button
+              size="small"
+              :disabled="disabledBottom"
+              @click="cutInfo(1)"
+            >
               下一页&nbsp;<i class="el-icon-arrow-right el-icon--right"></i>
             </el-button>
           </div>
@@ -39,53 +45,127 @@
       </div>
 
       <div class="content_title">
-        {{ '信息安全在岗考试必要性在企业发展中的重要性' }}
+        {{ data.title }}
       </div>
       <div class="content_title_info">
         <div class="info_box">
           <span class="info_title"> 创建人 :&nbsp;</span>
-          <span class="info_val">{{ '撒贝宁' }}</span>
+          <span class="info_val">{{ data.userName }}</span>
         </div>
         <div class="info_box">
           <span class="info_title">创建时间 :&nbsp;</span>
-          <span class="info_val">{{ '2020-02-15 14:00:22' }}</span>
+          <span class="info_val">{{ data.createTime }}</span>
         </div>
         <div class="info_box">
           <span class="info_title">阅读量 :&nbsp;</span>
-          <span class="info_val">{{ '112' }}</span>
+          <span class="info_val">{{ data.hits }}</span>
         </div>
       </div>
 
       <div class="download">
-        <el-button
-          type="text"
-          icon="el-icon-paperclip"
-          style="font-size: 12px;"
+        <div
+          v-for="(item, index) in data.attachment"
+          :key="index"
         >
-          附件下载
-        </el-button>
-        <span>信息安全在岗考试必要性在企业发展中的重要性</span>
+          <el-button
+            type="text"
+            icon="el-icon-paperclip"
+            style="font-size: 12px;"
+            @click="isdownload(index)"
+          >
+            附件下载
+          </el-button>
+          <span>{{ item.localName }}</span>
+          <a
+            ref="file"
+            href="#"
+            :download="item.url"
+          ></a>
+        </div>
       </div>
 
       <div class="content_info">
-        <div class="info">
-          2020年2月6日
-          国家发改委、人社部、工信部、总工会发文《关于应对新型冠状病毒感染肺炎疫情，支持鼓励劳动者参与线上职业技能培训的通知》，支持鼓励广大劳动者参加线上职业技能培训。2020年2月6日
-          国家发改委、人社部、工信部、总工会发文《关于应对新型冠状病毒感染肺炎疫情，支持鼓励劳动者参与线上职业技能培训的通知》，支持鼓励广大劳动者参加线上职业技能培训。2020年2月6日
-          国家发改委、人社部、工信部、总工会发文《关于应对新型冠状病毒感染肺炎疫情，支持鼓励劳动者参与线上职业技能培训的通知》，支持鼓励广大劳动者参加线上职业技能培训。
-        </div>
+        <div
+          class="info"
+          v-html="data.content"
+        ></div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { newsInfo } from '@/api/pressCenter/pressCenter'
 export default {
   name: 'PressDetails',
   data() {
-    return {}
+    return {
+      data: {},
+      id: '',
+      indexdisabled: this.$route.query.index,
+      totaldisabled: this.$route.query.total,
+      disabledTop: false,
+      disabledBottom: false
+    }
+  },
+
+  watch: {
+    indexdisabled: function(newVal) {
+      // console.log(newVal)
+
+      newVal == 0 ? (this.disabledTop = true) : (this.disabledTop = false)
+      newVal == this.totaldisabled ? (this.disabledBottom = true) : (this.disabledBottom = false)
+    }
+  },
+
+  created() {
+    --this.totaldisabled
+
+    this.indexdisabled == 0 ? (this.disabledTop = true) : (this.disabledTop = false)
+    this.indexdisabled == this.totaldisabled
+      ? (this.disabledBottom = true)
+      : (this.disabledBottom = false)
+
+    this.getInfo()
+    // console.log(Date.parse(new Date()).toString());
   },
   methods: {
+    cutInfo(type) {
+      type ? ++this.indexdisabled : --this.indexdisabled
+
+      // console.log(this.indexdisabled)
+      // console.log(this.totaldisabled)
+
+      let params = {
+        // createTime: Date.parse(new Date()),
+        createTime: this.data.createTime,
+        type
+      }
+
+      this.getInfo(params)
+    },
+
+    async getInfo(data) {
+      let params = {}
+      if (!data) {
+        params = {
+          id: this.$route.query.id,
+          hits: this.$route.query.hits
+        }
+      } else {
+        params = {
+          ...data
+        }
+      }
+
+      let res = await newsInfo(params)
+      this.data = res
+    },
+
+    isdownload(index) {
+      this.$refs.file[index].click()
+    },
+
     topressList() {
       this.$router.push({ path: '/pressList' })
     }
@@ -147,7 +227,10 @@ export default {
       color: rgba(0, 11, 21, 0.45);
       border-bottom: 1px solid #ebeced;
       margin-bottom: 25px;
-      padding-bottom: 10px;
+      padding-bottom: 20px;
+      div {
+        height: 20px;
+      }
       span {
         margin-left: 10px;
       }

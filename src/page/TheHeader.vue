@@ -25,7 +25,9 @@ const menu = [
   { label: '课程', path: '/course' },
   { label: '新闻', path: '/pressList' },
   { label: '个人中心', path: '/personal' },
-  { label: '我的档案', path: '/record' }
+  { label: '我的档案', path: '/record' },
+  { label: '学习', path: '/learn' },
+  { label: '知识库', path: '/knowledge' }
 ]
 export default {
   name: 'Header',
@@ -53,10 +55,10 @@ export default {
 
 <style lang="scss" scoped>
 .header {
+  align-self: flex-start;
   height: 56px;
   width: 100%;
   box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
-  position: relative;
   background-color: white;
   .header-inner {
     height: 100%;

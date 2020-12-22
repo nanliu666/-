@@ -137,7 +137,7 @@
 import { on, off } from './dom'
 import { each } from './utils'
 // @group api
-import Emitter from '@/mixins/elFormEmitter'
+import Emitter from '@/mixins/el-form-emitter'
 
 export default {
   name: 'ElTreeSelect',

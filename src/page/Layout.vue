@@ -33,19 +33,23 @@ export default {
 <style lang="scss" scoped>
 .el-layout {
   background-color: $mainBackGray;
+  // 父元素
+  display: flex;
+  justify-content: space-between;
+  flex-flow: row wrap;
   .el-main {
-    min-height: calc(100vh - 56px);
-    width: 1200px;
+    min-height: calc(100vh - 56px - 40px);
+    flex-basis: 1200px;
+    flex-grow: 0; //存在多余长度也不放大
     margin: auto;
     padding: 0;
-    padding-bottom: 44px; // 留出footer的高度
     &--fullscreen {
       min-height: 100vh;
       width: 100%;
     }
-    &::-webkit-scrollbar {
-      display: none;
-    }
+    // &::-webkit-scrollbar {
+    //   display: none;
+    // }
   }
 }
 </style>

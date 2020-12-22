@@ -13,17 +13,17 @@
       <div class="btnBar">
         <el-button
           class="btn"
-          :class="{ pitch: pitch === 0 }"
+          :class="{ pitch: pitch === 1 }"
           type="text"
-          @click="showpitch(0)"
+          @click="showpitch(1)"
         >
           最新新闻
         </el-button>
         <el-button
           class="btn"
-          :class="{ pitch: pitch === 1 }"
+          :class="{ pitch: pitch === 0 }"
           type="text"
-          @click="showpitch(1)"
+          @click="showpitch(0)"
         >
           热门新闻
         </el-button>
@@ -31,37 +31,40 @@
     </div>
 
     <div
-      v-for="(item, index) in 10"
+      v-for="(item, index) in data"
       :key="index"
       class="list"
-      @click="topressDetails"
+      @click="topressDetails(item, index)"
     >
       <div class="list_box_l">
         <img
-          src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1608289740056&di=00f8f4b767c42fa1c8548b4e6731e4e8&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201901%2F23%2F20190123150727_byuwj.jpg"
+          :src="item.picUrl"
           alt=""
         />
       </div>
       <div class="list_box_r">
         <div class="list_box_r_title">
-          信息安全在岗考试必要性在企业发展中的重要性
+          {{ item.title }}
         </div>
         <div class="list_box_r_info">
           <div class="info_box">
             <span class="info_title"> 创建人 :&nbsp;</span>
-            <span class="info_val">{{ '撒贝宁' }}</span>
+            <span class="info_val">{{ item.userName }}</span>
           </div>
           <div class="info_box">
             <span class="info_title">创建时间 :&nbsp;</span>
-            <span class="info_val">{{ '2020-02-15 14:00:22' }}</span>
+            <span class="info_val">{{ item.createTime }}</span>
           </div>
           <div class="info_box">
             <span class="info_title">阅读量 :&nbsp;</span>
-            <span class="info_val">{{ '112' }}</span>
+            <span class="info_val">{{ item.hits }}</span>
           </div>
         </div>
-        <div class="showTop">
-          置顶{{ index }}
+        <div
+          v-show="item.isTop"
+          class="showTop"
+        >
+          置顶
         </div>
       </div>
     </div>
@@ -87,29 +90,44 @@ export default {
   data() {
     return {
       searchInput: '',
-      pitch: 0,
-      total: 100,
+      pitch: 1,
+      total: 10,
       page: {
         pageNo: 1, //请求页码
         pageSize: 10 //每页条数
-      }
+      },
+      data: []
     }
   },
   created() {
     // console.log(11111111)
-    // this.getInfo()
+    this.isnewsList()
   },
   methods: {
-    topressDetails() {
-      this.$router.push({ path: '/pressDetails' })
+    // 拿数据
+    async isnewsList() {
+      let params = { ...this.page, isHot: this.pitch }
+      let res = await newsList(params)
+      this.data = res.data
+      this.total = res.totalNum
     },
 
-    async getInfo() {
-      let res = await newsList(this.page)
-      window.console.log(res)
+    topressDetails(row, index) {
+      // this.$router.push({ path: '/pressDetails' })
+
+      this.$router.push({
+        path: '/pressDetails',
+        query: {
+          id: row.id,
+          hits: row.hits,
+          index,
+          total: this.total
+        }
+      })
     },
     showpitch(i) {
       this.pitch = i
+      this.isnewsList()
     },
     handleSizeChange(val) {
       // console.log(`每页 ${val} 条`)
