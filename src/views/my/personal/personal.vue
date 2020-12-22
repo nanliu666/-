@@ -33,7 +33,6 @@
 
 <script>
 export default {
-
   name: 'Personal',
   components: {
     personalInfo: () => import('./components/personalInfo.vue'),

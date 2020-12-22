@@ -22,9 +22,9 @@
 <script>
 const menu = [
   { label: '首页', path: '/home' },
-  { label: '新闻', path: '/news/newsList' },
-  { label: '个人中心', path: '/personalCenter/personal' },
-  { label: '我的档案', path: '/personalCenter/record' },
+  { label: '新闻', path: '/news/news' },
+  { label: '个人中心', path: '/my/info' },
+  { label: '我的档案', path: '/my/record' },
   { label: '学习', path: '/learn' },
   { label: '知识库', path: '/knowledge' }
 ]

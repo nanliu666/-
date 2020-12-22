@@ -56,20 +56,20 @@ export default [
       },
       {
         path: '/news',
-        redirect: '/news/newsList',
+        redirect: '/news/news',
         component: EmptyLayout,
         title: '新闻',
         children: [
           {
-            path: 'newsList',
-            name: 'newsList',
-            component: () => import(/* webpackChunkName: "page" */ '@/views/news/newsList.vue'),
+            path: 'news',
+            name: 'list',
+            component: () => import(/* webpackChunkName: "page" */ '@/views/news/news.vue'),
             meta: {
               title: '新闻'
             }
           },
           {
-            path: 'newsDetails',
+            path: 'Details',
             name: 'newsDetails',
             component: () => import(/* webpackChunkName: "page" */ '@/views/news/newsDetails.vue'),
             meta: {
@@ -79,33 +79,24 @@ export default [
         ]
       },
       {
-        path: '/personalCenter',
-        redirect: '/personalCenter/personal',
+        path: '/my',
+        redirect: '/my/info',
         component: EmptyLayout,
         title: '个人中心',
         children: [
           {
-            path: 'personal',
+            path: 'info',
             name: 'personal',
             component: () =>
-              import(/* webpackChunkName: "page" */ '@/views/personalCenter/personal/personal.vue'),
+              import(/* webpackChunkName: "page" */ '@/views/my/personal/personal.vue'),
             meta: {
               title: '个人信息'
             }
-          }
-        ]
-      },
-      {
-        path: '/personalCenter',
-        redirect: '/personalCenter/record',
-        component: EmptyLayout,
-        title: '我的档案',
-        children: [
+          },
           {
             path: 'record',
             name: 'record',
-            component: () =>
-              import(/* webpackChunkName: "page" */ '@/views/personalCenter/record/record.vue'),
+            component: () => import(/* webpackChunkName: "page" */ '@/views/my/record/record.vue'),
             meta: {
               title: '我的档案'
             }
