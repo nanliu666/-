@@ -114,8 +114,8 @@
 export default {
   name: 'PersonalInfo',
   components: {
-    commonUpload: () => import('@/components/common-upload/commonUpload'),
-    commonForm: () => import('@/components/common-form/commonForm')
+    CommonUpload: () => import('@/components/common-upload/CommonUpload'),
+    CommonForm: () => import('@/components/common-form/CommonForm')
   },
   data() {
     return {

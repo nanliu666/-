@@ -44,8 +44,8 @@ export default {
     margin: auto;
     padding: 0;
     &--fullscreen {
-      min-height: 100vh;
-      width: 100%;
+      flex-grow: 1;
+      min-width: 1200px;
     }
     // &::-webkit-scrollbar {
     //   display: none;

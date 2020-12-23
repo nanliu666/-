@@ -51,6 +51,24 @@ export default [
             meta: {
               title: '课程列表'
             }
+          },
+          {
+            path: 'detail',
+            name: 'CourseDetail',
+            component: () =>
+              import(/* webpackChunkName: "page"*/ '@/views/course/CourseDetail.vue'),
+            meta: {
+              title: '课程详情'
+            }
+          },
+          {
+            path: 'learn',
+            name: 'CourseLearn',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/course/CourseLearn.vue'),
+            meta: {
+              title: '课程学习',
+              fullscreen: true
+            }
           }
         ]
       },
@@ -103,7 +121,7 @@ export default [
           {
             path: 'list',
             name: 'list',
-            component: () => import(/* webpackChunkName: "page" */ '@/views/news/news.vue'),
+            component: () => import(/* webpackChunkName: "page" */ '@/views/news/NewsList.vue'),
             meta: {
               title: '新闻'
             }
@@ -111,7 +129,7 @@ export default [
           {
             path: 'Details',
             name: 'newsDetails',
-            component: () => import(/* webpackChunkName: "page" */ '@/views/news/newsDetails.vue'),
+            component: () => import(/* webpackChunkName: "page" */ '@/views/news/NewsDetail.vue'),
             meta: {
               title: '文章详情'
             }
@@ -127,7 +145,7 @@ export default [
           {
             path: 'info',
             name: 'personal',
-            component: () => import(/* webpackChunkName: "page" */ '@/views/my/personal.vue'),
+            component: () => import(/* webpackChunkName: "page" */ '@/views/my/Personal.vue'),
             meta: {
               title: '个人信息'
             }
@@ -135,7 +153,7 @@ export default [
           {
             path: 'record',
             name: 'record',
-            component: () => import(/* webpackChunkName: "page" */ '@/views/my/record.vue'),
+            component: () => import(/* webpackChunkName: "page" */ '@/views/my/Record.vue'),
             meta: {
               title: '我的档案'
             }
@@ -152,7 +170,7 @@ export default [
             name: 'MessageCenter',
             path: '/message/messageCenter',
             component: () =>
-              import(/* webpackChunkName: "page"*/ '@/views/message/messageCenter.vue'),
+              import(/* webpackChunkName: "page"*/ '@/views/message/MessageCenter.vue'),
             meta: {
               title: '消息列表'
             }

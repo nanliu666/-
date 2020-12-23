@@ -96,9 +96,17 @@
           <li
             v-for="item in courseList"
             :key="item.courseId"
+            @click="handleCourseClick(item)"
           >
             <div class="course-list__list__img">
-              <img :src="item.coverUrl" />
+              <el-image :src="item.coverUrl">
+                <div
+                  slot="error"
+                  class="image-slot"
+                >
+                  <i class="el-icon-picture-outline"></i>
+                </div>
+              </el-image>
             </div>
             <div class="course-list__list__content">
               <div class="course-list__list__title">
@@ -128,8 +136,8 @@
           </li>
         </ul>
         <el-pagination
-          :current-page="params.pageNo"
-          :page-sizes="[8, 16, 24]"
+          :current-page="pageNo"
+          :page-sizes="[10, 20, 30, 40]"
           :page-size="params.pageSize"
           layout="total, sizes, prev, pager, next, jumper"
           :total="totalNum"
@@ -181,13 +189,13 @@ export default {
         catalogId: null,
         courseName: '',
         type: '',
-        pageNo: 1,
-        pageSize: 8,
+        pageSize: 20,
         choice: '1'
       },
       extraParams: {
         tearchId: null
       },
+      pageNo: 1,
       totalNum: 0,
       courseList: [],
       loading: false,
@@ -212,16 +220,19 @@ export default {
     this.refreshData()
   },
   methods: {
+    handleCourseClick(item) {
+      this.$router.push({ path: '/course/detail', query: { id: item.courseId } })
+    },
     handleSizeChange(val) {
       this.params.pageSize = val
       this.refreshData()
     },
     handleCurrentChange(val) {
-      this.params.pageNo = val
+      this.pageNo = val
       this.loadCourseList()
     },
     refreshData: _.debounce(function() {
-      this.params.pageNo = 1
+      this.pageNo = 1
       this.loadCourseList()
     }, 300),
     resetExtraParams() {
@@ -232,7 +243,7 @@ export default {
     },
     loadCourseList() {
       this.loading = true
-      getCourseList({ ...this.params, ...this.extraParams })
+      getCourseList({ ...this.params, ...this.extraParams, pageNo: this.pageNo })
         .then((res) => {
           this.courseList = res.data
           this.totalNum = res.totalNum
@@ -383,6 +394,23 @@ export default {
   &__img {
     height: 170px;
     overflow: hidden;
+    /deep/.el-image {
+      width: 100%;
+      height: 170px;
+    }
+    /deep/ .image-slot {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      background: #f5f7fa;
+      color: #909399;
+      font-size: 14px;
+      i {
+        font-size: 30px;
+      }
+    }
     img {
       min-height: 170px;
       width: 100%;
