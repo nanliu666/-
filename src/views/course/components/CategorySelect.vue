@@ -36,10 +36,7 @@
       ></i>
       <slot name="selected"></slot>
     </div>
-    <div
-      v-show="!_.isEmpty(categoryList)"
-      class="category__list"
-    >
+    <div class="category__list">
       <span class="category__label">
         分类：
       </span>
