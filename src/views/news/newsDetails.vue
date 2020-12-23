@@ -138,7 +138,7 @@ export default {
 
       let params = {
         // createTime: Date.parse(new Date()),
-        createTime: this.data.beginPublishTime,
+        beginPublishTime: this.data.beginPublishTime,
         type
       }
 
@@ -167,7 +167,7 @@ export default {
     },
 
     tonewsList() {
-      this.$router.push({ path: '/news/news' })
+      this.$router.push({ path: '/news/list' })
     }
   }
 }

@@ -127,8 +127,7 @@ export default [
           {
             path: 'info',
             name: 'personal',
-            component: () =>
-              import(/* webpackChunkName: "page" */ '@/views/my/personal/personal.vue'),
+            component: () => import(/* webpackChunkName: "page" */ '@/views/my/personal.vue'),
             meta: {
               title: '个人信息'
             }
@@ -136,7 +135,7 @@ export default [
           {
             path: 'record',
             name: 'record',
-            component: () => import(/* webpackChunkName: "page" */ '@/views/my/record/record.vue'),
+            component: () => import(/* webpackChunkName: "page" */ '@/views/my/record.vue'),
             meta: {
               title: '我的档案'
             }

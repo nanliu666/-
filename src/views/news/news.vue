@@ -13,17 +13,17 @@
       <div class="btnBar">
         <el-button
           class="btn"
-          :class="{ pitch: pitch === 1 }"
+          :class="{ pitch: pitch === 0 }"
           type="text"
-          @click="showpitch(1)"
+          @click="showpitch(0)"
         >
           最新新闻
         </el-button>
         <el-button
           class="btn"
-          :class="{ pitch: pitch === 0 }"
+          :class="{ pitch: pitch === 1 }"
           type="text"
-          @click="showpitch(0)"
+          @click="showpitch(1)"
         >
           热门新闻
         </el-button>
@@ -90,7 +90,7 @@ export default {
   data() {
     return {
       searchInput: '',
-      pitch: 1,
+      pitch: 0,
       total: 10,
       page: {
         pageNo: 1, //请求页码
