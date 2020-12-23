@@ -51,6 +51,29 @@ export default [
             }
           }
         ]
+      },
+      {
+        path: '/register', // 注册页面
+        component: () => import(/* webpackChunkName: "page"*/ '@/views/register')
+      },
+      {
+        path: '/forgetPassword', // 忘记密码页面
+        component: () => import(/* webpackChunkName: "page"*/ '@/views/forgetPassword')
+      },
+      {
+        path: '/train', // 培训页面
+        redirect: '/train/index',
+        component: EmptyLayout,
+        children: [
+          {
+            path: 'index',
+            name: 'trainIndex',
+            meta: {
+              title: '课程页面首页'
+            },
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/train')
+          }
+        ]
       }
     ]
   },

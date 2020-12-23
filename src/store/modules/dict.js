@@ -1,4 +1,4 @@
-import { getStore, setStore } from '@/util/store'
+import { getStore, setStore, removeStore } from '@/util/store'
 
 import { getDictionary } from '@/api/common'
 
@@ -33,6 +33,20 @@ const dict = {
       setStore({
         name: 'commonDict',
         content: state.commonDict
+      })
+    },
+    DEL_ALL_TAG: (state) => {
+      state.tagList = []
+      setStore({ name: 'tagList', content: state.tagList })
+    },
+    CLEAR_LOCK: (state) => {
+      state.isLock = false
+      state.lockPasswd = ''
+      removeStore({
+        name: 'lockPasswd'
+      })
+      removeStore({
+        name: 'isLock'
       })
     }
   }
