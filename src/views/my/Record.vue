@@ -60,6 +60,10 @@
           :class="{ pitch: pitch === 5 }"
           @click="showBtn(5)"
         >无数据</span>
+        <span
+          :class="{ pitch: pitch === 6 }"
+          @click="showBtn(6)"
+        >证书详情</span>
       </div>
     </div>
     <course v-show="pitch === 0"></course>
@@ -81,6 +85,10 @@
         </div>
       </div>
     </div>
+
+    <certificate-detail v-show="pitch === 6">
+      123123
+    </certificate-detail>
   </div>
 </template>
 
@@ -92,7 +100,8 @@ export default {
     cultivate: () => import('./components/Cultivate'),
     examination: () => import('./components/Examination'),
     credit: () => import('./components/Credit'),
-    certificate: () => import('./components/Certificate')
+    certificate: () => import('./components/Certificate'),
+    certificateDetail: () => import('./components/CertificateDetail')
   },
   data() {
     return {
