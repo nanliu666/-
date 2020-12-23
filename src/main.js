@@ -16,6 +16,7 @@ import commonTable from 'vue-common-table'
 import Permission from '@/directive/pcheck'
 import _ from 'lodash'
 import loadmore from './directive/loadmore'
+
 Vue.prototype._ = _
 Vue.component('commonTable', commonTable)
 

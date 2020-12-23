@@ -47,6 +47,9 @@ export default {
       flex-grow: 1;
       min-width: 1200px;
     }
+    // &::-webkit-scrollbar {
+    //   display: none;
+    // }
   }
 }
 </style>

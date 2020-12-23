@@ -104,7 +104,7 @@ const TABLE_CONFIG = {
 }
 import styles from '@/styles/variables.scss'
 import { getKnowledgeList, getKnowledgeCatalog } from '@/api/knowledge'
-import CategorySelect from '../course/components/CategorySelect'
+import CategorySelect from '../course/components/CategorySelect.vue'
 export default {
   name: 'KnowledgeList',
   components: {

@@ -39,22 +39,6 @@ export default [
         ]
       },
       {
-        path: '/learn',
-        redirect: '/learn/list',
-        component: EmptyLayout,
-        title: '学习',
-        children: [
-          {
-            path: 'list',
-            name: 'LearnList',
-            component: () => import(/* webpackChunkName: "page"*/ '@/views/learn/List.vue'),
-            meta: {
-              title: '学习列表'
-            }
-          }
-        ]
-      },
-      {
         path: '/course',
         redirect: '/course/list',
         component: EmptyLayout,
@@ -113,6 +97,70 @@ export default [
         ]
       },
       {
+        path: '/learn',
+        redirect: '/learn/list',
+        component: EmptyLayout,
+        title: '学习',
+        children: [
+          {
+            path: 'list',
+            name: 'LearnList',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/learn/List.vue'),
+            meta: {
+              title: '学习列表'
+            }
+          }
+        ]
+      },
+      {
+        path: '/news',
+        redirect: '/news/list',
+        component: EmptyLayout,
+        title: '新闻',
+        children: [
+          {
+            path: 'list',
+            name: 'list',
+            component: () => import(/* webpackChunkName: "page" */ '@/views/news/news.vue'),
+            meta: {
+              title: '新闻'
+            }
+          },
+          {
+            path: 'Details',
+            name: 'newsDetails',
+            component: () => import(/* webpackChunkName: "page" */ '@/views/news/newsDetails.vue'),
+            meta: {
+              title: '文章详情'
+            }
+          }
+        ]
+      },
+      {
+        path: '/my',
+        redirect: '/my/info',
+        component: EmptyLayout,
+        title: '个人中心',
+        children: [
+          {
+            path: 'info',
+            name: 'personal',
+            component: () => import(/* webpackChunkName: "page" */ '@/views/my/personal.vue'),
+            meta: {
+              title: '个人信息'
+            }
+          },
+          {
+            path: 'record',
+            name: 'record',
+            component: () => import(/* webpackChunkName: "page" */ '@/views/my/record.vue'),
+            meta: {
+              title: '我的档案'
+            }
+          }
+        ]
+      },
+      {
         path: '/message',
         redirect: '/message/messageCenter',
         component: EmptyLayout,
@@ -128,8 +176,8 @@ export default [
             }
           }
         ]
-      }
+      },
+      ...(process.env.NODE_ENV === 'development' ? demoRoutes : [])
     ]
-  },
-  ...(process.env.NODE_ENV === 'development' ? demoRoutes : [])
+  }
 ]
