@@ -159,7 +159,7 @@
 
 <script>
 import { elFormAttrs, elFormItemAttrs, noneItemAttrs, defaultAttrs } from './config'
-import LazySelect from '@/components/lazy-select/lazySelect'
+import LazySelect from '@/components/lazy-select/LazySelect'
 const inputTypes = ['input', 'inputNumber']
 export default {
   name: 'CommonForm',
