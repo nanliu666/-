@@ -119,22 +119,10 @@
 </template>
 
 <script>
-import CommonBreadcrumb from '@/components/common-breadcrumb/breadcrumb'
+import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
 import { getCourseDetail, getCommentList, addComment, getLearnRecord } from '@/api/course'
 import Comment from '../knowledge/Comment'
-import variables from '@/styles/variables.scss'
-const COURSE_TYPE_MAP = {
-  '1': '在线课程',
-  '2': '面授课程',
-  '3': '直播课程'
-}
-const COURSE_CHAPTER_TYPE_MAP = {
-  '1': { text: '文章', color: variables.primaryColor },
-  '2': { text: '课件', color: '#FC7C01' },
-  '3': { text: '资料下载', color: '#FF4329' },
-  '4': { text: '考试', color: '#FCBA00' },
-  '5': { text: '视频', color: '#00B061' }
-}
+import { COURSE_CHAPTER_TYPE_MAP, COURSE_TYPE_MAP } from './config'
 export default {
   name: 'CourseDetail',
   components: { CommonBreadcrumb, Comment },
@@ -172,7 +160,7 @@ export default {
       }
     },
     getChapterStatus(chapter) {
-      if (chapter.progress !== '5') {
+      if (chapter.type !== '5') {
         if (chapter.progress == 1) {
           return '已学习'
         } else {
@@ -204,7 +192,7 @@ export default {
         return
       }
       getLearnRecord({ courseId: this.id }).then((res) => {
-        this.chapters = res
+        this.chapters = _.sortBy(res, 'sort')
       })
     },
     loadCommentList(params) {
@@ -305,6 +293,7 @@ export default {
       padding-right: 21px;
       justify-content: space-between;
       cursor: pointer;
+      border-bottom: 1px solid $mainLineGray;
       &:hover {
         background-color: rgba($primaryFontColor, 0.02);
       }

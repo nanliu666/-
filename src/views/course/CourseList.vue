@@ -160,12 +160,9 @@
 <script>
 import { getCategories, getCourseList, getTeacherList } from '@/api/course'
 import CategorySelect from './components/CategorySelect'
-import LazySelect from '@/components/lazy-select/lazySelect.vue'
-const COURSE_TYPE_MAP = {
-  '1': '在线课程',
-  '2': '面授课程',
-  '3': '直播课程'
-}
+import LazySelect from '@/components/lazy-select/LazySelect.vue'
+import { COURSE_TYPE_MAP } from './config'
+
 const COURSE_TYPE_LIST = [
   { label: '全部', value: '' },
   { label: '在线课程', value: '1' },
@@ -468,7 +465,7 @@ export default {
 <style lang="scss">
 .course-list-filter-pop {
   &__wrap {
-    padding: 12px 4px;
+    padding: 24px 16px;
   }
   &__label {
     margin-bottom: 8px;

@@ -130,9 +130,10 @@ export default {
   },
   mounted() {
     this.news()
-    setInterval(() => {
-      this.news()
-    }, 300000)
+    // 定时获取新消息
+    // setInterval(() => {
+    //   this.news()
+    // }, 300000)
   },
   methods: {
     news() {
