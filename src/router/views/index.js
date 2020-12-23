@@ -162,15 +162,15 @@ export default [
       },
       {
         path: '/message',
-        redirect: '/message/messageCenter',
+        redirect: '/message/list',
         component: EmptyLayout,
-        title: '消息列表',
+        title: '消息',
         children: [
           {
-            name: 'MessageCenter',
-            path: '/message/messageCenter',
+            name: 'MessageList',
+            path: 'list',
             component: () =>
-              import(/* webpackChunkName: "page"*/ '@/views/message/MessageCenter.vue'),
+              import(/* webpackChunkName: "page"*/ '@/views/message/MessageList.vue'),
             meta: {
               title: '消息列表'
             }

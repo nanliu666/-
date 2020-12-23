@@ -92,7 +92,7 @@
           ></div>
         </el-popover>
         <div class="iconimage_icon_help iconfont help"></div>
-        <div class="el-icon-picture-outline hander"></div>
+        <!-- <div class="el-icon-picture-outline hander"></div> -->
       </div>
     </div>
   </div>
@@ -103,12 +103,12 @@ import { mapState } from 'vuex'
 import { postMsgNotify } from '@/api/messgeCenter'
 const menu = [
   { label: '首页', path: '/home' },
-  { label: '新闻', path: '/news' },
-  { label: '个人中心', path: '/my/info' },
-  { label: '我的档案', path: '/my/record' },
   { label: '学习', path: '/learn' },
   { label: '课程', path: '/course' },
-  { label: '知识库', path: '/knowledge' }
+  { label: '知识库', path: '/knowledge' },
+  { label: '新闻', path: '/news' },
+  { label: '个人中心', path: '/my/info' },
+  { label: '我的档案', path: '/my/record' }
 ]
 export default {
   name: 'Header',
@@ -152,7 +152,7 @@ export default {
         id: data.id
       }
       this.$router.push({
-        path: '/message/messageCenter',
+        path: '/message/list',
         query
       })
     },
