@@ -141,8 +141,25 @@ export default [
             }
           }
         ]
-      }
+      },
+      {
+        path: '/message',
+        redirect: '/message/messageCenter',
+        component: EmptyLayout,
+        title: '消息列表',
+        children: [
+          {
+            name: 'MessageCenter',
+            path: '/message/messageCenter',
+            component: () =>
+              import(/* webpackChunkName: "page"*/ '@/views/message/messageCenter.vue'),
+            meta: {
+              title: '消息列表'
+            }
+          }
+        ]
+      },
+      ...(process.env.NODE_ENV === 'development' ? demoRoutes : [])
     ]
-  },
-  ...(process.env.NODE_ENV === 'development' ? demoRoutes : [])
+  }
 ]
