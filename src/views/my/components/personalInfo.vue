@@ -112,7 +112,7 @@
 </template>
 <script>
 export default {
-  name: 'DemoForm',
+  name: 'PersonalInfo',
   components: {
     commonUpload: () => import('@/components/common-upload/commonUpload'),
     commonForm: () => import('@/components/common-form/commonForm')

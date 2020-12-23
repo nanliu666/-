@@ -25,7 +25,7 @@
 
       <div class="routerinfo">
         <personalInfo v-if="!pitch"></personalInfo>
-        <changePassword v-else></changePassword>
+        <change-password v-else></change-password>
       </div>
     </div>
   </div>
@@ -35,8 +35,8 @@
 export default {
   name: 'Personal',
   components: {
-    personalInfo: () => import('./components/personalInfo.vue'),
-    changePassword: () => import('./components/changePassword.vue')
+    ChangePassword: () => import('./components/ChangePassword'),
+    personalInfo: () => import('./components/PersonalInfo')
   },
   data() {
     return {

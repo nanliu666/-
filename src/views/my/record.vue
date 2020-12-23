@@ -88,11 +88,11 @@
 export default {
   name: 'Record',
   components: {
-    course: () => import('./components/course'),
-    cultivate: () => import('./components/cultivate'),
-    examination: () => import('./components/examination'),
-    credit: () => import('./components/credit'),
-    certificate: () => import('./components/certificate')
+    course: () => import('./components/Course'),
+    cultivate: () => import('./components/Cultivate'),
+    examination: () => import('./components/Examination'),
+    credit: () => import('./components/Credit'),
+    certificate: () => import('./components/Certificate')
   },
   data() {
     return {

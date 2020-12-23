@@ -24,7 +24,7 @@
 </template>
 <script>
 export default {
-  name: 'DemoForm',
+  name: 'ChangePassword',
   components: {
     commonForm: () => import('@/components/common-form/commonForm')
   },
