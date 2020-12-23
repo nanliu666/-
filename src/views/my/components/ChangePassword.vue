@@ -26,7 +26,7 @@
 export default {
   name: 'ChangePassword',
   components: {
-    commonForm: () => import('@/components/common-form/commonForm')
+    CommonForm: () => import('@/components/common-form/CommonForm')
   },
   data() {
     return {

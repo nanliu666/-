@@ -107,9 +107,9 @@
 <script>
 import styles from '@/styles/variables.scss'
 import Comment from './Comment'
-import CommonBreadcrumb from '@/components/common-breadcrumb/breadcrumb'
-import CommonEmpty from '@/components/common-empty/empty'
-import CommonImageView from '@/components/common-image-viewer/viewer'
+import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
+import CommonEmpty from '@/components/common-empty/Empty'
+import CommonImageView from '@/components/common-image-viewer/Viewer'
 import {
   getKnowledgeDetails,
   putWatchOperate,

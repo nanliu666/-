@@ -170,7 +170,7 @@ export default [
             name: 'MessageCenter',
             path: '/message/messageCenter',
             component: () =>
-              import(/* webpackChunkName: "page"*/ '@/views/message/messageCenter.vue'),
+              import(/* webpackChunkName: "page"*/ '@/views/message/MessageCenter.vue'),
             meta: {
               title: '消息列表'
             }
