@@ -74,7 +74,7 @@
               class="more"
               @click="handleJump"
             >
-              查看更多消息》
+              查看更多消息
             </div>
           </div>
           <el-badge
