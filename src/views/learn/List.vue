@@ -125,8 +125,8 @@
                     <div class="title">
                       {{ item.courseName }}
                     </div>
-                    <el-tag type="success">
-                      {{ item.status | statusFilter }}
+                    <el-tag :type="statusFilter(item.status).type">
+                      {{ statusFilter(item.status).text }}
                     </el-tag>
                   </div>
                   <div class="time-progress">
@@ -204,9 +204,9 @@
                     }}</span>
                     <el-tag
                       v-if="currentExpandType === 'examList'"
-                      type="success"
+                      :type="statusFilter(item.status).type"
                     >
-                      未开始
+                      {{ statusFilter(item.status).text }}
                     </el-tag>
                   </div>
                   <div class="file-time">
@@ -269,17 +269,21 @@
 <script>
 import { getRequireCourse, getElectiveCourseList, getStudyCenterMenu } from '@/api/learn'
 const STATUS = {
-  '1': '未开始',
-  '2': '进行中',
-  '3': '已结束'
+  '1': {
+    text: '未开始',
+    type: 'success'
+  },
+  '2': {
+    text: '进行中',
+    type: 'danger'
+  },
+  '3': {
+    text: '已结束',
+    type: 'info'
+  }
 }
 export default {
   name: 'LearnList',
-  filters: {
-    statusFilter(status) {
-      return STATUS[status]
-    }
-  },
   data() {
     return {
       expandList: [],
@@ -308,6 +312,9 @@ export default {
     this.loadTableData()
   },
   methods: {
+    statusFilter(status) {
+      return STATUS[status]
+    },
     // 必修/选修切换
     menuActive(menuItem) {
       const type = this.currentFirstType.includes(menuItem.type)
