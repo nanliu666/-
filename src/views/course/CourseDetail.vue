@@ -119,7 +119,7 @@
 </template>
 
 <script>
-import CommonBreadcrumb from '@/components/common-breadcrumb/breadcrumb'
+import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
 import { getCourseDetail, getCommentList, addComment, getLearnRecord } from '@/api/course'
 import Comment from '../knowledge/Comment'
 import variables from '@/styles/variables.scss'

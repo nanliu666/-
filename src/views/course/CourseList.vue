@@ -160,7 +160,7 @@
 <script>
 import { getCategories, getCourseList, getTeacherList } from '@/api/course'
 import CategorySelect from './components/CategorySelect'
-import LazySelect from '@/components/lazy-select/lazySelect.vue'
+import LazySelect from '@/components/lazy-select/LazySelect.vue'
 const COURSE_TYPE_MAP = {
   '1': '在线课程',
   '2': '面授课程',
