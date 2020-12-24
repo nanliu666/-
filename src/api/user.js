@@ -116,3 +116,13 @@ export const checkPassword = (params) => {
     }
   })
 }
+
+export const userRegister = (params) => {
+  return request({
+    url: '/api/user/v1/user/register',
+    method: 'post',
+    params: {
+      ...params
+    }
+  })
+}

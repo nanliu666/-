@@ -114,10 +114,11 @@ export default [
       },
       {
         path: '/auth', // 注册页面
-        redirect: '/login',
+        redirect: '/auth/login',
+        component: EmptyLayout,
         children: [
           {
-            path: '/login',
+            path: 'login',
             name: 'authLogin',
             meta: {
               title: '登录页面'
@@ -125,7 +126,7 @@ export default [
             component: () => import(/* webpackChunkName: "page"*/ '@/views/auth/Login.vue')
           },
           {
-            path: '/register', // 注册页面
+            path: 'register', // 注册页面
             name: 'authRegister',
             meta: {
               title: '注册页面'
@@ -133,7 +134,7 @@ export default [
             component: () => import(/* webpackChunkName: "page"*/ '@/views/auth/Register.vue')
           },
           {
-            path: '/forgetPassword', // 忘记密码页面
+            path: 'forgetPassword', // 忘记密码页面
             name: 'authForgetPassword',
             meta: {
               title: '忘记密码页面'
