@@ -179,7 +179,7 @@ export default {
             .then((res) => {
               let path = this.$route.query.previewUrl
                 ? decodeURI(this.$route.query.previewUrl)
-                : '/course/list'
+                : '/home'
               this.$router.push({ path })
               this.$store.dispatch('GetUserPrivilege', res.user_id).then((menu) => {
                 this.$router.$avueRouter.formatRoutes(menu, true)
@@ -215,7 +215,7 @@ export default {
     .layout_left {
       width: 700px;
       display: table-cell;
-      background: url(../assets/images/welcome.png) no-repeat;
+      background: url(../../assets/images/welcome.png) no-repeat;
       background-size: cover;
       text-align: center;
       font-size: 16px;
