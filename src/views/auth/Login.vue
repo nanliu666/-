@@ -181,9 +181,9 @@ export default {
                 ? decodeURI(this.$route.query.previewUrl)
                 : '/home'
               this.$router.push({ path })
-              //   this.$store.dispatch('GetUserPrivilege', res.user_id).then((menu) => {
-              //     this.$router.$avueRouter.formatRoutes(menu, true)
-              //   })
+              // this.$store.dispatch('GetUserPrivilege', res.user_id).then((menu) => {
+              //   this.$router.$avueRouter.formatRoutes(menu, true)
+              // })
               loading.close()
             })
             .catch(() => {
@@ -235,6 +235,8 @@ export default {
       padding: 0 72px;
       box-sizing: border-box;
       .layout_label {
+        font-size: 22px;
+        color: rgba(0, 11, 21, 0.85);
         margin: 114px 0 48px 0;
       }
       .el-input {

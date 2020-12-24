@@ -53,17 +53,34 @@ export default [
         ]
       },
       {
-        path: '/login', // 注册页面
-        component: () => import(/* webpackChunkName: "page"*/ '@/views/login/Login')
-      },
-      {
-        path: '/register', // 注册页面
-        component: () => import(/* webpackChunkName: "page"*/ '@/views/register/Register')
-      },
-      {
-        path: '/forgetPassword', // 忘记密码页面
-        component: () =>
-          import(/* webpackChunkName: "page"*/ '@/views/forgetPassword/ForgetPassword')
+        path: '/auth', // 注册页面
+        redirect: '/login',
+        children: [
+          {
+            path: '/login',
+            name: 'authLogin',
+            meta: {
+              title: '登录页面'
+            },
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/auth/Login.vue')
+          },
+          {
+            path: '/register', // 注册页面
+            name: 'authRegister',
+            meta: {
+              title: '注册页面'
+            },
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/auth/Register.vue')
+          },
+          {
+            path: '/forgetPassword', // 忘记密码页面
+            name: 'authForgetPassword',
+            meta: {
+              title: '忘记密码页面'
+            },
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/auth/ForgetPassword.vue')
+          }
+        ]
       },
       {
         path: '/train', // 培训页面
