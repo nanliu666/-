@@ -54,11 +54,11 @@ export default [
       },
       {
         path: '/register', // 注册页面
-        component: () => import(/* webpackChunkName: "page"*/ '@/views/register')
+        component: () => import(/* webpackChunkName: "page"*/ '@/views/register/Register')
       },
       {
         path: '/forgetPassword', // 忘记密码页面
-        component: () => import(/* webpackChunkName: "page"*/ '@/views/forgetPassword')
+        component: () => import(/* webpackChunkName: "page"*/ '@/views/ForgetPassword')
       },
       {
         path: '/train', // 培训页面
