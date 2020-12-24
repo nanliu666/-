@@ -41,7 +41,7 @@
   </el-select>
 </template>
 <script>
-import Emitter from '@/mixins/elFormEmitter'
+import Emitter from '@/mixins/el-form-emitter'
 export default {
   mixins: [Emitter],
   model: {

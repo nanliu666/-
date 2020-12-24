@@ -8,6 +8,7 @@ import EmptyLayout from '@/page/EmptyLayout'
  * component 路由容器
  * redirect 因为模块不直接写页面组件，所以要重定向到模块内的某个页面，一般是列表页
  * children 模块内所有的页面配置
+ * title 给面包屑用的首级title
  *
  * 页面路由,属性包括:
  * path 页面路径，注意不要以/开头,这样路径会自动拼上模块的根路径
@@ -41,6 +42,7 @@ export default [
         path: '/course',
         redirect: '/course/list',
         component: EmptyLayout,
+        title: '课程',
         children: [
           {
             path: 'list',
@@ -48,6 +50,64 @@ export default [
             component: () => import(/* webpackChunkName: "page"*/ '@/views/course/CourseList.vue'),
             meta: {
               title: '课程列表'
+            }
+          },
+          {
+            path: 'detail',
+            name: 'CourseDetail',
+            component: () =>
+              import(/* webpackChunkName: "page"*/ '@/views/course/CourseDetail.vue'),
+            meta: {
+              title: '课程详情'
+            }
+          },
+          {
+            path: 'learn',
+            name: 'CourseLearn',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/course/CourseLearn.vue'),
+            meta: {
+              title: '课程学习',
+              fullscreen: true
+            }
+          }
+        ]
+      },
+      {
+        path: '/knowledge',
+        redirect: '/knowledge/list',
+        component: EmptyLayout,
+        title: '知识库',
+        children: [
+          {
+            name: 'KnowledgeList',
+            path: '/knowledge/list',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/knowledge/List.vue'),
+            meta: {
+              title: '知识库'
+            }
+          },
+          {
+            path: '/knowledge/detail',
+            name: 'KnowledgeDetail',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/knowledge/Detail.vue'),
+            meta: {
+              title: '知识详情'
+            }
+          }
+        ]
+      },
+      {
+        path: '/learn',
+        redirect: '/learn/list',
+        component: EmptyLayout,
+        title: '学习',
+        children: [
+          {
+            path: 'list',
+            name: 'LearnList',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/learn/List.vue'),
+            meta: {
+              title: '学习列表'
             }
           }
         ]
@@ -83,6 +143,54 @@ export default [
         ]
       },
       {
+        path: '/news',
+        redirect: '/news/list',
+        component: EmptyLayout,
+        title: '新闻',
+        children: [
+          {
+            path: 'list',
+            name: 'list',
+            component: () => import(/* webpackChunkName: "page" */ '@/views/news/NewsList.vue'),
+            meta: {
+              title: '新闻'
+            }
+          },
+          {
+            path: 'Details',
+            name: 'newsDetails',
+            component: () => import(/* webpackChunkName: "page" */ '@/views/news/NewsDetail.vue'),
+            meta: {
+              title: '文章详情'
+            }
+          }
+        ]
+      },
+      {
+        path: '/my',
+        redirect: '/my/info',
+        component: EmptyLayout,
+        title: '个人中心',
+        children: [
+          {
+            path: 'info',
+            name: 'personal',
+            component: () => import(/* webpackChunkName: "page" */ '@/views/my/Personal.vue'),
+            meta: {
+              title: '个人信息'
+            }
+          },
+          {
+            path: 'record',
+            name: 'record',
+            component: () => import(/* webpackChunkName: "page" */ '@/views/my/Record.vue'),
+            meta: {
+              title: '我的档案'
+            }
+          }
+        ]
+      },
+      {
         path: '/train', // 培训页面
         redirect: '/train/index',
         component: EmptyLayout,
@@ -96,8 +204,25 @@ export default [
             component: () => import(/* webpackChunkName: "page"*/ '@/views/train')
           }
         ]
-      }
+      },
+      {
+        path: '/message',
+        redirect: '/message/messageCenter',
+        component: EmptyLayout,
+        title: '消息列表',
+        children: [
+          {
+            name: 'MessageCenter',
+            path: '/message/messageCenter',
+            component: () =>
+              import(/* webpackChunkName: "page"*/ '@/views/message/MessageCenter.vue'),
+            meta: {
+              title: '消息列表'
+            }
+          }
+        ]
+      },
+      ...(process.env.NODE_ENV === 'development' ? demoRoutes : [])
     ]
-  },
-  ...(process.env.NODE_ENV === 'development' ? demoRoutes : [])
+  }
 ]
