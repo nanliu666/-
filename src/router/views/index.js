@@ -113,6 +113,37 @@ export default [
         ]
       },
       {
+        path: '/auth', // 注册页面
+        redirect: '/auth/login',
+        component: EmptyLayout,
+        children: [
+          {
+            path: 'login',
+            name: 'authLogin',
+            meta: {
+              title: '登录页面'
+            },
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/auth/Login.vue')
+          },
+          {
+            path: 'register', // 注册页面
+            name: 'authRegister',
+            meta: {
+              title: '注册页面'
+            },
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/auth/Register.vue')
+          },
+          {
+            path: 'forgetPassword', // 忘记密码页面
+            name: 'authForgetPassword',
+            meta: {
+              title: '忘记密码页面'
+            },
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/auth/ForgetPassword.vue')
+          }
+        ]
+      },
+      {
         path: '/news',
         redirect: '/news/list',
         component: EmptyLayout,
@@ -157,6 +188,21 @@ export default [
             meta: {
               title: '我的档案'
             }
+          }
+        ]
+      },
+      {
+        path: '/train', // 培训页面
+        redirect: '/train/index',
+        component: EmptyLayout,
+        children: [
+          {
+            path: 'index',
+            name: 'trainIndex',
+            meta: {
+              title: '课程页面首页'
+            },
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/train')
           }
         ]
       },

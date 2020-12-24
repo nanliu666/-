@@ -84,3 +84,45 @@ export const getTenantInfo = (domain) =>
     method: 'get',
     params: domain
   })
+
+//获取手机验证码
+export const getCode = (params) => {
+  return request({
+    url: '/api/common/v1/sms/send',
+    method: 'post',
+    params: {
+      ...params
+    }
+  })
+}
+
+//验证手机验证码
+export const checkPhoneCode = (params) => {
+  return request({
+    url: '/api/common/v1/sms/check',
+    method: 'post',
+    params: {
+      ...params
+    }
+  })
+}
+
+export const checkPassword = (params) => {
+  return request({
+    url: '/api/user/v1/user/pwd',
+    method: 'post',
+    params: {
+      ...params
+    }
+  })
+}
+
+export const userRegister = (params) => {
+  return request({
+    url: '/api/user/v1/user/register',
+    method: 'post',
+    params: {
+      ...params
+    }
+  })
+}

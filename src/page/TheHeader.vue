@@ -108,7 +108,8 @@ const menu = [
   { label: '我的档案', path: '/my/record' },
   { label: '学习', path: '/learn' },
   { label: '课程', path: '/course' },
-  { label: '知识库', path: '/knowledge' }
+  { label: '知识库', path: '/knowledge' },
+  { label: '培训', path: '/train' }
 ]
 export default {
   name: 'Header',
