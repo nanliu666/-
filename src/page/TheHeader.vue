@@ -107,6 +107,7 @@ const menu = [
   { label: '课程', path: '/course' },
   { label: '知识库', path: '/knowledge' },
   { label: '新闻', path: '/news' },
+  { label: '培训', path: '/train' },
   { label: '个人中心', path: '/my/info' },
   { label: '我的档案', path: '/my/record' }
 ]
