@@ -48,4 +48,21 @@ export default ({ mock }) => {
       }
     }
   )
+  Mock.mock(new RegExp('/api/manage/v1/web/course/getCourseRecord' + '(\\?.*)?$'), 'get', () => {
+    const list = _.times(8, () =>
+      Mock.mock({
+        content: '@cword(3,6)',
+        contentId: '@integer(10, 1000)',
+        localName: '@cword(3,6)',
+        name: '@cword(3,6)',
+        progress: '0',
+        sort: '@integer(10, 100)',
+        type: '@integer(1,5)'
+      })
+    )
+    return {
+      ...normalData,
+      response: list
+    }
+  })
 }

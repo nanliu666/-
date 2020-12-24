@@ -133,23 +133,40 @@
           class="content--richtext"
           v-html="_.unescape(currentChapter.content)"
         ></div>
+        <!-- 课件 -->
+        <div
+          v-if="currentChapter.type == '2'"
+          class="content--iframe"
+        >
+          <iframe
+            :src="getContentUrl(currentChapter)"
+            width="100%"
+            height="100%"
+            frameborder="0"
+          ></iframe>
+        </div>
         <!--资料-->
         <div
           v-if="currentChapter.type == '3'"
           class="content--download"
         >
-          <div class="file-name">
-            {{ currentChapter.localName }}
+          <div class="img-wr">
+            <img :src="getFileImageUrl(currentChapter.content)" />
           </div>
-          <a
-            target="_blank"
-            :href="currentChapter.content"
-          >
-            <el-button
-              type="primary"
-              size="medium"
-            >立即下载</el-button>
-          </a>
+          <div class="download-wr">
+            <div class="file-name">
+              {{ currentChapter.localName }}
+            </div>
+            <a
+              target="_blank"
+              :href="currentChapter.content"
+            >
+              <el-button
+                type="primary"
+                size="medium"
+              >立即下载</el-button>
+            </a>
+          </div>
         </div>
         <!--考试-->
         <div
@@ -223,12 +240,13 @@ export default {
   },
   watch: {
     currentChapter(newVal, oldVal) {
-      if (oldVal.type === '5' && oldVal.duration) {
-        let progress = ((this.$refs.video.currentTime / oldVal.duration) * 100).toFixed()
+      if (oldVal.type == '5' && oldVal.duration) {
+        let progress = Number(((this.$refs.video.currentTime / oldVal.duration) * 100).toFixed())
         oldVal.progress = progress > oldVal.progress ? progress : oldVal.progress
       } else {
         oldVal.progress = 1
       }
+      // this.submitLearnRecords()
     }
   },
   activated() {
@@ -236,16 +254,37 @@ export default {
     this.loadCourseDetail()
     this.loadChapters()
     this.loadNoteList()
-    // this.setTimer()
+    this.setTimer()
   },
   unactivated() {
     clearInterval(this.timer)
   },
   methods: {
+    getFileImageUrl(url = '') {
+      const fileDict = {
+        doc: 'word',
+        rar: 'rar',
+        zip: 'rar',
+        xls: 'excel',
+        xlsx: 'excel',
+        ppt: 'ppt',
+        pdf: 'PDF'
+      }
+
+      let ext = url.match(/\..+/)[0]
+      return `/img/file/image_icon_${fileDict[ext] || 'other'}.png`
+    },
+    getContentUrl(chapter) {
+      const office = /.*\.(doc|xls|xlsx|ppt|pptx)$/
+      if (office.test(chapter.content)) {
+        return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURI(chapter.content)}`
+      }
+      return chapter.content
+    },
     setTimer() {
       this.timer = setInterval(() => {
         this.submitLearnRecords()
-      }, 5 * 60 * 60)
+      }, 5 * 60 * 1000)
     },
     reset() {
       this.leftHidden = false
@@ -264,7 +303,7 @@ export default {
       this.currentChapter = chapter
     },
     calcProcess(chapter) {
-      if (chapter.type !== '5') {
+      if (chapter.type != '5') {
         if (chapter.progress == 1) {
           return 100
         } else {
@@ -278,7 +317,7 @@ export default {
       if (this.isActive(chapter)) {
         return '正在学'
       }
-      if (chapter.type !== '5') {
+      if (chapter.type != '5') {
         if (chapter.progress == 1) {
           return '已学习'
         } else {
@@ -303,7 +342,7 @@ export default {
       })
     },
     submitLearnRecords() {
-      let params = { contentRecords: '', peirod: 5, courseId: this.courseId }
+      let params = { contentRecords: '', period: 5, courseId: this.courseId }
       params.contentRecords = _.map(
         this.chapters,
         (chapter) => `${chapter.contentId}:${chapter.progress}`
@@ -320,9 +359,14 @@ export default {
         this.chapters = _.sortBy(res, 'sort')
         _.forEach(this.chapters, (chapter) => {
           if (chapter.type == '5') {
-            chapter.content =
-              'https://oa-file-dev.bestgrand.com.cn/b8a6256a5a31464fa28a3ae46992e850.mp4'
+            // chapter.content =
+            //   'https://oa-file-dev.bestgrand.com.cn/b8a6256a5a31464fa28a3ae46992e850.mp4'
             this.setDuration(chapter).catch()
+          }
+          if (chapter.type == '2') {
+            // chapter.content = 'http://ieee802.org:80/secmail/docIZSEwEqHFr.doc'
+            // chapter.content =
+            //   'https://oa-file-dev.bestgrand.com.cn/7f6c5943b4d14733b61f7efaa7b4ec30.txt'
           }
           if (chapter.contentId == this.chapterId) {
             this.currentChapter = chapter
@@ -336,7 +380,7 @@ export default {
         axios
           .get(chapter.content + '?avinfo')
           .then((res) => {
-            const duration = _.get(res, 'data.format.duration', '0')
+            const duration = _.get(res, 'data.format.duration', null)
             chapter.duration = parseInt(duration)
             resolve()
           })
@@ -460,7 +504,6 @@ export default {
         &__tag {
           font-size: 12px;
           letter-spacing: 0;
-          line-height: 18px;
           border-radius: 4px;
           padding: 0 4px;
           color: $primaryFontColor;
@@ -551,12 +594,19 @@ export default {
           margin: 40px;
         }
         &--download {
+          display: flex;
           margin: 40px;
+          .img-wr {
+            margin-right: 24px;
+          }
           .file-name {
             color: $primaryFontColor;
             font-size: 18px;
             margin-bottom: 24px;
           }
+        }
+        &--iframe {
+          height: 100%;
         }
       }
     }

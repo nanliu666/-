@@ -301,7 +301,6 @@ export default {
     &--tag {
       font-size: 12px;
       letter-spacing: 0;
-      line-height: 18px;
       border-radius: 4px;
       padding: 0 4px;
       color: $primaryFontColor;
