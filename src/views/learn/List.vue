@@ -223,6 +223,8 @@
                   size="small"
                   type="primary"
                   plain
+                  :disabled="disabledButton(fileItem)"
+                  @click="downloadOrjion(fileItem)"
                 >
                   {{ currentExpandType === 'examList' ? '参加' : '下载' }}
                 </el-button>
@@ -268,6 +270,7 @@
 
 <script>
 import { getRequireCourse, getElectiveCourseList, getStudyCenterMenu } from '@/api/learn'
+import moment from 'moment'
 const STATUS = {
   '1': {
     text: '未开始',
@@ -312,6 +315,19 @@ export default {
     this.loadTableData()
   },
   methods: {
+    // 今天是在截止日期之前就能使用，返回false
+    disabledButton(data) {
+      let date = this.currentExpandType === 'examList' ? data.effectiveTime : data.downloadDeadline
+      return moment(new Date()).isSameOrAfter(moment(date))
+    },
+    downloadOrjion(fileItem) {
+      if (this.currentExpandType === 'examList') {
+        // 去考试
+      } else {
+        // 下载
+        window.open(fileItem.fileUrl)
+      }
+    },
     statusFilter(status) {
       return STATUS[status]
     },

@@ -26,6 +26,7 @@ export default ({ mock }) => {
     const times = Mock.Random.natural(0, 6)
     const attachList = _.times(times, () => {
       return Mock.mock({
+        // downloadDeadline: '2021-12-12',
         downloadDeadline: '@date',
         fileName: '@first',
         fileUrl: '@url',
