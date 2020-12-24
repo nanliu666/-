@@ -144,7 +144,6 @@
                       ></el-progress>
                     </div>
                   </div>
-                  <!-- v-if="_.size(item.examList) || _.size(item.attachList)" -->
                   <div class="file-button">
                     <el-button
                       v-if="_.size(item.examList)"
