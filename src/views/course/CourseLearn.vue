@@ -10,7 +10,7 @@
       </span>
     </div>
     <div class="course-learn__main">
-      <div class="left-bar">
+      <div :class="['left-bar', { hidden: leftHidden }]">
         <el-menu
           :default-active="activeIndex"
           mode="horizontal"
@@ -47,12 +47,17 @@
                 </div>
                 <div class="chapters__handler">
                   <el-progress
+                    v-if="!isActive(chapter)"
                     type="circle"
                     :show-text="false"
                     :percentage="calcProcess(chapter)"
                     :width="14"
                     :stroke-width="2"
                   ></el-progress>
+                  <i
+                    v-else
+                    class="iconimage_icon_time1 iconfont"
+                  ></i>
                   <span class="chapters__status">{{ getChapterStatus(chapter) }}</span>
                 </div>
               </li>
@@ -104,25 +109,109 @@
         </div>
       </div>
 
-      <div class="main-content"></div>
+      <div
+        ref="content"
+        :class="['main-content', { fullwidth: leftHidden }]"
+        :style="`${currentChapter.type == '5' ? 'overflow:hidden;' : ''}`"
+      >
+        <div
+          class="collapse-btn"
+          @click="collapseLeft()"
+        >
+          <i
+            v-if="!leftHidden"
+            class="iconimage_icon_Doubleleftarrow iconfont"
+          ></i>
+          <i
+            v-else
+            class="iconimage_icon_Doublerightarrow iconfont"
+          ></i>
+        </div>
+        <!-- 文章类型 -->
+        <div
+          v-if="currentChapter.type == '1'"
+          class="content--richtext"
+          v-html="_.unescape(currentChapter.content)"
+        ></div>
+        <!-- 课件 -->
+        <div
+          v-if="currentChapter.type == '2'"
+          class="content--iframe"
+        >
+          <iframe
+            :src="getContentUrl(currentChapter)"
+            width="100%"
+            height="100%"
+            frameborder="0"
+          ></iframe>
+        </div>
+        <!--资料-->
+        <div
+          v-if="currentChapter.type == '3'"
+          class="content--download"
+        >
+          <div class="img-wr">
+            <img :src="getFileImageUrl(currentChapter.content)" />
+          </div>
+          <div class="download-wr">
+            <div class="file-name">
+              {{ currentChapter.localName }}
+            </div>
+            <a
+              target="_blank"
+              :href="currentChapter.content"
+            >
+              <el-button
+                type="primary"
+                size="medium"
+              >立即下载</el-button>
+            </a>
+          </div>
+        </div>
+        <!--考试-->
+        <div
+          v-if="currentChapter.type == '4'"
+          class="content--test"
+        >
+          <el-button
+            type="primary"
+            size="medium"
+          >
+            前往考试
+          </el-button>
+        </div>
+        <!--视频-->
+        <div v-if="currentChapter.type == '5'">
+          <video
+            ref="video"
+            preload
+            controls
+            :src="currentChapter.content"
+            :height="contentHeight"
+            :width="contentWidth"
+          ></video>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import variables from '@/styles/variables.scss'
-import { getCourseDetail, getLearnRecord, getNotesList, addNote } from '@/api/course'
-const COURSE_CHAPTER_TYPE_MAP = {
-  '1': { text: '文章', color: variables.primaryColor },
-  '2': { text: '课件', color: '#FC7C01' },
-  '3': { text: '资料下载', color: '#FF4329' },
-  '4': { text: '考试', color: '#FCBA00' },
-  '5': { text: '视频', color: '#00B061' }
-}
+import {
+  getCourseDetail,
+  getLearnRecord,
+  getNotesList,
+  addNote,
+  updateLearnRecord
+} from '@/api/course'
+import { COURSE_CHAPTER_TYPE_MAP } from './config'
+const axios = require('axios/index')
+
 export default {
   name: 'CourseLearn',
   data() {
     return {
+      timer: null,
       circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
       activeIndex: '1',
       submitting: false,
@@ -130,7 +219,8 @@ export default {
       chapters: [],
       currentChapter: {},
       notes: [],
-      note: ''
+      note: '',
+      leftHidden: false
     }
   },
   computed: {
@@ -140,15 +230,69 @@ export default {
     chapterId() {
       return this.$route.query.chapterId
     },
+    contentWidth() {
+      return this.$refs.content.offsetWidth
+    },
+    contentHeight() {
+      return this.$refs.content.offsetHeight
+    },
     COURSE_CHAPTER_TYPE_MAP: () => COURSE_CHAPTER_TYPE_MAP
   },
+  watch: {
+    currentChapter(newVal, oldVal) {
+      if (oldVal.type == '5' && oldVal.duration) {
+        let progress = Number(((this.$refs.video.currentTime / oldVal.duration) * 100).toFixed())
+        oldVal.progress = progress > oldVal.progress ? progress : oldVal.progress
+      } else {
+        oldVal.progress = 1
+      }
+      // this.submitLearnRecords()
+    }
+  },
   activated() {
+    this.reset()
     this.loadCourseDetail()
     this.loadChapters()
     this.loadNoteList()
-    this.activeIndex = '1'
+    this.setTimer()
+  },
+  unactivated() {
+    clearInterval(this.timer)
   },
   methods: {
+    getFileImageUrl(url = '') {
+      const fileDict = {
+        doc: 'word',
+        rar: 'rar',
+        zip: 'rar',
+        xls: 'excel',
+        xlsx: 'excel',
+        ppt: 'ppt',
+        pdf: 'PDF'
+      }
+
+      let ext = url.match(/\..+/)[0]
+      return `/img/file/image_icon_${fileDict[ext] || 'other'}.png`
+    },
+    getContentUrl(chapter) {
+      const office = /.*\.(doc|xls|xlsx|ppt|pptx)$/
+      if (office.test(chapter.content)) {
+        return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURI(chapter.content)}`
+      }
+      return chapter.content
+    },
+    setTimer() {
+      this.timer = setInterval(() => {
+        this.submitLearnRecords()
+      }, 5 * 60 * 1000)
+    },
+    reset() {
+      this.leftHidden = false
+      this.activeIndex = '1'
+    },
+    collapseLeft() {
+      this.leftHidden = !this.leftHidden
+    },
     handleMenuChange(index) {
       this.activeIndex = index
     },
@@ -159,7 +303,7 @@ export default {
       this.currentChapter = chapter
     },
     calcProcess(chapter) {
-      if (chapter.type !== '5') {
+      if (chapter.type != '5') {
         if (chapter.progress == 1) {
           return 100
         } else {
@@ -170,7 +314,10 @@ export default {
       }
     },
     getChapterStatus(chapter) {
-      if (chapter.progress !== '5') {
+      if (this.isActive(chapter)) {
+        return '正在学'
+      }
+      if (chapter.type != '5') {
         if (chapter.progress == 1) {
           return '已学习'
         } else {
@@ -194,15 +341,52 @@ export default {
         this.course = res
       })
     },
+    submitLearnRecords() {
+      let params = { contentRecords: '', period: 5, courseId: this.courseId }
+      params.contentRecords = _.map(
+        this.chapters,
+        (chapter) => `${chapter.contentId}:${chapter.progress}`
+      ).join(',')
+      updateLearnRecord(params)
+        .then()
+        .catch()
+    },
     loadChapters() {
       if (!this.courseId) {
         return
       }
       getLearnRecord({ courseId: this.courseId }).then((res) => {
-        this.chapters = res
-        if (this.chapterId) {
-          this.currentChapter = _.find(res, (item) => item.contentId === this.chapterId) || {}
-        }
+        this.chapters = _.sortBy(res, 'sort')
+        _.forEach(this.chapters, (chapter) => {
+          if (chapter.type == '5') {
+            // chapter.content =
+            //   'https://oa-file-dev.bestgrand.com.cn/b8a6256a5a31464fa28a3ae46992e850.mp4'
+            this.setDuration(chapter).catch()
+          }
+          if (chapter.type == '2') {
+            // chapter.content = 'http://ieee802.org:80/secmail/docIZSEwEqHFr.doc'
+            // chapter.content =
+            //   'https://oa-file-dev.bestgrand.com.cn/7f6c5943b4d14733b61f7efaa7b4ec30.txt'
+          }
+          if (chapter.contentId == this.chapterId) {
+            this.currentChapter = chapter
+          }
+        })
+      })
+    },
+    // 请求七牛云获取视频时长(单位秒)
+    setDuration(chapter) {
+      return new Promise((resolve, reject) => {
+        axios
+          .get(chapter.content + '?avinfo')
+          .then((res) => {
+            const duration = _.get(res, 'data.format.duration', null)
+            chapter.duration = parseInt(duration)
+            resolve()
+          })
+          .catch((err) => {
+            reject(err)
+          })
       })
     },
     loadNoteList() {
@@ -265,6 +449,12 @@ export default {
       background: #ffffff;
       height: 100%;
       overflow: hidden;
+      transition: width 0.3s;
+      &.hidden {
+        width: 0;
+        margin-right: 0;
+        border: none;
+      }
       /deep/ .el-menu {
         display: flex;
         justify-content: center;
@@ -282,6 +472,7 @@ export default {
       }
       &__main {
         height: calc(100% - 61px);
+        width: 384px;
       }
 
       .chapters {
@@ -302,11 +493,17 @@ export default {
           &:hover {
             background-color: rgba($primaryFontColor, 0.02);
           }
+          &.is-active {
+            color: $primaryColor;
+            background-color: rgba($primaryColor, 0.05);
+            .chapters__status {
+              color: $primaryColor;
+            }
+          }
         }
         &__tag {
           font-size: 12px;
           letter-spacing: 0;
-          line-height: 18px;
           border-radius: 4px;
           padding: 0 4px;
           color: $primaryFontColor;
@@ -321,6 +518,10 @@ export default {
         &__handler {
           display: flex;
           align-items: center;
+          i {
+            font-size: 16px;
+            color: $primaryColor;
+          }
         }
       }
       &__notes {
@@ -361,6 +562,53 @@ export default {
       // border-radius: 0 4px 4px 0;
       background: #ffffff;
       height: 100%;
+      overflow: auto;
+      position: relative;
+      transition: width 0.3s;
+      &.fullwidth {
+        width: 100%;
+      }
+      .collapse-btn {
+        z-index: 10;
+        cursor: pointer;
+        position: absolute;
+        height: 48px;
+        width: 24px;
+        left: 0;
+        top: 50%;
+        transform: translate(0, -50%);
+        text-align: center;
+        background-color: rgba($primaryFontColor, 0.3);
+        border-radius: 0 4px 4px 0;
+        i {
+          font-size: 14px;
+          line-height: 48px;
+          color: #fff;
+        }
+      }
+      .content {
+        &--richtext {
+          padding: 40px;
+        }
+        &--test {
+          margin: 40px;
+        }
+        &--download {
+          display: flex;
+          margin: 40px;
+          .img-wr {
+            margin-right: 24px;
+          }
+          .file-name {
+            color: $primaryFontColor;
+            font-size: 18px;
+            margin-bottom: 24px;
+          }
+        }
+        &--iframe {
+          height: 100%;
+        }
+      }
     }
   }
 }

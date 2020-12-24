@@ -7,7 +7,7 @@ export const COURSE_TYPE_MAP = {
 export const COURSE_CHAPTER_TYPE_MAP = {
   '1': { text: '文章', color: variables.primaryColor },
   '2': { text: '课件', color: '#FC7C01' },
-  '3': { text: '资料下载', color: '#FF4329' },
+  '3': { text: '资料', color: '#FF4329' },
   '4': { text: '考试', color: '#FCBA00' },
   '5': { text: '视频', color: '#00B061' }
 }

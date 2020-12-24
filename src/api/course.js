@@ -74,3 +74,13 @@ export const addComment = (params) => get('/manage/v1/web/course/addCourseScope'
  * @param {Number} params.courseId 课程ID
  */
 export const getLearnRecord = (params) => get('/manage/v1/web/course/getCourseRecord', params)
+
+/**
+ * 更新学员学习课程记录
+ * @param {Object} params
+ * @param {Number} params.contentRecords 已学章节ids,用逗号隔开。比如：xxx:50,XXX2:30,数字为每个章节的完成百分比。(除视频课件外，其他课件0:表示从没学习过，1表示学习过)
+ * @param {Number} params.courseId 课程ID
+ * @param {Number} params.period 学习时长，单位是分钟
+ */
+export const updateLearnRecord = (params) =>
+  post('/manage/v1/web/course/saveCourseUserRecord', params)
