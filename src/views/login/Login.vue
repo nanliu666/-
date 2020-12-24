@@ -176,14 +176,14 @@ export default {
 
           this.$store
             .dispatch('LoginByUsername', this.loginForm)
-            .then((res) => {
+            .then(() => {
               let path = this.$route.query.previewUrl
                 ? decodeURI(this.$route.query.previewUrl)
                 : '/home'
               this.$router.push({ path })
-              this.$store.dispatch('GetUserPrivilege', res.user_id).then((menu) => {
-                this.$router.$avueRouter.formatRoutes(menu, true)
-              })
+              //   this.$store.dispatch('GetUserPrivilege', res.user_id).then((menu) => {
+              //     this.$router.$avueRouter.formatRoutes(menu, true)
+              //   })
               loading.close()
             })
             .catch(() => {
