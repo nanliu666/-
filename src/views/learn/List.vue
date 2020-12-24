@@ -107,21 +107,24 @@
             class="bottom-li"
           >
             <div class="li-top">
-              <div class="li-left">
+              <div
+                class="li-left"
+                @click="startStudy(item)"
+              >
                 <img
                   :src="item.coverUrl"
                   class="left-image"
                 />
-                <span
-                  class="icon-box"
-                  @click="playVideo"
-                >
+                <span class="icon-box">
                   <i class="el-icon-caret-right" />
                 </span>
               </div>
               <div class="li-right">
                 <div class="content-box">
-                  <div class="content-title">
+                  <div
+                    class="content-title"
+                    @click="startStudy(item)"
+                  >
                     <div class="title">
                       {{ item.courseName }}
                     </div>
@@ -141,8 +144,10 @@
                       ></el-progress>
                     </div>
                   </div>
+                  <!-- v-if="_.size(item.examList) || _.size(item.attachList)" -->
                   <div class="file-button">
                     <el-button
+                      v-if="_.size(item.examList)"
                       size="small"
                       @click="expandMore('examList', index)"
                     >
@@ -159,6 +164,7 @@
                       />
                     </el-button>
                     <el-button
+                      v-if="_.size(item.attachList)"
                       size="small"
                       @click="expandMore('attachList', index)"
                     >
@@ -178,10 +184,12 @@
                 </div>
                 <div class="handle-box">
                   <el-button
+                    v-if="item.status !== 3"
                     type="primary"
                     style="margin-left: 10px"
                     size="medium"
-                    @click="startStudy"
+                    :disabled="item.status === 1"
+                    @click="startStudy(item)"
                   >
                     开始学习
                   </el-button>
@@ -384,8 +392,12 @@ export default {
         this.currentFileExpand = this.currentFileExpand.includes(index) ? [] : [index]
       }
     },
-    startStudy() {},
-    playVideo() {},
+    startStudy(data) {
+      if (data.status === 2) {
+        this.$message.error('开发中...')
+      }
+      // this.$router.push({ path: ''})
+    },
     // 切换必修/选修
     toggleShow(type) {
       this.currentFirstType = this.currentFirstType.includes(type) ? [] : type
@@ -529,6 +541,7 @@ export default {
             justify-content: space-between;
           }
           .li-left {
+            cursor: pointer;
             margin-right: 24px;
             width: 220px;
             height: 100%;
@@ -540,7 +553,6 @@ export default {
               height: 100%;
             }
             .icon-box {
-              cursor: pointer;
               position: absolute;
               background-color: rgba(0, 11, 21, 0.45);
               width: 32px;
@@ -570,6 +582,7 @@ export default {
               .content-title {
                 display: flex;
                 align-items: center;
+                cursor: pointer;
                 .title {
                   font-family: PingFangSC-Medium;
                   font-size: 16px;

@@ -23,7 +23,7 @@ export default ({ mock }) => {
     }
   })
   Mock.mock(new RegExp('/manage/v1/study/myRequireCourse' + '(\\?.*)?$'), 'get', () => {
-    const times = Mock.Random.natural(0, 6)
+    const times = Mock.Random.natural(0, 0)
     const attachList = _.times(times, () => {
       return Mock.mock({
         // downloadDeadline: '2021-12-12',
