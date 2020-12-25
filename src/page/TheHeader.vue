@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import { postMsgNotify } from '@/api/messgeCenter'
 const menu = [
   { label: '首页', path: '/home' },
@@ -126,7 +126,7 @@ export default {
       newsCount: (state) => state.user.newsCount,
       newsList: (state) => state.user.newsList
     }),
-    ...mapState(['userId'])
+    ...mapGetters(['userId'])
   },
   beforeMount() {
     // 初始化时设置激活中的菜单
@@ -135,21 +135,21 @@ export default {
   mounted() {
     this.news()
     // 定时获取新消息
-    // setInterval(() => {
-    //   this.news()
-    // }, 300000)
+    setInterval(() => {
+      this.news()
+    }, 300000)
   },
   methods: {
     news() {
+      if (!this.userId) {
+        return
+      }
       this.$store.dispatch('messageCount', {
-        userId: this.$store.getters.userId || '1333945383927181314'
+        userId: this.userId
       })
       this.$store.dispatch(
         'messageList',
-        Object.assign(
-          { userId: this.$store.getters.userId || '1333945383927181314' },
-          { isRead: 0, pageSize: 5, pageNo: 1 }
-        )
+        Object.assign({ userId: this.userId }, { isRead: 0, pageSize: 5, pageNo: 1 })
       )
     },
     handleJump(data) {
@@ -163,7 +163,7 @@ export default {
     },
     handleAllRead() {
       let params = {
-        userId: this.$store.getters.userId || '1333945383927181314'
+        userId: this.userId
       }
       postMsgNotify(params).then(() => {
         this.news()
