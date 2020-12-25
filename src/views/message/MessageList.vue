@@ -113,7 +113,7 @@ export default {
   },
   mounted() {
     if (this.$route.query.id) {
-      this.handleAllRead(this.$route.query.id)
+      this.handleAllRead({ id: this.$route.query.id })
     } else {
       this.getData()
     }
@@ -175,6 +175,8 @@ export default {
 .message {
   margin-top: 20px;
   background: #fff;
+  min-height: calc(100vh - 56px - 40px);
+  position: relative;
   .hander {
     line-height: 68px;
     padding: 0px 24px;
@@ -267,7 +269,9 @@ export default {
   /*font-size: 14px;*/
 }
 .pagination {
-  justify-content: flex-end;
+  bottom: 30px;
+  position: absolute;
+  right: 30px;
 }
 .noData {
   height: 500px;

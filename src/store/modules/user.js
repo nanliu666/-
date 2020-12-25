@@ -3,30 +3,22 @@ import { Message } from 'element-ui'
 import { setStore, getStore } from '@/util/store'
 import { filterTree, flatTree, sortTree } from '@/util/util'
 import { loginByUsername, getUserInfo, logout, refreshToken, getUserPrivilege } from '@/api/user'
-import { postMsgNotifyCount, getMsgNotify } from '@/api/messgeCenter'
 import md5 from 'js-md5'
 
 const user = {
   state: {
     tenantId: getStore({ name: 'tenantId' }) || '',
     tenantContent: getStore({ name: 'tenantContent' }) || '',
-    userInfo: getStore({ name: 'userInfo' }) || [],
+    userInfo: getStore({ name: 'userInfo' }) || {},
     privileges: getStore({ name: 'privileges' }) || [],
     orgs: getStore({ name: 'orgs' }) || [],
-    info: getStore({ name: 'info' }) || [],
     roles: [],
     menu: getStore({ name: 'menu' }) || [],
     menuAll: getStore({ name: 'menuAll' }) || [],
     token: getStore({ name: 'token' }) || '',
-    refreshToken: getStore({ name: 'refreshToken' }) || '',
-    menuLoading: false,
-    newsCount: getStore({ name: 'newsCount' }) || 0,
-    newsList: getStore({ name: 'newsList' }) || []
+    refreshToken: getStore({ name: 'refreshToken' }) || ''
   },
   actions: {
-    set_info: ({ commit }, info) => {
-      commit('SET_INFO', info)
-    },
     //根据用户名登录
     LoginByUsername({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
@@ -170,37 +162,9 @@ const user = {
         commit('SET_MENU', menu)
         resolve(menu)
       })
-    },
-    messageCount({ commit }, params) {
-      return new Promise((resolve) => {
-        postMsgNotifyCount(params).then((data) => {
-          commit('SET_COUNT', data)
-          resolve()
-        })
-      })
-    },
-    messageList({ commit }, params) {
-      return new Promise((resolve) => {
-        getMsgNotify(params).then((data) => {
-          commit('SET_NEWSLIST', data.data)
-          resolve()
-        })
-      })
     }
   },
   mutations: {
-    SET_NEWSLIST: (state, newsList) => {
-      state.newsList = newsList
-      setStore({ name: 'newsList', content: state.newsList })
-    },
-    SET_COUNT: (state, count) => {
-      state.newsCount = count.unreadCount
-      setStore({ name: 'newsCount', content: state.newsCount })
-    },
-    SET_INFO: (state, info) => {
-      state.info = info
-      setStore({ name: 'info', content: state.info })
-    },
     SET_TOKEN: (state, token) => {
       setToken(token)
       state.token = token
@@ -241,9 +205,6 @@ const user = {
     SET_PRIVILEGES: (state, privileges) => {
       state.privileges = privileges
       setStore({ name: 'privileges', content: privileges })
-    },
-    SET_MENU_LOADING: (state, menuLoading) => {
-      state.menuLoading = menuLoading
     }
   }
 }

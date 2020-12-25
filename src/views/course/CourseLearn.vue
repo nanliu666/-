@@ -94,9 +94,9 @@
                   <span class="note__user">
                     <el-avatar
                       :size="24"
-                      :src="circleUrl"
+                      :src="userInfo.avatar_url || circleUrl"
                     ></el-avatar>
-                    <span class="note__username">{{ 'VIP用户AA' }}</span>
+                    <span class="note__username">{{ userInfo.user_name }}</span>
                   </span>
                   <span class="note__time">{{ item.createTime }}</span>
                 </div>
@@ -197,6 +197,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import {
   getCourseDetail,
   getLearnRecord,
@@ -236,7 +237,8 @@ export default {
     contentHeight() {
       return this.$refs.content.offsetHeight
     },
-    COURSE_CHAPTER_TYPE_MAP: () => COURSE_CHAPTER_TYPE_MAP
+    COURSE_CHAPTER_TYPE_MAP: () => COURSE_CHAPTER_TYPE_MAP,
+    ...mapGetters(['userInfo'])
   },
   watch: {
     currentChapter(newVal, oldVal) {
