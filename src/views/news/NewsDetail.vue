@@ -135,7 +135,7 @@ export default {
       }
 
       let res = await newsInfo(params)
-      if (res) {
+      if (JSON.stringify(res) != '{}') {
         this.data = res
       } else {
         let info = data.type ? '下一页' : '上一页'
