@@ -111,6 +111,7 @@
   </div>
 </template>
 <script>
+import { getuserInfo } from '@/api/my'
 export default {
   name: 'PersonalInfo',
   components: {
@@ -200,7 +201,20 @@ export default {
     }
   },
   watch: {},
+  activated() {
+    this.getInfo()
+  },
+  created() {
+    this.getInfo()
+  },
+
   methods: {
+    async getInfo() {
+      // console.log(1111)
+      let res = await getuserInfo()
+      window.console.log(res)
+    },
+
     handleClose(done) {
       this.$confirm('确认关闭？')
         .then(() => {

@@ -21,10 +21,10 @@ import '@/icons' // 引入svg文件
 Vue.prototype._ = _
 Vue.component('commonTable', commonTable)
 
-if (process.env.NODE_ENV !== 'production') {
-  const mock = require('@/mock')
-  mock.default(true)
-}
+// if (process.env.NODE_ENV !== 'production') {
+//   const mock = require('@/mock')
+//   mock.default(true)
+// }
 const $message = (options) => {
   return Message({
     ...options,

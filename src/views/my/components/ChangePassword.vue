@@ -42,6 +42,8 @@ export default {
           prop: 'Password',
           itemType: 'input',
           label: '原始密码',
+          required: true,
+
           props: {
             onlyNumber: true
           },
@@ -103,7 +105,7 @@ export default {
   margin-top: 24px;
   .page-bottom {
     width: 670px;
-    margin: 10px auto;
+    margin: 20px auto;
   }
   .text {
     font-size: 12px;
@@ -111,7 +113,7 @@ export default {
     letter-spacing: 0;
     width: 670px;
     position: absolute;
-    top: 255px;
+    top: 265px;
     left: 240px;
   }
 }
