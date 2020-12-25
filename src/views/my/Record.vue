@@ -87,7 +87,6 @@
     </div>
 
     <certificate-detail v-show="pitch === 6">
-      123123
     </certificate-detail>
   </div>
 </template>

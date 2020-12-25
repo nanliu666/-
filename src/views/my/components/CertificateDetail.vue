@@ -1,7 +1,9 @@
 <template>
   <div class="CertificateDetail">
     <div class="topBtn">
-      <el-button>返回上一级</el-button>
+      <el-button @click="toCertificate">
+        返回上一级
+      </el-button>
       <el-button type="primary">
         下载证书
       </el-button>
@@ -30,10 +32,17 @@
 <script>
 export default {
   name: 'CertificateDetail',
+  props: ['sondata'],
   data() {
     return {
       imgurl:
         'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1608289740056&di=00f8f4b767c42fa1c8548b4e6731e4e8&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201901%2F23%2F20190123150727_byuwj.jpg'
+    }
+  },
+  methods: {
+    toCertificate() {
+      //   console.log(this.sondata)
+      this.$emit('ChangeBtn', true)
     }
   }
 }

@@ -1,7 +1,10 @@
 <template>
   <!-- 大盒子 -->
   <div>
-    <div class="course">
+    <div
+      v-show="!shuowItem"
+      class="course"
+    >
       <div class="search">
         <div class="search_btn"></div>
         <div class="search_bar">
@@ -28,6 +31,7 @@
           v-for="(item, index) in 5"
           :key="index"
           class="course_item"
+          @click="clickItem(item)"
         >
           <img
             :src="imgurl"
@@ -57,14 +61,24 @@
         </el-pagination>
       </div>
     </div>
+    <certificate-detail
+      v-show="shuowItem"
+      :sondata="sondata"
+      @ChangeBtn="sonBtn"
+    >
+    </certificate-detail>
   </div>
 </template>
 
 <script>
 export default {
   name: 'Course',
+  components: {
+    certificateDetail: () => import('./CertificateDetail')
+  },
   data() {
     return {
+      sondata: '123',
       imgurl:
         'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1608289740056&di=00f8f4b767c42fa1c8548b4e6731e4e8&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201901%2F23%2F20190123150727_byuwj.jpg',
       pitch: 0,
@@ -73,12 +87,18 @@ export default {
       page: {
         pageNo: 1, //请求页码
         pageSize: 10 //每页条数
-      }
+      },
+      shuowItem: false
     }
   },
   methods: {
-    showBtn(i) {
-      this.pitch = i
+    sonBtn(br) {
+      this.shuowItem = !br
+      // console.log(br)
+    },
+    clickItem() {
+      // console.log(item)
+      this.shuowItem = !this.shuowItem
     },
     handleSizeChange(val) {
       // console.log(`每页 ${val} 条`)

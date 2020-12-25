@@ -113,6 +113,37 @@ export default [
         ]
       },
       {
+        path: '/auth', // 注册页面
+        redirect: '/auth/login',
+        component: EmptyLayout,
+        children: [
+          {
+            path: 'login',
+            name: 'authLogin',
+            meta: {
+              title: '登录页面'
+            },
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/auth/Login.vue')
+          },
+          {
+            path: 'register', // 注册页面
+            name: 'authRegister',
+            meta: {
+              title: '注册页面'
+            },
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/auth/Register.vue')
+          },
+          {
+            path: 'forgetPassword', // 忘记密码页面
+            name: 'authForgetPassword',
+            meta: {
+              title: '忘记密码页面'
+            },
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/auth/ForgetPassword.vue')
+          }
+        ]
+      },
+      {
         path: '/news',
         redirect: '/news/list',
         component: EmptyLayout,
@@ -161,16 +192,31 @@ export default [
         ]
       },
       {
-        path: '/message',
-        redirect: '/message/messageCenter',
+        path: '/train', // 培训页面
+        redirect: '/train/index',
         component: EmptyLayout,
-        title: '消息列表',
         children: [
           {
-            name: 'MessageCenter',
-            path: '/message/messageCenter',
+            path: 'index',
+            name: 'trainIndex',
+            meta: {
+              title: '课程页面首页'
+            },
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/train')
+          }
+        ]
+      },
+      {
+        path: '/message',
+        redirect: '/message/list',
+        component: EmptyLayout,
+        title: '消息',
+        children: [
+          {
+            name: 'MessageList',
+            path: 'list',
             component: () =>
-              import(/* webpackChunkName: "page"*/ '@/views/message/MessageCenter.vue'),
+              import(/* webpackChunkName: "page"*/ '@/views/message/MessageList.vue'),
             meta: {
               title: '消息列表'
             }
