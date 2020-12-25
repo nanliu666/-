@@ -3,7 +3,6 @@ import { Message } from 'element-ui'
 import { setStore, getStore } from '@/util/store'
 import { filterTree, flatTree, sortTree } from '@/util/util'
 import { loginByUsername, getUserInfo, logout, refreshToken, getUserPrivilege } from '@/api/user'
-import { postMsgNotifyCount, getMsgNotify } from '@/api/messgeCenter'
 import md5 from 'js-md5'
 
 const user = {
@@ -17,9 +16,7 @@ const user = {
     menu: getStore({ name: 'menu' }) || [],
     menuAll: getStore({ name: 'menuAll' }) || [],
     token: getStore({ name: 'token' }) || '',
-    refreshToken: getStore({ name: 'refreshToken' }) || '',
-    newsCount: getStore({ name: 'newsCount' }) || 0,
-    newsList: getStore({ name: 'newsList' }) || []
+    refreshToken: getStore({ name: 'refreshToken' }) || ''
   },
   actions: {
     //根据用户名登录
@@ -165,33 +162,9 @@ const user = {
         commit('SET_MENU', menu)
         resolve(menu)
       })
-    },
-    messageCount({ commit }, params) {
-      return new Promise((resolve) => {
-        postMsgNotifyCount(params).then((data) => {
-          commit('SET_COUNT', data)
-          resolve()
-        })
-      })
-    },
-    messageList({ commit }, params) {
-      return new Promise((resolve) => {
-        getMsgNotify(params).then((data) => {
-          commit('SET_NEWSLIST', data.data)
-          resolve()
-        })
-      })
     }
   },
   mutations: {
-    SET_NEWSLIST: (state, newsList) => {
-      state.newsList = newsList
-      setStore({ name: 'newsList', content: state.newsList })
-    },
-    SET_COUNT: (state, count) => {
-      state.newsCount = count.unreadCount
-      setStore({ name: 'newsCount', content: state.newsCount })
-    },
     SET_TOKEN: (state, token) => {
       setToken(token)
       state.token = token
