@@ -113,7 +113,7 @@ export default {
   },
   mounted() {
     if (this.$route.query.id) {
-      this.handleAllRead(this.$route.query.id)
+      this.handleAllRead({ id: this.$route.query.id })
     } else {
       this.getData()
     }

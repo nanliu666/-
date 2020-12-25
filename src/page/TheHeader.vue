@@ -4,96 +4,98 @@
       <div class="logo">
         <img src="../assets/images/logo.png" />
       </div>
-      <ul class="header-menu">
-        <li
-          v-for="item in menu"
-          :key="item.path"
-          :class="{ active: activePath === item.path }"
-          @click="handleMenuClick(item)"
-        >
-          {{ item.label }}
-        </li>
-      </ul>
-      <div class="flex flex-flow">
-        <el-popover
-          placement="bottom"
-          width="336"
-          trigger="hover"
-          class="popover"
-        >
-          <div>
-            <div class="flex flex-justify-between">
-              <span class="noreading"> 未读消息（{{ newsCount || 0 }}） </span>
-              <span class="reading">
-                <el-button
-                  size="mini"
-                  :disabled="!newsCount"
-                  @click="handleAllRead"
-                >全部已读</el-button>
-              </span>
-            </div>
-            <div class="content">
-              <ul
-                v-if="newsList.length > 0"
-                class="list"
-              >
-                <li
-                  v-for="(info, i) in newsList"
-                  :key="i"
-                  class="info"
-                  @click="handleJump(info)"
+      <template v-if="userId">
+        <ul class="header-menu">
+          <li
+            v-for="item in menu"
+            :key="item.path"
+            :class="{ active: activePath === item.path }"
+            @click="handleMenuClick(item)"
+          >
+            {{ item.label }}
+          </li>
+        </ul>
+        <div class="flex flex-flow">
+          <el-popover
+            placement="bottom"
+            width="336"
+            trigger="hover"
+            class="popover"
+          >
+            <div>
+              <div class="flex flex-justify-between">
+                <span class="noreading"> 未读消息（{{ newsCount || 0 }}） </span>
+                <span class="reading">
+                  <el-button
+                    size="mini"
+                    :disabled="!newsCount"
+                    @click="handleAllRead"
+                  >全部已读</el-button>
+                </span>
+              </div>
+              <div class="content">
+                <ul
+                  v-if="newsList.length > 0"
+                  class="list"
                 >
-                  <div
-                    v-if="info.title"
-                    class="title"
+                  <li
+                    v-for="(info, i) in newsList"
+                    :key="i"
+                    class="info"
+                    @click="handleJump(info)"
                   >
-                    <span
-                      v-if="!info.isRead"
-                      class="spot"
-                    ></span>【<span class="ellipsis">{{
-                      info.title
-                    }}</span>】
-                  </div>
-                  <div class="time">
-                    系统发布 {{ info.createTime }}
-                  </div>
-                </li>
-              </ul>
+                    <div
+                      v-if="info.title"
+                      class="title"
+                    >
+                      <span
+                        v-if="!info.isRead"
+                        class="spot"
+                      ></span>【<span class="ellipsis">{{
+                        info.title
+                      }}</span>】
+                    </div>
+                    <div class="time">
+                      系统发布 {{ info.createTime }}
+                    </div>
+                  </li>
+                </ul>
+                <div
+                  v-else
+                  class="noData"
+                >
+                  <img
+                    style="height: 141px ;width: 141px"
+                    src="../assets/images/nodata.jpg"
+                    alt=""
+                  />
+                </div>
+              </div>
               <div
-                v-else
-                class="noData"
+                class="more"
+                @click="handleJump"
               >
-                <img
-                  style="height: 141px ;width: 141px"
-                  src="../assets/images/nodata.jpg"
-                  alt=""
-                />
+                查看更多消息
               </div>
             </div>
-            <div
-              class="more"
-              @click="handleJump"
+            <el-badge
+              v-if="newsCount"
+              slot="reference"
+              :value="newsCount"
+              class="item"
             >
-              查看更多消息》
-            </div>
-          </div>
-          <el-badge
-            v-if="newsCount"
-            slot="reference"
-            :value="newsCount"
-            class="item"
-          >
-            <div class="iconimage_icon_notice iconfont message"></div>
-          </el-badge>
-          <div
-            v-else
-            slot="reference"
-            class="el-icon-message-solid message"
-          ></div>
-        </el-popover>
-        <div class="iconimage_icon_help iconfont help"></div>
-        <div class="el-icon-picture-outline hander"></div>
-      </div>
+              <div class="iconimage_icon_notice iconfont message"></div>
+            </el-badge>
+            <div
+              v-else
+              slot="reference"
+              class="el-icon-message-solid message"
+            ></div>
+          </el-popover>
+          <div class="iconimage_icon_help iconfont help"></div>
+          <!-- <div class="el-icon-picture-outline hander"></div> -->
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -103,13 +105,13 @@ import { mapState } from 'vuex'
 import { postMsgNotify } from '@/api/messgeCenter'
 const menu = [
   { label: '首页', path: '/home' },
-  { label: '新闻', path: '/news' },
-  { label: '个人中心', path: '/my/info' },
-  { label: '我的档案', path: '/my/record' },
   { label: '学习', path: '/learn' },
   { label: '课程', path: '/course' },
   { label: '知识库', path: '/knowledge' },
-  { label: '培训', path: '/train' }
+  { label: '新闻', path: '/news' },
+  { label: '培训', path: '/train' },
+  { label: '个人中心', path: '/my/info' },
+  { label: '我的档案', path: '/my/record' }
 ]
 export default {
   name: 'Header',
@@ -123,7 +125,8 @@ export default {
     ...mapState({
       newsCount: (state) => state.user.newsCount,
       newsList: (state) => state.user.newsList
-    })
+    }),
+    ...mapState(['userId'])
   },
   beforeMount() {
     // 初始化时设置激活中的菜单
@@ -131,9 +134,10 @@ export default {
   },
   mounted() {
     this.news()
-    setInterval(() => {
-      this.news()
-    }, 300000)
+    // 定时获取新消息
+    // setInterval(() => {
+    //   this.news()
+    // }, 300000)
   },
   methods: {
     news() {
@@ -153,7 +157,7 @@ export default {
         id: data.id
       }
       this.$router.push({
-        path: '/message/messageCenter',
+        path: '/message/list',
         query
       })
     },

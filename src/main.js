@@ -25,10 +25,6 @@ if (process.env.NODE_ENV !== 'production') {
   const mock = require('@/mock')
   mock.default(true)
 }
-// if (process.env.NODE_ENV !== 'production') {
-//   const mock = require('@/mock')
-//   mock.default(true)
-// }
 const $message = (options) => {
   return Message({
     ...options,
