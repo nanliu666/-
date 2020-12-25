@@ -78,13 +78,13 @@
           </el-button>
           <div class="layout_opations">
             <router-link
-              to="/auth/register"
+              to="/register"
               tag="span"
             >
               立即注册
             </router-link>
             <router-link
-              to="/auth/forgetPassword"
+              to="/forgetPassword"
               tag="span"
             >
               忘记密码?

@@ -119,7 +119,7 @@ export default [
         children: [
           {
             path: '/login',
-            name: 'authLogin',
+            name: 'Login',
             meta: {
               title: '登录页面',
               isAuth: false
@@ -128,7 +128,7 @@ export default [
           },
           {
             path: '/register', // 注册页面
-            name: 'authRegister',
+            name: 'Register',
             meta: {
               isAuth: false,
               title: '注册页面'
@@ -137,7 +137,7 @@ export default [
           },
           {
             path: '/forgetPassword', // 忘记密码页面
-            name: 'authForgetPassword',
+            name: 'ForgetPassword',
             meta: {
               isAuth: false,
               title: '忘记密码页面'
