@@ -190,7 +190,7 @@
                     :disabled="item.status === 1"
                     @click="startStudy(item)"
                   >
-                    开始学习
+                    {{ item.progress === 0 ? '开始学习' : '继续学习' }}
                   </el-button>
                 </div>
               </div>
