@@ -3,69 +3,43 @@
     <el-card class="nav-container">
       <div class="nav-title">
         <span>全部课程</span>
-        <span>（25）</span>
+        <span
+          v-if="!_.isEmpty(menuList)"
+        >（{{ menuList[0].totalNumber + menuList[1].totalNumber }}）</span>
       </div>
-      <div class="course-list">
+      <div
+        v-for="(menuItem, menuIndex) in menuList"
+        :key="menuIndex"
+        class="course-list"
+      >
         <div
           class="course-title"
-          :class="{ active: currentFirstType.includes('required') && currentRequiredNav === -1 }"
-          @click="toggleShow('required')"
+          :class="{ active: menuActive(menuItem) }"
+          @click="toggleShow(menuItem.type)"
         >
           <span>
-            <span>我的必修</span>
-            <span>（15）</span>
+            <span>我的{{ menuIndex === 0 ? '必修' : '选修' }}</span>
+            <span>（{{ menuItem.totalNumber }}）</span>
           </span>
           <i
             :class="[
-              currentFirstType.includes('required') ? 'el-icon-arrow-up' : 'el-icon-arrow-down'
+              currentFirstType.includes(menuItem.type) ? 'el-icon-arrow-up' : 'el-icon-arrow-down'
             ]"
           />
         </div>
         <ul
-          v-if="currentFirstType.includes('required')"
+          v-if="currentFirstType.includes(menuItem.type)"
           class="course-ul"
         >
           <li
-            v-for="(item, index) in obligatoryList"
+            v-for="(item, index) in menuItem.data"
             :key="index"
-            :class="{ active: currentRequiredNav === index }"
+            :class="{ active: menuLiActive(index) }"
             class="course-li"
-            @click="selectLi(index, 'required')"
+            @click="selectLi(index, item)"
           >
-            <span>{{ item.name }}</span>
-            <span v-if="item.number">({{ item.number }})</span>
-          </li>
-        </ul>
-      </div>
-      <div class="course-list">
-        <div
-          class="course-title "
-          :class="{ active: currentFirstType.includes('elective') && currentElectiveNav === -1 }"
-          @click="toggleShow('elective')"
-        >
-          <span>
-            <span>我的选修</span>
-            <span>（15）</span>
-          </span>
-          <i
-            :class="[
-              currentFirstType.includes('elective') ? 'el-icon-arrow-up' : 'el-icon-arrow-down'
-            ]"
-          />
-        </div>
-        <ul
-          v-if="currentFirstType.includes('elective')"
-          class="course-ul"
-        >
-          <li
-            v-for="(item, index) in obligatoryList"
-            :key="index"
-            :class="{ active: currentElectiveNav === index }"
-            class="course-li"
-            @click="selectLi(index, 'elective')"
-          >
-            <span>{{ item.name }}</span>
-            <span v-if="item.number">({{ item.number }})</span>
+            <span>{{ item.menuName }}</span>
+            <span v-if="item.num">({{ item.num }})</span>
           </li>
         </ul>
       </div>
@@ -73,7 +47,7 @@
     <el-card class="li-container">
       <div class="top">
         <el-input
-          v-model="queryInfo.search"
+          v-model="queryInfo.courseName"
           placeholder="请输入课程名字"
           style="width: 380px"
           @input="searchFun"
@@ -84,46 +58,45 @@
           ></i>
         </el-input>
         <div class="split"></div>
-        <div class="status-box">
-          <span class="label">状态</span>
-          <el-radio-group
-            v-model="queryInfo.sradio"
-            class="status-radio"
-          >
-            <el-radio :label="0">
-              全部
-            </el-radio>
-            <el-radio :label="1">
-              未选择
-            </el-radio>
-            <el-radio :label="2">
-              未开始
-            </el-radio>
-            <el-radio :label="3">
-              进行中
-            </el-radio>
-            <el-radio :label="4">
-              已结束
-            </el-radio>
-          </el-radio-group>
-        </div>
-        <div class="time-box">
-          <span class="label">日期范围</span>
-          <el-date-picker
-            v-model="queryInfo.time"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
-          <el-button
-            type="primary"
-            style="margin-left: 10px"
-            size="medium"
-            @click="search"
-          >
-            查询
-          </el-button>
+        <div v-if="currentFirstType.includes('required')">
+          <div class="status-box">
+            <span class="label">状态</span>
+            <el-radio-group
+              v-model="queryInfo.status"
+              class="status-radio"
+            >
+              <el-radio :label="0">
+                全部
+              </el-radio>
+              <el-radio :label="1">
+                未开始
+              </el-radio>
+              <el-radio :label="2">
+                进行中
+              </el-radio>
+              <el-radio :label="3">
+                已结束
+              </el-radio>
+            </el-radio-group>
+          </div>
+          <div class="time-box">
+            <span class="label">日期范围</span>
+            <el-date-picker
+              v-model="queryInfo.dateRange"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+            />
+            <el-button
+              type="primary"
+              style="margin-left: 10px"
+              size="medium"
+              @click="submitSearch"
+            >
+              查询
+            </el-button>
+          </div>
         </div>
       </div>
       <div class="bottom">
@@ -134,68 +107,73 @@
             class="bottom-li"
           >
             <div class="li-top">
-              <div class="li-left">
+              <div
+                class="li-left"
+                @click="startStudy(item)"
+              >
                 <img
-                  src="https://image.zhangxinxu.com/image/blog/202012/css-touch-scroll-cover.png"
+                  :src="item.coverUrl"
                   class="left-image"
                 />
-                <span
-                  class="icon-box"
-                  @click="playVideo"
-                >
+                <span class="icon-box">
                   <i class="el-icon-caret-right" />
                 </span>
               </div>
               <div class="li-right">
                 <div class="content-box">
-                  <div class="content-title">
+                  <div
+                    class="content-title"
+                    @click="startStudy(item)"
+                  >
                     <div class="title">
-                      {{ item.name }}
+                      {{ item.courseName }}
                     </div>
-                    <el-tag type="success">
-                      未开始
+                    <el-tag :type="statusFilter(item.status).type">
+                      {{ statusFilter(item.status).text }}
                     </el-tag>
                   </div>
                   <div class="time-progress">
                     <div class="content-time">
-                      学习期限：{{ item.time[0] }} - {{ item.time[1] }}
+                      学习期限：{{ item.learnRange }}
                     </div>
                     <div class="content-progress">
                       <span class="progress-title">已完成：</span>
                       <el-progress
                         class="progress"
-                        :percentage="50"
+                        :percentage="item.progress"
                       ></el-progress>
                     </div>
                   </div>
                   <div class="file-button">
                     <el-button
+                      v-if="_.size(item.examList)"
                       size="small"
-                      @click="expandMore('test', index)"
+                      @click="expandMore('examList', index)"
                     >
                       <span style="margin-right: 6px">
                         <span>考试</span>
-                        <span>{{ _.size(item.test) }}</span>
+                        <span>{{ _.size(item.examList) }}</span>
                       </span>
                       <i
                         :class="[
-                          currentTestExpand.includes(index) && currentExpandType === 'test'
+                          currentTestExpand.includes(index) && currentExpandType === 'examList'
                             ? 'el-icon-arrow-up'
                             : 'el-icon-arrow-down'
                         ]"
                       />
                     </el-button>
                     <el-button
+                      v-if="_.size(item.attachList)"
                       size="small"
-                      @click="expandMore('file', index)"
+                      @click="expandMore('attachList', index)"
                     >
                       <span style="margin-right: 6px">
                         <span>附件</span>
-                        <span>{{ _.size(item.file) }}</span>
+                        <span>{{ _.size(item.attachList) }}</span>
                       </span>
                       <i
                         :class="[
-                          currentFileExpand.includes(index) && currentExpandType === 'file'
+                          currentFileExpand.includes(index) && currentExpandType === 'attachList'
                             ? 'el-icon-arrow-up'
                             : 'el-icon-arrow-down'
                         ]"
@@ -205,12 +183,14 @@
                 </div>
                 <div class="handle-box">
                   <el-button
+                    v-if="item.status !== 3"
                     type="primary"
                     style="margin-left: 10px"
                     size="medium"
-                    @click="startStudy"
+                    :disabled="item.status === 1"
+                    @click="startStudy(item)"
                   >
-                    开始学习
+                    {{ item.progress === 0 ? '开始学习' : '继续学习' }}
                   </el-button>
                 </div>
               </div>
@@ -226,31 +206,42 @@
               >
                 <div class="file-left">
                   <div class="file-title">
-                    <span style="margin-right: 8px">{{ fileItem.name }}</span>
+                    <span class="title ellipsis">{{
+                      currentExpandType === 'examList' ? fileItem.examName : fileItem.fileName
+                    }}</span>
                     <el-tag
-                      v-if="currentExpandType === 'test'"
-                      type="success"
+                      v-if="currentExpandType === 'examList'"
+                      :type="statusFilter(item.status).type"
                     >
-                      未开始
+                      {{ statusFilter(item.status).text }}
                     </el-tag>
                   </div>
                   <div class="file-time">
-                    <span>{{ currentExpandType === 'test' ? '考试' : '下载' }}期限：</span>
-                    <span>{{ fileItem.time[0] }} - {{ fileItem.time[1] }}</span>
+                    <span>{{ currentExpandType === 'examList' ? '考试' : '下载' }}期限：</span>
+                    <span>{{
+                      currentExpandType === 'examList'
+                        ? fileItem.effectiveTime
+                        : fileItem.downloadDeadline
+                    }}
+                    </span>
                   </div>
                 </div>
                 <el-button
                   size="small"
                   type="primary"
                   plain
+                  :disabled="disabledButton(fileItem)"
+                  @click="downloadOrjion(fileItem)"
                 >
-                  {{ currentExpandType === 'test' ? '参加' : '下载' }}
+                  {{ currentExpandType === 'examList' ? '参加' : '下载' }}
                 </el-button>
               </li>
               <div
                 v-if="
-                  (currentExpandType === 'test' && _.size(item.test) - _.size(expandList) > 0) ||
-                    (currentExpandType === 'file' && _.size(item.file) - _.size(expandList) > 0)
+                  (currentExpandType === 'examList' &&
+                    _.size(item.examList) - _.size(expandList) > 0) ||
+                    (currentExpandType === 'attachList' &&
+                      _.size(item.attachList) - _.size(expandList) > 0)
                 "
                 class="more-file"
                 @click="getMore(index)"
@@ -258,8 +249,8 @@
                 <span
                   style="margin-right: 10px; cursor: pointer"
                 >展开更多{{
-                  _.size(currentExpandType === 'test' ? item.test : item.file) - 3
-                }}个{{ currentExpandType === 'test' ? '考试' : '附件' }}</span>
+                  _.size(currentExpandType === 'examList' ? item.examList : item.attachList) - 3
+                }}个{{ currentExpandType === 'examList' ? '考试' : '附件' }}</span>
                 <i
                   :class="[
                     currentFirstType === 'required' ? 'el-icon-arrow-up' : 'el-icon-arrow-down'
@@ -285,6 +276,22 @@
 </template>
 
 <script>
+import { getRequireCourse, getElectiveCourseList, getStudyCenterMenu } from '@/api/learn'
+import moment from 'moment'
+const STATUS = {
+  '1': {
+    text: '未开始',
+    type: 'success'
+  },
+  '2': {
+    text: '进行中',
+    type: 'danger'
+  },
+  '3': {
+    text: '已结束',
+    type: 'info'
+  }
+}
 export default {
   name: 'LearnList',
   data() {
@@ -296,87 +303,87 @@ export default {
       currentFirstType: ['required'],
       currentRequiredNav: -1,
       currentElectiveNav: -1,
-      obligatoryList: [
-        {
-          name: '新员工入职',
-          number: 5
-        },
-        {
-          name: '企业文化',
-          number: 8
-        },
-        {
-          name: '马克',
-          number: 3
-        }
-      ],
+      menuList: [],
       totalNum: 100,
       queryInfo: {
         pageNo: 1,
         pageSize: 10,
-        search: '',
-        sradio: 0,
-        time: ''
+        status: 0,
+        courseName: '',
+        menuId: '',
+        menuType: '', //菜单栏类型（值为studyPlan或者train）
+        dateRange: ''
       },
-      courseList: [
-        {
-          status: 0,
-          image: '',
-          hasVideo: true,
-          name: '应用数学',
-          time: ['2019-10-02 12:14', '2020-01-02 13:12'],
-          progress: '60',
-          test: [
-            {
-              name: '企业文化考试',
-              time: ['2019-10-02 12:14', '2020-01-02 13:12'],
-              status: 0
-            },
-            {
-              name: '企业文化考试',
-              time: ['2019-10-02 12:14', '2020-01-02 13:12'],
-              status: 0
-            },
-            {
-              name: '企业文化考试',
-              time: ['2019-10-02 12:14', '2020-01-02 13:12'],
-              status: 0
-            },
-            {
-              name: '企业文化考试',
-              time: ['2019-10-02 12:14', '2020-01-02 13:12'],
-              status: 0
-            },
-            {
-              name: '企业文化考试2',
-              time: ['2019-10-02 12:14', '2020-01-02 13:12'],
-              status: 0
-            },
-            {
-              name: '企业文化考试3',
-              time: ['2019-10-02 12:14', '2020-01-02 13:12'],
-              status: 0
-            }
-          ],
-          file: [
-            {
-              name: '员工行为守则',
-              time: ['2019-10-02 12:14', '2020-01-02 13:12']
-            }
-          ]
-        }
-      ]
+      courseList: []
     }
   },
-  created() {},
+  created() {
+    this.loadMenu()
+    this.loadTableData()
+  },
   methods: {
+    // 今天是在截止日期之前就能使用，返回false
+    disabledButton(data) {
+      let date = this.currentExpandType === 'examList' ? data.effectiveTime : data.downloadDeadline
+      return moment(new Date()).isSameOrAfter(moment(date))
+    },
+    downloadOrjion(fileItem) {
+      if (this.currentExpandType === 'examList') {
+        // 去考试
+      } else {
+        // 下载
+        window.open(fileItem.fileUrl)
+      }
+    },
+    statusFilter(status) {
+      return STATUS[status]
+    },
+    // 必修/选修切换
+    menuActive(menuItem) {
+      const type = this.currentFirstType.includes(menuItem.type)
+      const isShow =
+        menuItem.type === 'required' ? this.currentRequiredNav : this.currentElectiveNav
+      return type && isShow === -1
+    },
+    // 子课程切换
+    menuLiActive(index) {
+      const isShow = this.currentFirstType.includes('required')
+        ? this.currentRequiredNav
+        : this.currentElectiveNav
+      return isShow === index
+    },
+    // 加载左侧菜单栏
+    async loadMenu() {
+      const requiredList = await getStudyCenterMenu({ studyType: 0 })
+      const electiveList = await getStudyCenterMenu({ studyType: 1 })
+      this.menuList = [
+        {
+          type: 'required',
+          data: requiredList,
+          totalNumber: this.getTotal(requiredList)
+        },
+        {
+          type: 'elective',
+          data: electiveList,
+          totalNumber: this.getTotal(electiveList)
+        }
+      ]
+    },
+    // 计算课程总数
+    getTotal(args) {
+      return args.reduce((prev, curr) => {
+        const preValue = _.isNumber(prev.num) ? prev.num : prev
+        return preValue + curr.num
+      })
+    },
+    // 展开课程
     getMore(index) {
       this.expandList = this.courseList[index][this.currentExpandType]
     },
     expandMore(type, index) {
       this.expandList = this.courseList[index][type].slice(0, 3)
       this.currentExpandType = type
-      if (type === 'test') {
+      if (type === 'examList') {
         this.currentTestExpand = this.currentTestExpand.includes(index) ? [] : [index]
         this.currentFileExpand = []
       } else {
@@ -384,25 +391,43 @@ export default {
         this.currentFileExpand = this.currentFileExpand.includes(index) ? [] : [index]
       }
     },
-    startStudy() {},
-    playVideo() {},
+    startStudy(data) {
+      if (data.status === 2) {
+        this.$message.error('开发中...')
+      }
+      // this.$router.push({ path: ''})
+    },
+    // 切换必修/选修
     toggleShow(type) {
       this.currentFirstType = this.currentFirstType.includes(type) ? [] : type
+      // 去除必修选修内部id，重新加载
+      this.queryInfo.menuId = ''
+      this.loadTableData()
     },
-    selectLi(index, type) {
-      if (type === 'required') {
+    selectLi(index, item) {
+      if (item.type === 'required') {
         this.currentRequiredNav = index
       } else {
         this.currentElectiveNav = index
       }
+      this.queryInfo.menuId = item.id
+      this.loadTableData()
     },
     searchFun: _.debounce(function() {
       this.loadTableData()
     }, 500),
-    search() {
+    submitSearch() {
       this.loadTableData()
     },
-    loadTableData() {},
+    // 加载右侧课程列表
+    loadTableData() {
+      const loadFun = this.currentFirstType.includes('required')
+        ? getRequireCourse
+        : getElectiveCourseList
+      loadFun(this.queryInfo).then((res) => {
+        this.courseList = res
+      })
+    },
     handleSizeChange(val) {
       this.queryInfo.pageSize = val
       this.loadTableData()
@@ -419,6 +444,9 @@ export default {
 /deep/ .el-tag {
   height: 20px;
   line-height: 20px;
+}
+/deep/ .el-range-separator {
+  padding: 0;
 }
 .learn-list-style {
   /deep/ .el-range__icon {
@@ -512,6 +540,7 @@ export default {
             justify-content: space-between;
           }
           .li-left {
+            cursor: pointer;
             margin-right: 24px;
             width: 220px;
             height: 100%;
@@ -523,7 +552,6 @@ export default {
               height: 100%;
             }
             .icon-box {
-              cursor: pointer;
               position: absolute;
               background-color: rgba(0, 11, 21, 0.45);
               width: 32px;
@@ -553,6 +581,7 @@ export default {
               .content-title {
                 display: flex;
                 align-items: center;
+                cursor: pointer;
                 .title {
                   font-family: PingFangSC-Medium;
                   font-size: 16px;
@@ -609,6 +638,11 @@ export default {
                   font-size: 14px;
                   color: rgba(0, 11, 21, 0.85);
                   margin-right: 8px;
+                  .title {
+                    margin-right: 8px;
+                    width: 100px;
+                    display: inline-block;
+                  }
                 }
 
                 .file-time {
