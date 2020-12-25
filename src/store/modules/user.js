@@ -10,23 +10,18 @@ const user = {
   state: {
     tenantId: getStore({ name: 'tenantId' }) || '',
     tenantContent: getStore({ name: 'tenantContent' }) || '',
-    userInfo: getStore({ name: 'userInfo' }) || [],
+    userInfo: getStore({ name: 'userInfo' }) || {},
     privileges: getStore({ name: 'privileges' }) || [],
     orgs: getStore({ name: 'orgs' }) || [],
-    info: getStore({ name: 'info' }) || [],
     roles: [],
     menu: getStore({ name: 'menu' }) || [],
     menuAll: getStore({ name: 'menuAll' }) || [],
     token: getStore({ name: 'token' }) || '',
     refreshToken: getStore({ name: 'refreshToken' }) || '',
-    menuLoading: false,
     newsCount: getStore({ name: 'newsCount' }) || 0,
     newsList: getStore({ name: 'newsList' }) || []
   },
   actions: {
-    set_info: ({ commit }, info) => {
-      commit('SET_INFO', info)
-    },
     //根据用户名登录
     LoginByUsername({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
@@ -197,10 +192,6 @@ const user = {
       state.newsCount = count.unreadCount
       setStore({ name: 'newsCount', content: state.newsCount })
     },
-    SET_INFO: (state, info) => {
-      state.info = info
-      setStore({ name: 'info', content: state.info })
-    },
     SET_TOKEN: (state, token) => {
       setToken(token)
       state.token = token
@@ -241,9 +232,6 @@ const user = {
     SET_PRIVILEGES: (state, privileges) => {
       state.privileges = privileges
       setStore({ name: 'privileges', content: privileges })
-    },
-    SET_MENU_LOADING: (state, menuLoading) => {
-      state.menuLoading = menuLoading
     }
   }
 }
