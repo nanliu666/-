@@ -111,7 +111,7 @@
   </div>
 </template>
 <script>
-import { getuserInfo } from '@/api/my'
+import { getuserInfo, setuserInfo } from '@/api/my'
 export default {
   name: 'PersonalInfo',
   components: {
@@ -188,7 +188,7 @@ export default {
           disabled: true
         },
         {
-          prop: 'email',
+          prop: 'userEmail',
           itemType: 'input',
           label: '邮箱',
           props: {
@@ -204,9 +204,7 @@ export default {
   activated() {
     this.getInfo()
   },
-  created() {
-    this.getInfo()
-  },
+  created() {},
 
   methods: {
     async getInfo() {
@@ -214,7 +212,11 @@ export default {
       let res = await getuserInfo()
       window.console.log(res)
     },
-
+    setInfo() {
+      setuserInfo().then((res) => {
+        window.console.log(res)
+      })
+    },
     handleClose(done) {
       this.$confirm('确认关闭？')
         .then(() => {
