@@ -105,7 +105,7 @@ export default {
 <style lang="scss" scoped>
 .header {
   align-self: flex-start;
-  height: 64px;
+  height: $headerHeight;
   width: 100%;
   box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
   background-color: white;
@@ -141,7 +141,7 @@ export default {
       font-size: 16px;
       color: #000b15;
       text-align: center;
-      line-height: 64px;
+      line-height: $headerHeight;
       position: relative;
       margin-right: 48px;
       cursor: pointer;

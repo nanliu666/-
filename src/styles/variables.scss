@@ -10,9 +10,13 @@ $mainBackGray: #fafafa;
 // 标准线条色
 $mainLineGray: #ebeced;
 
+// 顶部栏高度
+$headerHeight: 64px;
+
 :export {
   primaryColor: $primaryColor;
   mainBackGray: $mainBackGray;
   mainLineGray: $mainLineGray;
   primaryFontColor: $primaryFontColor;
+  headerHeight: $headerHeight;
 }

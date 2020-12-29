@@ -441,7 +441,7 @@ export default {
   }
   &__main {
     margin: 20px;
-    height: calc(100vh - 64px - 40px);
+    height: calc(100vh - #{$headerHeight} - 40px);
     .left-bar {
       width: 384px;
       margin-right: 4px;

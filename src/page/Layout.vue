@@ -38,7 +38,7 @@ export default {
   justify-content: space-between;
   flex-flow: row wrap;
   .el-main {
-    min-height: calc(100vh - 64px - 40px);
+    min-height: calc(100vh - #{$headerHeight} - 40px);
     flex-basis: 1200px;
     flex-grow: 0; //存在多余长度也不放大
     margin: auto;

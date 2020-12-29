@@ -272,7 +272,7 @@ export default {
     }
   }
   &__detail {
-    min-height: calc(100vh - 64px - 54px - 60px - 228px);
+    min-height: calc(100vh - #{$headerHeight} - 54px - 60px - 228px);
     margin-top: 20px;
     /deep/.el-tabs__item {
       height: 56px;
