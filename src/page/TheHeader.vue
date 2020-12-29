@@ -15,9 +15,32 @@
             {{ item.label }}
           </li>
         </ul>
-        <div class="flex flex-flow flex-items">
-          <Notification />
+        <div class="flex flex-flow flex-items right-menu">
           <div class="iconimage_icon_help iconfont help"></div>
+          <Notification />
+          <el-dropdown>
+            <span class="el-dropdown-link">
+              <img
+                v-if="userInfo && userInfo.avatar_url"
+                class="top-bar__img avatar"
+                :src="userInfo.avatar_url"
+              />
+              <i
+                v-else
+                class="iconimage_icon_headportrait iconfont avatar"
+              />
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <!-- <el-dropdown-item>
+            <div @click="showUserCenter">
+              个人中心
+            </div>
+          </el-dropdown-item> -->
+              <el-dropdown-item @click.native="logout">
+                退出登录
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
           <!-- <div class="el-icon-picture-outline hander"></div> -->
         </div>
       </template>
@@ -50,7 +73,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['userId'])
+    ...mapGetters(['userId', 'userInfo'])
   },
   beforeMount() {
     // 初始化时设置激活中的菜单
@@ -63,6 +86,17 @@ export default {
       }
       this.activePath = item.path
       this.$router.push(item.path)
+    },
+    logout() {
+      this.$confirm('退出系统, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$store.dispatch('LogOut').then(() => {
+          this.$router.push({ path: '/login' })
+        })
+      })
     }
   }
 }
@@ -71,7 +105,7 @@ export default {
 <style lang="scss" scoped>
 .header {
   align-self: flex-start;
-  height: 56px;
+  height: 64px;
   width: 100%;
   box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
   background-color: white;
@@ -83,6 +117,21 @@ export default {
     align-items: center;
     justify-content: space-between;
   }
+  .right-menu {
+    .help {
+      margin-right: 24px;
+      font-size: 20px;
+      color: rgba($primaryFontColor, 0.45);
+      cursor: pointer;
+    }
+    .avatar {
+      font-size: 32px;
+      margin-left: 24px;
+      cursor: pointer;
+      color: rgba($primaryFontColor, 0.45);
+    }
+  }
+
   .header-menu {
     height: 100%;
     display: flex;
