@@ -18,16 +18,16 @@
         <div class="flex flex-flow flex-items right-menu">
           <div class="iconimage_icon_help iconfont help"></div>
           <Notification />
-          <el-dropdown>
-            <span class="el-dropdown-link">
+          <el-dropdown class="dropdown-avatar">
+            <span class="el-dropdown-link avatar">
               <img
                 v-if="userInfo && userInfo.avatar_url"
-                class="top-bar__img avatar"
+                class="top-bar__img "
                 :src="userInfo.avatar_url"
               />
               <i
                 v-else
-                class="iconimage_icon_headportrait iconfont avatar"
+                class="iconimage_icon_headportrait iconfont "
               />
             </span>
             <el-dropdown-menu slot="dropdown">
@@ -124,11 +124,20 @@ export default {
       color: rgba($primaryFontColor, 0.45);
       cursor: pointer;
     }
-    .avatar {
-      font-size: 32px;
+    .dropdown-avatar {
       margin-left: 24px;
+    }
+    .avatar {
+      i {
+        font-size: 32px;
+        color: rgba($primaryFontColor, 0.45);
+      }
+      img {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+      }
       cursor: pointer;
-      color: rgba($primaryFontColor, 0.45);
     }
   }
 
