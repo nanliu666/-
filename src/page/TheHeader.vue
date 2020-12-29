@@ -141,7 +141,7 @@ export default {
       font-size: 16px;
       color: #000b15;
       text-align: center;
-      line-height: 56px;
+      line-height: 64px;
       position: relative;
       margin-right: 48px;
       cursor: pointer;
