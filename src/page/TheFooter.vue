@@ -12,7 +12,6 @@ export default {
 
 <style lang="scss" scoped>
 .footer {
-  align-self: flex-end;
   text-align: center;
   height: 40px;
   line-height: 40px;
