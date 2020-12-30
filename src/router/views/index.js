@@ -80,18 +80,51 @@ export default [
         children: [
           {
             name: 'KnowledgeList',
-            path: '/knowledge/list',
+            path: 'list',
             component: () => import(/* webpackChunkName: "page"*/ '@/views/knowledge/List.vue'),
             meta: {
               title: '知识库'
             }
           },
           {
-            path: '/knowledge/detail',
+            path: 'detail',
             name: 'KnowledgeDetail',
             component: () => import(/* webpackChunkName: "page"*/ '@/views/knowledge/Detail.vue'),
             meta: {
               title: '知识详情'
+            }
+          }
+        ]
+      },
+      {
+        path: '/exam',
+        redirect: '/exam/list',
+        component: EmptyLayout,
+        title: '考试',
+        children: [
+          {
+            name: 'ExamList',
+            path: 'list',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/exam/List.vue'),
+            meta: {
+              title: '考试'
+            }
+          },
+          {
+            path: 'detail',
+            name: 'ExamDetail',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/exam/Detail.vue'),
+            meta: {
+              title: '查看答卷'
+            }
+          },
+          {
+            path: 'paper',
+            name: 'ExamPaper',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/exam/Paper.vue'),
+            meta: {
+              title: '参与考试',
+              fullscreen: true
             }
           }
         ]

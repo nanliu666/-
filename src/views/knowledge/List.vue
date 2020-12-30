@@ -19,23 +19,29 @@
       ></category-select>
     </el-card>
     <el-card class="table-style">
-      <el-menu
-        class="el-menu"
-        :default-active="activeIndex"
-        :active-text-color="activeColor"
-        mode="horizontal"
-        @select="handleSelect"
+      <el-tabs
+        v-model="activeIndex"
+        @tab-click="handleSelect"
       >
-        <el-menu-item index="1">
+        <el-tab-pane
+          label="综合排序"
+          name="1"
+        >
           综合排序
-        </el-menu-item>
-        <el-menu-item index="2">
+        </el-tab-pane>
+        <el-tab-pane
+          label="最新上传"
+          name="2"
+        >
           最新上传
-        </el-menu-item>
-        <el-menu-item index="3">
+        </el-tab-pane>
+        <el-tab-pane
+          label="评分最高"
+          name="3"
+        >
           评分最高
-        </el-menu-item>
-      </el-menu>
+        </el-tab-pane>
+      </el-tabs>
       <common-table
         id="demo"
         ref="table"
@@ -102,7 +108,6 @@ const TABLE_CONFIG = {
     minWidth: 50
   }
 }
-import styles from '@/styles/variables.scss'
 import { getKnowledgeList, getKnowledgeCatalog } from '@/api/knowledge'
 import CategorySelect from '../course/components/CategorySelect.vue'
 export default {
@@ -125,7 +130,6 @@ export default {
         knowledgeName: '',
         sortChoice: '' //排序选项 1：综合排序；2：最新上传；3：评分最高
       },
-      activeColor: styles.primaryColor,
       activeIndex: '1',
       columnsVisible: TABLE_COLUMNS,
       tableConfig: TABLE_CONFIG,
