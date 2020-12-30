@@ -2,7 +2,10 @@
   <div class="paper-container">
     <div class="paper-header">
       <div class="header-left">
-        <i class="iconimage_icon_leftarrow iconfont" />
+        <i
+          class="iconimage_icon_leftarrow iconfont"
+          @click="goBack"
+        />
         <span class="title">{{ paper.title }}</span>
         <span class="content">
           <span>共50题，</span>
@@ -25,15 +28,22 @@
         </el-button>
       </div>
     </div>
-    <div class="paper-main"></div>
+    <div class="paper-main">
+      <div class="main-left">
+        <el-card class="avatar-card">
+        </el-card>
+      </div>
+      <div class="main-right"></div>
+    </div>
   </div>
 </template>
 
 <script>
+import moment from 'moment'
 export default {
   data() {
     return {
-      remainingTime: 0,
+      remainingTime: '00 : 00 : 00',
       paper: {
         title: 'EHS应知应会全员考试'
       }
@@ -43,19 +53,20 @@ export default {
     this.initRemainingTime()
   },
   methods: {
+    goBack() {
+      this.$router.go(-1)
+    },
     initRemainingTime() {
-      // //获取当前时间
-      // var now = new Date().getTime()
-      // //设置截止时间
-      // var endDate = new Date('2020/12/29 24:00:00')
-      // var end = endDate.getTime()
-      // //时间差
-      // var leftTime = end - now
-      // //定义变量 d,h,m,s保存倒计时的时间
-      // const d = Math.floor(leftTime / 1000 / 60 / 60 / 24)
-      // const h = Math.floor((leftTime / 1000 / 60 / 60) % 24)
-      // const m = Math.floor((leftTime / 1000 / 60) % 60)
-      // const s = Math.floor((leftTime / 1000) % 60)
+      const dealline = moment(new Date()).add(1, 'd')
+      setInterval(() => {
+        const diffTime = moment(dealline).diff(moment(new Date()))
+        const hoursTime = moment.duration(diffTime).hours()
+        const minutesTime = moment.duration(diffTime).minutes()
+        const secondsTime = moment.duration(diffTime).seconds()
+        this.remainingTime = `${moment(hoursTime).format('HH')} : ${
+          minutesTime < 10 ? `0${minutesTime}` : minutesTime
+        } : ${secondsTime < 10 ? `0${secondsTime}` : secondsTime}`
+      }, 1000)
     },
     carryOut() {}
   }
