@@ -2,10 +2,11 @@
   <div class="login">
     <div class="login_container">
       <div class="layout_left">
-        <svg-icon
-          icon-class="HelloWelcome"
-          class-name="hellWelcom"
-        ></svg-icon>
+        <img
+          class="hellWelcom"
+          src="../../assets/images/HelloWelcome.svg"
+          alt=""
+        />
         <span>欢迎登录ePRO Learning易宝人才培育系统软件</span>
       </div>
       <div class="layout_right">

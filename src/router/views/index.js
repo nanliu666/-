@@ -147,29 +147,32 @@ export default [
       },
       {
         path: '/auth', // 注册页面
-        redirect: '/auth/login',
+        redirect: '/login',
         component: EmptyLayout,
         children: [
           {
-            path: 'login',
-            name: 'authLogin',
+            path: '/login',
+            name: 'Login',
             meta: {
-              title: '登录页面'
+              title: '登录页面',
+              isAuth: false
             },
             component: () => import(/* webpackChunkName: "page"*/ '@/views/auth/Login.vue')
           },
           {
-            path: 'register', // 注册页面
-            name: 'authRegister',
+            path: '/register', // 注册页面
+            name: 'Register',
             meta: {
+              isAuth: false,
               title: '注册页面'
             },
             component: () => import(/* webpackChunkName: "page"*/ '@/views/auth/Register.vue')
           },
           {
-            path: 'forgetPassword', // 忘记密码页面
-            name: 'authForgetPassword',
+            path: '/forgetPassword', // 忘记密码页面
+            name: 'ForgetPassword',
             meta: {
+              isAuth: false,
               title: '忘记密码页面'
             },
             component: () => import(/* webpackChunkName: "page"*/ '@/views/auth/ForgetPassword.vue')

@@ -38,7 +38,7 @@ export default {
   flex-direction: column;
   height: 100vh;
   .el-main {
-    min-height: calc(100vh - 56px);
+    min-height: calc(100vh - #{$headerHeight} - 40px);
     padding: 0;
     display: flex;
     align-items: center;

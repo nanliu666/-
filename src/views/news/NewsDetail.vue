@@ -26,7 +26,6 @@
             <el-button
               size="small"
               icon="el-icon-arrow-left"
-              :disabled="disabledTop"
               @click="cutInfo(0)"
             >
               &nbsp;上一页
@@ -35,7 +34,6 @@
           <div>
             <el-button
               size="small"
-              :disabled="disabledBottom"
               @click="cutInfo(1)"
             >
               下一页&nbsp;<i class="el-icon-arrow-right el-icon--right"></i>
@@ -102,40 +100,18 @@ export default {
     return {
       data: {},
       id: '',
-      indexdisabled: this.$route.query.index,
-      totaldisabled: this.$route.query.total,
-      disabledTop: false,
       disabledBottom: false
     }
   },
 
-  watch: {
-    indexdisabled: function(newVal) {
-      // console.log(newVal)
-
-      newVal == 0 ? (this.disabledTop = true) : (this.disabledTop = false)
-      newVal == this.totaldisabled ? (this.disabledBottom = true) : (this.disabledBottom = false)
-    }
-  },
+  watch: {},
 
   created() {
-    --this.totaldisabled
-
-    this.indexdisabled == 0 ? (this.disabledTop = true) : (this.disabledTop = false)
-    this.indexdisabled == this.totaldisabled
-      ? (this.disabledBottom = true)
-      : (this.disabledBottom = false)
-
     this.getInfo()
     // console.log(Date.parse(new Date()).toString());
   },
   methods: {
     cutInfo(type) {
-      type ? ++this.indexdisabled : --this.indexdisabled
-
-      // console.log(this.indexdisabled)
-      // console.log(this.totaldisabled)
-
       let params = {
         // createTime: Date.parse(new Date()),
         beginPublishTime: this.data.beginPublishTime,
@@ -159,7 +135,12 @@ export default {
       }
 
       let res = await newsInfo(params)
-      this.data = res
+      if (JSON.stringify(res) != '{}') {
+        this.data = res
+      } else {
+        let info = data.type ? '下一页' : '上一页'
+        this.$message.error(info + '没有内容了哦!')
+      }
     },
 
     isdownload(index) {

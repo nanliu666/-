@@ -31,7 +31,11 @@
     </div>
 
     <div class="courselist">
-      <div class="floor">
+      <div
+        v-for="(item, index) in 20"
+        :key="index"
+        class="floor"
+      >
         <div class="floor_title">
           <div class="text">
             <div>java编程培训</div>
@@ -47,6 +51,23 @@
               前往学习
             </el-button>
           </div>
+        </div>
+        <div class="floor_info">
+          <div class="info_item">
+            <span class="item_title">培训类型：</span>
+            <span>在线（必修）</span>
+          </div>
+          <div class="info_item">
+            <span class="item_title">培训类型：</span>
+            <span>在线（必修）</span>
+          </div>
+          <div class="info_item">
+            <span class="item_title">培训类型：</span>
+            <span>在线（必修）</span>
+          </div>
+        </div>
+        <div class="seal">
+          已完成
         </div>
       </div>
     </div>
@@ -98,7 +119,6 @@ export default {
 <style lang="scss" scoped>
 .cultivate {
   margin-bottom: -100%;
-
   .search {
     margin-top: 20px;
     padding: 0 24px;
@@ -135,9 +155,12 @@ export default {
     width: 1200px;
     .floor {
       height: 118px;
-      background-color: pink;
+      background: #ffffff;
+      box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
+      border-radius: 4px;
       margin-top: 20px;
       padding: 24px;
+      position: relative;
       .floor_title {
         display: flex;
         justify-content: space-between;
@@ -177,12 +200,48 @@ export default {
           }
         }
       }
+      .floor_info {
+        margin-top: 18px;
+        display: flex;
+        .info_item {
+          display: flex;
+          font-size: 14px;
+          color: rgba(0, 11, 21, 0.85);
+          letter-spacing: 0;
+          span {
+            width: 287px;
+          }
+          .item_title {
+            font-size: 14px;
+            color: rgba(0, 11, 21, 0.45);
+            letter-spacing: 0;
+            width: 70px;
+          }
+        }
+      }
+      .seal {
+        position: absolute;
+        top: 25px;
+        right: 150px;
+        width: 77px;
+        height: 77px;
+        border-radius: 50%;
+        background: #00d66f;
+        line-height: 77px;
+        text-align: center;
+        color: #fff;
+        overflow: hidden;
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
     }
   }
 
   .page {
     position: relative;
-    height: 150px;
+    height: 100px;
     .pagination {
       position: absolute;
       top: 24px;
