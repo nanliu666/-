@@ -12,4 +12,4 @@ export const getElectiveCourseList = (params) =>
 /**
  * 查询学习中心课程菜单
  * */
-export const getStudyCenterMenu = (params) => get('/manage/v1/study/getStudyCenterMenu', params)
+export const getStudyCenterMenu = (params) => get('/manage/v1/study/myCourseCatalog', params)

@@ -3,9 +3,7 @@
     <el-card class="nav-container">
       <div class="nav-title">
         <span>全部课程</span>
-        <span
-          v-if="!_.isEmpty(menuList)"
-        >（{{ menuList[0].totalNumber + menuList[1].totalNumber }}）</span>
+        <span v-if="!_.isEmpty(menuList)">（{{ menuList[0].num + menuList[1].num }}）</span>
       </div>
       <div
         v-for="(menuItem, menuIndex) in menuList"
@@ -19,7 +17,7 @@
         >
           <span>
             <span>我的{{ menuIndex === 0 ? '必修' : '选修' }}</span>
-            <span>（{{ menuItem.totalNumber }}）</span>
+            <span>（{{ menuItem.num }}）</span>
           </span>
           <i
             :class="[
@@ -28,11 +26,11 @@
           />
         </div>
         <ul
-          v-if="currentFirstType.includes(menuItem.type)"
+          v-if="currentFirstType.includes(menuItem.type) && !_.isEmpty(menuItem.courseList)"
           class="course-ul"
         >
           <li
-            v-for="(item, index) in menuItem.data"
+            v-for="(item, index) in menuItem.courseList"
             :key="item.id"
             :class="{ active: menuLiActive(index) }"
             class="course-li"
@@ -100,7 +98,10 @@
         </div>
       </div>
       <div class="bottom">
-        <ul class="bottom-ul">
+        <ul
+          v-if="!_.isEmpty(courseList)"
+          class="bottom-ul"
+        >
           <li
             v-for="(item, index) in courseList"
             :key="index"
@@ -310,7 +311,7 @@ export default {
         pageSize: 10,
         status: 0,
         name: '',
-        catalogId: '',
+        id: '',
         type: '', //菜单栏类型（值为studyPlan或者train）
         dateRange: []
       },
@@ -354,27 +355,11 @@ export default {
     },
     // 加载左侧菜单栏
     async loadMenu() {
-      const requiredList = await getStudyCenterMenu({ studyType: 0 })
-      const electiveList = await getStudyCenterMenu({ studyType: 1 })
-      this.menuList = [
-        {
-          type: 'required',
-          data: requiredList,
-          totalNumber: this.getTotal(requiredList)
-        },
-        {
-          type: 'elective',
-          data: electiveList,
-          totalNumber: this.getTotal(electiveList)
-        }
-      ]
-    },
-    // 计算课程总数
-    getTotal(args) {
-      return args.reduce((prev, curr) => {
-        const preValue = _.isNumber(prev.num) ? prev.num : prev
-        return preValue + curr.num
+      const soruce = await getStudyCenterMenu()
+      _.each(soruce, (item) => {
+        item.type = item.studyType === 0 ? 'required' : 'elective'
       })
+      this.menuList = soruce
     },
     // 展开课程
     getMore(index) {
@@ -401,16 +386,17 @@ export default {
     toggleShow(type) {
       this.currentFirstType = this.currentFirstType.includes(type) ? [] : type
       // 去除必修选修内部id，重新加载
-      this.queryInfo.catalogId = ''
+      this.queryInfo.id = ''
       this.loadTableData()
     },
     selectLi(index, item) {
-      if (item.type === 'required') {
+      if (this.currentFirstType.includes('required')) {
         this.currentRequiredNav = index
+        this.queryInfo.courseType = item.courseType
       } else {
         this.currentElectiveNav = index
       }
-      this.queryInfo.catalogId = item.id
+      this.queryInfo.id = item.id
       this.loadTableData()
     },
     searchFun: _.debounce(function() {
@@ -424,9 +410,13 @@ export default {
       const loadFun = this.currentFirstType.includes('required')
         ? getRequireCourse
         : getElectiveCourseList
-      loadFun(this.queryInfo).then((res) => {
-        this.courseList = res
-      })
+      loadFun(this.queryInfo)
+        .then((res) => {
+          this.courseList = res
+        })
+        .catch(() => {
+          window.console.error('参数：', JSON.stringify(this.queryInfo))
+        })
     },
     handleSizeChange(val) {
       this.queryInfo.pageSize = val
