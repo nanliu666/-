@@ -7,8 +7,7 @@ export const getRequireCourse = (params) => post('/manage/v1/study/myRequireCour
 /**
  * 查询我的选修课程
  * */
-export const getElectiveCourseList = (params) =>
-  post('/manage/v1/study/getMyElectiveCourseList', params)
+export const getElectiveCourseList = (params) => post('/manage/v1/study/myElectiveCourse', params)
 /**
  * 查询学习中心课程菜单
  * */

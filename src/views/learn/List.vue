@@ -125,11 +125,11 @@
               </div>
               <div class="li-right">
                 <div class="content-box">
-                  <div
-                    class="content-title"
-                    @click="startStudy(item)"
-                  >
-                    <div class="title">
+                  <div class="content-title">
+                    <div
+                      class="title"
+                      @click="startStudy(item)"
+                    >
                       {{ item.name }}
                     </div>
                     <el-tag :type="statusFilter(item.status).type">
@@ -160,7 +160,7 @@
                       </span>
                       <i
                         :class="[
-                          currentTestExpand.includes(index) && currentExpandType === 'examList'
+                          currentTestExpand === index && currentExpandType === 'examList'
                             ? 'el-icon-arrow-up'
                             : 'el-icon-arrow-down'
                         ]"
@@ -177,7 +177,7 @@
                       </span>
                       <i
                         :class="[
-                          currentFileExpand.includes(index) && currentExpandType === 'attachList'
+                          currentFileExpand === index && currentExpandType === 'attachList'
                             ? 'el-icon-arrow-up'
                             : 'el-icon-arrow-down'
                         ]"
@@ -200,7 +200,7 @@
               </div>
             </div>
             <el-card
-              v-if="!_.isEmpty(currentTestExpand) || !_.isEmpty(currentFileExpand)"
+              v-if="currentTestExpand === index || currentFileExpand === index"
               class="file-card"
             >
               <li
@@ -312,9 +312,9 @@ export default {
       containerLoad: false,
       expandList: [],
       currentExpandType: '',
-      currentTestExpand: [],
-      currentFileExpand: [],
-      currentFirstType: ['required'],
+      currentTestExpand: -1,
+      currentFileExpand: -1,
+      currentFirstType: 'required',
       currentRequiredNav: -1,
       currentElectiveNav: -1,
       menuList: [],
@@ -325,7 +325,7 @@ export default {
         status: 0,
         name: '',
         id: '',
-        type: '', //菜单栏类型（值为studyPlan或者train）
+        courseType: '', //菜单栏类型（值为studyPlan或者train）
         dateRange: []
       },
       courseList: []
@@ -347,6 +347,7 @@ export default {
     downloadOrjion(fileItem) {
       if (this.currentExpandType === 'examList') {
         // 去考试
+        this.$router.push({ path: '/exam/paper', query: { id: fileItem.examId } })
       } else {
         // 下载
         window.open(fileItem.fileUrl)
@@ -371,8 +372,8 @@ export default {
     // 加载左侧菜单栏
     async loadMenu() {
       const soruce = await getStudyCenterMenu()
-      _.each(soruce, (item) => {
-        item.type = item.studyType === 0 ? 'required' : 'elective'
+      _.each(soruce, (item, index) => {
+        item.type = index === 0 ? 'required' : 'elective'
       })
       this.menuList = soruce
     },
@@ -384,24 +385,24 @@ export default {
       this.expandList = this.courseList[index][type].slice(0, 3)
       this.currentExpandType = type
       if (type === 'examList') {
-        this.currentTestExpand = this.currentTestExpand.includes(index) ? [] : [index]
-        this.currentFileExpand = []
+        this.currentTestExpand = index
+        this.currentFileExpand = -1
       } else {
-        this.currentTestExpand = []
-        this.currentFileExpand = this.currentFileExpand.includes(index) ? [] : [index]
+        this.currentTestExpand = -1
+        this.currentFileExpand = index
       }
     },
     startStudy(data) {
       if (data.status === 2) {
-        this.$message.error('开发中...')
+        this.$router.push({ path: '/course/learn', query: { courseId: data.id } })
       }
-      // this.$router.push({ path: ''})
     },
     // 切换必修/选修
     toggleShow(type) {
       this.currentFirstType = type
       // 去除必修选修内部id，重新加载
       this.queryInfo.id = ''
+      this.queryInfo.courseType = ''
       this.loadTableData()
     },
     selectLi(index, item) {
@@ -418,6 +419,11 @@ export default {
       this.loadTableData()
     }, 500),
     submitSearch() {
+      const dateRange = _.cloneDeep(this.queryInfo.dateRange)
+      this.queryInfo.dateRange = _.map(dateRange, (item) => {
+        item = moment(item).format('YYYY-MM-DD hh:mm:ss')
+        return item
+      })
       this.loadTableData()
     },
     // 加载右侧课程列表
@@ -428,6 +434,10 @@ export default {
         this.currentFirstType === 'required' ? getRequireCourse : getElectiveCourseList
       loadFun(this.queryInfo)
         .then(({ data, totalNum }) => {
+          _.each(data, (item) => {
+            item.userPeriod = item.userPeriod === '' ? 0 : item.userPeriod
+            item.progress = Math.round(item.userPeriod / (item.period * 60))
+          })
           this.courseList = data
           this.totalNum = totalNum
         })
@@ -594,8 +604,8 @@ export default {
               .content-title {
                 display: flex;
                 align-items: center;
-                cursor: pointer;
                 .title {
+                  cursor: pointer;
                   font-family: PingFangSC-Medium;
                   font-size: 16px;
                   color: rgba(0, 11, 21, 0.85);
