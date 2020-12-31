@@ -1,13 +1,13 @@
 <template>
   <!-- 注册页面 -->
-  <div
-    id="register"
-    class="register"
-  >
-    <div class="layout_label">
-      注册
-    </div>
-    <div class="layout_container">
+  <el-card class="register">
+    <div
+      v-if="!succeed"
+      class="layout_container"
+    >
+      <div class="layout_label">
+        注册
+      </div>
       <common-form
         ref="form"
         :model="form"
@@ -17,11 +17,12 @@
           <el-input
             v-model="form.captchaCode"
             class="captchaCode"
+            placeholder="请输入验证码"
           ></el-input><el-button
             class="captchaCodeBtn"
             @click="getCapthaCode"
           >
-            验证码
+            获取验证码
           </el-button>
         </template>
         <template slot="opations">
@@ -34,14 +35,40 @@
           </el-button>
           <router-link
             class="returnLogin"
-            to="/auth/login"
+            to="/login"
           >
-            返回登录
+            <el-button type="text">
+              返回登录
+            </el-button>
           </router-link>
         </template>
       </common-form>
     </div>
-  </div>
+    <div
+      v-else
+      class="success-page"
+    >
+      <svg
+        class="icon success-icon"
+        aria-hidden="true"
+      >
+        <use xlink:href="#iconimage_icon_Correctprompt"></use>
+      </svg>
+      <div class="text">
+        注册成功
+      </div>
+      <div class="tips">
+        {{ timeoutCount }}秒后自动返回
+      </div>
+      <el-button
+        type="primary"
+        size="medium"
+        @click="goToLogin"
+      >
+        返回
+      </el-button>
+    </div>
+  </el-card>
 </template>
 
 <script>
@@ -51,7 +78,28 @@ export default {
     CommonForm: () => import('@/components/common-form/CommonForm')
   },
   data() {
+    const validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'))
+      } else {
+        if (this.form.checkPass !== '') {
+          this.$refs.form.validateField('repeatPassword')
+        }
+        callback()
+      }
+    }
+    const validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.form.password) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
     return {
+      succeed: false,
+      timeoutCount: 5,
       form: {
         phonenum: '', // 手机号
         name: '', // 姓名
@@ -67,35 +115,49 @@ export default {
           itemType: 'input',
           required: true,
           label: '手机号',
+          maxlength: '11',
+          span: 24,
+          rules: [{ pattern: /^1[0-9]{10}$/, message: '手机号码格式不正确' }],
           props: {
             onlyNumber: true
-          },
-          offset: 7
+          }
         },
         {
           prop: 'name',
+          span: 24,
           itemType: 'input',
           label: '姓名',
-          offset: 7,
+          maxlength: 20,
+          rules: [{ min: 2, max: 20, message: '姓名长度需要满足2到20个字符' }],
           required: true
         },
         {
           prop: 'sex',
           itemType: 'radio',
+          span: 24,
           label: '性别',
           options: [
             { label: '男', value: '1' },
             { label: '女', value: '0' }
           ],
-          offset: 7,
           required: true
         },
         {
           prop: 'password',
           itemType: 'input',
+          span: 24,
           type: 'password',
           label: '密码',
-          offset: 7,
+          maxlength: '12',
+          rules: [
+            { min: 6, max: 12, message: '密码长度需要满足6～12字符' },
+            {
+              pattern: /^(?=.*[a-zA-Z0-9].*)(?=.*[a-zA-Z\\W].*)(?=.*[0-9\\W].*).{6,12}$/,
+              message: '密码需要包含字母、符号或数字中至少两项'
+            },
+            { validator: validatePass }
+          ],
+          desc: '密码包含字母、符号或数字中至少两项且长度6～12字符的密码',
           required: true
         },
         {
@@ -103,28 +165,38 @@ export default {
           type: 'password',
           itemType: 'input',
           label: '重复密码',
-          offset: 7,
+          span: 24,
+          desc: '密码包含字母、符号或数字中至少两项且长度5～12字符的密码',
+          rules: [
+            { validator: validatePass2 },
+            { min: 6, max: 12, message: '密码长度需要满足6～12字符' },
+            {
+              pattern: /^(?=.*[a-zA-Z0-9].*)(?=.*[a-zA-Z\\W].*)(?=.*[0-9\\W].*).{6,12}$/,
+              message: '密码需要包含字母、符号或数字中至少两项'
+            }
+          ],
           required: true
         },
         {
           prop: 'userEmail',
           itemType: 'input',
-          label: '邮箱',
-          offset: 7,
-          required: false
+          span: 24,
+          required: true,
+          rules: [{ type: 'email', message: '邮箱格式不正确' }],
+          label: '邮箱'
         },
         {
           prop: 'captchaCode',
           itemType: 'slot',
           label: '验证码',
-          offset: 7,
+          span: 24,
           required: false
         },
         {
           prop: 'opations',
-          itemType: 'slot',
+          itemType: 'slotout',
+          span: 24,
           label: '',
-          offset: 7,
           required: false
         }
       ]
@@ -140,7 +212,9 @@ export default {
           }
           getCode(params)
             .then(() => {
-              this.$message.success('验证码发送成功，请注意查收')
+              this.$message.success(
+                `我们已向您的邮箱${this.form.userEmail}发送邮件，请接受邮件，查收验证码`
+              )
             })
             .catch(() => {
               // clearInterval(time)
@@ -152,18 +226,26 @@ export default {
       })
     },
     submit() {
-      this.$refs.form.validate((valid) => {
-        if (valid) {
-          let data = this.form
-          userRegister(data)
-            .then(() => {
-              this.$router.push({ path: '/auth/login' })
-            })
-            .catch((err) => {
-              window.console.log(err)
-            })
-        }
+      this.$refs.form.validate().then(() => {
+        let data = this.form
+        userRegister(data)
+          .then(() => {
+            this.succeed = true
+            let setTimeOutObj = setInterval(() => {
+              this.timeoutCount--
+              if (this.timeoutCount < 0) {
+                clearInterval(setTimeOutObj)
+                this.goToLogin()
+              }
+            }, 1000)
+          })
+          .catch((err) => {
+            window.console.log(err)
+          })
       })
+    },
+    goToLogin() {
+      this.$router.push({ path: '/login' })
     }
   }
 }
@@ -171,19 +253,40 @@ export default {
 
 <style lang="scss" scoped>
 .register {
-  .layout_label {
-    font-size: 22px;
-    color: rgba(0, 11, 21, 0.85);
-    text-align: center;
-    margin: 40px 0;
+  margin-top: 20px;
+  position: relative;
+  height: calc(100% - 20px);
+  min-height: calc(100% - 20px);
+  /deep/.el-card__body {
+    min-height: 100%;
+    height: 100%;
   }
   .layout_container {
+    width: 360px;
+    margin: 0 auto;
+    .layout_label {
+      font-size: 22px;
+      color: rgba($primaryFontColor, 0.85);
+      text-align: center;
+      margin: 16px 0 40px;
+    }
+    /deep/.desc {
+      font-size: 12px;
+      color: rgba($primaryFontColor, 0.25);
+      letter-spacing: 0;
+      line-height: 18px;
+      min-height: initial;
+    }
+    /deep/ .el-form-item {
+      margin-bottom: 16px;
+    }
     .captchaCode {
       width: 70%;
-      margin-right: 10%;
+      margin-right: 3%;
     }
     .captchaCodeBtn {
-      width: 20%;
+      width: 27%;
+      padding: 9px 0;
     }
     .submit {
       display: block;
@@ -191,8 +294,35 @@ export default {
       // margin: 40px 0 16px 0;
     }
     .returnLogin {
-      display: block;
       text-align: center;
+      display: block;
+      margin-top: 10px;
+    }
+  }
+  .success-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    .success-icon {
+      font-size: 72px;
+    }
+    .text {
+      font-size: 24px;
+      color: rgba(0, 11, 21, 0.85);
+      letter-spacing: 0;
+      text-align: center;
+      line-height: 36px;
+      font-weight: 600;
+      margin: 16px 0 48px;
+    }
+    .tips {
+      color: rgba($primaryFontColor, 0.25);
+      font-size: 12px;
+      letter-spacing: 0;
+      line-height: 18px;
+      margin-bottom: 16px;
     }
   }
 }

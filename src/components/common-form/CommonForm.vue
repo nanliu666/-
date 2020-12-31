@@ -37,6 +37,13 @@
             :placeholder="column.placeholder ? column.placeholder : `请输入${column.label}`"
             @input="column.props && column.props.onlyNumber && inputNumber($event, column)"
           />
+          <pass-input
+            v-if="column.itemType == 'passInput'"
+            v-model="model[column.prop]"
+            v-bind="itemAttrs(column)"
+            :placeholder="column.placeholder ? column.placeholder : `请输入${column.label}`"
+            @input="column.props && column.props.onlyNumber && inputNumber($event, column)"
+          />
           <el-select
             v-if="column.itemType == 'select'"
             v-model="model[column.prop]"
