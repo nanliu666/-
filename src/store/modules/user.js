@@ -138,6 +138,16 @@ const user = {
           })
       })
     },
+    //注销session
+    ClearSession({ commit }) {
+      return new Promise((resolve) => {
+        commit('SET_TOKEN', '')
+        commit('SET_USER_INFO', {})
+        removeToken()
+        removeRefreshToken()
+        resolve()
+      })
+    },
     // 获取系统菜单
     SetMenu({ commit }, menu) {
       return new Promise((resolve) => {
