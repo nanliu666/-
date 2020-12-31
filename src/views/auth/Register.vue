@@ -144,9 +144,8 @@ export default {
         },
         {
           prop: 'password',
-          itemType: 'input',
+          itemType: 'passInput',
           span: 24,
-          type: 'password',
           label: '密码',
           maxlength: '12',
           rules: [
@@ -162,8 +161,7 @@ export default {
         },
         {
           prop: 'repeatPassword',
-          type: 'password',
-          itemType: 'input',
+          itemType: 'passInput',
           label: '重复密码',
           span: 24,
           desc: '密码包含字母、符号或数字中至少两项且长度5～12字符的密码',
