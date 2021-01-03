@@ -128,11 +128,7 @@ const user = {
         logout()
           .then(() => {
             commit('SET_TOKEN', '')
-            commit('SET_MENU', [])
-            commit('SET_ROLES', [])
-            commit('SET_USER_INFO', null)
-            commit('DEL_ALL_TAG')
-            commit('CLEAR_LOCK')
+            commit('SET_USER_INFO', {})
             removeToken()
             removeRefreshToken()
             resolve()
@@ -143,14 +139,10 @@ const user = {
       })
     },
     //注销session
-    FedLogOut({ commit }) {
+    ClearSession({ commit }) {
       return new Promise((resolve) => {
         commit('SET_TOKEN', '')
-        commit('SET_MENU', [])
-        commit('SET_USER_INFO', null)
-        commit('SET_ROLES', [])
-        commit('DEL_ALL_TAG')
-        commit('CLEAR_LOCK')
+        commit('SET_USER_INFO', {})
         removeToken()
         removeRefreshToken()
         resolve()

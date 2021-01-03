@@ -1,11 +1,11 @@
 <template>
   <el-breadcrumb
-    v-if="!_.isEmpty(configs)"
+    v-if="!_.isEmpty(_configs)"
     :separator="separator"
     style="margin-top:24px; margin-bottom: 16px;"
   >
     <el-breadcrumb-item
-      v-for="(item, index) in configs"
+      v-for="(item, index) in _configs"
       :key="index"
       :to="{ path: item.path }"
     >
@@ -21,11 +21,24 @@ export default {
     separator: {
       type: String,
       default: '/'
+    },
+    routeList: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
     return {
       configs: []
+    }
+  },
+  computed: {
+    _configs: {
+      get() {
+        let target = _.isEmpty(this.routeList) ? this.configs : this.routeList
+        return target
+      },
+      set() {}
     }
   },
   activated() {

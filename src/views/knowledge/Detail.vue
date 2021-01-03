@@ -35,23 +35,29 @@
       </ul>
     </el-card>
     <el-card class="bottom-card">
-      <el-menu
-        :default-active="activeIndex"
-        class="el-menu-demo"
-        :active-text-color="activeColor"
-        mode="horizontal"
-        @select="handleSelect"
+      <el-tabs
+        v-model="activeIndex"
+        @tab-click="handleSelect"
       >
-        <el-menu-item index="1">
+        <el-tab-pane
+          label="资源介绍"
+          name="1"
+        >
           资源介绍
-        </el-menu-item>
-        <el-menu-item index="2">
+        </el-tab-pane>
+        <el-tab-pane
+          label="附件"
+          name="2"
+        >
           附件
-        </el-menu-item>
-        <el-menu-item index="3">
+        </el-tab-pane>
+        <el-tab-pane
+          label="评论"
+          name="3"
+        >
           评论
-        </el-menu-item>
-      </el-menu>
+        </el-tab-pane>
+      </el-tabs>
       <div style="padding: 20px 0; min-height:50vh">
         <div v-show="activeIndex === '1'">
           <div
@@ -105,7 +111,6 @@
 </template>
 
 <script>
-import styles from '@/styles/variables.scss'
 import Comment from './Comment'
 import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
 import CommonEmpty from '@/components/common-empty/Empty'
@@ -129,7 +134,6 @@ export default {
     return {
       previewSrcList: [],
       fileGroup: {},
-      activeColor: styles.primaryColor,
       activeIndex: '1',
       konwledgeDetail: {
         resName: 'Java 函数式编程'
@@ -178,8 +182,8 @@ export default {
     /**
      * 处理nav切换
      */
-    handleSelect(key) {
-      this.activeIndex = key
+    handleSelect(tab) {
+      this.activeIndex = tab.name
     },
     loadCommentList(params) {
       return getEvaluateList({ ...params, knowledgeId: this.id })

@@ -43,18 +43,19 @@
 
 ### itemType 可选值
 
-| 值         | 说明                   |
-| :--------- | :--------------------- |
-| input      | 输入框                 |
-| select     | 下拉选择器             |
-| radio      | 单选框                 |
-| checkbox   | 多选框                 |
-| cascader   | 级联选择器             |
-| treeSelect | 下拉树选择器           |
-| datePicker | 日期选择器             |
-| switch     | 开关                   |
-| slot       | 自定义                 |
-| slotout    | 自定义且不生成表单校验 |
+| 值         | 说明                         |
+| :--------- | :--------------------------- |
+| input      | 输入框                       |
+| passInput  | 密码输入框(自带密码显示功能) |
+| select     | 下拉选择器                   |
+| radio      | 单选框                       |
+| checkbox   | 多选框                       |
+| cascader   | 级联选择器                   |
+| treeSelect | 下拉树选择器                 |
+| datePicker | 日期选择器                   |
+| switch     | 开关                         |
+| slot       | 自定义                       |
+| slotout    | 自定义且不生成表单校验       |
 
 ### props Attributes
 

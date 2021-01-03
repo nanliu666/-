@@ -175,7 +175,7 @@ export default {
 .message {
   margin-top: 20px;
   background: #fff;
-  min-height: calc(100vh - 56px - 40px);
+  min-height: calc(100vh - 64px - 40px);
   position: relative;
   .hander {
     line-height: 68px;

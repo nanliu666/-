@@ -237,19 +237,10 @@ export default {
   top: 5px;
   right: 10px;
 }
-.notify-icon {
-  margin-right: 20px;
-}
 .message {
   font-size: 20px;
   line-height: 32px;
-  color: #8d9195;
+  color: rgba($primaryFontColor, 0.45);
   cursor: pointer;
-}
-.help {
-  font-size: 20px;
-  margin-right: 24px;
-  line-height: 32px;
-  color: #8d9195;
 }
 </style>

@@ -15,9 +15,32 @@
             {{ item.label }}
           </li>
         </ul>
-        <div class="flex flex-flow flex-items">
-          <Notification />
+        <div class="flex flex-flow flex-items right-menu">
           <div class="iconimage_icon_help iconfont help"></div>
+          <Notification />
+          <el-dropdown class="dropdown-avatar">
+            <span class="el-dropdown-link avatar">
+              <img
+                v-if="userInfo && userInfo.avatar_url"
+                class="top-bar__img "
+                :src="userInfo.avatar_url"
+              />
+              <i
+                v-else
+                class="iconimage_icon_headportrait iconfont "
+              />
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <!-- <el-dropdown-item>
+            <div @click="showUserCenter">
+              个人中心
+            </div>
+          </el-dropdown-item> -->
+              <el-dropdown-item @click.native="logout">
+                退出登录
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
           <!-- <div class="el-icon-picture-outline hander"></div> -->
         </div>
       </template>
@@ -31,6 +54,7 @@ const menu = [
   { label: '学习', path: '/learn' },
   { label: '课程', path: '/course' },
   { label: '知识库', path: '/knowledge' },
+  { label: '考试', path: '/exam' },
   { label: '新闻', path: '/news' },
   { label: '培训', path: '/train' },
   { label: '个人中心', path: '/my/info' },
@@ -50,7 +74,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['userId'])
+    ...mapGetters(['userId', 'userInfo'])
   },
   beforeMount() {
     // 初始化时设置激活中的菜单
@@ -63,6 +87,17 @@ export default {
       }
       this.activePath = item.path
       this.$router.push(item.path)
+    },
+    logout() {
+      this.$confirm('退出系统, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$store.dispatch('LogOut').then(() => {
+          this.$router.push({ path: '/login' })
+        })
+      })
     }
   }
 }
@@ -71,7 +106,7 @@ export default {
 <style lang="scss" scoped>
 .header {
   align-self: flex-start;
-  height: 56px;
+  height: $headerHeight;
   width: 100%;
   box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
   background-color: white;
@@ -83,6 +118,30 @@ export default {
     align-items: center;
     justify-content: space-between;
   }
+  .right-menu {
+    .help {
+      margin-right: 24px;
+      font-size: 20px;
+      color: rgba($primaryFontColor, 0.45);
+      cursor: pointer;
+    }
+    .dropdown-avatar {
+      margin-left: 24px;
+    }
+    .avatar {
+      i {
+        font-size: 32px;
+        color: rgba($primaryFontColor, 0.45);
+      }
+      img {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+      }
+      cursor: pointer;
+    }
+  }
+
   .header-menu {
     height: 100%;
     display: flex;
@@ -92,7 +151,7 @@ export default {
       font-size: 16px;
       color: #000b15;
       text-align: center;
-      line-height: 56px;
+      line-height: $headerHeight;
       position: relative;
       margin-right: 48px;
       cursor: pointer;

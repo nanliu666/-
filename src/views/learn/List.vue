@@ -33,7 +33,7 @@
         >
           <li
             v-for="(item, index) in menuItem.data"
-            :key="index"
+            :key="item.id"
             :class="{ active: menuLiActive(index) }"
             class="course-li"
             @click="selectLi(index, item)"
@@ -47,7 +47,7 @@
     <el-card class="li-container">
       <div class="top">
         <el-input
-          v-model="queryInfo.courseName"
+          v-model="queryInfo.name"
           placeholder="请输入课程名字"
           style="width: 380px"
           @input="searchFun"
@@ -126,7 +126,7 @@
                     @click="startStudy(item)"
                   >
                     <div class="title">
-                      {{ item.courseName }}
+                      {{ item.name }}
                     </div>
                     <el-tag :type="statusFilter(item.status).type">
                       {{ statusFilter(item.status).text }}
@@ -309,16 +309,16 @@ export default {
         pageNo: 1,
         pageSize: 10,
         status: 0,
-        courseName: '',
-        menuId: '',
-        menuType: '', //菜单栏类型（值为studyPlan或者train）
-        dateRange: ''
+        name: '',
+        catalogId: '',
+        type: '', //菜单栏类型（值为studyPlan或者train）
+        dateRange: []
       },
       courseList: []
     }
   },
-  created() {
-    this.loadMenu()
+  async created() {
+    await this.loadMenu()
     this.loadTableData()
   },
   methods: {
@@ -401,7 +401,7 @@ export default {
     toggleShow(type) {
       this.currentFirstType = this.currentFirstType.includes(type) ? [] : type
       // 去除必修选修内部id，重新加载
-      this.queryInfo.menuId = ''
+      this.queryInfo.catalogId = ''
       this.loadTableData()
     },
     selectLi(index, item) {
@@ -410,7 +410,7 @@ export default {
       } else {
         this.currentElectiveNav = index
       }
-      this.queryInfo.menuId = item.id
+      this.queryInfo.catalogId = item.id
       this.loadTableData()
     },
     searchFun: _.debounce(function() {

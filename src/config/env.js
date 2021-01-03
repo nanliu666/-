@@ -1,7 +1,7 @@
 // 配置编译环境和线上环境之间的切换
 
 let baseUrl = ''
-let iconfontVersion = ['2232073_wj8ymtyrbxr']
+let iconfontVersion = ['2232073_uomdnog467f']
 let iconfontUrl = '//at.alicdn.com/t/font_$key.css'
 let codeUrl = `${baseUrl}/code`
 const env = process.env

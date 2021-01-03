@@ -2,10 +2,11 @@
   <div class="login">
     <div class="login_container">
       <div class="layout_left">
-        <svg-icon
-          icon-class="HelloWelcome"
-          class-name="hellWelcom"
-        ></svg-icon>
+        <img
+          class="hellWelcom"
+          src="../../assets/images/HelloWelcome.svg"
+          alt=""
+        />
         <span>欢迎登录ePRO Learning易宝人才培育系统软件</span>
       </div>
       <div class="layout_right">
@@ -31,21 +32,15 @@
             />
           </el-form-item>
           <el-form-item prop="password">
-            <el-input
+            <pass-input
               v-model="loginForm.password"
-              :type="passwordInputType"
               placeholder="请输入密码"
+              onpaste="return false"
+              oncontextmenu="return false"
+              oncopy="return false"
+              oncut="return false"
             >
-              <i
-                slot="suffix"
-                :class="
-                  passwordInputType === 'password'
-                    ? 'icon-basics-eyeblind-outlined'
-                    : 'icon-basics-eyeopen-outlined'
-                "
-                @click.stop="inputTypeChange"
-              ></i>
-            </el-input>
+            </pass-input>
           </el-form-item>
           <el-form-item prop="code">
             <el-row :span="24">
@@ -72,7 +67,7 @@
           <el-button
             class="loginBtn"
             type="primary"
-            @click="loginIn()"
+            @click="handleLogin()"
           >
             登录
           </el-button>
@@ -98,8 +93,10 @@
 
 <script>
 import { getCaptcha, getTenantInfo } from '@/api/user'
+import PassInput from '@/components/pass-input/PassInput'
 export default {
   name: 'Home',
+  components: { PassInput },
   data() {
     return {
       loginForm: {
@@ -164,7 +161,7 @@ export default {
       // 忘记密码眼睛点击
       this.passwordInputType = this.passwordInputType === 'password' ? 'text' : 'password'
     },
-    loginIn() {
+    handleLogin() {
       // 登录
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
