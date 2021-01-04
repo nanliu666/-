@@ -66,7 +66,7 @@ export const getCommentList = (params) => get('/manage/v1/web/course/getCourseSc
  * @param {Object} params
  * @param {Number} params.content  内容
  */
-export const addComment = (params) => get('/manage/v1/web/course/addCourseScope', params)
+export const addComment = (params) => post('/manage/v1/web/course/addCourseScope', params)
 
 /**
  * 查询学员学习课程记录
