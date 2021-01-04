@@ -37,6 +37,13 @@
             :placeholder="column.placeholder ? column.placeholder : `请输入${column.label}`"
             @input="column.props && column.props.onlyNumber && inputNumber($event, column)"
           />
+          <pass-input
+            v-if="column.itemType == 'passInput'"
+            v-model="model[column.prop]"
+            v-bind="itemAttrs(column)"
+            :placeholder="column.placeholder ? column.placeholder : `请输入${column.label}`"
+            @input="column.props && column.props.onlyNumber && inputNumber($event, column)"
+          />
           <el-select
             v-if="column.itemType == 'select'"
             v-model="model[column.prop]"
@@ -160,12 +167,14 @@
 <script>
 import { elFormAttrs, elFormItemAttrs, noneItemAttrs, defaultAttrs } from './config'
 import LazySelect from '@/components/lazy-select/LazySelect'
-const inputTypes = ['input', 'inputNumber']
+import PassInput from '@/components/pass-input/PassInput'
+const inputTypes = ['input', 'inputNumber', 'passInput']
 export default {
   name: 'CommonForm',
   components: {
     ElTreeSelect: () => import('@/components/el-tree-select/ElTreeSelect'),
-    LazySelect
+    LazySelect,
+    PassInput
   },
   props: {
     model: {

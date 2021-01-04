@@ -84,7 +84,7 @@ function addLoading(res) {
     type: 'warning',
     confirmButtonText: '重新登录'
   }).then(() =>
-    store.dispatch('LogOut').then(() => {
+    store.dispatch('ClearSession').then(() => {
       router.push({ path: '/login' })
       loadingCount = 0
     })
@@ -102,7 +102,7 @@ instance.interceptors.response.use(
     //如果在白名单里则自行catch逻辑处理
     if (statusWhiteList.includes(status)) return Promise.reject(res)
     //如果是401则跳转到登录页面
-    if (status === 401) store.dispatch('LogOut').then(() => router.push({ path: '/login' }))
+    if (status === 401) store.dispatch('ClearSession').then(() => router.push({ path: '/login' }))
     // 如果请求为非200否者默认统一处理
 
     if (status !== 200) {
