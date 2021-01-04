@@ -2,7 +2,7 @@
   <div class="exam-style">
     <el-card class="search-card">
       <el-input
-        v-model="queryInfo.name"
+        v-model="queryInfo.examName"
         class="input-box"
         placeholder="输入考试名称搜索"
         prefix-icon="el-icon-search"
@@ -33,7 +33,7 @@
               是否通过
             </div>
             <el-select
-              v-model="queryInfo.passType"
+              v-model="queryInfo.isPass"
               class="course-list-filter-pop__value"
               placeholder="请选择"
             >
@@ -101,15 +101,29 @@
         @current-page-change="handleCurrentPageChange"
         @page-size-change="handlePageSizeChange"
       >
+        <template #examTime="{row}">
+          {{ row.examBeginTime }} - {{ row.examEndTime }}
+        </template>
+        <template #isPass="{row}">
+          {{ row.isPass === 0 ? '否' : '是' }}
+        </template>
+        <template #status="{row}">
+          {{ row.status | statusFilter }}
+        </template>
+        <template #score="{row}">
+          {{ row.score ? row.score : '--' }}
+        </template>
         <template #handler="{row}">
           <el-button
             type="text"
+            :disabled="JoinDisabled(row)"
             @click="joinExam(row)"
           >
             参加考试
           </el-button>
           <el-button
             type="text"
+            :disabled="JoinView(row)"
             @click="handleView(row)"
           >
             查看答卷
@@ -124,32 +138,40 @@
 const TABLE_COLUMNS = [
   {
     label: '考试名称',
-    prop: 'resName',
+    prop: 'examName',
     minWidth: 150
   },
   {
     label: '考试时间',
-    prop: 'providerName',
+    prop: 'examTime',
+    slot: true,
     minWidth: 120
   },
   {
     label: '参加次数',
-    prop: 'watchPeople',
+    prop: 'examTimes',
+    align: 'center',
     minWidth: 120
   },
   {
     label: '考试成绩',
-    prop: 'downloadPeople',
+    slot: true,
+    align: 'center',
+    prop: 'score',
     minWidth: 120
   },
   {
     label: '是否通过',
-    prop: 'downloadPeople1',
+    prop: 'isPass',
+    align: 'center',
+    slot: true,
     minWidth: 120
   },
   {
     label: '状态',
-    prop: 'scope',
+    prop: 'status',
+    align: 'center',
+    slot: true,
     minWidth: 120
   }
 ]
@@ -200,13 +222,23 @@ const STATUS_TYPE = [
     label: '已考试'
   },
   {
-    value: 3,
+    value: 4,
     label: '缺考'
   }
 ]
-import { getKnowledgeList, getKnowledgeCatalog } from '@/api/knowledge'
+import { getExamList } from '@/api/exam'
+import moment from 'moment'
+import { mapGetters } from 'vuex'
 export default {
   name: 'ExamList',
+  filters: {
+    statusFilter(data) {
+      const target = _.find(STATUS_TYPE, (item) => {
+        return item.value === data
+      })
+      return target.label
+    }
+  },
   data() {
     return {
       passTypeOption: PASS_TYPE,
@@ -221,8 +253,8 @@ export default {
         pageNo: 1,
         pageSize: 10,
         examTime: [],
-        name: '',
-        passType: 0,
+        examName: '',
+        isPass: 0,
         status: 0
       },
       activeIndex: '1',
@@ -232,20 +264,20 @@ export default {
       tableLoading: false
     }
   },
+  computed: {
+    ...mapGetters(['userId'])
+  },
   created() {
     this.loadTableData()
   },
   methods: {
     restSearch() {
-      const queryParams = { examTime: [], passType: '', status: '' }
+      const queryParams = { examTime: [], isPass: '', status: '' }
       this.queryInfo = _.assign(this.queryInfo, queryParams)
     },
     searchFun: _.debounce(function() {
       this.loadTableData()
     }, 500),
-    loadCategory(id) {
-      return getKnowledgeCatalog(id)
-    },
     handleCategoryChange(category) {
       this.queryInfo.catalogId = category.id
       this.loadTableData()
@@ -264,13 +296,78 @@ export default {
       this.queryInfo.pageSize = param
       this.loadTableData()
     },
+    JoinDisabled(row) {
+      // 参加考试置灰条件：
+      // 未开考(status1)、缺考(status3)、已考试且考试成绩为未发布(isPass2)、考试次数到达其上限(joinNum&&joinNumValue>=examTimes)
+      const isJoinDisabled =
+        row.status === 1 ||
+        row.status === 3 ||
+        row.isPass === 2 ||
+        (row.joinNum && row.joinNumValue >= row.examTimes)
+      return isJoinDisabled
+    },
     // 参加考试
     joinExam(row) {
-      this.$router.push({ name: 'ExamPaper', query: { id: row.id } })
+      const joinTips = '您确定现在参加考试吗？'
+      const isPassAndJoin =
+        '你已通过考试，重复考试将取成绩最好一次为最终结果。您确定现在参加考试吗？'
+      const lateMinutes = `${moment(row.examBeginTime).diff(
+        moment(new Date(), 'minutes'),
+        'minutes'
+      )}分钟`
+      const lateTimeTips = `你已迟到${lateMinutes}不得进入参加考试！`
+      const isLateTips = `本考试设置了迟到限制，${lateTimeTips}`
+      const abnormalYips = '检测到你上次考试退出异常，系统已保留上次退出考试前的信息可继续进行。'
+      let tips = ''
+      // 第一次参加考试(examTimes=0)或未通过考试(status=2&&isPass=1)时
+      if (row.examTimes === 0 || (row.status === 2 && row.isPass === 1)) {
+        tips = joinTips
+      }
+      // 若已通过考试，且还在考试时间和限定次数内，点击出现弹框
+      if (
+        row.isPass === 3 &&
+        moment(new Date()).diff(moment(row.examEndTime), 'minutes') > 0 &&
+        row.joinNum &&
+        row.joinNumValue < row.examTimes
+      ) {
+        tips = isPassAndJoin
+      }
+      //若创建考试时设置了迟到或迟到n分钟内禁止考试,并且已经开考
+      if (row.lateBanExam && moment(new Date()).diff(moment(row.examBeginTime), 'minutes') > 0) {
+        tips = isLateTips
+      }
+      // 断网存贮考试，检测本地存在考试信息, 并且当前考试id与考生id是同一个
+      const offLineExam = localStorage.getItem('offLineExam')
+      if (
+        !_.isEmpty(offLineExam) &&
+        offLineExam.examId === row.examId &&
+        this.userId === row.examineeId
+      ) {
+        tips = abnormalYips
+      }
+      this.$confirm(tips, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$router.push({
+          name: 'ExamPaper',
+          query: { examId: row.examId, batchId: row.batchId }
+        })
+      })
+    },
+    // 查看置灰规则
+    JoinView(row) {
+      // 缺考、未考试和未开考状态下，不能查看答卷，按钮置灰
+      // 若创建考试时，不允许考生查看答卷。则不能查看答卷，按钮置灰
+      // 已提交过答卷的点击“查看答卷”挑跳转到【查看答卷】页面
+      const isJoinDisabled =
+        row.status === 1 || row.status === 2 || row.isPass === 4 || row.openResults
+      return isJoinDisabled
     },
     // 查看答案
     handleView(row) {
-      this.$router.push({ name: 'ExamDetail', query: { id: row.id } })
+      this.$router.push({ name: 'ExamDetail', query: { examId: row.examId, batchId: row.batchId } })
     },
 
     // 加载函数
@@ -279,7 +376,7 @@ export default {
       try {
         this.tableData = []
         this.tableLoading = true
-        let { totalNum, data } = await getKnowledgeList(this.queryInfo)
+        let { totalNum, data } = await getExamList(this.queryInfo)
         this.tableLoading = false
         this.tableData = data
         this.page.total = totalNum
