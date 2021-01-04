@@ -37,7 +37,10 @@
         </el-button>
       </div>
     </div>
-    <div class="middle-container">
+    <div
+      v-load="containerLoad"
+      class="middle-container"
+    >
       <div
         v-if="!isSuccess"
         class="paper-main"
@@ -129,7 +132,7 @@ import {
   QUESTION_TYPE_BLANK,
   QUESTION_TYPE_GROUP
 } from '@/const/exam'
-import { getTakeExam } from '@/api/exam'
+import { getTakeExam, postSubmitPaper } from '@/api/exam'
 export default {
   filters: {
     typeFilter(data) {
@@ -144,6 +147,8 @@ export default {
   },
   data() {
     return {
+      containerLoad: false,
+      successPapeer: {},
       isSuccess: true,
       confirmTips: '',
       centerDialogVisible: false,
@@ -182,6 +187,21 @@ export default {
   methods: {
     submit() {
       this.centerDialogVisible = false
+      const params = {
+        batchId: this.$route.query.batchId,
+        examId: this.$route.query.examId,
+        paperId: this.paper.id,
+        totalScore: this.paper.totalScore,
+        questions: this.paper.questions
+      }
+      this.containerLoad = true
+      postSubmitPaper(params)
+        .then((res) => {
+          this.successPapeer = res
+        })
+        .finally(() => {
+          this.containerLoad = false
+        })
     },
     async initData() {
       this.paper = await getTakeExam(this.$route.query)
@@ -215,10 +235,11 @@ export default {
       if (this.remainingTime !== '00 : 00 : 00') return
       clearInterval(dealTimeId)
       let timeTips = 4
-      const timeId = setInterval(() => {
+      const timeId = setInterval(async () => {
         timeTips -= 1
         if (timeTips === 0) {
           clearInterval(timeId)
+          await this.submit()
           this.centerDialogVisible = false
           this.isSuccess = true
         } else {

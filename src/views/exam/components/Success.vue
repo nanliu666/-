@@ -9,7 +9,7 @@
       </div>
       <div class="content">
         <!-- {{}} -->
-        您的答卷已经提交成功
+        {{ $parent.successPapeer.msg }}
         <!-- <div class="top">
           <span>您的答卷已经提交成功</span>
           <span>{{ isActive ? '，' : '！' }}</span>
@@ -21,6 +21,7 @@
       </div>
       <div class="handle-box">
         <el-button
+          v-if="$parent.successPapeer.openAnswerSheet"
           type="primary"
           @click="goDetail"
         >

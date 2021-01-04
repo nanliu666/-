@@ -63,6 +63,7 @@
 
 <script>
 import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
+import { getViewAnswer } from '@/api/exam'
 const STATUS = {
   0: {
     type: 'success',
@@ -93,7 +94,11 @@ export default {
       }
     }
   },
-  created() {},
+  created() {
+    getViewAnswer(this.$route.query).then((res) => {
+      this.examDetail = res
+    })
+  },
   methods: {
     getStatus(status) {
       return STATUS[status]
