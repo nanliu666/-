@@ -11,10 +11,10 @@
           v-if="!isSuccess"
           class="content"
         >
-          <span>共50题，</span>
-          <span>总分{{ paper.totalScore }}分，</span>
-          <span>限定最高分为100分，</span>
-          <span>计时60分钟</span>
+          <span>共{{ paper.questionNum }}题，</span>
+          <span v-if="paper.totalScore">总分{{ paper.totalScore / 10 }}分，</span>
+          <span>限定最高分为100分</span>
+          <span v-if="paper.reckonTime">，计时{{ paper.reckonTimeValue }}分钟</span>
           <span>（答题不确定时，可用</span>
           <i class="iconimage_icon_help_normal iconfont" />
           <span>标记）</span>
@@ -37,65 +37,142 @@
         </el-button>
       </div>
     </div>
-    <div
-      v-load="containerLoad"
-      class="middle-container"
-    >
+    <section class="container-section">
       <div
-        v-if="!isSuccess"
-        class="paper-main"
+        v-loading="containerLoad"
+        class="middle-container"
       >
-        <div class="main-left">
-          <el-card style="margin-bottom: 20px">
-            <div class="avatar-card">
-              <el-avatar
-                :size="80"
-                :src="circleUrl"
-              ></el-avatar>
-              <div class="exam-box">
-                <div class="name">
-                  {{ exam.name }}
-                </div>
-                <div class="phone">
-                  {{ exam.phone }}
+        <div
+          v-if="!isSuccess"
+          class="paper-main"
+        >
+          <div class="main-left">
+            <el-card style="margin-bottom: 20px">
+              <div class="avatar-card">
+                <el-avatar
+                  :size="80"
+                  :src="userInfo.avatar_url || circleUrl"
+                ></el-avatar>
+                <div class="exam-box">
+                  <div class="name">
+                    {{ userInfo.nick_name }}
+                  </div>
+                  <div class="phone">
+                    {{ userInfo.account }}
+                  </div>
                 </div>
               </div>
-            </div>
-          </el-card>
-          <el-card class="control-card">
+            </el-card>
+            <el-card class="control-card">
+              <ul class="question-ul">
+                <li
+                  v-for="(item, index) in questionList"
+                  :key="index"
+                  class="question-li"
+                >
+                  <div class="li-title">
+                    <span>{{ (index + 1) | number2zhcn }}、</span>
+                    <span>{{ item[0].type | typeFilter }}</span>
+                  </div>
+                  <ul class="list-box">
+                    <li
+                      v-for="(subItem, subIndex) in item"
+                      :key="subItem.id"
+                      class="list-li"
+                    >
+                      <span
+                        class="li-content"
+                        :class="{
+                          'select-li': subIndex === 0,
+                          'doubt-li': currentItemIsInImpeach(subItem)
+                        }"
+                      >
+                        <span>{{ subIndex + 1 }}</span>
+                        <span class="li-tips">
+                          <i
+                            class="iconfont "
+                            :class="{
+                              iconimage_icon_succeed: subIndex === 0,
+                              iconimage_icon_query: currentItemIsInImpeach(subItem)
+                            }"
+                          />
+                        </span>
+                      </span>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </el-card>
+          </div>
+          <el-card class="main-right">
             <ul class="question-ul">
               <li
                 v-for="(item, index) in questionList"
                 :key="index"
                 class="question-li"
               >
-                <div class="li-title">
-                  <span>{{ (index + 1) | number2zhcn }}、</span>
-                  <span>单选题</span>
+                <div class="title-box">
+                  <div class="question-li-title">
+                    <span>{{ (index + 1) | number2zhcn }}、</span>
+                    <span>{{ item[0].type | typeFilter }}</span>
+                    <span>（共{{ _.size(item) }}题, 共{{ getItemTotalScore(item) }}分)</span>
+                  </div>
+                  <div class="sub-title">
+                    {{ item[0].title }}
+                  </div>
                 </div>
-                <ul class="list-box">
+                <ul class="content-box">
                   <li
-                    v-for="(subItem, subIndex) in item.list"
-                    :key="subItem.id"
-                    class="list-li"
+                    v-for="(conItem, conIndex) in item"
+                    :key="conItem.id"
+                    class="content-li"
                   >
-                    <span class="li-content">
-                      <span>{{ subIndex + 1 }}</span>
-                      <span class="li-tips">
-                        <!-- <i class="iconimage_icon_help_hover iconfont "> </i> -->
-                        <span class="right"></span>
-                      </span>
-                    </span>
+                    <div class="li-main">
+                      <div class="li-main-left">
+                        <i
+                          class="iconfont"
+                          :class="
+                            `icon${
+                              currentItemIsInImpeach(conItem)
+                                ? 'image_icon_help_press'
+                                : 'image_icon_help_normal'
+                            }`
+                          "
+                          @click="setImpeach(conItem)"
+                        />
+                      </div>
+                      <div class="li-main-right">
+                        <span>{{ conIndex + 1 }}.</span>
+                        <span>（{{ conItem.score / 10 }}分）</span>
+                        <QustionPreview
+                          v-if="QUESTION_TYPE_GROUP !== conItem.type"
+                          :data="conItem"
+                        />
+                        <span v-else>
+                          <span v-html="_.unescape(conItem.content)"></span>
+                          <ul>
+                            <li
+                              v-for="(paperItem, paperIndex) in conItem.subQuestions"
+                              :key="paperIndex"
+                              class=""
+                            >
+                              <span>{{ paperIndex + 1 }}</span>
+                              <QustionPreview :data="paperItem" />
+                            </li>
+                          </ul>
+                        </span>
+                      </div>
+                    </div>
                   </li>
                 </ul>
               </li>
             </ul>
           </el-card>
         </div>
-        <el-card> </el-card>
+        <exam-success v-else />
       </div>
-      <exam-success v-else />
-    </div>
+      <the-footer />
+    </section>
     <el-dialog
       title="提交"
       :visible.sync="centerDialogVisible"
@@ -112,7 +189,7 @@
       >
         <el-button
           type="primary"
-          @click="submit"
+          @click="automaticSubmit"
         >{{ confirmTips }}</el-button>
       </span>
     </el-dialog>
@@ -122,6 +199,8 @@
 <script>
 import moment from 'moment'
 import examSuccess from './components/Success'
+import QustionPreview from './components/questionPreview'
+import TheFooter from '@/page/TheFooter'
 const nzhcn = require('nzh/cn')
 import {
   QUESTION_TYPE_MAP,
@@ -133,6 +212,7 @@ import {
   QUESTION_TYPE_GROUP
 } from '@/const/exam'
 import { getTakeExam, postSubmitPaper } from '@/api/exam'
+import { mapGetters } from 'vuex'
 export default {
   filters: {
     typeFilter(data) {
@@ -143,10 +223,13 @@ export default {
     }
   },
   components: {
-    examSuccess
+    examSuccess,
+    QustionPreview,
+    TheFooter
   },
   data() {
     return {
+      impeachList: [], // 存疑数组
       containerLoad: false,
       successPapeer: {},
       isSuccess: false,
@@ -159,12 +242,7 @@ export default {
         title: 'EHS应知应会全员考试',
         answerMode: 1 //1或者2， 1-整卷模式   2-逐卷模式
       },
-      questionList: [
-        {
-          type: 'single_choice',
-          list: [{}, {}, {}, {}, {}]
-        }
-      ],
+      questionList: [],
       exam: {
         name: '汪华林',
         phone: '1302645745645'
@@ -178,15 +256,63 @@ export default {
     QUESTION_TYPE_BLANK: () => QUESTION_TYPE_BLANK,
     QUESTION_TYPE_SHOER: () => QUESTION_TYPE_SHOER,
     QUESTION_TYPE_MAP: () => QUESTION_TYPE_MAP,
-    QUESTION_TYPE_GROUP: () => QUESTION_TYPE_GROUP
+    QUESTION_TYPE_GROUP: () => QUESTION_TYPE_GROUP,
+    ...mapGetters(['userInfo'])
   },
   created() {
     this.initData()
-    // this.initRemainingTime()
   },
   methods: {
-    submit() {
-      this.centerDialogVisible = false
+    // 当前对象是否存在于存疑数据
+    currentItemIsInImpeach(data) {
+      return _.some(this.impeachList, (item) => {
+        return item.key === data.id
+      })
+    },
+    // 维护存疑数组
+    setImpeach(data) {
+      const inpeachIndex = _.findIndex(this.impeachList, (item) => {
+        return item.key === data.id
+      })
+      if (inpeachIndex > -1) {
+        this.impeachList.splice(inpeachIndex, 1)
+      } else {
+        // 基于题目数组数据结构为二维数组
+        _.each(this.questionList, (parentItem, parentIndex) => {
+          _.each(parentItem, (sonItem, sonIndex) => {
+            if (sonItem.id === data.id) {
+              this.impeachList.push({
+                key: data.id,
+                value: [parentIndex, sonIndex]
+              })
+            }
+          })
+        })
+      }
+    },
+    addScore(args) {
+      return args.reduce((prev, curr) => {
+        return prev + curr
+      })
+    },
+    getItemTotalScore(data) {
+      const scoreList = _.map(data, (item) => {
+        return item.score
+      })
+      const totalScore = this.addScore(scoreList)
+      return totalScore / 10
+    },
+    // 交卷逻辑
+    carryOut() {
+      if (!this.checkSubmit()) return
+      this.submitFun()
+    },
+    // TODO：考试交卷前校验
+    // 不能提前多少分钟交卷，但是如果设置了自动交卷，则可以过滤这个规则
+    checkSubmit() {},
+    // 处理交卷动作
+    submitFun() {
+      this.containerLoad = true
       const params = {
         batchId: this.$route.query.batchId,
         examId: this.$route.query.examId,
@@ -194,7 +320,6 @@ export default {
         totalScore: this.paper.totalScore,
         questions: this.paper.questions
       }
-      this.containerLoad = true
       postSubmitPaper(params)
         .then((res) => {
           this.successPapeer = res
@@ -203,18 +328,35 @@ export default {
           this.containerLoad = false
         })
     },
+    // 考试到时，自动交卷
+    automaticSubmit() {
+      this.centerDialogVisible = false
+      this.submitFun()
+    },
     async initData() {
       this.paper = await getTakeExam(this.$route.query)
+      this.questionList = _.chain(_.cloneDeep(this.paper.questions))
+        .groupBy('parentSort')
+        .sortBy('parentSort')
+        .map((item) => {
+          return _.sortBy(item, 'sort')
+        })
+        .value()
+      // console.log('this.questionList==', this.questionList)
       this.initRemainingTime()
     },
     goBack() {
       this.$router.go(-1)
     },
+    // TODO: 考试时间交卷逻辑需要补充
     initRemainingTime() {
-      const reckonTimeValue = 2
-      const dealline = moment(new Date()).add(reckonTimeValue, 's')
+      const { reckonTimeValue, strategy, examEndTime } = this.paper
+      // 考试策略strategy影响考试时长，如果为true，到了考试结束时间就必须交卷，否则可以考满设置的考试时间
+      // 如果考试时长不计时，并且考试策略为true，最后5分钟需要爆红提示。计时就按照计时的算。
+      const canUseUpTime = moment(new Date()).add(reckonTimeValue, 'm')
+      const dealline = strategy ? canUseUpTime : moment(examEndTime)
       const dealTimeId = setInterval(() => {
-        const diffTime = moment(dealline).diff(moment(new Date()))
+        const diffTime = moment(dealline).diff(new Date())
         // 5分钟为时间警戒线，经过测试兑换的值为301995
         const WARNING_LINE = 301995
         if (diffTime <= WARNING_LINE) {
@@ -231,6 +373,7 @@ export default {
         this.endExam(dealTimeId)
       }, 1000)
     },
+    // 考试到时结束考试
     endExam(dealTimeId) {
       if (this.remainingTime !== '00 : 00 : 00') return
       clearInterval(dealTimeId)
@@ -239,7 +382,7 @@ export default {
         timeTips -= 1
         if (timeTips === 0) {
           clearInterval(timeId)
-          await this.submit()
+          await this.automaticSubmit()
           this.centerDialogVisible = false
           this.isSuccess = true
         } else {
@@ -247,19 +390,20 @@ export default {
         }
         this.confirmTips = `知道了（${timeTips}s）`
       }, 1000)
-    },
-    carryOut() {}
+    }
   }
 }
 </script>
 
 <style scoped lang="scss">
+$activeColor: #01aafc;
+$selctColor: #fcba00;
 .paper-container {
   display: flex;
   justify-content: space-between;
   flex-direction: column;
   flex: 1;
-  height: calc(100vh - 40px);
+  height: calc(100vh);
   .paper-header {
     align-self: flex-start;
     height: 56px;
@@ -299,112 +443,162 @@ export default {
       }
     }
   }
-  .middle-container {
+  .container-section {
     display: flex;
     flex-direction: column;
     flex: 1;
     overflow-y: scroll;
-  }
-  .paper-main {
-    height: 100vh;
-    width: 1200px;
-    margin: 20px auto;
-    display: flex;
-    justify-content: space-between;
-    .main-left {
-      margin-right: 20px;
-      .avatar-card {
-        width: 285px;
+    overflow-x: hidden;
+    .middle-container {
+      .paper-main {
+        width: 1200px;
+        margin: 20px auto;
         display: flex;
-        align-items: center;
-        .exam-box {
-          margin-left: 24px;
-          .name {
-            font-family: PingFangSC-Medium;
-            font-size: 18px;
-            color: rgba(0, 11, 21, 0.85);
-            font-weight: 550;
-            margin-bottom: 8px;
-          }
-          .phone {
-            font-family: PingFangSC-Regular;
-            font-size: 14px;
-            color: rgba(0, 11, 21, 0.45);
-          }
-        }
-      }
-      .control-card {
-        .question-ul {
-          .question-li {
-            .li-title {
-              font-family: PingFangSC-Medium;
-              font-size: 16px;
-              color: rgba(0, 11, 21, 0.85);
-              font-weight: 550;
-              margin-bottom: 16px;
-            }
-            .list-box {
-              display: flex;
-              justify-content: space-between;
-              flex-wrap: wrap;
-              &::after {
-                content: '';
-                width: calc(100% / 5);
+        justify-content: space-between;
+        .main-left {
+          margin-right: 20px;
+          .avatar-card {
+            width: 285px;
+            display: flex;
+            align-items: center;
+            .exam-box {
+              margin-left: 24px;
+              .name {
+                font-family: PingFangSC-Medium;
+                font-size: 18px;
+                color: rgba(0, 11, 21, 0.85);
+                font-weight: 550;
+                margin-bottom: 8px;
               }
-              .list-li {
-                width: calc(100% / 5);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                .li-content {
-                  width: 32px;
-                  height: 32px;
-                  border: 1px solid #d9dbdc;
-                  border-radius: 4px;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  font-family: PingFangSC-Regular;
-                  font-size: 14px;
+              .phone {
+                font-family: PingFangSC-Regular;
+                font-size: 14px;
+                color: rgba(0, 11, 21, 0.45);
+              }
+            }
+          }
+          .control-card {
+            .question-ul {
+              .question-li {
+                margin-bottom: 24px;
+                &:last-child {
+                  margin-bottom: 0;
+                }
+                .li-title {
+                  font-family: PingFangSC-Medium;
+                  font-size: 16px;
                   color: rgba(0, 11, 21, 0.85);
-                  position: relative;
-                  .li-tips {
-                    position: absolute;
-                    width: 0;
-                    height: 0;
-                    border-bottom: 17px solid red;
-                    border-left: 17px solid transparent;
-                    right: 0;
-                    bottom: 0;
-                    .iconfont {
-                      position: absolute;
-                      right: -2px;
-                      top: 2px;
-                      color: #fff;
+                  font-weight: 550;
+                  margin-bottom: 16px;
+                }
+                .list-box {
+                  display: flex;
+                  justify-content: flex-start;
+                  flex-wrap: wrap;
+                  &::after {
+                    content: '';
+                    width: calc(100% / 5);
+                  }
+                  .list-li {
+                    width: calc(100% / 5);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    .li-content {
+                      width: 32px;
+                      height: 32px;
+                      cursor: pointer;
+                      border: 1px solid #d9dbdc;
+                      border-radius: 4px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      font-family: PingFangSC-Regular;
+                      font-size: 14px;
+                      color: rgba(0, 11, 21, 0.85);
+                      position: relative;
+                      &:hover {
+                        color: $activeColor;
+                        border-color: $activeColor;
+                      }
+                      .li-tips {
+                        position: absolute;
+                        width: 0;
+                        height: 0;
+                        border-bottom: 17px solid transparent;
+                        border-left: 17px solid transparent;
+                        right: 0;
+                        bottom: 0;
+                        .iconfont {
+                          position: absolute;
+                          right: -2px;
+                          top: 4px;
+                          color: #fff;
+                          font-size: 10px;
+                        }
+                      }
                     }
-                    .right {
-                      position: absolute;
-                      right: 3px;
-                      top: 7px;
-                      width: 3px;
-                      height: 6px;
-                      border-color: #fff;
-                      border-style: solid;
-                      border-width: 0 1px 1px 0;
-                      transform: rotate(45deg);
+                    .select-li {
+                      border-color: $activeColor;
+                      .li-tips {
+                        border-bottom-color: $activeColor;
+                      }
+                    }
+                    .doubt-li {
+                      border-color: $selctColor;
+                      .li-tips {
+                        border-bottom-color: $selctColor;
+                      }
                     }
                   }
                 }
-                .select-li {
-                  border-color: #01aafc;
-                  .li-tips {
-                    border-bottom-color: #01aafc;
-                  }
+              }
+            }
+          }
+        }
+        .main-right {
+          flex: 1;
+          .question-ul {
+            .question-li {
+              padding-bottom: 8px;
+              .title-box {
+                margin-bottom: 24px;
+                .question-li-title {
+                  font-family: PingFangSC-Medium;
+                  font-size: 16px;
+                  color: rgba(0, 11, 21, 0.85);
+                  font-weight: 550;
+                  margin-bottom: 4px;
                 }
-                .doubt-li {
-                  border-color: #fcba00;
-                  .li-tips {
-                    border-bottom-color: #fcba00;
+                .sub-title {
+                  font-family: PingFangSC-Regular;
+                  font-size: 12px;
+                  color: rgba(0, 11, 21, 0.25);
+                }
+              }
+              .content-box {
+                .content-li {
+                  margin-bottom: 32px;
+                  .li-main {
+                    display: flex;
+                    justify-content: flex-start;
+                    .li-main-left {
+                      margin-top: 2px;
+                      margin-right: 8.8px;
+                      .iconfont {
+                        &:hover {
+                          color: $activeColor;
+                          cursor: pointer;
+                        }
+                      }
+                      .iconimage_icon_help_press {
+                        color: $selctColor;
+                      }
+                    }
+                    .li-main-right {
+                      flex: 1;
+                    }
                   }
                 }
               }
@@ -412,8 +606,6 @@ export default {
           }
         }
       }
-    }
-    .main-right {
     }
   }
 }
