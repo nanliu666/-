@@ -272,7 +272,7 @@ export default {
           restPassword: [
             { min: 6, max: 12, message: '密码长度需要满足6～12字符', required: true },
             {
-              pattern: /^(?=.*[a-zA-Z0-9].*)(?=.*[a-zA-Z\\W].*)(?=.*[0-9\\W].*).{6,12}$/,
+              pattern: /(?!^\d+$)(?!^[A-Za-z]+$)(?!^[^A-Za-z0-9]+$)(?!^.*[\u4E00-\u9FA5].*$)^\S{6,16}$/,
               message: '密码需要包含字母、符号或数字中至少两项'
             },
             { validator: this.validatePass }

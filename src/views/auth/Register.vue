@@ -151,7 +151,7 @@ export default {
           rules: [
             { min: 6, max: 12, message: '密码长度需要满足6～12字符' },
             {
-              pattern: /^(?=.*[a-zA-Z0-9].*)(?=.*[a-zA-Z\\W].*)(?=.*[0-9\\W].*).{6,12}$/,
+              pattern: /(?!^\d+$)(?!^[A-Za-z]+$)(?!^[^A-Za-z0-9]+$)(?!^.*[\u4E00-\u9FA5].*$)^\S{6,16}$/,
               message: '密码需要包含字母、符号或数字中至少两项'
             },
             { validator: validatePass }
@@ -164,12 +164,12 @@ export default {
           itemType: 'passInput',
           label: '重复密码',
           span: 24,
-          desc: '密码包含字母、符号或数字中至少两项且长度5～12字符的密码',
+          desc: '密码包含字母、符号或数字中至少两项且长度6～12字符的密码',
           rules: [
             { validator: validatePass2 },
             { min: 6, max: 12, message: '密码长度需要满足6～12字符' },
             {
-              pattern: /^(?=.*[a-zA-Z0-9].*)(?=.*[a-zA-Z\\W].*)(?=.*[0-9\\W].*).{6,12}$/,
+              pattern: /(?!^\d+$)(?!^[A-Za-z]+$)(?!^[^A-Za-z0-9]+$)(?!^.*[\u4E00-\u9FA5].*$)^\S{6,16}$/,
               message: '密码需要包含字母、符号或数字中至少两项'
             }
           ],
