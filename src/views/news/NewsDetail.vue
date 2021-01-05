@@ -137,6 +137,7 @@ export default {
       let res = await newsInfo(params)
       if (JSON.stringify(res) != '{}') {
         this.data = res
+        this.data.content = _.unescape(this.data.content)
       } else {
         let info = data.type ? '下一页' : '上一页'
         this.$message.error(info + '没有内容了哦!')

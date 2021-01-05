@@ -15,10 +15,12 @@
       <div class="content_title">
         <span
           :class="{ pitch: pitch === 0 }"
+          style="cursor:pointer;"
           @click="showpitch(0)"
         >个人信息</span>
         <span
           :class="{ pitch: pitch === 1 }"
+          style="cursor:pointer;"
           @click="showpitch(1)"
         >修改密码</span>
       </div>
@@ -40,7 +42,12 @@ export default {
   },
   data() {
     return {
-      pitch: 0
+      pitch: this.$route.query.pitch || 0
+    }
+  },
+  watch: {
+    'this.$route.query.pitch': function() {
+      this.pitch = this.$route.query.pitch
     }
   },
   methods: {
