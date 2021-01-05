@@ -8,16 +8,7 @@
         提交成功
       </div>
       <div class="content">
-        <!-- {{}} -->
         {{ $parent.successPapeer.msg }}
-        <!-- <div class="top">
-          <span>您的答卷已经提交成功</span>
-          <span>{{ isActive ? '，' : '！' }}</span>
-          <span>您的客观题成绩是：60.0分！</span>
-        </div>
-        <div class="bottom">
-          考卷需要手工评分，请留意评分结果。
-        </div> -->
       </div>
       <div class="handle-box">
         <el-button

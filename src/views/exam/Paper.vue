@@ -149,7 +149,7 @@ export default {
     return {
       containerLoad: false,
       successPapeer: {},
-      isSuccess: true,
+      isSuccess: false,
       confirmTips: '',
       centerDialogVisible: false,
       isWarningTimeLine: false,
@@ -181,8 +181,8 @@ export default {
     QUESTION_TYPE_GROUP: () => QUESTION_TYPE_GROUP
   },
   created() {
-    this.initRemainingTime()
-    // this.initData()
+    this.initData()
+    // this.initRemainingTime()
   },
   methods: {
     submit() {

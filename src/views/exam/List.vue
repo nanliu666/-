@@ -68,7 +68,7 @@
             <el-button
               type="primary"
               size="medium"
-              @click="loadTableData"
+              @click="filterFun"
             >
               确定
             </el-button>
@@ -105,7 +105,7 @@
           {{ row.examBeginTime }} - {{ row.examEndTime }}
         </template>
         <template #isPass="{row}">
-          {{ row.isPass === 0 ? '否' : '是' }}
+          {{ getPass(row) }}
         </template>
         <template #status="{row}">
           {{ row.status | statusFilter }}
@@ -267,13 +267,22 @@ export default {
   computed: {
     ...mapGetters(['userId'])
   },
-  created() {
+  activated() {
     this.loadTableData()
   },
   methods: {
+    getPass(row) {
+      return _.find(PASS_TYPE, (item) => {
+        return item.value === row.isPass
+      }).label
+    },
     restSearch() {
-      const queryParams = { examTime: [], isPass: '', status: '' }
+      const queryParams = { examTime: [], isPass: '', status: '', pageNo: 1, pageSize: 10 }
       this.queryInfo = _.assign(this.queryInfo, queryParams)
+    },
+    filterFun() {
+      this.queryInfo.pageNo = 1
+      this.loadTableData()
     },
     searchFun: _.debounce(function() {
       this.loadTableData()
@@ -294,33 +303,33 @@ export default {
      */
     handlePageSizeChange(param) {
       this.queryInfo.pageSize = param
+      this.queryInfo.pageNo = 1
       this.loadTableData()
     },
     JoinDisabled(row) {
       // 参加考试置灰条件：
-      // 未开考(status1)、缺考(status3)、已考试且考试成绩为未发布(isPass2)、考试次数到达其上限(joinNum&&joinNumValue>=examTimes)
+      // 未开考(status1)、缺考(status4)、已考试且考试成绩为未发布(isPass2)、已考试(status3)考试次数到达其上限(joinNum&&joinNumValue>=examTimes)
       const isJoinDisabled =
         row.status === 1 ||
-        row.status === 3 ||
+        row.status === 4 ||
         row.isPass === 2 ||
-        (row.joinNum && row.joinNumValue >= row.examTimes)
+        (row.status === 3 && row.joinNum && row.joinNumValue >= row.examTimes)
       return isJoinDisabled
     },
     // 参加考试
     joinExam(row) {
+      let isShowConfirm = true // 默认显示确认按钮
       const joinTips = '您确定现在参加考试吗？'
       const isPassAndJoin =
         '你已通过考试，重复考试将取成绩最好一次为最终结果。您确定现在参加考试吗？'
-      const lateMinutes = `${moment(row.examBeginTime).diff(
-        moment(new Date(), 'minutes'),
-        'minutes'
-      )}分钟`
-      const lateTimeTips = `你已迟到${lateMinutes}不得进入参加考试！`
+      const lateMinutes = moment(new Date()).diff(moment(row.examBeginTime), 'minutes')
+      const lateMinutesText = `${lateMinutes}分钟`
+      const lateTimeTips = `你已迟到${lateMinutesText}不得进入参加考试！`
       const isLateTips = `本考试设置了迟到限制，${lateTimeTips}`
       const abnormalYips = '检测到你上次考试退出异常，系统已保留上次退出考试前的信息可继续进行。'
       let tips = ''
-      // 第一次参加考试(examTimes=0)或未通过考试(status=2&&isPass=1)时
-      if (row.examTimes === 0 || (row.status === 2 && row.isPass === 1)) {
+      // 第一次参加考试(examTimes=0)或未通过考试(isPass=1)时
+      if (row.examTimes === 0 || row.isPass === 1) {
         tips = joinTips
       }
       // 若已通过考试，且还在考试时间和限定次数内，点击出现弹框
@@ -333,8 +342,9 @@ export default {
         tips = isPassAndJoin
       }
       //若创建考试时设置了迟到或迟到n分钟内禁止考试,并且已经开考
-      if (row.lateBanExam && moment(new Date()).diff(moment(row.examBeginTime), 'minutes') > 0) {
+      if (row.lateBanExam && lateMinutes - row.lateBanExamValue > 0) {
         tips = isLateTips
+        isShowConfirm = false
       }
       // 断网存贮考试，检测本地存在考试信息, 并且当前考试id与考生id是同一个
       const offLineExam = localStorage.getItem('offLineExam')
@@ -348,6 +358,7 @@ export default {
       this.$confirm(tips, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
+        showConfirmButton: isShowConfirm,
         type: 'warning'
       }).then(() => {
         this.$router.push({
@@ -376,7 +387,12 @@ export default {
       try {
         this.tableData = []
         this.tableLoading = true
-        let { totalNum, data } = await getExamList(this.queryInfo)
+        const examTimeTemp = _.cloneDeep(this.queryInfo.examTime)
+        const examTime = _.map(examTimeTemp, (item) => {
+          return moment(item).format('YYYY-MM-DD HH:mm:ss')
+        })
+        const params = _.assign(_.cloneDeep(this.queryInfo), { examTime })
+        let { totalNum, data } = await getExamList(params)
         this.tableLoading = false
         this.tableData = data
         this.page.total = totalNum
