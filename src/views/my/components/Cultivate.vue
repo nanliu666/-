@@ -1,21 +1,12 @@
 <template>
   <div class="cultivate">
     <div class="search">
-      <div class="search_btn">
-        <span
-          :class="{ pitch: pitch === 0 }"
-          @click="showBtn(0)"
-        >线上课程</span>
-        <span
-          :class="{ pitch: pitch === 1 }"
-          @click="showBtn(1)"
-        >直播课程</span>
-      </div>
+      <div class="search_btn"></div>
       <div class="search_bar">
         <el-input
           v-model="searchInput"
           class="searchInput"
-          placeholder="信息技术"
+          placeholder="查找我的培训"
           suffix-icon="el-icon-search"
         >
         </el-input>
@@ -24,55 +15,92 @@
           v-show="searchInput"
           type="primary"
           size="medium"
+          @click="searchInput = ''"
         >
           重置
         </el-button>
       </div>
     </div>
 
-    <div class="courselist">
+    <div
+      v-show="listData.length"
+      class="courselist"
+    >
       <div
-        v-for="(item, index) in 20"
+        v-for="(item, index) in listData"
         :key="index"
         class="floor"
       >
         <div class="floor_title">
           <div class="text">
-            <div>java编程培训</div>
-            <span class="underway">进行中</span>
-            <span class="not">未开始</span>
-            <span class="finished">已结办</span>
+            <div>{{ item.trainName }}</div>
+            <span
+              v-show="item.status == 2"
+              class="underway"
+            >进行中</span>
+            <span
+              v-show="item.status == 1"
+              class="not"
+            >未开始</span>
+            <span
+              v-show="item.status == 0"
+              class="finished"
+            >已结办</span>
           </div>
           <div class="btn">
             <el-button
+              v-show="!item.isPass"
               size="medium"
               type="primary"
+              @click="toDetail(item.id)"
             >
               前往学习
             </el-button>
+            <el-button
+              v-show="item.isPass"
+              size="medium"
+              @click="toDetail(item.id)"
+            >
+              查看详情
+            </el-button>
           </div>
+        </div>
+        <div class="floor_type">
+          <span class="type_title">培训类型：</span>
+          <span v-show="item.trainWay == 1">面授</span>
+          <span v-show="item.trainWay == 2">混合</span>
+          <span v-show="item.trainWay == 3">在线</span>
         </div>
         <div class="floor_info">
           <div class="info_item">
-            <span class="item_title">培训类型：</span>
-            <span>在线（必修）</span>
+            <span class="item_title">培训时间：</span>
+            <span>{{ item.startTime }}-{{ item.endTime }}</span>
           </div>
           <div class="info_item">
-            <span class="item_title">培训类型：</span>
-            <span>在线（必修）</span>
+            <span class="item_title">培训讲师：</span>
+            <span>{{ item.lecturerName }}</span>
           </div>
           <div class="info_item">
-            <span class="item_title">培训类型：</span>
-            <span>在线（必修）</span>
+            <span class="item_title">培训地点：</span>
+            <span>{{ item.address }}</span>
           </div>
         </div>
-        <div class="seal">
-          已完成
+        <div
+          v-show="item.isPass"
+          class="seal"
+        >
+          <img
+            src="@/assets/images/my_seal.png"
+            alt=""
+          />
         </div>
       </div>
     </div>
 
-    <div class="page">
+    <div
+      v-show="listData.length"
+      class="page"
+    >
       <el-pagination
         :page-sizes="[10, 20, 30, 50, 100]"
         layout="total, sizes, prev, pager, next, jumper"
@@ -83,10 +111,27 @@
       >
       </el-pagination>
     </div>
+
+    <!-- 无数据 -->
+    <div
+      v-show="!listData.length"
+      class="content"
+    >
+      <div class="content_box">
+        <img
+          src="@/assets/images/my_noData.png"
+          alt=""
+        />
+        <div class="text">
+          还没有加入的培训
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import { queryTrainList } from '@/api/my'
 export default {
   name: 'Cultivate',
   data() {
@@ -97,20 +142,46 @@ export default {
       page: {
         pageNo: 1, //请求页码
         pageSize: 10 //每页条数
-      }
+      },
+      listData: []
     }
   },
+  watch: {
+    searchInput: function() {
+      this.getInfo()
+    }
+  },
+  activated() {
+    this.getInfo()
+  },
+  created() {
+    this.getInfo()
+  },
   methods: {
+    // 去详情
+    toDetail(id) {
+      this.$router.push({
+        name: 'trainDetail',
+        params: {
+          trainId: id
+        }
+      })
+    },
+    async getInfo() {
+      let res = await queryTrainList({ trainName: this.searchInput, ...this.page })
+      this.listData = res.trainList.records
+      this.total = res.trainList.total
+    },
     showBtn(i) {
       this.pitch = i
     },
     handleSizeChange(val) {
-      // console.log(`每页 ${val} 条`)
       this.page.pageSize = val
+      this.getInfo()
     },
     handleCurrentChange(val) {
-      // console.log(`当前页: ${val}`)
       this.page.pageNo = val
+      this.getInfo()
     }
   }
 }
@@ -118,7 +189,7 @@ export default {
 
 <style lang="scss" scoped>
 .cultivate {
-  margin-bottom: -100%;
+  // margin-bottom: -100%;
   .search {
     margin-top: 20px;
     padding: 0 24px;
@@ -200,8 +271,21 @@ export default {
           }
         }
       }
+      .floor_type {
+        display: flex;
+        font-size: 14px;
+        color: #369aff;
+        letter-spacing: 0;
+        height: 20px;
+        .type_title {
+          font-size: 14px;
+          color: rgba(0, 11, 21, 0.45);
+          letter-spacing: 0;
+          width: 70px;
+        }
+      }
       .floor_info {
-        margin-top: 18px;
+        // margin-top: 18px;
         display: flex;
         .info_item {
           display: flex;
@@ -226,7 +310,6 @@ export default {
         width: 77px;
         height: 77px;
         border-radius: 50%;
-        background: #00d66f;
         line-height: 77px;
         text-align: center;
         color: #fff;
@@ -246,6 +329,33 @@ export default {
       position: absolute;
       top: 24px;
       right: 24px;
+    }
+  }
+  .content {
+    background: #ffffff;
+    box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
+    border-radius: 4px;
+    margin-top: 20px;
+    width: 1200px;
+    height: 627px;
+    display: flex;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .content_box {
+      width: 338px;
+      height: 290px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+      .text {
+        text-align: center;
+        margin-top: 16px;
+        font-size: 14px;
+        color: rgba(0, 11, 21, 0.65);
+        letter-spacing: 0;
+      }
     }
   }
 }

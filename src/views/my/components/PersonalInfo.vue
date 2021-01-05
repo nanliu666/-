@@ -32,10 +32,14 @@
       <el-button
         type="primary"
         size="medium"
+        @click="setInfo"
       >
         保存
       </el-button>
-      <el-button size="medium">
+      <el-button
+        size="medium"
+        @click="goBack"
+      >
         取消
       </el-button>
     </div>
@@ -123,21 +127,19 @@ export default {
       imgdata: [],
       dialogVisible: false,
       form: {
-        serial: null,
+        workNo: null,
         name: null,
         sex: null,
-        organization: null,
-        email: null,
-        phonenum: null
+        orgName: null,
+        userEmail: null,
+        phonenum: null,
+        avatarUrl: null
       },
       columns: [
         {
-          prop: 'serial',
+          prop: 'workNo',
           itemType: 'input',
           label: '编号',
-          props: {
-            onlyNumber: true
-          },
           offset: 5,
           disabled: true
         },
@@ -145,22 +147,16 @@ export default {
           prop: 'name',
           itemType: 'input',
           label: '姓名',
-          props: {
-            onlyNumber: true
-          },
           offset: 5,
-          required: true,
+          // required: true,
           disabled: true
         },
         {
-          prop: 'organization',
+          prop: 'orgName',
           itemType: 'input',
           label: '组织',
-          props: {
-            onlyNumber: true
-          },
           offset: 5,
-          required: true,
+          // required: true,
           disabled: true
         },
         {
@@ -168,11 +164,11 @@ export default {
           itemType: 'radio',
           label: '性别',
           options: [
-            { label: '男', value: '1' },
-            { label: '女', value: '0' }
+            { label: '男', value: 1 },
+            { label: '女', value: 0 }
           ],
-          offset: 5,
-          required: true
+          offset: 5
+          // required: true
         },
         {
           prop: 'phonenum',
@@ -183,17 +179,14 @@ export default {
             onlyNumber: true
           },
           offset: 5,
-          required: true,
-          rules: [{ pattern: /^[0-9]{11}$/, message: '长度必须为11位', trigger: 'blur' }],
+          // required: true,
+          // rules: [{ pattern: /^[0-9]{11}$/, message: '长度必须为11位', trigger: 'blur' }],
           disabled: true
         },
         {
           prop: 'userEmail',
           itemType: 'input',
           label: '邮箱',
-          props: {
-            onlyNumber: true
-          },
           offset: 5
         }
       ],
@@ -204,17 +197,45 @@ export default {
   activated() {
     this.getInfo()
   },
-  created() {},
+  created() {
+    this.getInfo()
+  },
 
   methods: {
+    // 取消返回上一级
+    goBack() {
+      this.$router.go(-1)
+    },
     async getInfo() {
-      // console.log(1111)
       let res = await getuserInfo()
-      window.console.log(res)
+      this.form = res
+      // imgdata
+      this.imgdata.push({ fileUrl: res.avatarUrl })
     },
     setInfo() {
-      setuserInfo().then((res) => {
-        window.console.log(res)
+      this.$refs.form.validate((valid) => {
+        if (!valid) {
+          this.$message({
+            message: '信息填写不完整',
+            type: 'warning'
+          })
+        } else {
+          let params = {
+            userEmail: this.form.userEmail,
+            sex: this.form.sex,
+            avatarUrl: this.imgdata.length ? this.imgdata[this.imgdata.length - 1].fileUrl : ''
+          }
+          setuserInfo(params).then(() => {
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            })
+            setTimeout(() => {
+              // this.$router.go(-1)
+              this.$router.push({ path: '/home' })
+            }, 3000)
+          })
+        }
       })
     },
     handleClose(done) {
@@ -230,7 +251,7 @@ export default {
       const isLt10M = file.size / 1024 / 1024 < 5
 
       if (!isLt10M) {
-        this.$message.error('上传课件大小不能超过 10MB!')
+        this.$message.error('上传头像大小不能超过 5MB!')
         return false
       }
       if (!regx.test(file.name)) {

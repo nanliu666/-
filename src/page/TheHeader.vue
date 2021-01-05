@@ -36,6 +36,15 @@
               个人中心
             </div>
           </el-dropdown-item> -->
+              <el-dropdown-item @click.native="toMy('/my/info')">
+                个人信息
+              </el-dropdown-item>
+              <el-dropdown-item @click.native="toMy('/my/info', 1)">
+                修改密码
+              </el-dropdown-item>
+              <el-dropdown-item @click.native="toMy('/my/record')">
+                我的档案
+              </el-dropdown-item>
               <el-dropdown-item @click.native="logout">
                 退出登录
               </el-dropdown-item>
@@ -56,9 +65,7 @@ const menu = [
   { label: '知识库', path: '/knowledge' },
   { label: '考试', path: '/exam' },
   { label: '新闻', path: '/news' },
-  { label: '培训', path: '/train' },
-  { label: '个人中心', path: '/my/info' },
-  { label: '我的档案', path: '/my/record' }
+  { label: '培训', path: '/train' }
 ]
 import Notification from './Notification'
 import { mapGetters } from 'vuex'
@@ -81,6 +88,15 @@ export default {
     this.activePath = this.$route.path.match(/^\/\w*/g)[0]
   },
   methods: {
+    // 个人中心跳转
+    toMy(data, i) {
+      this.$router.push({
+        path: data,
+        query: {
+          pitch: i
+        }
+      })
+    },
     handleMenuClick(item) {
       if (this.$route.path === item.path) {
         return
