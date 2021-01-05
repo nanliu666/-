@@ -124,7 +124,7 @@ export default {
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 1, message: '密码长度最少为6位', trigger: 'blur' }
+          { min: 6, max: 12, message: '密码长度需要满足6～12字符', trigger: 'blur' }
         ],
         code: [{ required: true, message: '请输入验证码', trigger: 'blur' }]
       }
