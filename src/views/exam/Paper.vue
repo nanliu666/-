@@ -351,10 +351,10 @@ export default {
     // TODO: 考试时间交卷逻辑需要补充
     initRemainingTime() {
       const { reckonTimeValue, strategy, examEndTime } = this.paper
-      // 考试策略strategy影响考试时长，如果为true，到了考试结束时间就必须交卷，否则可以考满设置的考试时间
       // 如果考试时长不计时，并且考试策略为true，最后5分钟需要爆红提示。计时就按照计时的算。
       const canUseUpTime = moment(new Date()).add(reckonTimeValue, 'm')
-      const dealline = strategy ? canUseUpTime : moment(examEndTime)
+      // 考试策略strategy影响考试时长，如果为true，到了考试结束时间就必须交卷，否则可以考满设置的考试时间
+      const dealline = strategy ? moment(examEndTime) : canUseUpTime
       const dealTimeId = setInterval(() => {
         const diffTime = moment(dealline).diff(new Date())
         // 5分钟为时间警戒线，经过测试兑换的值为301995
