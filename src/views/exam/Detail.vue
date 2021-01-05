@@ -7,7 +7,7 @@
     <el-card class="top-card">
       <div class="card-header">
         <div class="header-title-box">
-          <span class="title">{{ examDetail.title }}</span>
+          <span class="title">{{ examDetail.examName }}</span>
           <el-tag :type="getStatus(examDetail.status).type">
             {{ getStatus(examDetail.status).text }}
           </el-tag>
@@ -15,26 +15,36 @@
         <ul class="header-ul">
           <li class="header-li">
             <span class="li-label">考试用卷：</span>
-            <span class="li-value">{{ examDetail.paper }}</span>
+            <span class="li-value">{{ examDetail.paperName }}</span>
           </li>
           <li class="header-li">
             <span class="li-label">考试时间：</span>
-            <span class="li-value">{{ examDetail.paper }}</span>
+            <span class="li-value">
+              <span>{{ examDetail.answerBeginTime }}</span>
+              <span>{{ examDetail.answerEndTime }}</span>
+            </span>
           </li>
           <li class="header-li">
             <span class="li-label">考试用时：</span>
-            <span class="li-value">{{ examDetail.paper }}</span>
+            <span class="li-value">{{
+              moment(examDetail.answerEndTime).diff(moment(examDetail.answerBeginTime), 'minutes')
+            }}</span>
           </li>
           <li class="header-li">
             <span class="li-label">试卷总分：</span>
-            <span class="li-value">{{ examDetail.paper }}</span>
+            <span class="li-value">
+              <span>{{ examDetail.totalScore }}分</span>
+              <span v-if="examDetail.scopeLimit">
+                （已限定最高分为{{ examDetail.scopeLimitValue }}分）
+              </span>
+            </span>
           </li>
           <li class="header-li">
             <span class="li-label">考试得分：</span>
             <span class="li-value">
-              <span>{{ examDetail.paper }}</span>
-              <span>（客观题45分）</span>
-              <span>（主观题45分）</span>
+              <span>{{ examDetail.score }}分</span>
+              <span>（客观题{{ examDetail.objectiveScore }}分），</span>
+              <span>（主观题{{ examDetail.subjectiveScore }}分）</span>
             </span>
           </li>
         </ul>
@@ -63,10 +73,28 @@
 
 <script>
 import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
+import { getViewAnswer } from '@/api/exam'
+import moment from 'moment'
 const STATUS = {
-  0: {
+  1: {
     type: 'success',
-    text: '待发布'
+    text: '已发布'
+  },
+  2: {
+    type: 'danger',
+    text: '考试中'
+  },
+  3: {
+    type: 'info',
+    text: '已提交'
+  },
+  4: {
+    type: 'warning',
+    text: '阅卷中'
+  },
+  5: {
+    type: 'success',
+    text: '已阅卷'
   }
 }
 export default {
@@ -93,8 +121,13 @@ export default {
       }
     }
   },
-  created() {},
+  created() {
+    getViewAnswer(this.$route.query).then((res) => {
+      this.examDetail = res
+    })
+  },
   methods: {
+    moment,
     getStatus(status) {
       return STATUS[status]
     }

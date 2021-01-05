@@ -3,9 +3,7 @@
     <el-card class="nav-container">
       <div class="nav-title">
         <span>全部课程</span>
-        <span
-          v-if="!_.isEmpty(menuList)"
-        >（{{ menuList[0].totalNumber + menuList[1].totalNumber }}）</span>
+        <span v-if="!_.isEmpty(menuList)">（{{ menuList[0].num + menuList[1].num }}）</span>
       </div>
       <div
         v-for="(menuItem, menuIndex) in menuList"
@@ -19,20 +17,20 @@
         >
           <span>
             <span>我的{{ menuIndex === 0 ? '必修' : '选修' }}</span>
-            <span>（{{ menuItem.totalNumber }}）</span>
+            <span>（{{ menuItem.num }}）</span>
           </span>
           <i
             :class="[
-              currentFirstType.includes(menuItem.type) ? 'el-icon-arrow-up' : 'el-icon-arrow-down'
+              currentFirstType === menuItem.type ? 'el-icon-arrow-up' : 'el-icon-arrow-down'
             ]"
           />
         </div>
         <ul
-          v-if="currentFirstType.includes(menuItem.type)"
+          v-if="currentFirstType === menuItem.type && !_.isEmpty(menuItem.courseList)"
           class="course-ul"
         >
           <li
-            v-for="(item, index) in menuItem.data"
+            v-for="(item, index) in menuItem.courseList"
             :key="item.id"
             :class="{ active: menuLiActive(index) }"
             class="course-li"
@@ -44,26 +42,27 @@
         </ul>
       </div>
     </el-card>
-    <el-card class="li-container">
+    <el-card
+      v-loading="containerLoad"
+      class="li-container"
+    >
       <div class="top">
         <el-input
           v-model="queryInfo.name"
           placeholder="请输入课程名字"
           style="width: 380px"
+          prefix-icon="el-icon-search"
+          clearable
           @input="searchFun"
-        >
-          <i
-            slot="suffix"
-            class="el-input__icon el-icon-search"
-          ></i>
-        </el-input>
+        />
         <div class="split"></div>
-        <div v-if="currentFirstType.includes('required')">
+        <div v-if="currentFirstType === 'required'">
           <div class="status-box">
             <span class="label">状态</span>
             <el-radio-group
               v-model="queryInfo.status"
               class="status-radio"
+              @change="statusChange"
             >
               <el-radio :label="0">
                 全部
@@ -100,7 +99,10 @@
         </div>
       </div>
       <div class="bottom">
-        <ul class="bottom-ul">
+        <ul
+          v-if="!_.isEmpty(courseList)"
+          class="bottom-ul"
+        >
           <li
             v-for="(item, index) in courseList"
             :key="index"
@@ -114,6 +116,8 @@
                 <img
                   :src="item.coverUrl"
                   class="left-image"
+                  onerror="this.classList.add('error');"
+                  :alt="item.name || '暂无数据'"
                 />
                 <span class="icon-box">
                   <i class="el-icon-caret-right" />
@@ -121,11 +125,11 @@
               </div>
               <div class="li-right">
                 <div class="content-box">
-                  <div
-                    class="content-title"
-                    @click="startStudy(item)"
-                  >
-                    <div class="title">
+                  <div class="content-title">
+                    <div
+                      class="title"
+                      @click="startStudy(item)"
+                    >
                       {{ item.name }}
                     </div>
                     <el-tag :type="statusFilter(item.status).type">
@@ -134,7 +138,7 @@
                   </div>
                   <div class="time-progress">
                     <div class="content-time">
-                      学习期限：{{ item.learnRange }}
+                      学习期限：{{ item.startTime }} - {{ item.endTime }}
                     </div>
                     <div class="content-progress">
                       <span class="progress-title">已完成：</span>
@@ -156,7 +160,7 @@
                       </span>
                       <i
                         :class="[
-                          currentTestExpand.includes(index) && currentExpandType === 'examList'
+                          currentTestExpand === index && currentExpandType === 'examList'
                             ? 'el-icon-arrow-up'
                             : 'el-icon-arrow-down'
                         ]"
@@ -173,7 +177,7 @@
                       </span>
                       <i
                         :class="[
-                          currentFileExpand.includes(index) && currentExpandType === 'attachList'
+                          currentFileExpand === index && currentExpandType === 'attachList'
                             ? 'el-icon-arrow-up'
                             : 'el-icon-arrow-down'
                         ]"
@@ -196,7 +200,7 @@
               </div>
             </div>
             <el-card
-              v-if="!_.isEmpty(currentTestExpand) || !_.isEmpty(currentFileExpand)"
+              v-if="currentTestExpand === index || currentFileExpand === index"
               class="file-card"
             >
               <li
@@ -220,8 +224,8 @@
                     <span>{{ currentExpandType === 'examList' ? '考试' : '下载' }}期限：</span>
                     <span>{{
                       currentExpandType === 'examList'
-                        ? fileItem.effectiveTime
-                        : fileItem.downloadDeadline
+                        ? `${fileItem.examBeginTime} - ${fileItem.examEndTime}`
+                        : `${fileItem.downloadDeadline ? fileItem.downloadDeadline : '永久有效'}`
                     }}
                     </span>
                   </div>
@@ -260,6 +264,7 @@
             </el-card>
           </li>
         </ul>
+        <common-empty v-else />
         <el-pagination
           class="pagination-box"
           :page-sizes="[10, 20, 30, 40]"
@@ -278,40 +283,49 @@
 <script>
 import { getRequireCourse, getElectiveCourseList, getStudyCenterMenu } from '@/api/learn'
 import moment from 'moment'
+import CommonEmpty from '@/components/common-empty/Empty'
 const STATUS = {
-  '1': {
+  0: {
+    text: '全部',
+    type: 'success'
+  },
+  1: {
     text: '未开始',
     type: 'success'
   },
-  '2': {
+  2: {
     text: '进行中',
     type: 'danger'
   },
-  '3': {
+  3: {
     text: '已结束',
     type: 'info'
   }
 }
 export default {
   name: 'LearnList',
+  components: {
+    CommonEmpty
+  },
   data() {
     return {
+      containerLoad: false,
       expandList: [],
       currentExpandType: '',
-      currentTestExpand: [],
-      currentFileExpand: [],
-      currentFirstType: ['required'],
+      currentTestExpand: -1,
+      currentFileExpand: -1,
+      currentFirstType: 'required',
       currentRequiredNav: -1,
       currentElectiveNav: -1,
       menuList: [],
-      totalNum: 100,
+      totalNum: 0,
       queryInfo: {
         pageNo: 1,
         pageSize: 10,
         status: 0,
         name: '',
-        catalogId: '',
-        type: '', //菜单栏类型（值为studyPlan或者train）
+        id: '',
+        courseType: '', //菜单栏类型（值为studyPlan或者train）
         dateRange: []
       },
       courseList: []
@@ -322,6 +336,9 @@ export default {
     this.loadTableData()
   },
   methods: {
+    statusChange() {
+      this.loadTableData()
+    },
     // 今天是在截止日期之前就能使用，返回false
     disabledButton(data) {
       let date = this.currentExpandType === 'examList' ? data.effectiveTime : data.downloadDeadline
@@ -330,6 +347,7 @@ export default {
     downloadOrjion(fileItem) {
       if (this.currentExpandType === 'examList') {
         // 去考试
+        this.$router.push({ path: '/exam/paper', query: { id: fileItem.examId } })
       } else {
         // 下载
         window.open(fileItem.fileUrl)
@@ -340,41 +358,24 @@ export default {
     },
     // 必修/选修切换
     menuActive(menuItem) {
-      const type = this.currentFirstType.includes(menuItem.type)
+      const type = this.currentFirstType === menuItem.type
       const isShow =
         menuItem.type === 'required' ? this.currentRequiredNav : this.currentElectiveNav
       return type && isShow === -1
     },
     // 子课程切换
     menuLiActive(index) {
-      const isShow = this.currentFirstType.includes('required')
-        ? this.currentRequiredNav
-        : this.currentElectiveNav
+      const isShow =
+        this.currentFirstType === 'required' ? this.currentRequiredNav : this.currentElectiveNav
       return isShow === index
     },
     // 加载左侧菜单栏
     async loadMenu() {
-      const requiredList = await getStudyCenterMenu({ studyType: 0 })
-      const electiveList = await getStudyCenterMenu({ studyType: 1 })
-      this.menuList = [
-        {
-          type: 'required',
-          data: requiredList,
-          totalNumber: this.getTotal(requiredList)
-        },
-        {
-          type: 'elective',
-          data: electiveList,
-          totalNumber: this.getTotal(electiveList)
-        }
-      ]
-    },
-    // 计算课程总数
-    getTotal(args) {
-      return args.reduce((prev, curr) => {
-        const preValue = _.isNumber(prev.num) ? prev.num : prev
-        return preValue + curr.num
+      const soruce = await getStudyCenterMenu()
+      _.each(soruce, (item, index) => {
+        item.type = index === 0 ? 'required' : 'elective'
       })
+      this.menuList = soruce
     },
     // 展开课程
     getMore(index) {
@@ -384,49 +385,68 @@ export default {
       this.expandList = this.courseList[index][type].slice(0, 3)
       this.currentExpandType = type
       if (type === 'examList') {
-        this.currentTestExpand = this.currentTestExpand.includes(index) ? [] : [index]
-        this.currentFileExpand = []
+        this.currentTestExpand = index
+        this.currentFileExpand = -1
       } else {
-        this.currentTestExpand = []
-        this.currentFileExpand = this.currentFileExpand.includes(index) ? [] : [index]
+        this.currentTestExpand = -1
+        this.currentFileExpand = index
       }
     },
     startStudy(data) {
       if (data.status === 2) {
-        this.$message.error('开发中...')
+        this.$router.push({ path: '/course/learn', query: { courseId: data.id } })
       }
-      // this.$router.push({ path: ''})
     },
     // 切换必修/选修
     toggleShow(type) {
-      this.currentFirstType = this.currentFirstType.includes(type) ? [] : type
+      this.currentFirstType = type
       // 去除必修选修内部id，重新加载
-      this.queryInfo.catalogId = ''
+      this.queryInfo.id = ''
+      this.queryInfo.courseType = ''
       this.loadTableData()
     },
     selectLi(index, item) {
-      if (item.type === 'required') {
+      if (this.currentFirstType === 'required') {
         this.currentRequiredNav = index
+        this.queryInfo.courseType = item.courseType
       } else {
         this.currentElectiveNav = index
       }
-      this.queryInfo.catalogId = item.id
+      this.queryInfo.id = item.id
       this.loadTableData()
     },
     searchFun: _.debounce(function() {
       this.loadTableData()
     }, 500),
     submitSearch() {
+      const dateRange = _.cloneDeep(this.queryInfo.dateRange)
+      this.queryInfo.dateRange = _.map(dateRange, (item) => {
+        item = moment(item).format('YYYY-MM-DD hh:mm:ss')
+        return item
+      })
       this.loadTableData()
     },
     // 加载右侧课程列表
     loadTableData() {
-      const loadFun = this.currentFirstType.includes('required')
-        ? getRequireCourse
-        : getElectiveCourseList
-      loadFun(this.queryInfo).then((res) => {
-        this.courseList = res
-      })
+      this.courseList = []
+      this.containerLoad = true
+      const loadFun =
+        this.currentFirstType === 'required' ? getRequireCourse : getElectiveCourseList
+      loadFun(this.queryInfo)
+        .then(({ data, totalNum }) => {
+          _.each(data, (item) => {
+            item.userPeriod = item.userPeriod === '' ? 0 : item.userPeriod
+            item.progress = Math.round(item.userPeriod / (item.period * 60))
+          })
+          this.courseList = data
+          this.totalNum = totalNum
+        })
+        .catch(() => {
+          window.console.error('参数：', JSON.stringify(this.queryInfo))
+        })
+        .finally(() => {
+          this.containerLoad = false
+        })
     },
     handleSizeChange(val) {
       this.queryInfo.pageSize = val
@@ -550,6 +570,9 @@ export default {
             .left-image {
               width: 100%;
               height: 100%;
+              object-fit: contain;
+              border: 1px solid #ebeced;
+              border-radius: 4px;
             }
             .icon-box {
               position: absolute;
@@ -581,8 +604,8 @@ export default {
               .content-title {
                 display: flex;
                 align-items: center;
-                cursor: pointer;
                 .title {
+                  cursor: pointer;
                   font-family: PingFangSC-Medium;
                   font-size: 16px;
                   color: rgba(0, 11, 21, 0.85);
@@ -634,14 +657,18 @@ export default {
                 display: flex;
                 align-items: center;
                 .file-title {
+                  display: flex;
+                  align-items: center;
                   font-family: PingFangSC-Regular;
                   font-size: 14px;
                   color: rgba(0, 11, 21, 0.85);
                   margin-right: 8px;
+                  width: 150px;
                   .title {
                     margin-right: 8px;
-                    width: 100px;
+                    max-width: 100px;
                     display: inline-block;
+                    flex: 1;
                   }
                 }
 
@@ -649,7 +676,7 @@ export default {
                   font-family: PingFangSC-Regular;
                   font-size: 14px;
                   color: rgba(0, 11, 21, 0.65);
-                  margin-left: 48px;
+                  margin-left: 40px;
                 }
               }
               /deep/ .el-button--primary.is-plain {
