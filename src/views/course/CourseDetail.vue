@@ -152,31 +152,15 @@ export default {
   },
   methods: {
     calcProcess(chapter) {
-      if (chapter.type !== '5') {
-        if (chapter.progress == 1) {
-          return 100
-        } else {
-          return 0
-        }
-      } else {
-        return parseInt(chapter.progress)
-      }
+      return parseInt(chapter.progress) || 0
     },
     getChapterStatus(chapter) {
-      if (chapter.type !== '5') {
-        if (chapter.progress == 1) {
-          return '已学习'
-        } else {
-          return '未学习'
-        }
+      if (chapter.progress == '0') {
+        return '未学习'
+      } else if (chapter.progress == '100') {
+        return '已学习'
       } else {
-        if (chapter.progress == '0') {
-          return '未学习'
-        } else if (chapter.progress == '100') {
-          return '已学习'
-        } else {
-          return '学习中'
-        }
+        return '学习中'
       }
     },
     loadDetail() {

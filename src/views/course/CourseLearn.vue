@@ -246,7 +246,7 @@ export default {
         let progress = Number(((this.$refs.video.currentTime / oldVal.duration) * 100).toFixed())
         oldVal.progress = progress > oldVal.progress ? progress : oldVal.progress
       } else {
-        oldVal.progress = 1
+        oldVal.progress = 100
       }
       this.submitLearnRecords()
     }
