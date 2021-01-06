@@ -156,7 +156,7 @@
                               :key="paperIndex"
                               class=""
                             >
-                              <span>{{ paperIndex + 1 }}</span>
+                              <span>{{ paperIndex + 1 }}.</span>
                               <QustionPreview :data="paperItem" />
                             </li>
                           </ul>
@@ -229,6 +229,7 @@ export default {
   },
   data() {
     return {
+      dealTimeId: {},
       impeachList: [], // 存疑数组
       containerLoad: false,
       successPapeer: {},
@@ -259,8 +260,33 @@ export default {
     QUESTION_TYPE_GROUP: () => QUESTION_TYPE_GROUP,
     ...mapGetters(['userInfo'])
   },
-  created() {
+  activated() {
     this.initData()
+  },
+  mounted() {
+    //阻止F5刷新
+    // this.stopF5Refresh()
+  },
+  beforeRouteLeave(from, to, next) {
+    // this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+    //   confirmButtonText: '确定',
+    //   cancelButtonText: '取消',
+    //   type: 'warning'
+    // })
+    //   .then(() => {
+    //     this.$message({
+    //       type: 'success',
+    //       message: '删除成功!'
+    //     })
+    //   })
+    //   .catch(() => {
+    //     this.$message({
+    //       type: 'info',
+    //       message: '已取消删除'
+    //     })
+    //   })
+    clearInterval(this.dealTimeId)
+    next()
   },
   methods: {
     // 当前对象是否存在于存疑数据
@@ -345,6 +371,22 @@ export default {
       // console.log('this.questionList==', this.questionList)
       this.initRemainingTime()
     },
+    //阻止F5刷新
+    stopF5Refresh() {
+      document.onkeydown = (e) => {
+        var evt = window.event || e
+        var code = evt.keyCode || evt.which
+        if (code == 116) {
+          if (evt.preventDefault) {
+            evt.preventDefault()
+          } else {
+            evt.keyCode = 0
+            evt.returnValue = false
+          }
+          this.$message.error('考试页面禁止刷新')
+        }
+      }
+    },
     goBack() {
       this.$router.go(-1)
     },
@@ -355,7 +397,7 @@ export default {
       const canUseUpTime = moment(new Date()).add(reckonTimeValue, 'm')
       // 考试策略strategy影响考试时长，如果为true，到了考试结束时间就必须交卷，否则可以考满设置的考试时间
       const dealline = strategy ? moment(examEndTime) : canUseUpTime
-      const dealTimeId = setInterval(() => {
+      this.dealTimeId = setInterval(() => {
         const diffTime = moment(dealline).diff(new Date())
         // 5分钟为时间警戒线，经过测试兑换的值为301995
         const WARNING_LINE = 301995
@@ -370,13 +412,13 @@ export default {
         const formatSeconds = `${secondsTime < 10 ? `0${secondsTime}` : secondsTime}`
         this.remainingTime = `${formatHours} : ${formatMinutes} : ${formatSeconds}`
         // 结束考试
-        this.endExam(dealTimeId)
+        this.endExam()
       }, 1000)
     },
     // 考试到时结束考试
-    endExam(dealTimeId) {
+    endExam() {
       if (this.remainingTime !== '00 : 00 : 00') return
-      clearInterval(dealTimeId)
+      clearInterval(this.dealTimeId)
       let timeTips = 4
       const timeId = setInterval(async () => {
         timeTips -= 1
