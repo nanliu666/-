@@ -37,7 +37,10 @@
         </el-button>
       </div>
     </div>
-    <section class="container-section">
+    <section
+      ref="paperScroll"
+      class="container-section"
+    >
       <div
         v-loading="containerLoad"
         class="middle-container"
@@ -47,62 +50,69 @@
           class="paper-main"
         >
           <div class="main-left">
-            <el-card style="margin-bottom: 20px">
-              <div class="avatar-card">
-                <el-avatar
-                  :size="80"
-                  :src="userInfo.avatar_url || circleUrl"
-                ></el-avatar>
-                <div class="exam-box">
-                  <div class="name">
-                    {{ userInfo.nick_name }}
-                  </div>
-                  <div class="phone">
-                    {{ userInfo.account }}
+            <div
+              ref="controlScroll"
+              class="left-inner-box"
+            >
+              <el-card style="margin-bottom: 20px">
+                <div class="avatar-card">
+                  <el-avatar
+                    :size="80"
+                    :src="userInfo.avatar_url || circleUrl"
+                  ></el-avatar>
+                  <div class="exam-box">
+                    <div class="name">
+                      {{ userInfo.nick_name }}
+                    </div>
+                    <div class="phone">
+                      {{ userInfo.account }}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </el-card>
-            <el-card class="control-card">
-              <ul class="question-ul">
-                <li
-                  v-for="(item, index) in questionList"
-                  :key="index"
-                  class="question-li"
-                >
-                  <div class="li-title">
-                    <span>{{ (index + 1) | number2zhcn }}、</span>
-                    <span>{{ item[0].type | typeFilter }}</span>
-                  </div>
-                  <ul class="list-box">
-                    <li
-                      v-for="(subItem, subIndex) in item"
-                      :key="subItem.id"
-                      class="list-li"
-                    >
-                      <span
-                        class="li-content"
-                        :class="{
-                          'select-li': subIndex === 0,
-                          'doubt-li': currentItemIsInImpeach(subItem)
-                        }"
+              </el-card>
+              <el-card class="control-card">
+                <ul class="question-ul">
+                  <li
+                    v-for="(item, index) in questionList"
+                    :key="index"
+                    class="question-li"
+                  >
+                    <div class="li-title">
+                      <span>{{ (index + 1) | number2zhcn }}、</span>
+                      <span>{{ item[0].type | typeFilter }}</span>
+                    </div>
+                    <ul class="list-box">
+                      <li
+                        v-for="(subItem, subIndex) in item"
+                        :key="subItem.id"
+                        class="list-li"
+                        @click="navTo(subItem, index, subIndex)"
                       >
-                        <span>{{ subIndex + 1 }}</span>
-                        <span class="li-tips">
-                          <i
-                            class="iconfont "
-                            :class="{
-                              iconimage_icon_succeed: subIndex === 0,
-                              iconimage_icon_query: currentItemIsInImpeach(subItem)
-                            }"
-                          />
+                        <span
+                          class="li-content"
+                          :class="{
+                            'select-li': currentItemIsInSelected(subItem),
+                            'doubt-li': currentItemIsInImpeach(subItem)
+                          }"
+                        >
+                          <span>{{ subIndex + 1 }}</span>
+                          <span class="li-tips">
+                            <i
+                              class="iconfont "
+                              :class="{
+                                iconimage_icon_succeed: currentItemIsInSelected(subItem),
+                                iconimage_icon_query: currentItemIsInImpeach(subItem)
+                              }"
+                            />
+                          </span>
                         </span>
-                      </span>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </el-card>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </el-card>
+              <div class="null-box"></div>
+            </div>
           </div>
           <el-card class="main-right">
             <ul class="question-ul">
@@ -124,6 +134,7 @@
                 <ul class="content-box">
                   <li
                     v-for="(conItem, conIndex) in item"
+                    :id="`id${conItem.id}`"
                     :key="conItem.id"
                     class="content-li"
                   >
@@ -181,8 +192,11 @@
       modal-append-to-body
       append-to-body
       lock-scroll
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
     >
-      <span>考试时间已结束，系统将自动提交答卷</span>
+      <span>{{ submitTips }}</span>
       <span
         slot="footer"
         class="dialog-footer"
@@ -229,6 +243,9 @@ export default {
   },
   data() {
     return {
+      submitTips: '',
+      isLeave: false,
+      examBeginTime: new Date(),
       dealTimeId: {},
       impeachList: [], // 存疑数组
       containerLoad: false,
@@ -239,15 +256,8 @@ export default {
       isWarningTimeLine: false,
       circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
       remainingTime: '00 : 00 : 00',
-      paper: {
-        title: 'EHS应知应会全员考试',
-        answerMode: 1 //1或者2， 1-整卷模式   2-逐卷模式
-      },
-      questionList: [],
-      exam: {
-        name: '汪华林',
-        phone: '1302645745645'
-      }
+      paper: {},
+      questionList: []
     }
   },
   computed: {
@@ -260,35 +270,80 @@ export default {
     QUESTION_TYPE_GROUP: () => QUESTION_TYPE_GROUP,
     ...mapGetters(['userInfo'])
   },
-  activated() {
-    this.initData()
-  },
   mounted() {
+    this.initData()
     //阻止F5刷新
     // this.stopF5Refresh()
   },
   beforeRouteLeave(from, to, next) {
-    // this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-    //   confirmButtonText: '确定',
-    //   cancelButtonText: '取消',
-    //   type: 'warning'
-    // })
-    //   .then(() => {
-    //     this.$message({
-    //       type: 'success',
-    //       message: '删除成功!'
-    //     })
-    //   })
-    //   .catch(() => {
-    //     this.$message({
-    //       type: 'info',
-    //       message: '已取消删除'
-    //     })
-    //   })
+    if (this.isLeave) {
+      next(true)
+    } else {
+      this.$message.error('禁止使用浏览器原生返回')
+      next(false)
+    }
+  },
+  // 解决定时器bug
+  beforeDestroy() {
     clearInterval(this.dealTimeId)
-    next()
   },
   methods: {
+    // 检测闭卷
+    watchCloseBookExam() {
+      const { isDecoil } = this.paper
+      // isDecoil：0是否，1为真
+      if (isDecoil === 1) {
+        // 跳转其他页面触发交卷
+        window.onbeforeunload = function() {
+          this.changeAutoEndExam()
+        }
+        // 切屏触发自动交卷
+        document.addEventListener('visibilitychange', () => {
+          this.changeAutoEndExam()
+        })
+      }
+    },
+    changeAutoEndExam() {
+      if (!this.isSuccess) {
+        this.submitTips = '系统检测到您切换屏幕，系统将自动提交答卷'
+        this.autoEndExam()
+      }
+    },
+    goBack() {
+      this.$confirm('离开考试页面返回列表，即视为放弃本次考试机会。您确定要返回列表？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.isLeave = true
+        this.$router.push({ path: '/exam/list' })
+      })
+    },
+    // 点击滚动到对应的题目
+    navTo(data, sonIndex, parentIndex, ref = 'paperScroll') {
+      const isFirst = sonIndex === 0 && parentIndex === 0
+      const scollHeight = isFirst ? 0 : document.getElementById(`id${data.id}`).offsetTop
+      let scrollElement = this.$refs[ref]
+      scrollElement.scrollTo({
+        top: scollHeight,
+        behavior: 'smooth'
+      })
+    },
+    // 当前题目是否被做
+    currentItemIsInSelected(data) {
+      let isSelected = false
+      if (data.type === QUESTION_TYPE_SINGLE || data.type === QUESTION_TYPE_JUDGE) {
+        isSelected = _.get(data, 'value')
+      }
+      if (data.type === QUESTION_TYPE_MULTIPLE) {
+        const multipleData = _.get(data, 'value')
+        // 多选非空
+        isSelected = _.some(multipleData, (item) => {
+          return item
+        })
+      }
+      return !!isSelected
+    },
     // 当前对象是否存在于存疑数据
     currentItemIsInImpeach(data) {
       return _.some(this.impeachList, (item) => {
@@ -330,21 +385,119 @@ export default {
     },
     // 交卷逻辑
     carryOut() {
-      if (!this.checkSubmit()) return
+      // this.checkSubmit()
       this.submitFun()
     },
+    getAnswerCount(type) {
+      let target = []
+      _.each(this.questionList, (que, queIndex) => {
+        _.each(que, (item, index) => {
+          if (type === 'count') {
+            let isAnswer = this.currentItemIsInSelected(item)
+            if (!isAnswer) {
+              target.push(item)
+            }
+          } else {
+            this.navTo(item, index, queIndex, 'controlScroll')
+          }
+        })
+      })
+      if (type === 'count') {
+        return target
+      }
+    },
     // TODO：考试交卷前校验
+    // 检测存疑和未作答的题目，页面滚动到相关题目
+    checkSubmit() {
+      let noAnswerQuestion = this.getAnswerCount('count')
+      const impeachTips = `${_.size(this.impeachList)}道试题标记存疑`
+      const noAnswerTips = `${_.size(noAnswerQuestion)}道试题未作答`
+      const commonTips = '可在答题卡中查看答题状态。'
+      let tips = ''
+      const isEmptyImpeach = _.isEmpty(this.impeachList)
+      const isEmptyAnswer = _.isEmpty(noAnswerQuestion)
+      // 两个都是空的，进行下一步过早校验
+      if (isEmptyImpeach && isEmptyAnswer) {
+        this.checkAdvance()
+      } else {
+        // 两个都不为空
+        if (!isEmptyImpeach && !isEmptyAnswer) {
+          tips = `还有${noAnswerTips}, ${impeachTips}，${commonTips}`
+        } else if (!isEmptyImpeach) {
+          tips = `还有${impeachTips}，${commonTips}`
+        } else if (!isEmptyAnswer) {
+          tips = `还有${noAnswerTips}，${commonTips}`
+        }
+        this.$confirm(tips, '提示', {
+          confirmButtonText: '继续作答',
+          cancelButtonText: '继续交卷',
+          type: 'warning',
+          distinguishCancelAndClose: true
+        })
+          .then(() => {
+            this.getAnswerCount('scroll')
+          })
+          .catch((action) => {
+            if (action === 'cancel') {
+              this.checkAdvance()
+            }
+          })
+      }
+    },
     // 不能提前多少分钟交卷，但是如果设置了自动交卷，则可以过滤这个规则
-    checkSubmit() {},
+    // 检测提前交卷
+    checkAdvance() {
+      const { answerBanExam, answerBanExamValue } = this.paper
+      if (answerBanExam) {
+        // 做了过早限制，并且当前已考时间小于限制时长
+        const usedTime = moment(new Date()).diff(moment(this.examBeginTime), 's')
+        const limitTime = answerBanExamValue * 60
+        if (usedTime < limitTime) {
+          this.$confirm(`考试开始${answerBanExamValue}分钟内禁止交卷`, '提示', {
+            confirmButtonText: '知道了',
+            type: 'warning',
+            showCancelButton: false,
+            center: true
+          })
+        }
+      } else {
+        // 未做过早限制，跳转交卷逻辑
+        this.$confirm('你确定要提交答卷吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.submitFun()
+        })
+      }
+    },
+    handleQustions() {
+      const questionsTemp = _.flattenDeep(_.cloneDeep(this.questionList))
+      let questions = []
+      const PICK_KEY = ['id', 'answer', 'title', 'type']
+      const loop = (data) => {
+        _.each(data, (item) => {
+          if (!_.isEmpty(item.subQuestions)) {
+            loop(item.subQuestions)
+          }
+          const pickItem = _.pick(item, PICK_KEY)
+          questions.push(pickItem)
+        })
+      }
+      loop(questionsTemp)
+      // console.log('questions==', questions)
+      return questions
+    },
     // 处理交卷动作
     submitFun() {
+      let questions = this.handleQustions()
       this.containerLoad = true
       const params = {
         batchId: this.$route.query.batchId,
         examId: this.$route.query.examId,
         paperId: this.paper.id,
         totalScore: this.paper.totalScore,
-        questions: this.paper.questions
+        questions: questions
       }
       postSubmitPaper(params)
         .then((res) => {
@@ -353,10 +506,14 @@ export default {
         .finally(() => {
           this.containerLoad = false
         })
+        .catch(() => {
+          window.console.error(JSON.stringify(params))
+        })
     },
-    // 考试到时，自动交卷
+    // 考试到时，自动交卷(自动交卷跳过校验逻辑)
     automaticSubmit() {
       this.centerDialogVisible = false
+      this.submitTips = '考试时间已结束，系统将自动提交答卷'
       this.submitFun()
     },
     async initData() {
@@ -368,8 +525,9 @@ export default {
           return _.sortBy(item, 'sort')
         })
         .value()
-      // console.log('this.questionList==', this.questionList)
       this.initRemainingTime()
+      // 闭卷监听
+      this.watchCloseBookExam()
     },
     //阻止F5刷新
     stopF5Refresh() {
@@ -387,9 +545,7 @@ export default {
         }
       }
     },
-    goBack() {
-      this.$router.go(-1)
-    },
+
     // TODO: 考试时间交卷逻辑需要补充
     initRemainingTime() {
       const { reckonTimeValue, strategy, examEndTime } = this.paper
@@ -411,14 +567,14 @@ export default {
         const formatMinutes = `${minutesTime < 10 ? `0${minutesTime}` : minutesTime}`
         const formatSeconds = `${secondsTime < 10 ? `0${secondsTime}` : secondsTime}`
         this.remainingTime = `${formatHours} : ${formatMinutes} : ${formatSeconds}`
+        if (this.remainingTime !== '00 : 00 : 00') return
+        clearInterval(this.dealTimeId)
         // 结束考试
-        this.endExam()
+        this.autoEndExam()
       }, 1000)
     },
     // 考试到时结束考试
-    endExam() {
-      if (this.remainingTime !== '00 : 00 : 00') return
-      clearInterval(this.dealTimeId)
+    autoEndExam() {
       let timeTips = 4
       const timeId = setInterval(async () => {
         timeTips -= 1
@@ -493,12 +649,27 @@ $selctColor: #fcba00;
     overflow-x: hidden;
     .middle-container {
       .paper-main {
+        position: relative;
         width: 1200px;
         margin: 20px auto;
         display: flex;
         justify-content: space-between;
         .main-left {
-          margin-right: 20px;
+          position: fixed;
+          width: 325px;
+          overflow: hidden;
+          height: calc(90vh);
+          .left-inner-box {
+            height: calc(100vh - 40px);
+            overflow-y: auto;
+            &::-webkit-scrollbar {
+              width: 0 !important;
+            }
+          }
+          .null-box {
+            height: 60px;
+            width: 100%;
+          }
           .avatar-card {
             width: 285px;
             display: flex;
@@ -522,7 +693,7 @@ $selctColor: #fcba00;
           .control-card {
             .question-ul {
               .question-li {
-                margin-bottom: 24px;
+                margin-bottom: 10px;
                 &:last-child {
                   margin-bottom: 0;
                 }
@@ -546,7 +717,7 @@ $selctColor: #fcba00;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-
+                    margin-bottom: 14px;
                     .li-content {
                       width: 32px;
                       height: 32px;
@@ -599,7 +770,9 @@ $selctColor: #fcba00;
             }
           }
         }
+
         .main-right {
+          margin-left: 355px;
           flex: 1;
           .question-ul {
             .question-li {

@@ -12,65 +12,56 @@
         :key="index"
         class="qustion__attachment"
       >
-        <el-image :src="attachment.fileUrl"></el-image>
-        <div class="upload__cover">
-          <i
-            class="iconimage_icon_Preview1 iconfont"
-            @click.stop="handlePreviewImage(_.map(data.attachments, 'fileUrl'), index)"
-          ></i>
-        </div>
+        <question-view :url="attachment.url" />
       </div>
     </div>
+    <!-- 判断题、单选题 -->
     <div
-      v-if="[QUESTION_TYPE_SINGLE, QUESTION_TYPE_MULTIPLE, QUESTION_TYPE_JUDGE].includes(data.type)"
+      v-if="[QUESTION_TYPE_SINGLE, QUESTION_TYPE_JUDGE].includes(data.type)"
       class="qustion__options"
     >
-      <li
-        v-for="option in data.options"
-        :key="option.key"
-      >
-        <div class="wrap">
-          <el-radio
-            v-if="[QUESTION_TYPE_SINGLE, QUESTION_TYPE_JUDGE].includes(data.type)"
-            :value="option.isCorrect"
-            :label="1"
-          >
-            {{ '' }}
-          </el-radio>
-          <el-checkbox
-            v-if="QUESTION_TYPE_MULTIPLE === data.type"
-            :value="option.isCorrect"
-            :true-label="1"
-            :false-label="0"
-          >
-            {{ '' }}
-          </el-checkbox>
+      <el-radio-group v-model="data.answer">
+        <el-radio
+          v-for="option in data.options"
+          :key="option.key"
+          style="display: block"
+          :label="option.id"
+        >
           <span>{{ _.unescape(option.content) }}</span>
-          <div
+          <question-view
             v-if="option.url"
-            class="qustion__options-image"
-          >
-            <el-image :src="option.url"></el-image>
-            <div class="upload__cover">
-              <i
-                class="iconimage_icon_Preview1 iconfont"
-                @click.stop="handlePreviewImage([option.url])"
-              ></i>
-            </div>
-          </div>
-        </div>
+            :url="option.url"
+          />
+        </el-radio>
+      </el-radio-group>
+    </div>
+    <!-- 多选题 -->
+    <div
+      v-if="[QUESTION_TYPE_MULTIPLE].includes(data.type) && !_.isEmpty(data.options)"
+      class="qustion__options"
+    >
+      <li>
+        <el-checkbox
+          v-for="option in data.options"
+          :key="option.id"
+          v-model="option.answer"
+          style="display: block"
+          :label="option.id"
+          @change="changeMultiple(option)"
+        >
+          <span>{{ _.unescape(option.content) }}</span>
+          <question-view
+            v-if="option.url"
+            :url="option.url"
+          />
+        </el-checkbox>
       </li>
     </div>
-    <image-viewer
-      :url-list="viewingImages"
-      :visible.sync="viewing"
-      :initial-index="viewIndex"
-    ></image-viewer>
   </span>
 </template>
 
 <script>
-import ImageViewer from '@/components/image-viewer/ImageViewer'
+import questionView from './questionView'
 import {
   QUESTION_TYPE_MAP,
   QUESTION_TYPE_MULTIPLE,
@@ -82,7 +73,9 @@ import {
 } from '@/const/exam'
 export default {
   name: 'QustionPreview',
-  components: { ImageViewer },
+  components: {
+    questionView
+  },
   props: {
     data: {
       type: Object,
@@ -94,11 +87,7 @@ export default {
     }
   },
   data() {
-    return {
-      viewingImages: [],
-      viewing: false,
-      viewIndex: 0
-    }
+    return {}
   },
   computed: {
     QUESTION_TYPE_MULTIPLE: () => QUESTION_TYPE_MULTIPLE,
@@ -110,10 +99,13 @@ export default {
     QUESTION_TYPE_GROUP: () => QUESTION_TYPE_GROUP
   },
   methods: {
-    handlePreviewImage(list, index = 0) {
-      this.viewing = true
-      this.viewingImages = list
-      this.viewIndex = index
+    changeMultiple() {
+      const dataValue = _.map(this.data.options, (item) => {
+        if (item.answer) {
+          return item
+        }
+      })
+      this.data.answer = dataValue
     }
   }
 }
@@ -165,16 +157,6 @@ export default {
       }
       .el-checkbox {
         margin-right: 10px;
-      }
-    }
-  }
-  &__options-image {
-    display: inline-block;
-    position: relative;
-    width: 20%;
-    &:hover {
-      .upload__cover {
-        display: flex;
       }
     }
   }
