@@ -7,7 +7,7 @@
     >
     </common-form>
     <div class="text">
-      (密码不能包含空格和中文；至少包含数字/字母/字符2种组合；长度为8-16个字符)
+      (密码包含字母、符号或数字中至少两项且长度6～12字符的密码)
     </div>
     <div class="page-bottom">
       <el-button
@@ -71,8 +71,8 @@ export default {
           showPassword: true,
           rules: [
             {
-              pattern: /(?!.*\s)(?!^[\u4e00-\u9fa5]+$)(?!^[0-9]+$)(?!^[A-z]+$)(?!^[^A-z0-9]+$)^.{8,16}$/,
-              message: '请按密码规则设置',
+              pattern: /(?!^\d+$)(?!^[A-Za-z]+$)(?!^[^A-Za-z0-9]+$)(?!^.*[\u4E00-\u9FA5].*$)^\S{6,16}$/,
+              message: '密码包含字母、符号或数字中至少两项且长度6～12字符的密码',
               trigger: 'blur'
             }
           ]
@@ -87,8 +87,8 @@ export default {
           rules: [
             { validator: validatePass1, trigger: 'blur' },
             {
-              pattern: /(?!.*\s)(?!^[\u4e00-\u9fa5]+$)(?!^[0-9]+$)(?!^[A-z]+$)(?!^[^A-z0-9]+$)^.{8,16}$/,
-              message: '请按密码规则设置',
+              pattern: /(?!^\d+$)(?!^[A-Za-z]+$)(?!^[^A-Za-z0-9]+$)(?!^.*[\u4E00-\u9FA5].*$)^\S{6,16}$/,
+              message: '密码包含字母、符号或数字中至少两项且长度6～12字符的密码',
               trigger: 'blur'
             }
           ]
@@ -104,8 +104,8 @@ export default {
             { validator: validatePass2, trigger: 'blur' },
             { validator: validatePass1, trigger: 'blur' },
             {
-              pattern: /(?!.*\s)(?!^[\u4e00-\u9fa5]+$)(?!^[0-9]+$)(?!^[A-z]+$)(?!^[^A-z0-9]+$)^.{8,16}$/,
-              message: '请按密码规则设置',
+              pattern: /(?!^\d+$)(?!^[A-Za-z]+$)(?!^[^A-Za-z0-9]+$)(?!^.*[\u4E00-\u9FA5].*$)^\S{6,16}$/,
+              message: '密码包含字母、符号或数字中至少两项且长度6～12字符的密码',
               trigger: 'blur'
             }
           ]
