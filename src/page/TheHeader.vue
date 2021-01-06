@@ -45,6 +45,12 @@
               <el-dropdown-item @click.native="toMy('/my/record')">
                 我的档案
               </el-dropdown-item>
+              <el-dropdown-item>
+                审批中心
+              </el-dropdown-item>
+              <el-dropdown-item>
+                后台管理
+              </el-dropdown-item>
               <el-dropdown-item @click.native="logout">
                 退出登录
               </el-dropdown-item>

@@ -5,7 +5,7 @@
         <el-input
           v-model="searchInput"
           class="searchInput"
-          placeholder="培训名称/讲师"
+          placeholder="请输入标题关键字搜索"
           suffix-icon="el-icon-search"
         >
         </el-input>
@@ -139,10 +139,12 @@ export default {
     handleSizeChange(val) {
       // console.log(`每页 ${val} 条`)
       this.page.pageSize = val
+      this.isnewsList()
     },
     handleCurrentChange(val) {
       // console.log(`当前页: ${val}`)
       this.page.pageNo = val
+      this.isnewsList()
     }
   }
 }

@@ -338,6 +338,7 @@ export default {
     height: 80px;
     border-radius: 50%;
     overflow: hidden;
+    cursor: pointer;
     .img_in {
       width: 80px;
       height: 80px;
