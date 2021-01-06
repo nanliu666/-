@@ -128,6 +128,7 @@ export default {
           itemType: 'input',
           label: '姓名',
           maxlength: 20,
+          placeholder: '请输入真实姓名，后续不可自行修改',
           rules: [{ min: 2, max: 20, message: '姓名长度需要满足2到20个字符' }],
           required: true
         },
