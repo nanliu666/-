@@ -1,7 +1,7 @@
 <template>
   <span class="qustion">
     <span class="qustion__content">
-      <span class="qustion__label">题目: </span><span v-html="_.unescape(data.content)"></span>
+      <span v-html="_.unescape(data.content)"></span>
     </span>
     <div
       v-if="!_.isEmpty(data.attachments)"
