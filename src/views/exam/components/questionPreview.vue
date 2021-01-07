@@ -28,6 +28,7 @@
     >
       <el-radio-group
         v-model="data.answer"
+        :disabled="disabled"
         class="group-container"
       >
         <el-radio
@@ -54,6 +55,7 @@
           v-for="option in data.options"
           :key="option.id"
           v-model="option.answerModel"
+          :disabled="disabled"
           :label="option.id"
           class="qustion-checkbox"
           @change="changeMultiple(option)"
@@ -69,6 +71,7 @@
     <el-input
       v-if="[QUESTION_TYPE_SHOER].includes(data.type)"
       v-model="data.answer"
+      :disabled="disabled"
       type="textarea"
       :rows="4"
       placeholder="请输入内容"
@@ -85,6 +88,7 @@
         <el-input
           v-if="item === ''"
           v-model="data[`answerModel${index}`]"
+          :disabled="disabled"
           style="display: inline;"
           placeholder="请输入内容"
           maxlength="32"
@@ -117,6 +121,10 @@ export default {
     questionView
   },
   props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     data: {
       type: Object,
       default: () => ({})

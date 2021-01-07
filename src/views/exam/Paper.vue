@@ -152,7 +152,7 @@
                     :key="conItem.id"
                     class="content-li"
                   >
-                    <AnswerByQuestion
+                    <answer-by-question
                       :con-item="conItem"
                       :con-index="conIndex"
                       @setImpeach="setImpeach"
@@ -185,7 +185,8 @@
                   </div>
                   <ul class="content-box">
                     <li class="content-li">
-                      <AnswerByQuestion
+                      <answer-by-question
+                        :disabled="disabledByQuestion"
                         :con-item="item"
                         :con-index="index"
                         @setImpeach="setImpeach"
@@ -257,6 +258,7 @@ import examSuccess from './components/Success'
 import TheFooter from '@/page/TheFooter'
 import AnswerByQuestion from './components/AnswerByQuestion'
 const nzhcn = require('nzh/cn')
+const RETURN_ZERO = '00 : 00 : 00'
 import {
   QUESTION_TYPE_MAP,
   QUESTION_TYPE_MULTIPLE,
@@ -300,7 +302,7 @@ export default {
       centerDialogVisible: false,
       isWarningTimeLine: false,
       circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
-      remainingTime: '00 : 00 : 00',
+      remainingTime: RETURN_ZERO,
       paper: {},
       questionList: [],
       tempQuestionList: [],
@@ -325,6 +327,12 @@ export default {
     // 逐题答卷的第一题置灰按钮
     prevButtonDisabled() {
       return this.currentQuestion === 0
+    },
+    currentCountDown() {
+      return _.get(this.limitTimeList, `[${this.currentQuestion}].countDown`)
+    },
+    disabledByQuestion() {
+      return this.currentCountDown && this.currentCountDown === RETURN_ZERO
     }
   },
   mounted() {
@@ -347,13 +355,17 @@ export default {
   methods: {
     prevQuestion() {
       this.currentQuestion -= 1
-      clearInterval(this.byOneTimeId)
-      this.createByOneCountdown()
+      this.commonCreateCountdown()
     },
     nextQuestion() {
       this.currentQuestion += 1
-      clearInterval(this.byOneTimeId)
-      this.createByOneCountdown()
+      this.commonCreateCountdown()
+    },
+    commonCreateCountdown() {
+      if (this.currentCountDown !== RETURN_ZERO) {
+        clearInterval(this.byOneTimeId)
+        this.createByOneCountdown()
+      }
     },
     // 获取逐题的大题
     getByOneIndex(data) {
@@ -653,7 +665,7 @@ export default {
           this.byOneTimeId = setInterval(() => {
             item.timeLeft = item.timeLeft.subtract(1, 's')
             item.countDown = this.createCountdown(item.timeLeft)
-            if (item.countDown === '00 : 00 : 00') {
+            if (item.countDown === RETURN_ZERO) {
               clearInterval(this.byOneTimeId)
             }
           }, 1000)
@@ -692,7 +704,7 @@ export default {
           this.isWarningTimeLine = true
         }
         this.remainingTime = this.createCountdown(diffTime)
-        if (this.remainingTime !== '00 : 00 : 00') return
+        if (this.remainingTime !== RETURN_ZERO) return
         clearInterval(this.dealTimeId)
         // 结束考试
         this.autoEndExam()

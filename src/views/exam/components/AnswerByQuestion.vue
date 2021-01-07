@@ -13,6 +13,7 @@
       <QustionPreview
         v-if="QUESTION_TYPE_GROUP !== conItem.type"
         :data="conItem"
+        :disabled="disabled"
       />
       <span v-else>
         <span
@@ -26,7 +27,10 @@
             class=""
           >
             <span>{{ paperIndex + 1 }}.</span>
-            <QustionPreview :data="paperItem" />
+            <QustionPreview
+              :data="paperItem"
+              :disabled="disabled"
+            />
           </li>
         </ul>
       </span>
@@ -52,6 +56,10 @@ export default {
     QustionPreview
   },
   props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     conItem: {
       type: Object,
       default: () => ({})
