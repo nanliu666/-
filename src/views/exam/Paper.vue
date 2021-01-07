@@ -152,7 +152,6 @@
                     <AnswerByQuestion
                       :con-item="conItem"
                       :con-index="conIndex"
-                      @checkImpeach="currentItemIsInImpeach"
                       @setImpeach="setImpeach"
                     />
                   </li>
@@ -173,9 +172,9 @@
                 >
                   <div class="title-box">
                     <div class="question-li-title">
-                      <span>{{ (index + 1) | number2zhcn }}、</span>
+                      <span>{{ (getByOneIndex(item).key + 1) | number2zhcn }}、</span>
                       <span>{{ item.type | typeFilter }}</span>
-                      <span>（共{{ _.size(item) }}题)</span>
+                      <span>（共{{ _.size(getByOneIndex(item).value) }}题)</span>
                     </div>
                     <div class="sub-title">
                       {{ item.title }}
@@ -186,7 +185,6 @@
                       <AnswerByQuestion
                         :con-item="item"
                         :con-index="index"
-                        @checkImpeach="currentItemIsInImpeach"
                         @setImpeach="setImpeach"
                       />
                     </li>
@@ -244,6 +242,11 @@ import {
 import { getTakeExam, postSubmitPaper } from '@/api/exam'
 import { mapGetters } from 'vuex'
 export default {
+  provide() {
+    return {
+      paper: this
+    }
+  },
   filters: {
     typeFilter(data) {
       return QUESTION_TYPE_MAP[data]
@@ -305,6 +308,19 @@ export default {
     clearInterval(this.dealTimeId)
   },
   methods: {
+    // 获取逐题的大题
+    getByOneIndex(data) {
+      let parentObj = { key: -1, value: {} }
+      _.each(this.questionList, (parentItem, parentIndex) => {
+        _.each(parentItem, (sonItem) => {
+          if (data.id === sonItem.id) {
+            parentObj.key = parentIndex
+            parentObj.value = parentItem
+          }
+        })
+      })
+      return parentObj
+    },
     // 检测闭卷
     watchCloseBookExam() {
       const { isDecoil } = this.paper

@@ -3,11 +3,7 @@
     <div class="li-main-left">
       <i
         class="iconfont"
-        :class="
-          `icon${
-            currentItemIsInImpeach(conItem) ? 'image_icon_help_press' : 'image_icon_help_normal'
-          }`
-        "
+        :class="`icon${isInImpeach ? 'image_icon_help_press' : 'image_icon_help_normal'}`"
         @click="setImpeach(conItem)"
       />
     </div>
@@ -50,6 +46,7 @@ import {
 } from '@/const/exam'
 import QustionPreview from './questionPreview'
 export default {
+  inject: ['paper'],
   name: 'AnswerByQuestion',
   components: {
     QustionPreview
@@ -65,7 +62,9 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      isInImpeach: false
+    }
   },
   computed: {
     QUESTION_TYPE_MULTIPLE: () => QUESTION_TYPE_MULTIPLE,
@@ -78,11 +77,14 @@ export default {
   },
   created() {},
   methods: {
-    currentItemIsInImpeach(data) {
-      this.$emit('checkImpeach', data)
-    },
     setImpeach(data) {
+      this.getCurrentImpeach(data)
       this.$emit('setImpeach', data)
+    },
+    getCurrentImpeach(data) {
+      this.isInImpeach = !_.some(this.paper.impeachList, (item) => {
+        return item.key === data.id
+      })
     }
   }
 }
