@@ -388,7 +388,7 @@ export default {
     },
     // 交卷逻辑
     carryOut() {
-      // this.checkSubmit()
+      this.checkSubmit()
       this.submitFun()
     },
     getAnswerCount(type) {

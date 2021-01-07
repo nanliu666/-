@@ -53,7 +53,7 @@
         <el-checkbox
           v-for="option in data.options"
           :key="option.id"
-          v-model="option.answer"
+          v-model="option.answerModel"
           :label="option.id"
           class="qustion-checkbox"
           @change="changeMultiple(option)"
@@ -84,9 +84,10 @@
       >
         <el-input
           v-if="item === ''"
-          v-model="data.answer"
+          v-model="data[`answerModel${index}`]"
           style="display: inline;"
           placeholder="请输入内容"
+          maxlength="32"
         >
         </el-input>
         <span
@@ -142,13 +143,13 @@ export default {
   watch: {
     data: {
       handler(value) {
-        if (value.type === QUESTION_TYPE_BLANK) {
-          // console.log('value.content==', _.unescape(_.unescape(value.content)) )
-          const content = deleteHTMLTag(_.unescape(value.content))
-          // console.log('content==', content)
-          // const reg = new RegExp(/([_])\1{2,}/)
-          // console.log('匹配==', content.replace(/([_])\1{4,}/, '$'))
-          this.blankList = content.split('___')
+        switch (value.type) {
+          case QUESTION_TYPE_BLANK:
+            this.handleBlankValue(value)
+            break
+          case QUESTION_TYPE_MULTIPLE:
+            this.handleMulipleValue(value)
+            break
         }
       },
       deep: true,
@@ -156,13 +157,42 @@ export default {
     }
   },
   methods: {
+    handleMulipleValue(value) {
+      const temp = _.cloneDeep(value.answerModel)
+      let target = _.map(temp, (item) => {
+        if (!_.isEmpty(item)) {
+          return item.id
+        }
+      })
+      value.answer = _.compact(target).join(',')
+    },
+    handleBlankValue(value) {
+      const content = deleteHTMLTag(_.unescape(value.content))
+      this.blankList = content.split('___')
+      let tempValue = []
+      _.forIn(value, (forValue, key) => {
+        if (key.includes('answerModel')) {
+          let temp = { [key]: forValue }
+          let WhetherIn = _.findIndex(tempValue, (item) => {
+            return _.findKey(item) === _.findKey(temp)
+          })
+          if (WhetherIn === -1) {
+            tempValue.push(temp)
+          }
+        }
+      })
+      const target = _.map(tempValue, (item) => {
+        return _.get(item, _.findKey(item))
+      })
+      value.answer = target.join(',')
+    },
     changeMultiple() {
       const dataValue = _.map(this.data.options, (item) => {
-        if (item.answer) {
+        if (item.answerModel) {
           return item
         }
       })
-      this.data.answer = dataValue
+      this.data.answerModel = dataValue
     }
   }
 }
