@@ -22,7 +22,7 @@
               讲师：
             </span>
             <span class="course-detail__info__value">
-              {{ courseData.tearchName }}
+              {{ courseData.teacherName }}
             </span>
           </div>
           <span class="course-detail__info__column">
@@ -42,7 +42,10 @@
             {{ COURSE_TYPE_MAP[courseData.type] || '' }}
           </span>
         </div>
-        <div class="course-detail__info__column">
+        <div
+          v-if="courseData.peirod"
+          class="course-detail__info__column"
+        >
           <span class="course-detail__info__label">
             学时：
           </span>

@@ -2,14 +2,13 @@
   <div class="el-layout">
     <the-header v-if="!isFullscreen" />
     <div :class="['el-main', { 'el-main--fullscreen': isFullscreen }]">
-      <keep-alive>
-        <router-view
-          :key="$route.fullPath"
-          class="el-view"
-        />
-      </keep-alive>
+      <div class="el-view">
+        <keep-alive>
+          <router-view :key="$route.fullPath" />
+        </keep-alive>
+      </div>
+      <the-footer v-if="!isFullscreen" />
     </div>
-    <the-footer />
   </div>
 </template>
 
@@ -36,20 +35,23 @@ export default {
   // 父元素
   display: flex;
   justify-content: space-between;
-  flex-flow: row wrap;
+  flex-direction: column;
+  height: 100vh;
   .el-main {
     min-height: calc(100vh - #{$headerHeight} - 40px);
-    flex-basis: 1200px;
-    flex-grow: 0; //存在多余长度也不放大
-    margin: auto;
     padding: 0;
-    &--fullscreen {
-      flex-grow: 1;
-      min-width: 1200px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    .el-view {
+      width: 1200px;
+      flex: 1;
     }
-    // &::-webkit-scrollbar {
-    //   display: none;
-    // }
+    &--fullscreen {
+      .el-view {
+        width: 100vw;
+      }
+    }
   }
 }
 </style>

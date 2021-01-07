@@ -248,7 +248,7 @@ export default {
       } else {
         oldVal.progress = 1
       }
-      // this.submitLearnRecords()
+      this.submitLearnRecords()
     }
   },
   activated() {
@@ -258,7 +258,7 @@ export default {
     this.loadNoteList()
     this.setTimer()
   },
-  unactivated() {
+  deactivated() {
     clearInterval(this.timer)
   },
   methods: {

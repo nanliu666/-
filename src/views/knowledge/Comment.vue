@@ -53,6 +53,7 @@
               {{ item.createTime }}
             </div>
             <el-rate
+              v-if="item.scope"
               v-model="item.scope"
               disabled
               allow-half

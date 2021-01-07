@@ -32,21 +32,15 @@
             />
           </el-form-item>
           <el-form-item prop="password">
-            <el-input
+            <pass-input
               v-model="loginForm.password"
-              :type="passwordInputType"
               placeholder="请输入密码"
+              onpaste="return false"
+              oncontextmenu="return false"
+              oncopy="return false"
+              oncut="return false"
             >
-              <i
-                slot="suffix"
-                :class="
-                  passwordInputType === 'password'
-                    ? 'icon-basics-eyeblind-outlined'
-                    : 'icon-basics-eyeopen-outlined'
-                "
-                @click.stop="inputTypeChange"
-              ></i>
-            </el-input>
+            </pass-input>
           </el-form-item>
           <el-form-item prop="code">
             <el-row :span="24">
@@ -73,7 +67,7 @@
           <el-button
             class="loginBtn"
             type="primary"
-            @click="loginIn()"
+            @click="handleLogin()"
           >
             登录
           </el-button>
@@ -99,8 +93,10 @@
 
 <script>
 import { getCaptcha, getTenantInfo } from '@/api/user'
+import PassInput from '@/components/pass-input/PassInput'
 export default {
   name: 'Home',
+  components: { PassInput },
   data() {
     return {
       loginForm: {
@@ -128,7 +124,7 @@ export default {
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 1, message: '密码长度最少为6位', trigger: 'blur' }
+          { min: 6, max: 12, message: '密码长度需要满足6～12字符', trigger: 'blur' }
         ],
         code: [{ required: true, message: '请输入验证码', trigger: 'blur' }]
       }
@@ -165,7 +161,7 @@ export default {
       // 忘记密码眼睛点击
       this.passwordInputType = this.passwordInputType === 'password' ? 'text' : 'password'
     },
-    loginIn() {
+    handleLogin() {
       // 登录
       this.$refs.loginForm.validate((valid) => {
         if (valid) {

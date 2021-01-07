@@ -10,22 +10,46 @@
     </div>
 
     <div class="title">
-      证书名称（证书编号）
+      {{ sondata.templateName }}（{{ sondata.certificateNo }}）
     </div>
 
     <div class="info">
-      <span>颁发机构：{{ '易宝软件有限公司' }}</span>
-      <span>发放时间：{{ '2020-02-15 14:00:22' }}</span>
+      <span>颁发机构：{{ sondata.awardAgency }}</span>
+      <span>发放时间：{{ sondata.grantTime }}</span>
     </div>
 
     <div class="name">
-      完成java基础的学习，通过考核，掌握了该专业必备技能，特发此证。
+      {{ sondata.templateName }}
     </div>
 
-    <img
-      :src="imgurl"
-      alt=""
-    />
+    <div class="preview_right_in">
+      <div class="preview_right_box">
+        <img
+          :src="sondata.backUrl"
+          alt=""
+          class="bgimg"
+        />
+        <div class="name">
+          {{ sondata.templateName }}
+        </div>
+        <div class="text">
+          {{ sondata.text }}
+        </div>
+        <img
+          :src="sondata.logoUrl"
+          alt=""
+          class="logo"
+        />
+        <div class="studentName">
+          {{ sondata.stuName }}
+        </div>
+        <div class="serial">
+          <div>证书编号:</div>
+          <div>{{ sondata.certificateNo }}</div>
+          <div>{{ sondata.grantTime }}</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -34,14 +58,10 @@ export default {
   name: 'CertificateDetail',
   props: ['sondata'],
   data() {
-    return {
-      imgurl:
-        'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1608289740056&di=00f8f4b767c42fa1c8548b4e6731e4e8&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201901%2F23%2F20190123150727_byuwj.jpg'
-    }
+    return {}
   },
   methods: {
     toCertificate() {
-      //   console.log(this.sondata)
       this.$emit('ChangeBtn', true)
     }
   }
@@ -80,10 +100,76 @@ export default {
     letter-spacing: 0;
     margin-top: 20px;
   }
-  img {
+
+  .preview_right_in {
+    //   padding-left: 50px;
+    //   padding-top: 20px;
     width: 1152px;
     height: 815px;
     margin-top: 16px;
+    .preview_right_box {
+      position: relative;
+      border: 1px solid #d9dbdc;
+      margin-top: 15px;
+      width: 100%;
+      height: 100%;
+      .bgimg {
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      }
+      .name {
+        position: absolute;
+        top: 146px;
+        left: 50%;
+        font-size: 64px;
+        color: #ab856a;
+        transform: translateX(-50%);
+        text-align: center;
+        width: 80%;
+        font-weight: 600;
+      }
+      .text {
+        position: absolute;
+        top: 490px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 50%;
+        height: 28%;
+
+        opacity: 0.65;
+        font-size: 18px;
+        color: #000b15;
+        text-align: center;
+        line-height: 28px;
+      }
+      .logo {
+        position: absolute;
+        top: 622px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 112px;
+        height: 112px;
+      }
+      .studentName {
+        position: absolute;
+        top: 386px;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0.85;
+        font-size: 40px;
+        color: #000b15;
+        text-align: center;
+      }
+      .serial {
+        position: absolute;
+        right: 117px;
+        bottom: 80px;
+        font-size: 14px;
+        color: rgba(0, 11, 21, 0.45);
+        line-height: 28px;
+      }
+    }
   }
 }
 </style>
