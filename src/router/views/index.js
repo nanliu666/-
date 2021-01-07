@@ -33,7 +33,8 @@ export default [
             name: 'Home',
             component: () => import(/* webpackChunkName: "page" */ '@/views/Home.vue'),
             meta: {
-              title: '首页'
+              title: '首页',
+              fullscreen: true
             }
           }
         ]
