@@ -382,10 +382,9 @@ export default {
       const totalScore = this.addScore(scoreList)
       return totalScore / 10
     },
-    // 交卷逻辑
+    // 交卷逻辑直接跳转检测后交卷逻辑
     carryOut() {
       this.checkSubmit()
-      this.submitFun()
     },
     getAnswerCount(type) {
       let target = []
