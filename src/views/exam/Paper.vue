@@ -191,6 +191,23 @@
                   </ul>
                 </div>
               </li>
+              <div class="handle-button-box">
+                <el-button
+                  size="medium"
+                  :disabled="prevButtonDisabled"
+                  @click="prevQuestion"
+                >
+                  上一题
+                </el-button>
+                <el-button
+                  size="medium"
+                  type="primary"
+                  :disabled="nextButtonDisabled"
+                  @click="nextQuestion"
+                >
+                  下一题
+                </el-button>
+              </div>
             </ul>
           </el-card>
         </div>
@@ -288,7 +305,15 @@ export default {
     QUESTION_TYPE_SHOER: () => QUESTION_TYPE_SHOER,
     QUESTION_TYPE_MAP: () => QUESTION_TYPE_MAP,
     QUESTION_TYPE_GROUP: () => QUESTION_TYPE_GROUP,
-    ...mapGetters(['userInfo'])
+    ...mapGetters(['userInfo']),
+    // 逐题答卷最后一题需要置灰按钮
+    nextButtonDisabled() {
+      return _.size(this.tempQuestionList) === this.currentQuestion + 1
+    },
+    // 逐题答卷的第一题置灰按钮
+    prevButtonDisabled() {
+      return this.currentQuestion === 0
+    }
   },
   mounted() {
     this.initData()
@@ -308,6 +333,12 @@ export default {
     clearInterval(this.dealTimeId)
   },
   methods: {
+    prevQuestion() {
+      this.currentQuestion -= 1
+    },
+    nextQuestion() {
+      this.currentQuestion += 1
+    },
     // 获取逐题的大题
     getByOneIndex(data) {
       let parentObj = { key: -1, value: {} }
