@@ -27,7 +27,10 @@
         <span
           class="time"
           :class="{ 'warning-time': isWarningTimeLine }"
-        >剩余时间：{{ remainingTime }}</span>
+        >
+          <span>剩余时间：</span>
+          <!-- <span>{{ remainingTime }}</span> -->
+        </span>
         <el-button
           type="primary"
           size="medium"
@@ -404,7 +407,12 @@ export default {
     // 当前题目是否被做
     currentItemIsInSelected(data) {
       const getAnswerValue = (value) => {
-        return _.get(value, 'answer')
+        const isGroup = value.type === QUESTION_TYPE_GROUP
+        const groupPass = _.every(value.subQuestions, (item) => {
+          return item.answer
+        })
+        const isSelected = isGroup ? groupPass : _.get(value, 'answer')
+        return isSelected
       }
       const byTotal = getAnswerValue(data)
       const byOneIndex = _.findIndex(this.tempQuestionList, (item) => {
