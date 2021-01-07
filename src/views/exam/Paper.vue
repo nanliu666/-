@@ -284,7 +284,7 @@ export default {
       examBeginTime: new Date(),
       dealTimeId: {},
       impeachList: [], // 存疑数组
-      successPapeer: {},
+      successPaper: {},
       isSuccess: false,
       confirmTips: '',
       centerDialogVisible: false,
@@ -571,7 +571,7 @@ export default {
       }
       postSubmitPaper(params)
         .then((res) => {
-          this.successPapeer = res
+          this.successPaper = res
         })
         .catch(() => {
           window.console.error(JSON.stringify(params))
