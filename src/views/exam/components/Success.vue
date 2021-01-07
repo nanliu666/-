@@ -51,7 +51,7 @@ export default {
 
 <style scoped lang="scss">
 .card {
-  height: calc(100vh - 56px);
+  height: calc(100vh - 56px - 70px);
   width: 1200px;
   margin: 24px auto 0;
   display: flex;
