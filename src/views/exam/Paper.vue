@@ -123,7 +123,10 @@
             </div>
           </div>
           <el-card class="main-right">
-            <ul class="question-ul">
+            <ul
+              v-if="paper.answerMode === 1"
+              class="question-ul"
+            >
               <li
                 v-for="(item, index) in questionList"
                 :key="index"
@@ -146,54 +149,56 @@
                     :key="conItem.id"
                     class="content-li"
                   >
-                    <div class="li-main">
-                      <div class="li-main-left">
-                        <i
-                          class="iconfont"
-                          :class="
-                            `icon${
-                              currentItemIsInImpeach(conItem)
-                                ? 'image_icon_help_press'
-                                : 'image_icon_help_normal'
-                            }`
-                          "
-                          @click="setImpeach(conItem)"
-                        />
-                      </div>
-                      <div class="li-main-right">
-                        <span>{{ conIndex + 1 }}.</span>
-                        <span>（{{ conItem.score / 10 }}分）</span>
-                        <QustionPreview
-                          v-if="QUESTION_TYPE_GROUP !== conItem.type"
-                          :data="conItem"
-                        />
-                        <span v-else>
-                          <span
-                            class="right-title"
-                            v-html="_.unescape(conItem.content)"
-                          ></span>
-                          <ul>
-                            <li
-                              v-for="(paperItem, paperIndex) in conItem.subQuestions"
-                              :key="paperIndex"
-                              class=""
-                            >
-                              <span>{{ paperIndex + 1 }}.</span>
-                              <QustionPreview :data="paperItem" />
-                            </li>
-                          </ul>
-                        </span>
-                      </div>
-                    </div>
+                    <AnswerByQuestion
+                      :con-item="conItem"
+                      :con-index="conIndex"
+                      @checkImpeach="currentItemIsInImpeach"
+                      @setImpeach="setImpeach"
+                    />
                   </li>
                 </ul>
+              </li>
+            </ul>
+            <ul
+              v-if="paper.answerMode === 2"
+              class="question-ul"
+            >
+              <li
+                v-for="(item, index) in tempQuestionList"
+                :key="index"
+              >
+                <div
+                  v-if="currentQuestion === index"
+                  class="question-li"
+                >
+                  <div class="title-box">
+                    <div class="question-li-title">
+                      <span>{{ (index + 1) | number2zhcn }}、</span>
+                      <span>{{ item.type | typeFilter }}</span>
+                      <span>（共{{ _.size(item) }}题)</span>
+                    </div>
+                    <div class="sub-title">
+                      {{ item.title }}
+                    </div>
+                  </div>
+                  <ul class="content-box">
+                    <li class="content-li">
+                      <AnswerByQuestion
+                        :con-item="item"
+                        :con-index="index"
+                        @checkImpeach="currentItemIsInImpeach"
+                        @setImpeach="setImpeach"
+                      />
+                    </li>
+                  </ul>
+                </div>
               </li>
             </ul>
           </el-card>
         </div>
         <exam-success v-else />
       </div>
-      <the-footer />
+      <the-footer v-if="paper.answerMode !== 2" />
     </section>
     <el-dialog
       title="提交"
@@ -224,8 +229,8 @@
 <script>
 import moment from 'moment'
 import examSuccess from './components/Success'
-import QustionPreview from './components/questionPreview'
 import TheFooter from '@/page/TheFooter'
+import AnswerByQuestion from './components/AnswerByQuestion'
 const nzhcn = require('nzh/cn')
 import {
   QUESTION_TYPE_MAP,
@@ -249,7 +254,7 @@ export default {
   },
   components: {
     examSuccess,
-    QustionPreview,
+    AnswerByQuestion,
     TheFooter
   },
   data() {
@@ -267,7 +272,9 @@ export default {
       circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
       remainingTime: '00 : 00 : 00',
       paper: {},
-      questionList: []
+      questionList: [],
+      tempQuestionList: [],
+      currentQuestion: 0
     }
   },
   computed: {
@@ -331,13 +338,21 @@ export default {
     },
     // 点击滚动到对应的题目
     navTo(data, sonIndex, parentIndex, ref = 'paperScroll') {
-      const isFirst = sonIndex === 0 && parentIndex === 0
-      const scollHeight = isFirst ? 0 : document.getElementById(`id${data.id}`).offsetTop
-      let scrollElement = this.$refs[ref]
-      scrollElement.scrollTo({
-        top: scollHeight,
-        behavior: 'smooth'
-      })
+      if (this.paper.answerMode === 1) {
+        // 整卷移动
+        const isFirst = sonIndex === 0 && parentIndex === 0
+        const scollHeight = isFirst ? 0 : document.getElementById(`id${data.id}`).offsetTop
+        let scrollElement = this.$refs[ref]
+        scrollElement.scrollTo({
+          top: scollHeight,
+          behavior: 'smooth'
+        })
+      } else {
+        // 逐题移动
+        this.currentQuestion = _.findIndex(this.tempQuestionList, (item) => {
+          return item.id === data.id
+        })
+      }
     },
     // 当前题目是否被做
     currentItemIsInSelected(data) {
@@ -502,7 +517,6 @@ export default {
         .then((res) => {
           this.successPapeer = res
         })
-
         .catch(() => {
           window.console.error(JSON.stringify(params))
         })
@@ -522,6 +536,12 @@ export default {
           return _.sortBy(item, 'sort')
         })
         .value()
+      const { answerMode } = this.paper
+      // 逐题模式
+      if (answerMode === 2) {
+        const topicList = _.flatten(_.cloneDeep(this.questionList))
+        this.tempQuestionList = topicList
+      }
       this.initRemainingTime()
       // 闭卷监听
       this.watchCloseBookExam()
@@ -775,6 +795,7 @@ $selctColor: #fcba00;
         .main-right {
           margin-left: 355px;
           flex: 1;
+          min-height: calc(100vh - 96px);
           .question-ul {
             .question-li {
               .title-box {
@@ -795,26 +816,6 @@ $selctColor: #fcba00;
               .content-box {
                 .content-li {
                   margin-bottom: 32px;
-                  .li-main {
-                    display: flex;
-                    justify-content: flex-start;
-                    .li-main-left {
-                      margin-top: 2px;
-                      margin-right: 8.8px;
-                      .iconfont {
-                        &:hover {
-                          color: $activeColor;
-                          cursor: pointer;
-                        }
-                      }
-                      .iconimage_icon_help_press {
-                        color: $selctColor;
-                      }
-                    }
-                    .li-main-right {
-                      flex: 1;
-                    }
-                  }
                 }
               }
             }
