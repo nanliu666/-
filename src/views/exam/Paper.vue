@@ -52,10 +52,7 @@
       ref="paperScroll"
       class="container-section"
     >
-      <div
-        v-loading="containerLoad"
-        class="middle-container"
-      >
+      <div class="middle-container">
         <div
           v-if="!isSuccess"
           class="paper-main"
@@ -262,7 +259,6 @@ export default {
       examBeginTime: new Date(),
       dealTimeId: {},
       impeachList: [], // 存疑数组
-      containerLoad: false,
       successPapeer: {},
       isSuccess: false,
       confirmTips: '',
@@ -496,7 +492,6 @@ export default {
     // 处理交卷动作
     submitFun() {
       let questions = this.handleQustions()
-      this.containerLoad = true
       const params = {
         batchId: this.$route.query.batchId,
         examId: this.$route.query.examId,
@@ -508,9 +503,7 @@ export default {
         .then((res) => {
           this.successPapeer = res
         })
-        .finally(() => {
-          this.containerLoad = false
-        })
+
         .catch(() => {
           window.console.error(JSON.stringify(params))
         })
