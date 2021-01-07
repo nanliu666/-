@@ -37,6 +37,17 @@
         </el-button>
       </div>
     </div>
+    <div
+      v-if="paper.isDecoil"
+      class="close-book"
+    >
+      <el-alert
+        title="本次为闭卷考试，考试期间若切换程序离开考试页面，则自动提交答卷！"
+        type="warning"
+        effect="dark"
+      >
+      </el-alert>
+    </div>
     <section
       ref="paperScroll"
       class="container-section"
@@ -334,18 +345,7 @@ export default {
     },
     // 当前题目是否被做
     currentItemIsInSelected(data) {
-      let isSelected = false
-      if (data.type === QUESTION_TYPE_SINGLE || data.type === QUESTION_TYPE_JUDGE) {
-        isSelected = _.get(data, 'value')
-      }
-      if (data.type === QUESTION_TYPE_MULTIPLE) {
-        const multipleData = _.get(data, 'value')
-        // 多选非空
-        isSelected = _.some(multipleData, (item) => {
-          return item
-        })
-      }
-      return !!isSelected
+      return _.get(data, 'answer')
     },
     // 当前对象是否存在于存疑数据
     currentItemIsInImpeach(data) {
@@ -491,7 +491,6 @@ export default {
         })
       }
       loop(questionsTemp)
-      // console.log('questions==', questions)
       return questions
     },
     // 处理交卷动作
@@ -646,6 +645,10 @@ $selctColor: #fcba00;
         color: #ff4329;
       }
     }
+  }
+  .close-book {
+    margin: 20px auto 0;
+    width: 1200px;
   }
   .container-section {
     display: flex;
