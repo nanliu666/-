@@ -372,7 +372,16 @@ export default {
     },
     // 当前题目是否被做
     currentItemIsInSelected(data) {
-      return _.get(data, 'answer')
+      const getAnswerValue = (value) => {
+        return _.get(value, 'answer')
+      }
+      const byTotal = getAnswerValue(data)
+      const byOneIndex = _.findIndex(this.tempQuestionList, (item) => {
+        return item.id === data.id && getAnswerValue(item)
+      })
+      const byOne = byOneIndex > -1
+      const isSelected = this.paper.answerMode === 1 ? byTotal : byOne
+      return isSelected
     },
     // 当前对象是否存在于存疑数据
     currentItemIsInImpeach(data) {
