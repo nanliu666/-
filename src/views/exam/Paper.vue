@@ -335,6 +335,17 @@ export default {
       return this.currentCountDown && this.currentCountDown === RETURN_ZERO
     }
   },
+  watch: {
+    currentCountDown: {
+      handler(value) {
+        if (value === RETURN_ZERO) {
+          this.$message.error('该试题已超过答题时间，不能继续作答')
+        }
+      },
+      deep: true,
+      immediate: true
+    }
+  },
   mounted() {
     this.initData()
     //阻止F5刷新
