@@ -4,7 +4,10 @@
       v-if="url"
       class="qustion__options-image"
     >
-      <el-image :src="url"></el-image>
+      <el-image
+        class="image-box"
+        :src="url"
+      ></el-image>
       <div class="upload__cover">
         <i
           class="iconimage_icon_Preview1 iconfont"
@@ -50,7 +53,8 @@ export default {
 .qustion__options-image {
   display: inline-block;
   position: relative;
-  width: 20%;
+  width: 120px;
+  max-height: 120px;
   &:hover {
     .upload__cover {
       display: flex;

@@ -1,7 +1,13 @@
 <template>
   <span class="qustion">
-    <span class="qustion__content">
-      <span v-html="_.unescape(data.content)"></span>
+    <span
+      v-if="data.type !== QUESTION_TYPE_BLANK"
+      class="qustion__content"
+    >
+      <span
+        class="content-box"
+        v-html="_.unescape(data.content)"
+      ></span>
     </span>
     <div
       v-if="!_.isEmpty(data.attachments)"
@@ -12,7 +18,7 @@
         :key="index"
         class="qustion__attachment"
       >
-        <question-view :url="attachment.url" />
+        <question-view :url="attachment.fileUrl" />
       </div>
     </div>
     <!-- 判断题、单选题 -->
@@ -20,11 +26,14 @@
       v-if="[QUESTION_TYPE_SINGLE, QUESTION_TYPE_JUDGE].includes(data.type)"
       class="qustion__options"
     >
-      <el-radio-group v-model="data.answer">
+      <el-radio-group
+        v-model="data.answer"
+        class="group-container"
+      >
         <el-radio
           v-for="option in data.options"
           :key="option.key"
-          style="display: block"
+          class="radio"
           :label="option.id"
         >
           <span>{{ _.unescape(option.content) }}</span>
@@ -40,13 +49,13 @@
       v-if="[QUESTION_TYPE_MULTIPLE].includes(data.type) && !_.isEmpty(data.options)"
       class="qustion__options"
     >
-      <li>
+      <li class="group-container">
         <el-checkbox
           v-for="option in data.options"
           :key="option.id"
           v-model="option.answer"
-          style="display: block"
           :label="option.id"
+          class="qustion-checkbox"
           @change="changeMultiple(option)"
         >
           <span>{{ _.unescape(option.content) }}</span>
@@ -57,10 +66,40 @@
         </el-checkbox>
       </li>
     </div>
+    <el-input
+      v-if="[QUESTION_TYPE_SHOER].includes(data.type)"
+      v-model="data.answer"
+      type="textarea"
+      :rows="4"
+      placeholder="请输入内容"
+    >
+    </el-input>
+    <ul
+      v-if="[QUESTION_TYPE_BLANK].includes(data.type)"
+      class="blank-ul"
+    >
+      <li
+        v-for="(item, index) in blankList"
+        :key="index"
+      >
+        <el-input
+          v-if="item === ''"
+          v-model="data.answer"
+          style="display: inline;"
+          placeholder="请输入内容"
+        >
+        </el-input>
+        <span
+          v-else
+          v-html="_.unescape(item)"
+        />
+      </li>
+    </ul>
   </span>
 </template>
 
 <script>
+import { deleteHTMLTag } from '@/util/util'
 import questionView from './questionView'
 import {
   QUESTION_TYPE_MAP,
@@ -87,7 +126,9 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      blankList: []
+    }
   },
   computed: {
     QUESTION_TYPE_MULTIPLE: () => QUESTION_TYPE_MULTIPLE,
@@ -97,6 +138,22 @@ export default {
     QUESTION_TYPE_SHOER: () => QUESTION_TYPE_SHOER,
     QUESTION_TYPE_MAP: () => QUESTION_TYPE_MAP,
     QUESTION_TYPE_GROUP: () => QUESTION_TYPE_GROUP
+  },
+  watch: {
+    data: {
+      handler(value) {
+        if (value.type === QUESTION_TYPE_BLANK) {
+          // console.log('value.content==', _.unescape(_.unescape(value.content)) )
+          const content = deleteHTMLTag(_.unescape(value.content))
+          // console.log('content==', content)
+          // const reg = new RegExp(/([_])\1{2,}/)
+          // console.log('匹配==', content.replace(/([_])\1{4,}/, '$'))
+          this.blankList = content.split('___')
+        }
+      },
+      deep: true,
+      immediate: true
+    }
   },
   methods: {
     changeMultiple() {
@@ -112,6 +169,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.blank-ul {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  align-items: center;
+  li {
+    // display: inline-block
+    /deep/ .el-input__inner {
+      border-color: transparent;
+      border-bottom-color: #303133;
+      border-radius: 0;
+      &:hover {
+        border-color: transparent;
+        border-bottom-color: #303133;
+      }
+    }
+  }
+}
 .qustion {
   &__attachments {
     margin-top: 12px;
@@ -147,16 +222,25 @@ export default {
   }
   &__options {
     margin-top: 12px;
-    li {
-      margin-bottom: 12px;
-      // &:last-of-type {
-      //   margin-bottom: 0;
-      // }
+    .group-container {
       .el-radio {
-        margin-right: 10px;
+        margin-right: 0px;
+        margin-bottom: 16px;
+        display: block;
+        &:last-child {
+          margin-bottom: 0;
+        }
       }
-      .el-checkbox {
-        margin-right: 10px;
+      .qustion-checkbox {
+        margin-bottom: 16px;
+        display: flex;
+        align-items: flex-start;
+        &:last-child {
+          margin-bottom: 0;
+        }
+        /deep/ .el-checkbox__label {
+          margin-top: -2px;
+        }
       }
     }
   }

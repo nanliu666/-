@@ -160,7 +160,10 @@
                           :data="conItem"
                         />
                         <span v-else>
-                          <span v-html="_.unescape(conItem.content)"></span>
+                          <span
+                            class="right-title"
+                            v-html="_.unescape(conItem.content)"
+                          ></span>
                           <ul>
                             <li
                               v-for="(paperItem, paperIndex) in conItem.subQuestions"
@@ -474,11 +477,14 @@ export default {
     handleQustions() {
       const questionsTemp = _.flattenDeep(_.cloneDeep(this.questionList))
       let questions = []
-      const PICK_KEY = ['id', 'answer', 'title', 'type']
+      const PICK_KEY = ['id', 'answer', 'title', 'type', 'subQuestions']
       const loop = (data) => {
         _.each(data, (item) => {
           if (!_.isEmpty(item.subQuestions)) {
-            loop(item.subQuestions)
+            const tempSub = _.cloneDeep(item.subQuestions)
+            item.subQuestions = _.map(tempSub, (subItem) => {
+              return _.pick(subItem, PICK_KEY)
+            })
           }
           const pickItem = _.pick(item, PICK_KEY)
           questions.push(pickItem)
@@ -776,7 +782,6 @@ $selctColor: #fcba00;
           flex: 1;
           .question-ul {
             .question-li {
-              padding-bottom: 8px;
               .title-box {
                 margin-bottom: 24px;
                 .question-li-title {
