@@ -12,7 +12,7 @@
           class="content"
         >
           <span>共{{ paper.questionNum }}题，</span>
-          <span v-if="paper.totalScore">总分{{ paper.totalScore / 10 }}分，</span>
+          <span v-if="paper.totalScore">总分{{ paper.totalScore }}分，</span>
           <span>限定最高分为100分</span>
           <span v-if="paper.reckonTime">，计时{{ paper.reckonTimeValue }}分钟</span>
           <span>（答题不确定时，可用</span>
@@ -499,7 +499,7 @@ export default {
         return item.score
       })
       const totalScore = this.addScore(scoreList)
-      return totalScore / 10
+      return totalScore
     },
     // 交卷逻辑直接跳转检测后交卷逻辑
     carryOut() {

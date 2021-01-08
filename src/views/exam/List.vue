@@ -373,14 +373,14 @@ export default {
       // 若创建考试时，不允许考生查看答卷。则不能查看答卷，按钮置灰
       // 已提交过答卷的点击“查看答卷”挑跳转到【查看答卷】页面
       const isJoinDisabled =
-        row.status === 1 || row.status === 2 || row.status === 4 || !row.openResults
+        row.status === 1 || row.status === 2 || row.status === 4 || !row.openAnswerSheet
       return isJoinDisabled
     },
     // 查看答案
     handleView(row) {
       this.$router.push({
         name: 'ExamDetail',
-        query: { examId: row.examId, batchId: row.batchId, type: 1 }
+        query: { examId: row.examId, batchId: row.batchId }
       })
     },
 

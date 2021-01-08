@@ -1,14 +1,10 @@
 <template>
   <span class="qustion">
     <span
-      v-if="data.type !== QUESTION_TYPE_BLANK"
-      class="qustion__content"
-    >
-      <span
-        class="content-box"
-        v-html="_.unescape(data.content)"
-      ></span>
-    </span>
+      v-if="data.type !== QUESTION_TYPE_BLANK || type === 'view'"
+      class="qustion-content-box"
+      v-html="_.unescape(data.content)"
+    ></span>
     <div
       v-if="!_.isEmpty(data.attachments)"
       class="qustion__attachments"
@@ -21,85 +17,139 @@
         <question-view :url="attachment.fileUrl" />
       </div>
     </div>
-    <!-- 判断题、单选题 -->
-    <div
-      v-if="[QUESTION_TYPE_SINGLE, QUESTION_TYPE_JUDGE].includes(data.type)"
-      class="qustion__options"
-    >
-      <el-radio-group
+    <!-- 考试用来可编辑的状态 -->
+    <div v-if="type === 'edit'">
+      <!-- 判断题、单选题 -->
+      <div
+        v-if="[QUESTION_TYPE_SINGLE, QUESTION_TYPE_JUDGE].includes(data.type)"
+        class="qustion__options"
+      >
+        <el-radio-group
+          v-model="data.answer"
+          :disabled="disabled"
+          class="group-container"
+        >
+          <el-radio
+            v-for="option in data.options"
+            :key="option.key"
+            class="radio"
+            :label="option.id"
+          >
+            <span>{{ _.unescape(option.content) }}</span>
+            <question-view
+              v-if="option.url"
+              :url="option.url"
+            />
+          </el-radio>
+        </el-radio-group>
+      </div>
+      <!-- 多选题 -->
+      <div
+        v-if="[QUESTION_TYPE_MULTIPLE].includes(data.type) && !_.isEmpty(data.options)"
+        class="qustion__options"
+      >
+        <li class="group-container">
+          <el-checkbox
+            v-for="option in data.options"
+            :key="option.id"
+            v-model="option.answerModel"
+            :disabled="disabled"
+            :label="option.id"
+            class="qustion-checkbox"
+            @change="changeMultiple(option)"
+          >
+            <span>{{ _.unescape(option.content) }}</span>
+            <question-view
+              v-if="option.url"
+              :url="option.url"
+            />
+          </el-checkbox>
+        </li>
+      </div>
+      <el-input
+        v-if="[QUESTION_TYPE_SHOER].includes(data.type)"
         v-model="data.answer"
         :disabled="disabled"
-        class="group-container"
+        type="textarea"
+        :rows="4"
+        placeholder="请输入内容"
       >
-        <el-radio
-          v-for="option in data.options"
-          :key="option.key"
-          class="radio"
-          :label="option.id"
+      </el-input>
+      <ul
+        v-if="[QUESTION_TYPE_BLANK].includes(data.type)"
+        class="blank-ul"
+      >
+        <li
+          v-for="(item, index) in blankList"
+          :key="index"
         >
-          <span>{{ _.unescape(option.content) }}</span>
-          <question-view
-            v-if="option.url"
-            :url="option.url"
+          <el-input
+            v-if="item === ''"
+            v-model="data[`answerModel${index}`]"
+            :disabled="disabled"
+            style="display: inline;"
+            placeholder="请输入内容"
+            maxlength="32"
+          >
+          </el-input>
+          <span
+            v-else
+            v-html="_.unescape(item)"
           />
-        </el-radio>
-      </el-radio-group>
+        </li>
+      </ul>
     </div>
-    <!-- 多选题 -->
     <div
-      v-if="[QUESTION_TYPE_MULTIPLE].includes(data.type) && !_.isEmpty(data.options)"
-      class="qustion__options"
+      v-else
+      class="view-contain-box"
     >
-      <li class="group-container">
-        <el-checkbox
-          v-for="option in data.options"
-          :key="option.id"
-          v-model="option.answerModel"
-          :disabled="disabled"
-          :label="option.id"
-          class="qustion-checkbox"
-          @change="changeMultiple(option)"
-        >
-          <span>{{ _.unescape(option.content) }}</span>
-          <question-view
-            v-if="option.url"
-            :url="option.url"
-          />
-        </el-checkbox>
-      </li>
-    </div>
-    <el-input
-      v-if="[QUESTION_TYPE_SHOER].includes(data.type)"
-      v-model="data.answer"
-      :disabled="disabled"
-      type="textarea"
-      :rows="4"
-      placeholder="请输入内容"
-    >
-    </el-input>
-    <ul
-      v-if="[QUESTION_TYPE_BLANK].includes(data.type)"
-      class="blank-ul"
-    >
-      <li
-        v-for="(item, index) in blankList"
-        :key="index"
+      <div
+        v-if="[QUESTION_TYPE_BLANK, QUESTION_TYPE_SHOER].includes(data.type)"
+        class="blank-box common-box"
       >
-        <el-input
-          v-if="item === ''"
-          v-model="data[`answerModel${index}`]"
-          :disabled="disabled"
-          style="display: inline;"
-          placeholder="请输入内容"
-          maxlength="32"
-        >
-        </el-input>
-        <span
-          v-else
-          v-html="_.unescape(item)"
-        />
-      </li>
-    </ul>
+        <div class="blank-top">
+          <span class="label">考生答案：</span>
+          <span class="value">{{ data.analysis }}</span>
+        </div>
+        <div class="blank-middle">
+          <div>
+            <span class="label">评分结果：</span>
+            <span class="value">{{ data.analysis }}</span>
+          </div>
+          <div>
+            <span class="label">得分：</span>
+            <span class="value">{{ data.analysis }}</span>
+          </div>
+          <div>
+            <span class="label">评卷人：</span>
+            <span class="value">{{ data.analysis }}</span>
+          </div>
+        </div>
+        <div>
+          <span class="label">考生答案：</span>
+          <span class="value">{{ data.analysis }}</span>
+        </div>
+      </div>
+      <div
+        v-if="
+          [QUESTION_TYPE_MULTIPLE, QUESTION_TYPE_SINGLE, QUESTION_TYPE_JUDGE].includes(data.type)
+        "
+        class="answer-box common-box"
+      >
+        <div>
+          <span class="label">考生答案：</span>
+          <span class="value">{{ data.analysis }}</span>
+        </div>
+        <div>
+          <span class="label">得分：</span>
+          <span class="value">{{ data.analysis }}</span>
+        </div>
+      </div>
+      <div class="analysis-box common-box">
+        <span class="label">试题分析：</span>
+        <span class="value">{{ data.analysis }}</span>
+      </div>
+    </div>
   </span>
 </template>
 
@@ -121,6 +171,10 @@ export default {
     questionView
   },
   props: {
+    type: {
+      type: String,
+      default: 'edit'
+    },
     disabled: {
       type: Boolean,
       default: false
@@ -279,6 +333,50 @@ export default {
         /deep/ .el-checkbox__label {
           margin-top: -2px;
         }
+      }
+    }
+  }
+  .view-contain-box {
+    .is-correct {
+      color: #00b061;
+    }
+    .is-fault {
+      color: #ff4329;
+    }
+    .analysis-box {
+      margin-top: 8px;
+    }
+    .common-box {
+      padding: 24px;
+      background-color: #fafafa;
+      .label {
+        font-family: PingFangSC-Regular;
+        font-size: 14px;
+        color: rgba(0, 11, 21, 0.25);
+      }
+      .value {
+        font-family: PingFangSC-Regular;
+        font-size: 14px;
+        color: rgba(0, 11, 21, 0.85);
+      }
+    }
+    .answer-box {
+      margin-top: 16px;
+      display: flex;
+      justify-content: flex-start;
+      span {
+        margin-right: 70px;
+      }
+    }
+    .blank-box {
+      .blank-top {
+        padding-bottom: 24px;
+        border-bottom: 1px solid rgba(0, 11, 21, 0.05);
+      }
+      .blank-middle {
+        padding: 24px 0;
+        display: flex;
+        justify-content: space-between;
       }
     }
   }

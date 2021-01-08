@@ -8,7 +8,10 @@
       <div class="card-header">
         <div class="header-title-box">
           <span class="title">{{ examDetail.examName }}</span>
-          <el-tag :type="getStatus(examDetail.status).type">
+          <el-tag
+            v-if="_.get(examDetail.status)"
+            :type="getStatus(examDetail.status).type"
+          >
             {{ getStatus(examDetail.status).text }}
           </el-tag>
         </div>
@@ -20,15 +23,19 @@
           <li class="header-li">
             <span class="li-label">考试时间：</span>
             <span class="li-value">
-              <span>{{ examDetail.answerBeginTime }}</span>
-              <span>{{ examDetail.answerEndTime }}</span>
+              <span>{{ moment(examDetail.answerBeginTime).format('YYYY-MM-DD HH:mm:ss') }}</span>
+              <span>至</span>
+              <span>{{ moment(examDetail.answerEndTime).format('YYYY-MM-DD HH:mm:ss') }}</span>
             </span>
           </li>
           <li class="header-li">
             <span class="li-label">考试用时：</span>
-            <span class="li-value">{{
-              moment(examDetail.answerEndTime).diff(moment(examDetail.answerBeginTime), 'minutes')
-            }}</span>
+            <span class="li-value">
+              <span>{{
+                moment(examDetail.answerEndTime).diff(moment(examDetail.answerBeginTime), 'minutes')
+              }}</span>
+              <span>分钟</span>
+            </span>
           </li>
           <li class="header-li">
             <span class="li-label">试卷总分：</span>
@@ -51,7 +58,10 @@
       </div>
       <div class="card-bottom">
         <span class="bottom-title">查看试题范围</span>
-        <el-radio-group v-model="searcRadio">
+        <el-radio-group
+          v-model="queryInfo.type"
+          @change="radioChange"
+        >
           <el-radio :label="0">
             全部试题
           </el-radio>
@@ -67,7 +77,41 @@
         </el-radio-group>
       </div>
     </el-card>
-    <el-card> </el-card>
+    <el-card class="paper-card">
+      <ul class="question-ul">
+        <li
+          v-for="(item, index) in questionList"
+          :key="index"
+          class="question-li"
+        >
+          <div class="title-box">
+            <div class="question-li-title">
+              <span>{{ (index + 1) | number2zhcn }}、</span>
+              <span>{{ item[0].type | typeFilter }}</span>
+              <span>（共{{ _.size(item) }}题, 共{{ getItemTotalScore(item) }}分)</span>
+            </div>
+            <div class="sub-title">
+              {{ item[0].title }}
+            </div>
+          </div>
+          <div class="content-box">
+            <ul class="content-ul">
+              <li
+                v-for="(conItem, conIndex) in item"
+                :key="conItem.id"
+                class="content-li"
+              >
+                <span>{{ conIndex + 1 }}.</span>
+                <QustionPreview
+                  :data="conItem"
+                  type="view"
+                />
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </el-card>
   </div>
 </template>
 
@@ -75,6 +119,7 @@
 import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
 import { getViewAnswer } from '@/api/exam'
 import moment from 'moment'
+import QustionPreview from './components/questionPreview'
 const STATUS = {
   1: {
     type: 'success',
@@ -97,9 +142,28 @@ const STATUS = {
     text: '已阅卷'
   }
 }
+const nzhcn = require('nzh/cn')
+import {
+  QUESTION_TYPE_MAP
+  // QUESTION_TYPE_MULTIPLE,
+  // QUESTION_TYPE_SINGLE,
+  // QUESTION_TYPE_JUDGE,
+  // QUESTION_TYPE_SHOER,
+  // QUESTION_TYPE_BLANK,
+  // QUESTION_TYPE_GROUP
+} from '@/const/exam'
 export default {
   components: {
-    CommonBreadcrumb
+    CommonBreadcrumb,
+    QustionPreview
+  },
+  filters: {
+    typeFilter(data) {
+      return QUESTION_TYPE_MAP[data]
+    },
+    number2zhcn(index) {
+      return nzhcn.encodeS(index)
+    }
   },
   data() {
     return {
@@ -113,21 +177,46 @@ export default {
           title: _.get(this.$route.meta, 'title', ' ')
         }
       ],
-      searcRadio: 0,
-      examDetail: {
-        title: 'EHS应知应会全员考试',
-        status: 0,
-        paper: 'EHS应知应会试卷'
+      examDetail: {},
+      questionList: [],
+      queryInfo: {
+        type: 0
       }
     }
   },
   created() {
-    getViewAnswer(this.$route.query).then((res) => {
-      this.examDetail = res
-    })
+    this.initData()
   },
   methods: {
     moment,
+    async initData() {
+      this.examDetail = await getViewAnswer(_.assign(this.queryInfo, this.$route.query))
+      this.initQuestionList()
+    },
+    addScore(args) {
+      return args.reduce((prev, curr) => {
+        return prev + curr
+      })
+    },
+    getItemTotalScore(data) {
+      const scoreList = _.map(data, (item) => {
+        return item.score
+      })
+      const totalScore = this.addScore(scoreList)
+      return totalScore
+    },
+    initQuestionList() {
+      this.questionList = _.chain(_.cloneDeep(this.examDetail.questions))
+        .groupBy('parentSort')
+        .sortBy('parentSort')
+        .map((item) => {
+          return _.sortBy(item, 'sort')
+        })
+        .value()
+    },
+    radioChange() {
+      this.initData()
+    },
     getStatus(status) {
       return STATUS[status]
     }
@@ -183,6 +272,33 @@ export default {
     }
     /deep/ .el-radio {
       margin-right: 24px;
+    }
+  }
+}
+.paper-card {
+  margin-top: 20px;
+  .question-ul {
+    .question-li {
+      .title-box {
+        margin-bottom: 24px;
+        .question-li-title {
+          font-family: PingFangSC-Medium;
+          font-size: 16px;
+          color: rgba(0, 11, 21, 0.85);
+          font-weight: 550;
+          margin-bottom: 4px;
+        }
+        .sub-title {
+          font-family: PingFangSC-Regular;
+          font-size: 12px;
+          color: rgba(0, 11, 21, 0.25);
+        }
+      }
+      .content-box {
+        .content-li {
+          margin-bottom: 32px;
+        }
+      }
     }
   }
 }
