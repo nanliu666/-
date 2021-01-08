@@ -41,6 +41,7 @@
         v-for="(item, index) in formData"
         :key="index"
         class="course_item"
+        @click="toDetail(item)"
       >
         <img :src="item.url" />
         <div class="text">
@@ -119,6 +120,9 @@ export default {
     this.getInfo()
   },
   methods: {
+    toDetail(item) {
+      this.$router.push({ path: '/course/detail', query: { id: item.id } })
+    },
     showBtn(i) {
       this.pitch = i
       this.getInfo()
@@ -194,6 +198,7 @@ export default {
       overflow: hidden;
       margin-top: 20px;
       margin-right: 20px;
+      cursor: pointer;
       &:nth-child(4n) {
         margin-right: 0;
       }

@@ -77,13 +77,13 @@
           @click="sysRuleSource = ''"
         >全部</span>
         <span
-          :class="{ typeBtn: sysRuleSource === '登陆学分' }"
-          @click="sysRuleSource = '登陆学分'"
-        >登陆学分</span>
+          :class="{ typeBtn: sysRuleSource === '登录学分' }"
+          @click="sysRuleSource = '登录学分'"
+        >登录学分</span>
         <span
-          :class="{ typeBtn: sysRuleSource === '创在线学习学分' }"
-          @click="sysRuleSource = '创在线学习学分'"
-        >创在线学习学分</span>
+          :class="{ typeBtn: sysRuleSource === '在线学习学分' }"
+          @click="sysRuleSource = '在线学习学分'"
+        >在线学习学分</span>
         <span
           :class="{ typeBtn: sysRuleSource === '知识库学分' }"
           @click="sysRuleSource = '知识库学分'"
@@ -259,6 +259,8 @@ export default {
     showBtn(i) {
       this.sehrchBtn = i
       this.dateValue = ''
+      this.sysRuleSource = ''
+      this.searchInput = ''
       this.getInfo()
     },
     //  处理页码改变

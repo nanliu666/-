@@ -13,17 +13,13 @@
             {{ infoData.name }} <span>（{{ infoData.workNo }}）</span>
           </div>
           <div class="userInfo_text">
-            <div>
+            <div v-if="infoData.orgName">
               <span class="text_title">部门：</span>
               <span> {{ infoData.orgName }} </span>
             </div>
-            <div>
+            <div v-if="infoData.position">
               <span class="text_title">职位：</span>
               <span> {{ infoData.position }} </span>
-            </div>
-            <div>
-              <span class="text_title">邮箱：</span>
-              <span> {{ infoData.userEmail }} </span>
             </div>
             <div>
               <span class="text_title">电话：</span>
