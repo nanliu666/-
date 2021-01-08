@@ -240,6 +240,11 @@ export default [
               title: '课程页面首页'
             },
             component: () => import(/* webpackChunkName: "page"*/ '@/views/train')
+          },
+          {
+            path: 'detail',
+            name: 'trainDetail',
+            component: () => import('@/views/train/detail')
           }
         ]
       },
