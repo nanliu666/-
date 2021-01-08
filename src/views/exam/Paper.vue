@@ -27,7 +27,10 @@
         <span
           class="time"
           :class="{ 'warning-time': isWarningTimeLine }"
-        >剩余时间：{{ remainingTime }}</span>
+        >
+          <span>剩余时间：</span>
+          <span>{{ remainingTime }}</span>
+        </span>
         <el-button
           type="primary"
           size="medium"
@@ -149,7 +152,7 @@
                     :key="conItem.id"
                     class="content-li"
                   >
-                    <AnswerByQuestion
+                    <answer-by-question
                       :con-item="conItem"
                       :con-index="conIndex"
                       @setImpeach="setImpeach"
@@ -182,7 +185,8 @@
                   </div>
                   <ul class="content-box">
                     <li class="content-li">
-                      <AnswerByQuestion
+                      <answer-by-question
+                        :disabled="disabledByQuestion"
                         :con-item="item"
                         :con-index="index"
                         @setImpeach="setImpeach"
@@ -191,6 +195,30 @@
                   </ul>
                 </div>
               </li>
+              <div class="handle-button-box">
+                <el-button
+                  size="medium"
+                  :disabled="prevButtonDisabled"
+                  @click="prevQuestion"
+                >
+                  上一题
+                </el-button>
+                <el-button
+                  size="medium"
+                  type="primary"
+                  :disabled="nextButtonDisabled"
+                  @click="nextQuestion"
+                >
+                  下一题
+                </el-button>
+                <span
+                  v-if="_.get(limitTimeList, `[${currentQuestion}].countDown`)"
+                  class="limit-time"
+                >
+                  <span>本题限时：</span>
+                  <span>{{ _.get(limitTimeList, `[${currentQuestion}].countDown`) }}</span>
+                </span>
+              </div>
             </ul>
           </el-card>
         </div>
@@ -230,6 +258,7 @@ import examSuccess from './components/Success'
 import TheFooter from '@/page/TheFooter'
 import AnswerByQuestion from './components/AnswerByQuestion'
 const nzhcn = require('nzh/cn')
+const RETURN_ZERO = '00 : 00 : 00'
 import {
   QUESTION_TYPE_MAP,
   QUESTION_TYPE_MULTIPLE,
@@ -267,17 +296,19 @@ export default {
       examBeginTime: new Date(),
       dealTimeId: {},
       impeachList: [], // 存疑数组
-      successPapeer: {},
+      successPaper: {},
       isSuccess: false,
       confirmTips: '',
       centerDialogVisible: false,
       isWarningTimeLine: false,
       circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
-      remainingTime: '00 : 00 : 00',
+      remainingTime: RETURN_ZERO,
       paper: {},
       questionList: [],
       tempQuestionList: [],
-      currentQuestion: 0
+      currentQuestion: 0,
+      limitTimeList: [],
+      byOneTimeId: {}
     }
   },
   computed: {
@@ -288,7 +319,32 @@ export default {
     QUESTION_TYPE_SHOER: () => QUESTION_TYPE_SHOER,
     QUESTION_TYPE_MAP: () => QUESTION_TYPE_MAP,
     QUESTION_TYPE_GROUP: () => QUESTION_TYPE_GROUP,
-    ...mapGetters(['userInfo'])
+    ...mapGetters(['userInfo']),
+    // 逐题答卷最后一题需要置灰按钮
+    nextButtonDisabled() {
+      return _.size(this.tempQuestionList) === this.currentQuestion + 1
+    },
+    // 逐题答卷的第一题置灰按钮
+    prevButtonDisabled() {
+      return this.currentQuestion === 0
+    },
+    currentCountDown() {
+      return _.get(this.limitTimeList, `[${this.currentQuestion}].countDown`)
+    },
+    disabledByQuestion() {
+      return this.currentCountDown && this.currentCountDown === RETURN_ZERO
+    }
+  },
+  watch: {
+    currentCountDown: {
+      handler(value) {
+        if (value === RETURN_ZERO) {
+          this.$message.error('该试题已超过答题时间，不能继续作答')
+        }
+      },
+      deep: true,
+      immediate: true
+    }
   },
   mounted() {
     this.initData()
@@ -308,6 +364,20 @@ export default {
     clearInterval(this.dealTimeId)
   },
   methods: {
+    prevQuestion() {
+      this.currentQuestion -= 1
+      this.commonCreateCountdown()
+    },
+    nextQuestion() {
+      this.currentQuestion += 1
+      this.commonCreateCountdown()
+    },
+    commonCreateCountdown() {
+      if (this.currentCountDown !== RETURN_ZERO) {
+        clearInterval(this.byOneTimeId)
+        this.createByOneCountdown()
+      }
+    },
     // 获取逐题的大题
     getByOneIndex(data) {
       let parentObj = { key: -1, value: {} }
@@ -372,7 +442,21 @@ export default {
     },
     // 当前题目是否被做
     currentItemIsInSelected(data) {
-      return _.get(data, 'answer')
+      const getAnswerValue = (value) => {
+        const isGroup = value.type === QUESTION_TYPE_GROUP
+        const groupPass = _.every(value.subQuestions, (item) => {
+          return item.answer
+        })
+        const isSelected = isGroup ? groupPass : _.get(value, 'answer')
+        return isSelected
+      }
+      const byTotal = getAnswerValue(data)
+      const byOneIndex = _.findIndex(this.tempQuestionList, (item) => {
+        return item.id === data.id && getAnswerValue(item)
+      })
+      const byOne = byOneIndex > -1
+      const isSelected = this.paper.answerMode === 1 ? byTotal : byOne
+      return isSelected
     },
     // 当前对象是否存在于存疑数据
     currentItemIsInImpeach(data) {
@@ -531,7 +615,7 @@ export default {
       }
       postSubmitPaper(params)
         .then((res) => {
-          this.successPapeer = res
+          this.successPaper = res
         })
         .catch(() => {
           window.console.error(JSON.stringify(params))
@@ -545,6 +629,16 @@ export default {
     },
     async initData() {
       this.paper = await getTakeExam(this.$route.query)
+      // 初始化题目数据处理
+      this.initQuestionList()
+      // 逐题模式
+      this.initAnswerByOne()
+      // 初始考试倒计时
+      this.initRemainingTime()
+      // 闭卷监听
+      this.watchCloseBookExam()
+    },
+    initQuestionList() {
       this.questionList = _.chain(_.cloneDeep(this.paper.questions))
         .groupBy('parentSort')
         .sortBy('parentSort')
@@ -552,15 +646,42 @@ export default {
           return _.sortBy(item, 'sort')
         })
         .value()
+    },
+    // 逐题模式下的相关初始化
+    initAnswerByOne() {
       const { answerMode } = this.paper
-      // 逐题模式
-      if (answerMode === 2) {
-        const topicList = _.flatten(_.cloneDeep(this.questionList))
-        this.tempQuestionList = topicList
-      }
-      this.initRemainingTime()
-      // 闭卷监听
-      this.watchCloseBookExam()
+      if (answerMode !== 2) return
+      const topicList = _.flatten(_.cloneDeep(this.questionList))
+      this.tempQuestionList = topicList
+      this.initByOneTime()
+    },
+    initByOneTime() {
+      _.each(this.tempQuestionList, (item, index) => {
+        if (item.timeLimit) {
+          let temp = {
+            index: index,
+            key: item.id,
+            limit: item.timeLimit,
+            timeLeft: moment.duration(item.timeLimit, 'seconds'),
+            countDown: null
+          }
+          this.limitTimeList.push(temp)
+        }
+      })
+      this.createByOneCountdown()
+    },
+    createByOneCountdown() {
+      _.each(this.limitTimeList, (item) => {
+        if (item.index === this.currentQuestion) {
+          this.byOneTimeId = setInterval(() => {
+            item.timeLeft = item.timeLeft.subtract(1, 's')
+            item.countDown = this.createCountdown(item.timeLeft)
+            if (item.countDown === RETURN_ZERO) {
+              clearInterval(this.byOneTimeId)
+            }
+          }, 1000)
+        }
+      })
     },
     //阻止F5刷新
     stopF5Refresh() {
@@ -593,18 +714,27 @@ export default {
         if (diffTime <= WARNING_LINE) {
           this.isWarningTimeLine = true
         }
-        const hoursTime = moment.duration(diffTime).hours()
-        const minutesTime = moment.duration(diffTime).minutes()
-        const secondsTime = moment.duration(diffTime).seconds()
-        const formatHours = `${hoursTime < 10 ? `0${hoursTime}` : hoursTime}`
-        const formatMinutes = `${minutesTime < 10 ? `0${minutesTime}` : minutesTime}`
-        const formatSeconds = `${secondsTime < 10 ? `0${secondsTime}` : secondsTime}`
-        this.remainingTime = `${formatHours} : ${formatMinutes} : ${formatSeconds}`
-        if (this.remainingTime !== '00 : 00 : 00') return
+        this.remainingTime = this.createCountdown(diffTime)
+        if (this.remainingTime !== RETURN_ZERO) return
         clearInterval(this.dealTimeId)
         // 结束考试
         this.autoEndExam()
       }, 1000)
+    },
+    /**
+     * 入参：差异时间
+     * 返回：倒计时
+     * 作用：创建一个倒计时
+     */
+    createCountdown(diffTime) {
+      const hoursTime = moment.duration(diffTime).hours()
+      const minutesTime = moment.duration(diffTime).minutes()
+      const secondsTime = moment.duration(diffTime).seconds()
+      const formatHours = `${hoursTime < 10 ? `0${hoursTime}` : hoursTime}`
+      const formatMinutes = `${minutesTime < 10 ? `0${minutesTime}` : minutesTime}`
+      const formatSeconds = `${secondsTime < 10 ? `0${secondsTime}` : secondsTime}`
+      const targetTime = `${formatHours} : ${formatMinutes} : ${formatSeconds}`
+      return targetTime
     },
     // 考试到时结束考试
     autoEndExam() {
@@ -838,6 +968,18 @@ $selctColor: #fcba00;
           }
         }
       }
+    }
+  }
+  .handle-button-box {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    .limit-time {
+      margin-left: 24px;
+      font-family: PingFangSC-Medium;
+      font-size: 16px;
+      color: rgba(0, 11, 21, 0.85);
+      font-weight: 550;
     }
   }
 }

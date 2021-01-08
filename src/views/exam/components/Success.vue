@@ -8,11 +8,11 @@
         提交成功
       </div>
       <div class="content">
-        {{ $parent.successPapeer.msg }}
+        {{ $parent.successPape.msg }}
       </div>
       <div class="handle-box">
         <el-button
-          v-if="$parent.successPapeer.openAnswerSheet"
+          v-if="$parent.successPape.openAnswerSheet"
           type="primary"
           @click="goDetail"
         >
