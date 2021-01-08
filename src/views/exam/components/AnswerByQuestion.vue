@@ -1,0 +1,124 @@
+<template>
+  <div class="li-main">
+    <div class="li-main-left">
+      <i
+        class="iconfont"
+        :class="`icon${isInImpeach ? 'image_icon_help_press' : 'image_icon_help_normal'}`"
+        @click="setImpeach(conItem)"
+      />
+    </div>
+    <div class="li-main-right">
+      <span>{{ conIndex + 1 }}.</span>
+      <span>（{{ conItem.score / 10 }}分）</span>
+      <QustionPreview
+        v-if="QUESTION_TYPE_GROUP !== conItem.type"
+        :data="conItem"
+        :disabled="disabled"
+      />
+      <span v-else>
+        <span
+          class="right-title"
+          v-html="_.unescape(conItem.content)"
+        ></span>
+        <ul>
+          <li
+            v-for="(paperItem, paperIndex) in conItem.subQuestions"
+            :key="paperIndex"
+            class=""
+          >
+            <span>{{ paperIndex + 1 }}.</span>
+            <QustionPreview
+              :data="paperItem"
+              :disabled="disabled"
+            />
+          </li>
+        </ul>
+      </span>
+    </div>
+  </div>
+</template>
+
+<script>
+import {
+  QUESTION_TYPE_MAP,
+  QUESTION_TYPE_MULTIPLE,
+  QUESTION_TYPE_SINGLE,
+  QUESTION_TYPE_JUDGE,
+  QUESTION_TYPE_SHOER,
+  QUESTION_TYPE_BLANK,
+  QUESTION_TYPE_GROUP
+} from '@/const/exam'
+import QustionPreview from './questionPreview'
+export default {
+  inject: ['paper'],
+  name: 'AnswerByQuestion',
+  components: {
+    QustionPreview
+  },
+  props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    conItem: {
+      type: Object,
+      default: () => ({})
+    },
+    conIndex: {
+      type: Number,
+      default: 0
+    }
+  },
+  data() {
+    return {
+      isInImpeach: false
+    }
+  },
+  computed: {
+    QUESTION_TYPE_MULTIPLE: () => QUESTION_TYPE_MULTIPLE,
+    QUESTION_TYPE_SINGLE: () => QUESTION_TYPE_SINGLE,
+    QUESTION_TYPE_JUDGE: () => QUESTION_TYPE_JUDGE,
+    QUESTION_TYPE_BLANK: () => QUESTION_TYPE_BLANK,
+    QUESTION_TYPE_SHOER: () => QUESTION_TYPE_SHOER,
+    QUESTION_TYPE_MAP: () => QUESTION_TYPE_MAP,
+    QUESTION_TYPE_GROUP: () => QUESTION_TYPE_GROUP
+  },
+  created() {},
+  methods: {
+    setImpeach(data) {
+      this.getCurrentImpeach(data)
+      this.$emit('setImpeach', data)
+    },
+    getCurrentImpeach(data) {
+      this.isInImpeach = !_.some(this.paper.impeachList, (item) => {
+        return item.key === data.id
+      })
+    }
+  }
+}
+</script>
+
+<style scoped lang="scss">
+$activeColor: #01aafc;
+$selctColor: #fcba00;
+.li-main {
+  display: flex;
+  justify-content: flex-start;
+  .li-main-left {
+    margin-top: 2px;
+    margin-right: 8.8px;
+    .iconfont {
+      &:hover {
+        color: $activeColor;
+        cursor: pointer;
+      }
+    }
+    .iconimage_icon_help_press {
+      color: $selctColor;
+    }
+  }
+  .li-main-right {
+    flex: 1;
+  }
+}
+</style>

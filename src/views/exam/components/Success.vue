@@ -8,11 +8,11 @@
         提交成功
       </div>
       <div class="content">
-        {{ $parent.successPapeer.msg }}
+        {{ $parent.successPape.msg }}
       </div>
       <div class="handle-box">
         <el-button
-          v-if="$parent.successPapeer.openAnswerSheet"
+          v-if="$parent.successPape.openAnswerSheet"
           type="primary"
           @click="goDetail"
         >
@@ -51,7 +51,7 @@ export default {
 
 <style scoped lang="scss">
 .card {
-  height: calc(100vh - 56px);
+  height: calc(100vh - 56px - 70px);
   width: 1200px;
   margin: 24px auto 0;
   display: flex;

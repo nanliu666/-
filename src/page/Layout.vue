@@ -7,7 +7,7 @@
           <router-view :key="$route.fullPath" />
         </keep-alive>
       </div>
-      <the-footer />
+      <the-footer v-if="!isFullscreen" />
     </div>
   </div>
 </template>
