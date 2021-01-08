@@ -109,7 +109,10 @@
         "
         :data="data"
       />
-      <gap-and-short v-if="[QUESTION_TYPE_BLANK, QUESTION_TYPE_SHOER].includes(data.type)" />
+      <gap-and-short
+        v-if="[QUESTION_TYPE_BLANK, QUESTION_TYPE_SHOER].includes(data.type)"
+        :data="data"
+      />
     </div>
   </span>
 </template>

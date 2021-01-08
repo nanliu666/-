@@ -46,7 +46,7 @@
       class="analysis-box common-box"
     >
       <span class="label">试题分析：</span>
-      <span class="value">这是试题分析</span>
+      <span class="value">{{ data.analysis }}</span>
     </div>
   </div>
 </template>
