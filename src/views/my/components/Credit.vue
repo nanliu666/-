@@ -51,8 +51,14 @@
         <div class="sehrch">
           <div class="sehrch_input">
             <el-input
+              v-show="sehrchBtn === 0"
               v-model="searchInput"
               placeholder="查询我的系统学分"
+            ></el-input>
+            <el-input
+              v-show="sehrchBtn === 1"
+              v-model="searchInput"
+              placeholder="查询我的考评学分"
             ></el-input>
           </div>
           <div class="sehrch_btn">
@@ -77,21 +83,41 @@
           @click="sysRuleSource = ''"
         >全部</span>
         <span
+          v-show="sehrchBtn === 0"
           :class="{ typeBtn: sysRuleSource === '登录学分' }"
           @click="sysRuleSource = '登录学分'"
         >登录学分</span>
         <span
+          v-show="sehrchBtn === 0"
           :class="{ typeBtn: sysRuleSource === '在线学习学分' }"
           @click="sysRuleSource = '在线学习学分'"
         >在线学习学分</span>
         <span
+          v-show="sehrchBtn === 0"
           :class="{ typeBtn: sysRuleSource === '知识库学分' }"
           @click="sysRuleSource = '知识库学分'"
         >知识库学分</span>
         <span
+          v-show="sehrchBtn === 0"
           :class="{ typeBtn: sysRuleSource === '资源共享学分' }"
           @click="sysRuleSource = '资源共享学分'"
         >资源共享学分</span>
+
+        <span
+          v-show="sehrchBtn === 1"
+          :class="{ typeBtn: sysRuleSource === '课程学分' }"
+          @click="sysRuleSource = '课程学分'"
+        >课程学分</span>
+        <span
+          v-show="sehrchBtn === 1"
+          :class="{ typeBtn: sysRuleSource === '考试学分' }"
+          @click="sysRuleSource = '考试学分'"
+        >考试学分</span>
+        <span
+          v-show="sehrchBtn === 1"
+          :class="{ typeBtn: sysRuleSource === '培训学分' }"
+          @click="sysRuleSource = '培训学分'"
+        >培训学分</span>
       </div>
       <div
         v-show="tableData.length"

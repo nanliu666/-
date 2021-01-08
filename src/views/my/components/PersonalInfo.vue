@@ -74,7 +74,8 @@
                   plain
                   size="medium"
                 >
-                  重新上传
+                  <span v-if="imgdata.length">重新上传</span>
+                  <span v-else>上传</span>
                 </el-button>
               </common-upload>
             </div>
@@ -94,7 +95,7 @@
           </div>
         </div>
         <div class="text">
-          支持上传png、jpg、jpge格式文件，单个文件＜2MB；推荐上传图片尺寸比例为1：1
+          支持上传png、jpg、jpeg格式文件，单个文件＜2MB；推荐上传图片尺寸比例为1：1
         </div>
       </div>
       <span
