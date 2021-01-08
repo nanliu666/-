@@ -352,7 +352,7 @@ export default {
     // this.stopF5Refresh()
   },
   beforeRouteLeave(from, to, next) {
-    if (this.isLeave) {
+    if (this.isLeave || this.isSuccess) {
       next(true)
     } else {
       this.$message.error('禁止使用浏览器原生返回')
@@ -413,14 +413,18 @@ export default {
       }
     },
     goBack() {
-      this.$confirm('离开考试页面返回列表，即视为放弃本次考试机会。您确定要返回列表？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.isLeave = true
+      if (!this.isSuccess) {
+        this.$confirm('离开考试页面返回列表，即视为放弃本次考试机会。您确定要返回列表？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.isLeave = true
+          this.$router.push({ path: '/exam/list' })
+        })
+      } else {
         this.$router.push({ path: '/exam/list' })
-      })
+      }
     },
     // 点击滚动到对应的题目
     navTo(data, sonIndex, parentIndex, ref = 'paperScroll') {
@@ -615,7 +619,9 @@ export default {
       }
       postSubmitPaper(params)
         .then((res) => {
-          this.successPaper = res
+          const { data } = res
+          this.successPaper = data
+          this.isSuccess = true
         })
         .catch(() => {
           window.console.error(JSON.stringify(params))
@@ -745,7 +751,6 @@ export default {
           clearInterval(timeId)
           await this.automaticSubmit()
           this.centerDialogVisible = false
-          this.isSuccess = true
         } else {
           this.centerDialogVisible = true
         }
