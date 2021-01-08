@@ -103,9 +103,29 @@
               >
                 <span>{{ conIndex + 1 }}.</span>
                 <QustionPreview
+                  v-if="QUESTION_TYPE_GROUP !== conItem.type"
                   :data="conItem"
                   type="view"
                 />
+                <span v-else>
+                  <span
+                    class="right-title"
+                    v-html="_.unescape(conItem.content)"
+                  ></span>
+                  <ul>
+                    <li
+                      v-for="(paperItem, paperIndex) in conItem.subQuestions"
+                      :key="paperIndex"
+                      class=""
+                    >
+                      <span>{{ paperIndex + 1 }}.</span>
+                      <QustionPreview
+                        :data="paperItem"
+                        type="view"
+                      />
+                    </li>
+                  </ul>
+                </span>
               </li>
             </ul>
           </div>
@@ -143,15 +163,7 @@ const STATUS = {
   }
 }
 const nzhcn = require('nzh/cn')
-import {
-  QUESTION_TYPE_MAP
-  // QUESTION_TYPE_MULTIPLE,
-  // QUESTION_TYPE_SINGLE,
-  // QUESTION_TYPE_JUDGE,
-  // QUESTION_TYPE_SHOER,
-  // QUESTION_TYPE_BLANK,
-  // QUESTION_TYPE_GROUP
-} from '@/const/exam'
+import { QUESTION_TYPE_MAP, QUESTION_TYPE_GROUP } from '@/const/exam'
 export default {
   components: {
     CommonBreadcrumb,
@@ -183,6 +195,10 @@ export default {
         type: 0
       }
     }
+  },
+  computed: {
+    QUESTION_TYPE_MAP: () => QUESTION_TYPE_MAP,
+    QUESTION_TYPE_GROUP: () => QUESTION_TYPE_GROUP
   },
   created() {
     this.initData()
