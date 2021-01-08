@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <div :class="['header', { isFullscreenHead: isFullscreen }]">
     <div class="header-inner">
       <div class="logo">
         <img src="../assets/images/logo.png" />
@@ -81,6 +81,9 @@ export default {
     }
   },
   computed: {
+    isFullscreen() {
+      return this.$route.meta.fullscreen
+    },
     ...mapGetters(['userId', 'userInfo'])
   },
   beforeMount() {
@@ -190,5 +193,9 @@ export default {
       }
     }
   }
+}
+.isFullscreenHead {
+  background: none;
+  box-shadow: none;
 }
 </style>
