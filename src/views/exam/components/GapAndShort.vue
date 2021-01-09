@@ -12,7 +12,7 @@
     <div class="blank-box common-box">
       <div class="blank-top">
         <span class="label">考生答案：</span>
-        <span class="value">{{ data.answerUser }}</span>
+        <span class="value">{{ data.answerUser ? data.answerUser : '考生未作答' }}</span>
       </div>
       <div class="blank-middle">
         <div>
@@ -28,9 +28,12 @@
           <span class="value">王平</span>
         </div>
       </div>
-      <div>
+      <div
+        v-if="data.reviewRemark"
+        class="remark-box"
+      >
         <span class="label">评语：</span>
-        <span class="value">这个时答案</span>
+        <span class="value">{{ data.reviewRemark }}</span>
       </div>
     </div>
   </div>
@@ -52,15 +55,17 @@ export default {
   methods: {
     // 获取正确答案
     getCorrect() {
-      const target = _.chain(this.data.options)
-        .filter((item) => {
-          return item.isCorrect
-        })
-        .map('isCorrect')
-        .join(' ')
-        .value()
-      this.correctContent = target
-      return target
+      // const target = _.chain(this.data.options)
+      //   .filter((item) => {
+      //     return item.isCorrect
+      //   })
+      //   .map('isCorrect')
+      //   .join(' ')
+      //   .value()
+      // this.correctContent = target
+      // return target
+      // TODO: 填空题的标准答案获取
+      return _.get(this.data, 'options[0].content', '未设置标椎答案')
     },
     // 获取考生答案
     getAnswerValue() {
@@ -107,9 +112,12 @@ export default {
       border-bottom: 1px solid rgba(0, 11, 21, 0.05);
     }
     .blank-middle {
-      padding: 24px 0;
+      padding-top: 24px;
       display: flex;
       justify-content: space-between;
+    }
+    .remark-box {
+      margin-top: 24px;
     }
   }
   .dot-box {
