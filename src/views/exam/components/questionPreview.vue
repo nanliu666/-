@@ -1,14 +1,10 @@
 <template>
   <span class="qustion">
     <span
-      v-if="data.type !== QUESTION_TYPE_BLANK"
-      class="qustion__content"
-    >
-      <span
-        class="content-box"
-        v-html="_.unescape(data.content)"
-      ></span>
-    </span>
+      v-if="data.type !== QUESTION_TYPE_BLANK || type === 'view'"
+      class="qustion-content-box"
+      v-html="_.unescape(data.content)"
+    ></span>
     <div
       v-if="!_.isEmpty(data.attachments)"
       class="qustion__attachments"
@@ -21,91 +17,111 @@
         <question-view :url="attachment.fileUrl" />
       </div>
     </div>
-    <!-- 判断题、单选题 -->
-    <div
-      v-if="[QUESTION_TYPE_SINGLE, QUESTION_TYPE_JUDGE].includes(data.type)"
-      class="qustion__options"
-    >
-      <el-radio-group
+    <!-- 考试用来可编辑的状态 -->
+    <div v-if="type === 'edit'">
+      <!-- 判断题、单选题 -->
+      <div
+        v-if="[QUESTION_TYPE_SINGLE, QUESTION_TYPE_JUDGE].includes(data.type)"
+        class="qustion__options"
+      >
+        <el-radio-group
+          v-model="data.answer"
+          :disabled="disabled"
+          class="group-container"
+        >
+          <el-radio
+            v-for="option in data.options"
+            :key="option.key"
+            class="radio"
+            :label="option.id"
+          >
+            <span>{{ _.unescape(option.content) }}</span>
+            <question-view
+              v-if="option.url"
+              :url="option.url"
+            />
+          </el-radio>
+        </el-radio-group>
+      </div>
+      <!-- 多选题 -->
+      <div
+        v-if="[QUESTION_TYPE_MULTIPLE].includes(data.type) && !_.isEmpty(data.options)"
+        class="qustion__options"
+      >
+        <li class="group-container">
+          <el-checkbox
+            v-for="option in data.options"
+            :key="option.id"
+            v-model="option.answerModel"
+            :disabled="disabled"
+            :label="option.id"
+            class="qustion-checkbox"
+            @change="changeMultiple(option)"
+          >
+            <span>{{ _.unescape(option.content) }}</span>
+            <question-view
+              v-if="option.url"
+              :url="option.url"
+            />
+          </el-checkbox>
+        </li>
+      </div>
+      <el-input
+        v-if="[QUESTION_TYPE_SHOER].includes(data.type)"
         v-model="data.answer"
         :disabled="disabled"
-        class="group-container"
+        type="textarea"
+        :rows="4"
+        placeholder="请输入内容"
       >
-        <el-radio
-          v-for="option in data.options"
-          :key="option.key"
-          class="radio"
-          :label="option.id"
+      </el-input>
+      <ul
+        v-if="[QUESTION_TYPE_BLANK].includes(data.type)"
+        class="blank-ul"
+      >
+        <li
+          v-for="(item, index) in blankList"
+          :key="index"
         >
-          <span>{{ _.unescape(option.content) }}</span>
-          <question-view
-            v-if="option.url"
-            :url="option.url"
+          <el-input
+            v-if="item === ''"
+            v-model="data[`answerModel${index}`]"
+            :disabled="disabled"
+            style="display: inline;"
+            placeholder="请输入内容"
+            maxlength="32"
+          >
+          </el-input>
+          <span
+            v-else
+            v-html="_.unescape(item)"
           />
-        </el-radio>
-      </el-radio-group>
+        </li>
+      </ul>
     </div>
-    <!-- 多选题 -->
     <div
-      v-if="[QUESTION_TYPE_MULTIPLE].includes(data.type) && !_.isEmpty(data.options)"
-      class="qustion__options"
+      v-else
+      class="view-contain-box"
     >
-      <li class="group-container">
-        <el-checkbox
-          v-for="option in data.options"
-          :key="option.id"
-          v-model="option.answerModel"
-          :disabled="disabled"
-          :label="option.id"
-          class="qustion-checkbox"
-          @change="changeMultiple(option)"
-        >
-          <span>{{ _.unescape(option.content) }}</span>
-          <question-view
-            v-if="option.url"
-            :url="option.url"
-          />
-        </el-checkbox>
-      </li>
+      <select-view
+        v-if="
+          [QUESTION_TYPE_MULTIPLE, QUESTION_TYPE_SINGLE, QUESTION_TYPE_JUDGE].includes(data.type)
+        "
+        :data="data"
+      />
+      <gap-and-short
+        v-if="[QUESTION_TYPE_BLANK, QUESTION_TYPE_SHOER].includes(data.type)"
+        :data="data"
+      />
     </div>
-    <el-input
-      v-if="[QUESTION_TYPE_SHOER].includes(data.type)"
-      v-model="data.answer"
-      :disabled="disabled"
-      type="textarea"
-      :rows="4"
-      placeholder="请输入内容"
-    >
-    </el-input>
-    <ul
-      v-if="[QUESTION_TYPE_BLANK].includes(data.type)"
-      class="blank-ul"
-    >
-      <li
-        v-for="(item, index) in blankList"
-        :key="index"
-      >
-        <el-input
-          v-if="item === ''"
-          v-model="data[`answerModel${index}`]"
-          :disabled="disabled"
-          style="display: inline;"
-          placeholder="请输入内容"
-          maxlength="32"
-        >
-        </el-input>
-        <span
-          v-else
-          v-html="_.unescape(item)"
-        />
-      </li>
-    </ul>
   </span>
 </template>
 
 <script>
 import { deleteHTMLTag } from '@/util/util'
 import questionView from './questionView'
+import SelectView from './SelectView'
+import GapAndShort from './GapAndShort'
 import {
   QUESTION_TYPE_MAP,
   QUESTION_TYPE_MULTIPLE,
@@ -118,9 +134,15 @@ import {
 export default {
   name: 'QustionPreview',
   components: {
-    questionView
+    questionView,
+    SelectView,
+    GapAndShort
   },
   props: {
+    type: {
+      type: String,
+      default: 'edit'
+    },
     disabled: {
       type: Boolean,
       default: false

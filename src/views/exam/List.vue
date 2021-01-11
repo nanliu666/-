@@ -326,7 +326,8 @@ export default {
       const lateMinutesText = `${lateMinutes}分钟`
       const lateTimeTips = `你已迟到${lateMinutesText}不得进入参加考试！`
       const isLateTips = `本考试设置了迟到限制，${lateTimeTips}`
-      const abnormalYips = '检测到你上次考试退出异常，系统已保留上次退出考试前的信息可继续进行。'
+      const abnormalYips =
+        '检测到你上次考试退出异常，系统已保留上次退出考试前的信息,可继续进行考试。'
       let tips = ''
       // 第一次参加考试(examTimes=0)或未通过考试(isPass=1)时
       if (row.examTimes === 0 || row.isPass === 1) {
@@ -347,13 +348,15 @@ export default {
         isShowConfirm = false
       }
       // 断网存贮考试，检测本地存在考试信息, 并且当前考试id与考生id是同一个
-      const offLineExam = localStorage.getItem('offLineExam')
+      const offLineExam = JSON.parse(localStorage.getItem('offLineExam'))
+      let isReNew = false
       if (
         !_.isEmpty(offLineExam) &&
         offLineExam.examId === row.examId &&
         this.userId === row.examineeId
       ) {
         tips = abnormalYips
+        isReNew = true
       }
       this.$confirm(tips, '提示', {
         confirmButtonText: '确定',
@@ -363,7 +366,7 @@ export default {
       }).then(() => {
         this.$router.push({
           name: 'ExamPaper',
-          query: { examId: row.examId, batchId: row.batchId }
+          query: { examId: row.examId, batchId: row.batchId, isReNew: isReNew }
         })
       })
     },
@@ -373,14 +376,14 @@ export default {
       // 若创建考试时，不允许考生查看答卷。则不能查看答卷，按钮置灰
       // 已提交过答卷的点击“查看答卷”挑跳转到【查看答卷】页面
       const isJoinDisabled =
-        row.status === 1 || row.status === 2 || row.status === 4 || !row.openResults
+        row.status === 1 || row.status === 2 || row.status === 4 || !row.openAnswerSheet
       return isJoinDisabled
     },
     // 查看答案
     handleView(row) {
       this.$router.push({
         name: 'ExamDetail',
-        query: { examId: row.examId, batchId: row.batchId, type: 1 }
+        query: { examId: row.examId, batchId: row.batchId }
       })
     },
 
