@@ -1,37 +1,43 @@
 <template>
-  <div class="homeMyTask">
+  <div
+    v-if="myMissions && myMissions.length > 0"
+    class="homeMyTask"
+  >
     <swiper
       ref="mySwiper"
       :options="swiperOptions"
     >
-      <swiper-slide>
+      <swiper-slide
+        v-for="item in myMissions"
+        :key="item.id"
+      >
         <div class="homeMyTaskItem">
           <router-link to="">
             <h3 class="homeMyTaskItemTitle">
-              <span
-                class="homeMyTaskItemTitle2"
-              >职场礼仪职场礼仪职场礼仪职场礼仪职场礼仪职场礼仪</span>
-              <span class="homeMyTaskType">培训</span>
+              <span class="homeMyTaskItemTitle2">{{ item.name }}</span>
+              <span class="homeMyTaskType">{{ myMissionsType[item.type] }}</span>
             </h3>
             <div class="homeMyTaskItemText">
               <div class="homeMyTaskItemTextItem">
-                <span
-                  class="homeMyTaskItemTextItem2 iconimage_icon_address iconfont"
-                >环普产业园G1座</span>
+                <span class="homeMyTaskItemTextItem2 iconimage_icon_address iconfont">{{
+                  item.address
+                }}</span>
               </div>
               <div class="homeMyTaskItemTextItem">
-                <span
-                  class="homeMyTaskItemTextItem2 iconimage_icon_time iconfont"
-                >2020-09-12 14:30</span>
+                <span class="homeMyTaskItemTextItem2 iconimage_icon_time iconfont">{{
+                  item.time
+                }}</span>
               </div>
               <div class="homeMyTaskItemTextItem">
-                <span class="homeMyTaskItemTextItem2 iconimage_icon_user iconfont">老周</span>
+                <span class="homeMyTaskItemTextItem2 iconimage_icon_user iconfont">{{
+                  item.lecturer
+                }}</span>
               </div>
             </div>
           </router-link>
         </div>
       </swiper-slide>
-      <swiper-slide>
+      <!-- <swiper-slide>
         <div class="homeMyTaskItem">
           <router-link to="">
             <h3 class="homeMyTaskItemTitle">
@@ -57,115 +63,7 @@
             </div>
           </router-link>
         </div>
-      </swiper-slide>
-      <swiper-slide>
-        <div class="homeMyTaskItem">
-          <router-link to="">
-            <h3 class="homeMyTaskItemTitle">
-              <span
-                class="homeMyTaskItemTitle2"
-              >2职场礼仪职场礼仪职场礼仪职场礼仪职场礼仪职场礼仪</span>
-              <span class="homeMyTaskType">培训</span>
-            </h3>
-            <div class="homeMyTaskItemText">
-              <div class="homeMyTaskItemTextItem">
-                <span
-                  class="homeMyTaskItemTextItem2 iconimage_icon_address iconfont"
-                >环普产业园G1座</span>
-              </div>
-              <div class="homeMyTaskItemTextItem">
-                <span
-                  class="homeMyTaskItemTextItem2 iconimage_icon_time iconfont"
-                >2020-09-12 14:30</span>
-              </div>
-              <div class="homeMyTaskItemTextItem">
-                <span class="homeMyTaskItemTextItem2 iconimage_icon_user iconfont">老周</span>
-              </div>
-            </div>
-          </router-link>
-        </div>
-      </swiper-slide>
-      <swiper-slide>
-        <div class="homeMyTaskItem">
-          <router-link to="">
-            <h3 class="homeMyTaskItemTitle">
-              <span
-                class="homeMyTaskItemTitle2"
-              >3职场礼仪职场礼仪职场礼仪职场礼仪职场礼仪职场礼仪</span>
-              <span class="homeMyTaskType">培训</span>
-            </h3>
-            <div class="homeMyTaskItemText">
-              <div class="homeMyTaskItemTextItem">
-                <span
-                  class="homeMyTaskItemTextItem2 iconimage_icon_address iconfont"
-                >环普产业园G1座</span>
-              </div>
-              <div class="homeMyTaskItemTextItem">
-                <span
-                  class="homeMyTaskItemTextItem2 iconimage_icon_time iconfont"
-                >2020-09-12 14:30</span>
-              </div>
-              <div class="homeMyTaskItemTextItem">
-                <span class="homeMyTaskItemTextItem2 iconimage_icon_user iconfont">老周</span>
-              </div>
-            </div>
-          </router-link>
-        </div>
-      </swiper-slide>
-      <swiper-slide>
-        <div class="homeMyTaskItem">
-          <router-link to="">
-            <h3 class="homeMyTaskItemTitle">
-              <span
-                class="homeMyTaskItemTitle2"
-              >4职场礼仪职场礼仪职场礼仪职场礼仪职场礼仪职场礼仪</span>
-              <span class="homeMyTaskType">培训</span>
-            </h3>
-            <div class="homeMyTaskItemText">
-              <div class="homeMyTaskItemTextItem">
-                <span
-                  class="homeMyTaskItemTextItem2 iconimage_icon_address iconfont"
-                >环普产业园G1座</span>
-              </div>
-              <div class="homeMyTaskItemTextItem">
-                <span
-                  class="homeMyTaskItemTextItem2 iconimage_icon_time iconfont"
-                >2020-09-12 14:30</span>
-              </div>
-              <div class="homeMyTaskItemTextItem">
-                <span class="homeMyTaskItemTextItem2 iconimage_icon_user iconfont">老周</span>
-              </div>
-            </div>
-          </router-link>
-        </div>
-      </swiper-slide>
-      <swiper-slide>
-        <div class="homeMyTaskItem">
-          <router-link to="">
-            <h3 class="homeMyTaskItemTitle">
-              <span
-                class="homeMyTaskItemTitle2"
-              >5职场礼仪职场礼仪职场礼仪职场礼仪职场礼仪职场礼仪</span>
-              <span class="homeMyTaskType">培训</span>
-            </h3>
-            <div class="homeMyTaskItemText">
-              <div class="homeMyTaskItemTextItem">
-                <span
-                  class="homeMyTaskItemTextItem2 iconimage_icon_address iconfont"
-                >环普产业园G1座</span>
-              </div>
-              <div class="homeMyTaskItemTextItem">
-                <span
-                  class="homeMyTaskItemTextItem2 iconimage_icon_time iconfont"
-                >2020-09-12 14:30</span>
-              </div>
-              <div class="homeMyTaskItemTextItem">
-                <span class="homeMyTaskItemTextItem2 iconimage_icon_user iconfont">老周</span>
-              </div>
-            </div>
-          </router-link>
-        </div>
-      </swiper-slide>
+      </swiper-slide>       -->
       <div
         v-show="swiperFistPrevBt"
         slot="button-prev"
@@ -183,7 +81,7 @@
 </template>
 <script>
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
-
+import { queryMyMission } from '@/api/user'
 // import style (>= Swiper 6.x)
 import 'swiper/swiper-bundle.css'
 
@@ -198,7 +96,9 @@ export default {
   },
   data() {
     return {
-      swiperFistPrevBt: false,
+      myMissions: [], //我的任务数据
+      myMissionsType: { 0: '考试', 1: '培训' },
+      swiperFistPrevBt: false, // 显示隐藏我的任务左边前进后退按钮
       swiperOptions: {
         initialSlide: 0,
         slidesPerView: 3,
@@ -250,10 +150,12 @@ export default {
   //   swiper: directive
   // },
   mounted() {
+    this.getMyMission()
     //this.swiper.slideTo(3, 1000, false)
   },
   methods: {
     prev() {
+      // 我的任务前进
       this.$nextTick(() => {
         this.swiper.activeIndex == 0
           ? (this.swiperFistPrevBt = false)
@@ -262,8 +164,17 @@ export default {
       this.$refs.mySwiper.$swiper.slidePrev()
     },
     next() {
+      // 我的任务后退
       this.swiperFistPrevBt = true
       this.$refs.mySwiper.$swiper.slideNext()
+    },
+    async getMyMission() {
+      // 我的任务
+      this.myMissions
+      let backData = await queryMyMission({ pageSize: 100, pageNo: 1 })
+      if (backData && backData.data) {
+        this.myMissions = backData.data
+      }
     }
   }
 }
