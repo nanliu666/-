@@ -349,7 +349,7 @@ export default {
   activated() {
     this.initData()
     //阻止F5刷新
-    // this.stopF5Refresh()
+    this.stopF5Refresh()
   },
   beforeRouteLeave(from, to, next) {
     if (this.isLeave || this.isSuccess) {
