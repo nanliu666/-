@@ -15,9 +15,18 @@
       </div>
       <div class="search_bar">
         <el-input
+          v-show="pitch === 1"
           v-model="searchInput"
           class="searchInput"
-          placeholder="信息技术"
+          placeholder="查找我的线上课"
+          suffix-icon="el-icon-search"
+        >
+        </el-input>
+        <el-input
+          v-show="pitch === 3"
+          v-model="searchInput"
+          class="searchInput"
+          placeholder="查找我的直播课程"
           suffix-icon="el-icon-search"
         >
         </el-input>
@@ -41,6 +50,7 @@
         v-for="(item, index) in formData"
         :key="index"
         class="course_item"
+        @click="toDetail(item)"
       >
         <img :src="item.url" />
         <div class="text">
@@ -119,6 +129,9 @@ export default {
     this.getInfo()
   },
   methods: {
+    toDetail(item) {
+      this.$router.push({ path: '/course/detail', query: { id: item.id } })
+    },
     showBtn(i) {
       this.pitch = i
       this.getInfo()
@@ -194,6 +207,7 @@ export default {
       overflow: hidden;
       margin-top: 20px;
       margin-right: 20px;
+      cursor: pointer;
       &:nth-child(4n) {
         margin-right: 0;
       }

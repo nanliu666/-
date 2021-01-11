@@ -6,7 +6,7 @@
         <el-input
           v-model="searchInput"
           class="searchInput"
-          placeholder="查找我的培训"
+          placeholder="查找我加入的培训"
           suffix-icon="el-icon-search"
         >
         </el-input>

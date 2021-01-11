@@ -20,9 +20,28 @@
       </div>
       <div class="search_bar">
         <el-input
+          v-show="pitch == 'CurrencyExam'"
           v-model="searchInput"
           class="searchInput"
           placeholder="查找我的通过考试"
+          suffix-icon="el-icon-search"
+        >
+        </el-input>
+
+        <el-input
+          v-show="pitch == 'CourseExam'"
+          v-model="searchInput"
+          class="searchInput"
+          placeholder="查找我的课程考试"
+          suffix-icon="el-icon-search"
+        >
+        </el-input>
+
+        <el-input
+          v-show="pitch == 'TrainExam'"
+          v-model="searchInput"
+          class="searchInput"
+          placeholder="查找我的培训班考"
           suffix-icon="el-icon-search"
         >
         </el-input>
