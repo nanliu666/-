@@ -110,13 +110,12 @@
               </div>
             </div>
             <el-button
-              v-if="item.status === 1 || item.status === 2"
               class="study-button"
-              type="primary"
+              :type="item.status !== 2 ? '' : 'primary'"
               size="medium"
               @click.native="toDetail(item)"
             >
-              前往学习
+              {{ item.status !== 2 ? '查看详情' : '前往学习' }}
             </el-button>
           </div>
           <div class="bottom-wrap">

@@ -9,7 +9,7 @@
     </div>
     <div class="li-main-right">
       <span>{{ conIndex + 1 }}.</span>
-      <span>（{{ conItem.score / 10 }}分）</span>
+      <span>（{{ conItem.score }}分）</span>
       <QustionPreview
         v-if="QUESTION_TYPE_GROUP !== conItem.type"
         :data="conItem"
