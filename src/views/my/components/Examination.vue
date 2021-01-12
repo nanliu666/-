@@ -23,7 +23,7 @@
           v-show="pitch == 'CurrencyExam'"
           v-model="searchInput"
           class="searchInput"
-          placeholder="查找我的通过考试"
+          placeholder="查找我的通用考试"
           suffix-icon="el-icon-search"
         >
         </el-input>
@@ -41,7 +41,7 @@
           v-show="pitch == 'TrainExam'"
           v-model="searchInput"
           class="searchInput"
-          placeholder="查找我的培训班考"
+          placeholder="查找我的培训班考试"
           suffix-icon="el-icon-search"
         >
         </el-input>

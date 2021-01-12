@@ -61,7 +61,7 @@
           </div>
         </div>
         <div
-          v-show="item.isTop"
+          v-show="item.isTop && pitch == 0"
           class="showTop"
         >
           置顶
@@ -128,7 +128,8 @@ export default {
           id: row.id,
           hits: row.hits,
           index,
-          total: this.total
+          total: this.total,
+          isHot: this.pitch
         }
       })
     },

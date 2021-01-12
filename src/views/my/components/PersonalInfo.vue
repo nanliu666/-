@@ -10,7 +10,7 @@
         @click="dialogVisible = true"
       >
         <img
-          v-if="imgdata.length"
+          v-if="(imgdata[imgdata.length - 1] && imgdata[imgdata.length - 1].fileUrl) !== ''"
           class="img_in"
           :src="imgdata[imgdata.length - 1].fileUrl"
         />
@@ -21,6 +21,7 @@
         <span>修改</span>
       </div>
     </div>
+    <!-- {{ (imgdata[0] && imgdata[imgdata.length - 1].fileUrl) !== '' }} -->
 
     <common-form
       ref="form"
@@ -48,13 +49,12 @@
       title="上传头像"
       :visible.sync="dialogVisible"
       width="400px"
-      :before-close="handleClose"
     >
       <div class="dialog_box">
         <div class="uploading_box">
           <div class="box_img">
             <img
-              v-if="imgdata.length"
+              v-if="(imgdata[imgdata.length - 1] && imgdata[imgdata.length - 1].fileUrl) !== ''"
               class="imgupload"
               :src="imgdata[imgdata.length - 1].fileUrl"
               alt=""
@@ -74,7 +74,11 @@
                   plain
                   size="medium"
                 >
-                  <span v-if="imgdata.length">重新上传</span>
+                  <span
+                    v-if="
+                      (imgdata[imgdata.length - 1] && imgdata[imgdata.length - 1].fileUrl) !== ''
+                    "
+                  >重新上传</span>
                   <span v-else>上传</span>
                 </el-button>
               </common-upload>
@@ -82,7 +86,7 @@
           </div>
           <div class="preview_img">
             <img
-              v-if="imgdata.length"
+              v-if="(imgdata[imgdata.length - 1] && imgdata[imgdata.length - 1].fileUrl) !== ''"
               class="imgpreview"
               :src="imgdata[imgdata.length - 1].fileUrl"
               alt=""
