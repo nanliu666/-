@@ -84,3 +84,8 @@ export const getLearnRecord = (params) => get('/manage/v1/web/course/getCourseRe
  */
 export const updateLearnRecord = (params) =>
   post('/manage/v1/web/course/saveCourseUserRecord', params)
+
+/**
+ * 热门课程
+ */
+export const queryCourseList = (params) => get('/manage/v1/web/index/queryCourseList', params)

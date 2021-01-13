@@ -6,19 +6,9 @@
       </div>
     </div>
     <div class="banner">
-      <el-carousel
-        :interval="5000"
-        height="600px"
-        arrow="always"
-      >
-        <el-carousel-item
-          v-for="item in banner"
-          :key="item.id"
-        >
-          <div
-            class="b_item"
-            :style="item.css"
-          ></div>
+      <el-carousel :interval="5000" height="600px" arrow="always">
+        <el-carousel-item v-for="item in banner" :key="item.id">
+          <div class="b_item" :style="item.css"></div>
         </el-carousel-item>
       </el-carousel>
     </div>
@@ -42,25 +32,13 @@
             <div class="homeCourse">
               <router-link to="">
                 <div class="homeCourseImg">
-                  <img
-                    src="../assets/images/photo1.png"
-                    width="285"
-                    height="168"
-                    alt=""
-                  />
+                  <img src="../assets/images/photo1.png" width="285" height="168" alt="" />
                 </div>
                 <div class="homeCourseText">
-                  <span
-                    class="homeCourseTitle"
-                  >信息安全在岗考试必要性在企业发展中的重要性信息安全在岗在岗考试必要性在企业发展中的重要性信息性</span>
+                  <span class="homeCourseTitle">信息安全在岗考试必要性在企业发展中的重要性信息安全在岗在岗考试必要性在企业发展中的重要性信息性</span>
                   <span class="homeCourseTime">今天 20:00</span>
                   <div class="livePerInfo">
-                    <img
-                      src="../assets/images/userIconBig.png"
-                      width="24"
-                      height="24"
-                      alt=""
-                    />
+                    <img src="/img/userIconBig.png" width="24" height="24" alt="" />
                     <span>陆小曼</span>
                   </div>
                 </div>
@@ -69,25 +47,13 @@
             <div class="homeCourse">
               <router-link to="">
                 <div class="homeCourseImg">
-                  <img
-                    src="../assets/images/photo1.png"
-                    width="285"
-                    height="168"
-                    alt=""
-                  />
+                  <img src="../assets/images/photo1.png" width="285" height="168" alt="" />
                 </div>
                 <div class="homeCourseText">
-                  <span
-                    class="homeCourseTitle"
-                  >信息业发展中的重要性信息考试必要性在企业发展中的重要性的重要性</span>
+                  <span class="homeCourseTitle">信息业发展中的重要性信息考试必要性在企业发展中的重要性的重要性</span>
                   <span class="homeCourseTime">今天 20:00</span>
                   <div class="livePerInfo">
-                    <img
-                      src="../assets/images/userIconBig.png"
-                      width="24"
-                      height="24"
-                      alt=""
-                    />
+                    <img src="/img/userIconBig.png" width="24" height="24" alt="" />
                     <span>陆小曼</span>
                   </div>
                 </div>
@@ -96,25 +62,13 @@
             <div class="homeCourse">
               <router-link to="">
                 <div class="homeCourseImg">
-                  <img
-                    src="../assets/images/photo1.png"
-                    width="285"
-                    height="168"
-                    alt=""
-                  />
+                  <img src="../assets/images/photo1.png" width="285" height="168" alt="" />
                 </div>
                 <div class="homeCourseText">
-                  <span
-                    class="homeCourseTitle"
-                  >信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性</span>
+                  <span class="homeCourseTitle">信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性</span>
                   <span class="homeCourseTime">今天 20:00</span>
                   <div class="livePerInfo">
-                    <img
-                      src="../assets/images/userIconBig.png"
-                      width="24"
-                      height="24"
-                      alt=""
-                    />
+                    <img src="/img/userIconBig.png" width="24" height="24" alt="" />
                     <span>陆小曼</span>
                   </div>
                 </div>
@@ -130,169 +84,147 @@
         </h3>
         <div class="LModule">
           <div class="LModule2">
-            <div class="recommendCourse">
-              <router-link to="">
-                <img
-                  src="../assets/images/photo2.jpg"
-                  width="590"
-                  height="276"
-                  alt=""
-                />
-                <div class="recommendCourseTextP">
-                  <div class="recommendCourseText">
-                    <span
-                      class="recommendCourseTitle"
-                    >信息安全在岗考试必要性在企业发展中的重要性</span>
-                    <div class="recommendGrade">
+            <template v-for="(item, i) in hotCourseData">
+              <div v-if="i > 0" :key="item.courseId" class="homeCourse">
+                <router-link to="">
+                  <div class="homeCourseImg">
+                    <img
+                      :src="item.coverUrl ? item.coverUrl : '/img/autoL.png'"
+                      width="285"
+                      height="168"
+                      alt=""
+                    />
+                  </div>
+                  <div class="homeCourseText">
+                    <span class="homeCourseTitle" to="">{{ item.courseName }}</span>
+                    <div class="grade">
+                      <el-rate
+                        v-model="item.scope"
+                        disabled
+                        show-score
+                        text-color="#72787E"
+                        disabled-void-color="#ccc"
+                        score-template="{value}"
+                      ></el-rate>
+                    </div>
+                    <div class="livePerInfo">
+                      <span class="iconimage_icon_user iconfont userIcon"></span>
+                      <span>{{ item.people }}人学习</span>
+                    </div>
+                  </div>
+                </router-link>
+              </div>
+              <div v-if="i == 0" :key="item.courseId" class="recommendCourse">
+                <router-link to="">
+                  <img
+                    :src="item.coverUrl ? item.coverUrl : '/img/autoB.png'"
+                    width="590"
+                    height="276"
+                    alt=""
+                  />
+                  <div class="recommendCourseTextP">
+                    <div class="recommendCourseText">
+                      <span class="recommendCourseTitle">{{ item.courseName }}</span>
+                      <div class="recommendGrade">
+                        <el-rate
+                          v-model="item.scope"
+                          disabled
+                          show-score
+                          text-color="#72787E"
+                          score-template="{value}"
+                        >
+                        </el-rate>
+                      </div>
+                      <div class="learnNub">
+                        <span class="iconimage_icon_user iconfont userIcon"></span>
+                        <span>{{ item.people }}人学习</span>
+                      </div>
+                    </div>
+                  </div>
+                </router-link>
+              </div>
+              <!-- <div class="homeCourse">
+                <router-link to="">
+                  <div class="homeCourseImg">
+                    <img src="../assets/images/photo1.png" width="285" height="168" alt="" />
+                  </div>
+                  <div class="homeCourseText">
+                    <span class="homeCourseTitle" to=""
+                      >信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性</span
+                    >
+                    <div class="grade">
                       <el-rate
                         v-model="value"
                         disabled
                         show-score
                         text-color="#72787E"
+                        disabled-void-color="#ccc"
                         score-template="{value}"
                       >
                       </el-rate>
                     </div>
-                    <div class="learnNub">
+                    <div class="livePerInfo">
                       <span class="iconimage_icon_user iconfont userIcon"></span>
                       <span>6人学习</span>
                     </div>
                   </div>
-                </div>
-              </router-link>
-            </div>
-            <div class="homeCourse">
-              <router-link to="">
-                <div class="homeCourseImg">
-                  <img
-                    src="../assets/images/photo1.png"
-                    width="285"
-                    height="168"
-                    alt=""
-                  />
-                </div>
-                <div class="homeCourseText">
-                  <span
-                    class="homeCourseTitle"
-                    to=""
-                  >信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性</span>
-                  <div class="grade">
-                    <el-rate
-                      v-model="value"
-                      disabled
-                      show-score
-                      text-color="#72787E"
-                      disabled-void-color="#ccc"
-                      score-template="{value}"
+                </router-link>
+              </div>
+              <div class="homeCourse">
+                <router-link to="">
+                  <div class="homeCourseImg">
+                    <img src="../assets/images/photo1.png" width="285" height="168" alt="" />
+                  </div>
+                  <div class="homeCourseText">
+                    <span class="homeCourseTitle" to=""
+                      >信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性</span
                     >
-                    </el-rate>
+                    <div class="grade">
+                      <el-rate
+                        v-model="value"
+                        disabled
+                        show-score
+                        text-color="#72787E"
+                        disabled-void-color="#ccc"
+                        score-template="{value}"
+                      >
+                      </el-rate>
+                    </div>
+                    <div class="livePerInfo">
+                      <span class="iconimage_icon_user iconfont userIcon"></span>
+                      <span>6人学习</span>
+                    </div>
                   </div>
-                  <div class="livePerInfo">
-                    <span class="iconimage_icon_user iconfont userIcon"></span>
-                    <span>6人学习</span>
+                </router-link>
+              </div>
+              <div class="homeCourse">
+                <router-link to="">
+                  <div class="homeCourseImg">
+                    <img src="../assets/images/photo1.png" width="285" height="168" alt="" />
                   </div>
-                </div>
-              </router-link>
-            </div>
-            <div class="homeCourse">
-              <router-link to="">
-                <div class="homeCourseImg">
-                  <img
-                    src="../assets/images/photo1.png"
-                    width="285"
-                    height="168"
-                    alt=""
-                  />
-                </div>
-                <div class="homeCourseText">
-                  <span
-                    class="homeCourseTitle"
-                    to=""
-                  >信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性</span>
-                  <div class="grade">
-                    <el-rate
-                      v-model="value"
-                      disabled
-                      show-score
-                      text-color="#72787E"
-                      disabled-void-color="#ccc"
-                      score-template="{value}"
+                  <div class="homeCourseText">
+                    <span class="homeCourseTitle" to=""
+                      >信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性</span
                     >
-                    </el-rate>
+                    <div class="grade">
+                      <el-rate
+                        v-model="value"
+                        disabled
+                        show-score
+                        text-color="#72787E"
+                        disabled-void-color="#ccc"
+                        score-template="{value}"
+                      >
+                      </el-rate>
+                    </div>
+                    <div class="livePerInfo">
+                      <span class="iconimage_icon_user iconfont userIcon"></span>
+                      <span>6人学习</span>
+                    </div>
                   </div>
-                  <div class="livePerInfo">
-                    <span class="iconimage_icon_user iconfont userIcon"></span>
-                    <span>6人学习</span>
-                  </div>
-                </div>
-              </router-link>
-            </div>
-            <div class="homeCourse">
-              <router-link to="">
-                <div class="homeCourseImg">
-                  <img
-                    src="../assets/images/photo1.png"
-                    width="285"
-                    height="168"
-                    alt=""
-                  />
-                </div>
-                <div class="homeCourseText">
-                  <span
-                    class="homeCourseTitle"
-                    to=""
-                  >信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性</span>
-                  <div class="grade">
-                    <el-rate
-                      v-model="value"
-                      disabled
-                      show-score
-                      text-color="#72787E"
-                      disabled-void-color="#ccc"
-                      score-template="{value}"
-                    >
-                    </el-rate>
-                  </div>
-                  <div class="livePerInfo">
-                    <span class="iconimage_icon_user iconfont userIcon"></span>
-                    <span>6人学习</span>
-                  </div>
-                </div>
-              </router-link>
-            </div>
-            <div class="homeCourse">
-              <router-link to="">
-                <div class="homeCourseImg">
-                  <img
-                    src="../assets/images/photo1.png"
-                    width="285"
-                    height="168"
-                    alt=""
-                  />
-                </div>
-                <div class="homeCourseText">
-                  <span
-                    class="homeCourseTitle"
-                    to=""
-                  >信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性</span>
-                  <div class="grade">
-                    <el-rate
-                      v-model="value"
-                      disabled
-                      show-score
-                      text-color="#72787E"
-                      disabled-void-color="#ccc"
-                      score-template="{value}"
-                    >
-                    </el-rate>
-                  </div>
-                  <div class="livePerInfo">
-                    <span class="iconimage_icon_user iconfont userIcon"></span>
-                    <span>6人学习</span>
-                  </div>
-                </div>
-              </router-link>
-            </div>
+                </router-link>
+              </div> -->
+            </template>
           </div>
         </div>
         <h3 class="LMTitle">
@@ -303,7 +235,36 @@
         </h3>
         <div class="LModule">
           <div class="LModule2">
-            <div class="homeTrain">
+            <div v-for="item in trainListData" :key="item.id" class="homeTrain">
+              <router-link to="">
+                <h3 class="homeTrainTitle">
+                  {{ item.trainName }}
+                </h3>
+                <div class="homeTrainText">
+                  <div class="homeTrainTextItem">
+                    <span class="iconimage_icon_address iconfont traingIcon"></span>
+                    <span class="homeTrainTextItem2">{{ item.address }}</span>
+                  </div>
+                  <div class="homeTrainTextItem">
+                    <span class="iconimage_icon_time iconfont traingIcon"></span>
+                    <span class="homeTrainTextItem2">{{ item.startTime }}</span>
+                  </div>
+                  <div class="homeTrainTextItem">
+                    <img
+                      :src="item.avatarUrl ? item.avatarUrl : '/img/userIconBig.png'"
+                      width="24"
+                      height="24"
+                      alt=""
+                    />
+                    <span class="homeTrainTextItem2">{{ item.lecturerName }}</span>
+                    <span
+                      :class="[item.status ? trainStatus[item.status].class : '', homeTraining]"
+                    >{{ trainStatus[item.status].text }}</span>
+                  </div>
+                </div>
+              </router-link>
+            </div>
+            <!-- <div class="homeTrain">
               <router-link to="">
                 <h3 class="homeTrainTitle">
                   职场礼仪职场礼仪职场礼仪职场礼仪职场礼仪职场礼仪
@@ -318,12 +279,7 @@
                     <span class="homeTrainTextItem2">2020-09-12 14:30</span>
                   </div>
                   <div class="homeTrainTextItem">
-                    <img
-                      src="../assets/images/welcome.png"
-                      width="24"
-                      height="24"
-                      alt=""
-                    />
+                    <img src="../assets/images/welcome.png" width="24" height="24" alt="" />
                     <span class="homeTrainTextItem2">老周</span>
                     <span class="homeTraining ing">进行中</span>
                   </div>
@@ -345,45 +301,13 @@
                     <span class="homeTrainTextItem2">2020-09-12 14:30</span>
                   </div>
                   <div class="homeTrainTextItem">
-                    <img
-                      src="../assets/images/welcome.png"
-                      width="24"
-                      height="24"
-                      alt=""
-                    />
-                    <span class="homeTrainTextItem2">老周</span>
-                    <span class="homeTraining ing">进行中</span>
-                  </div>
-                </div>
-              </router-link>
-            </div>
-            <div class="homeTrain">
-              <router-link to="">
-                <h3 class="homeTrainTitle">
-                  职场礼仪职场礼仪职场礼仪职场礼仪职场礼仪职场礼仪
-                </h3>
-                <div class="homeTrainText">
-                  <div class="homeTrainTextItem">
-                    <span class="iconimage_icon_address iconfont traingIcon"></span>
-                    <span class="homeTrainTextItem2">环普产业园G1座</span>
-                  </div>
-                  <div class="homeTrainTextItem">
-                    <span class="iconimage_icon_time iconfont traingIcon"></span>
-                    <span class="homeTrainTextItem2">2020-09-12 14:30</span>
-                  </div>
-                  <div class="homeTrainTextItem">
-                    <img
-                      src="../assets/images/welcome.png"
-                      width="24"
-                      height="24"
-                      alt=""
-                    />
+                    <img src="../assets/images/welcome.png" width="24" height="24" alt="" />
                     <span class="homeTrainTextItem2">老周</span>
                     <span class="homeTraining future">进行中</span>
                   </div>
                 </div>
               </router-link>
-            </div>
+            </div> -->
           </div>
         </div>
         <h3 class="LMTitle">
@@ -394,20 +318,34 @@
         </h3>
         <div class="LModule">
           <div class="LModule2">
-            <div class="homeCourse">
+            <div v-for="item in newsListData" :key="item.id" class="homeCourse">
               <router-link to="">
                 <div class="homeCourseImg">
                   <img
-                    src="../assets/images/photo1.png"
+                    :src="item.picUrl ? item.picUrl : '/img/autoL.png'"
                     width="285"
                     height="168"
                     alt=""
                   />
                 </div>
                 <div class="homeCourseText">
-                  <span
-                    class="homeCourseTitle"
-                  >信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性</span>
+                  <span class="homeCourseTitle">{{ item.title }}</span>
+                  <span class="homeCourseTime iconeyeopen-outlined iconfont">{{ item.hits }}</span>
+                  <div class="livePerInfo">
+                    <span>{{ item.createTime }}</span>
+                  </div>
+                </div>
+              </router-link>
+            </div>
+            <!-- <div class="homeCourse">
+              <router-link to="">
+                <div class="homeCourseImg">
+                  <img src="../assets/images/photo1.png" width="285" height="168" alt="" />
+                </div>
+                <div class="homeCourseText">
+                  <span class="homeCourseTitle"
+                    >信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性</span
+                  >
                   <span class="homeCourseTime iconeyeopen-outlined iconfont">11</span>
                   <div class="livePerInfo">
                     <span>2020-10-30</span>
@@ -418,45 +356,19 @@
             <div class="homeCourse">
               <router-link to="">
                 <div class="homeCourseImg">
-                  <img
-                    src="../assets/images/photo1.png"
-                    width="285"
-                    height="168"
-                    alt=""
-                  />
+                  <img src="../assets/images/photo1.png" width="285" height="168" alt="" />
                 </div>
                 <div class="homeCourseText">
-                  <span
-                    class="homeCourseTitle"
-                  >信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性</span>
+                  <span class="homeCourseTitle"
+                    >信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性</span
+                  >
                   <span class="homeCourseTime iconeyeopen-outlined iconfont">11</span>
                   <div class="livePerInfo">
                     <span>2020-10-30</span>
                   </div>
                 </div>
               </router-link>
-            </div>
-            <div class="homeCourse">
-              <router-link to="">
-                <div class="homeCourseImg">
-                  <img
-                    src="../assets/images/photo1.png"
-                    width="285"
-                    height="168"
-                    alt=""
-                  />
-                </div>
-                <div class="homeCourseText">
-                  <span
-                    class="homeCourseTitle"
-                  >信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性</span>
-                  <span class="homeCourseTime iconeyeopen-outlined iconfont">11</span>
-                  <div class="livePerInfo">
-                    <span>2020-10-30</span>
-                  </div>
-                </div>
-              </router-link>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -471,6 +383,8 @@
 import TheHeader from '@/page/TheHeader'
 import HomeMyTask from '@/views/home/homeMyTask'
 import HomeRight from '@/views/home/homeRight'
+import { queryCourseList } from '@/api/course'
+import { homeQueryTrainList, homeNewsList } from '@/api/home'
 
 export default {
   name: 'Home',
@@ -482,6 +396,20 @@ export default {
   data() {
     return {
       value: 3.7,
+      trainStatus: {
+        1: {
+          class: 'future',
+          text: '未开始'
+        },
+        2: {
+          class: 'ing',
+          text: '进行中'
+        }
+      },
+      homeTraining: 'homeTraining',
+      hotCourseData: [], // 热门课程
+      trainListData: [], // 培训中心
+      newsListData: [], // 新闻
       banner: [
         {
           css: {
@@ -505,6 +433,28 @@ export default {
           id: '33'
         }
       ]
+    }
+  },
+  mounted() {
+    this.getHotCourse()
+    this.getTrainList()
+    this.getNewsList()
+  },
+  methods: {
+    async getHotCourse() {
+      // 热门课程
+      let res = await queryCourseList({ pageSize: 5, pageNo: 1 })
+      this.hotCourseData = res.data
+    },
+    async getTrainList() {
+      // 培训中心
+      let res = await homeQueryTrainList({ pageSize: 3, pageNo: 1 })
+      this.trainListData = res.records
+    },
+    async getNewsList() {
+      // 获取新闻列表
+      let res = await homeNewsList({ pageSize: 3, pageNo: 1 })
+      this.newsListData = res.data
     }
   }
 }
