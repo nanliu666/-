@@ -98,7 +98,10 @@ export default {
   name: 'NewsDetails',
   data() {
     return {
-      data: {},
+      data: {
+        hits: '',
+        topTime: ''
+      },
       id: '',
       disabledBottom: false
     }
@@ -107,8 +110,11 @@ export default {
   watch: {},
 
   created() {
-    this.getInfo()
+    // this.getInfo()
     // console.log(Date.parse(new Date()).toString());
+  },
+  activated() {
+    this.getInfo()
   },
   methods: {
     cutInfo(type) {
@@ -126,7 +132,7 @@ export default {
       if (!data) {
         params = {
           id: this.$route.query.id,
-          hits: this.$route.query.hits
+          hits: this.data.hits || this.$route.query.hits
         }
       } else {
         params = {
@@ -134,6 +140,9 @@ export default {
         }
       }
 
+      params.isHot = this.$route.query.isHot
+      params.topTime = this.data.topTime
+      // console.log(params)
       let res = await newsInfo(params)
       if (JSON.stringify(res) != '{}') {
         this.data = res

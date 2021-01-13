@@ -18,7 +18,7 @@
           v-show="pitch === 1"
           v-model="searchInput"
           class="searchInput"
-          placeholder="查找我的线上课"
+          placeholder="查找我的线上课程"
           suffix-icon="el-icon-search"
         >
         </el-input>
