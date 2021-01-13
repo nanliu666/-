@@ -33,10 +33,6 @@
       </div>
       <div class="intro-list">
         <div class="intro-item">
-          培训对象：
-          <span class="text">{{ data.object }}</span>
-        </div>
-        <div class="intro-item">
           培训方式：
           <span class="text">{{
             data.trainWay === 1 ? '面授' : data.trainWay === 2 ? '混合' : '在线'
@@ -46,12 +42,12 @@
           培训地点：
           <span class="text">{{ data.address }}</span>
         </div>
-      </div>
-      <div class="intro-list">
         <div class="intro-item">
           联系人：
           <span class="text">{{ data.contactName }}</span>
         </div>
+      </div>
+      <div class="intro-list">
         <div class="intro-item">
           联系电话：
           <span class="text">{{ data.contactPhone }}</span>
@@ -60,12 +56,12 @@
           主办单位：
           <span class="text">{{ data.sponsor }}</span>
         </div>
-      </div>
-      <div class="intro-list">
         <div class="intro-item">
           承办单位：
           <span class="text">{{ data.organizer }}</span>
         </div>
+      </div>
+      <div class="intro-list">
         <div class="intro-item">
           班主任：
           <span class="text">{{ data.headTeacher }}</span>
@@ -73,6 +69,9 @@
         <div class="intro-item">
           助教：
           <span class="text">{{ data.teachAssistant }}</span>
+        </div>
+        <div class="intro-item">
+          <span class="text"></span>
         </div>
       </div>
     </div>
