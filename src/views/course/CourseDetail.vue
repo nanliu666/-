@@ -123,9 +123,16 @@
 
 <script>
 import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
-import { getCourseDetail, getCommentList, addComment, getLearnRecord } from '@/api/course'
+import {
+  getCourseDetail,
+  getCommentList,
+  addComment,
+  getLearnRecord,
+  addViewLog
+} from '@/api/course'
 import Comment from '../knowledge/Comment'
 import { COURSE_CHAPTER_TYPE_MAP, COURSE_TYPE_MAP } from './config'
+import { mapGetters } from 'vuex'
 export default {
   name: 'CourseDetail',
   components: { CommonBreadcrumb, Comment },
@@ -143,7 +150,8 @@ export default {
       return this.$route.query.id
     },
     COURSE_TYPE_MAP: () => COURSE_TYPE_MAP,
-    COURSE_CHAPTER_TYPE_MAP: () => COURSE_CHAPTER_TYPE_MAP
+    COURSE_CHAPTER_TYPE_MAP: () => COURSE_CHAPTER_TYPE_MAP,
+    ...mapGetters(['userInfo'])
   },
   activated() {
     this.loadDetail()
@@ -189,6 +197,14 @@ export default {
       return addComment({ ...params, courseId: this.id })
     },
     jumpToLearn(courseId, chapterId = null) {
+      addViewLog({
+        coursePlanNo: courseId,
+        coursePlanName: this.courseData.name,
+        departmentId: this.userInfo.org_id,
+        userName: this.userInfo.nick_name,
+        tenantId: this.userInfo.tenant_id,
+        workNo: this.userInfo.work_no
+      })
       this.$router.push({ path: '/course/learn', query: { courseId, chapterId } })
     }
   }

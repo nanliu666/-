@@ -84,3 +84,9 @@ export const getLearnRecord = (params) => get('/manage/v1/web/course/getCourseRe
  */
 export const updateLearnRecord = (params) =>
   post('/manage/v1/web/course/saveCourseUserRecord', params)
+
+/**
+ * 新增学员浏览课程记录
+ * @param {Object} params
+ */
+export const addViewLog = (params) => post('/manage/v1/study/plan/course/addLog', params)
