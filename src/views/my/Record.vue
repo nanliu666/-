@@ -4,9 +4,14 @@
       <div class="userInfo_in">
         <div class="userInfo_in_img">
           <img
+            v-if="infoData.avatarUrl"
+            class="img"
             :src="infoData.avatarUrl"
-            alt=""
           />
+          <div
+            v-else
+            class="img"
+          ></div>
         </div>
         <div class="userInfo_in_r">
           <div class="userInfo_name">
@@ -132,9 +137,10 @@ export default {
         border-radius: 50%;
         overflow: hidden;
         margin-right: 24px;
-        img {
+        .img {
           width: 100%;
           height: 100%;
+          background-color: #f2f2f2;
         }
       }
 

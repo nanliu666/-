@@ -73,10 +73,7 @@
           </div>
         </div>
       </div>
-      <div
-        v-show="tableData.length"
-        class="select_bar"
-      >
+      <div class="select_bar">
         <span>类型：</span>
         <span
           :class="{ typeBtn: sysRuleSource === '' }"
@@ -119,10 +116,7 @@
           @click="sysRuleSource = '培训学分'"
         >培训学分</span>
       </div>
-      <div
-        v-show="tableData.length"
-        class="select_date"
-      >
+      <div class="select_date">
         <span>日期: &nbsp; &nbsp;</span>
         <el-date-picker
           v-model="dateValue"

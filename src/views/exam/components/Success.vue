@@ -7,12 +7,13 @@
       <div class="success-title">
         提交成功
       </div>
-      <div class="content">
-        {{ $parent.successPape.msg }}
-      </div>
+      <div
+        class="content"
+        v-html="paper.successPaper.msg"
+      ></div>
       <div class="handle-box">
         <el-button
-          v-if="$parent.successPape.openAnswerSheet"
+          v-if="paper.successPaper.openAnswerSheet"
           type="primary"
           @click="goDetail"
         >
@@ -28,6 +29,7 @@
 
 <script>
 export default {
+  inject: ['paper'],
   name: 'ExamSuccess',
   data() {
     return {

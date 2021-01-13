@@ -12,7 +12,7 @@
           class="content"
         >
           <span>共{{ paper.questionNum }}题，</span>
-          <span v-if="paper.totalScore">总分{{ paper.totalScore / 10 }}分，</span>
+          <span v-if="paper.totalScore">总分{{ paper.totalScore }}分，</span>
           <span>限定最高分为100分</span>
           <span v-if="paper.reckonTime">，计时{{ paper.reckonTimeValue }}分钟</span>
           <span>（答题不确定时，可用</span>
@@ -319,7 +319,7 @@ export default {
     QUESTION_TYPE_SHOER: () => QUESTION_TYPE_SHOER,
     QUESTION_TYPE_MAP: () => QUESTION_TYPE_MAP,
     QUESTION_TYPE_GROUP: () => QUESTION_TYPE_GROUP,
-    ...mapGetters(['userInfo']),
+    ...mapGetters(['userInfo', 'userId']),
     // 逐题答卷最后一题需要置灰按钮
     nextButtonDisabled() {
       return _.size(this.tempQuestionList) === this.currentQuestion + 1
@@ -346,24 +346,25 @@ export default {
       immediate: true
     }
   },
-  mounted() {
+  activated() {
     this.initData()
     //阻止F5刷新
     // this.stopF5Refresh()
   },
   beforeRouteLeave(from, to, next) {
-    if (this.isLeave) {
+    if (this.isLeave || this.isSuccess) {
+      this.clearIntervalAll()
       next(true)
     } else {
       this.$message.error('禁止使用浏览器原生返回')
       next(false)
     }
   },
-  // 解决定时器bug
-  beforeDestroy() {
-    clearInterval(this.dealTimeId)
-  },
   methods: {
+    clearIntervalAll() {
+      clearInterval(this.dealTimeId)
+      clearInterval(this.byOneTimeId)
+    },
     prevQuestion() {
       this.currentQuestion -= 1
       this.commonCreateCountdown()
@@ -413,14 +414,18 @@ export default {
       }
     },
     goBack() {
-      this.$confirm('离开考试页面返回列表，即视为放弃本次考试机会。您确定要返回列表？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.isLeave = true
+      if (!this.isSuccess) {
+        this.$confirm('离开考试页面返回列表，即视为放弃本次考试机会。您确定要返回列表？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.isLeave = true
+          this.$router.push({ path: '/exam/list' })
+        })
+      } else {
         this.$router.push({ path: '/exam/list' })
-      })
+      }
     },
     // 点击滚动到对应的题目
     navTo(data, sonIndex, parentIndex, ref = 'paperScroll') {
@@ -495,7 +500,7 @@ export default {
         return item.score
       })
       const totalScore = this.addScore(scoreList)
-      return totalScore / 10
+      return totalScore
     },
     // 交卷逻辑直接跳转检测后交卷逻辑
     carryOut() {
@@ -584,6 +589,7 @@ export default {
         })
       }
     },
+    // 交卷前先处理成后端想要的参数格式
     handleQustions() {
       const questionsTemp = _.flattenDeep(_.cloneDeep(this.questionList))
       let questions = []
@@ -615,7 +621,14 @@ export default {
       }
       postSubmitPaper(params)
         .then((res) => {
-          this.successPaper = res
+          const { data } = res
+          this.successPaper = data
+          this.isSuccess = true
+          // 提交的时候删除当前存在本地的考试信息
+          const hasOffLineExam = !_.isEmpty(localStorage.getItem('offLineExam'))
+          if (hasOffLineExam) {
+            localStorage.removeItem('offLineExam')
+          }
         })
         .catch(() => {
           window.console.error(JSON.stringify(params))
@@ -628,7 +641,9 @@ export default {
       this.submitFun()
     },
     async initData() {
-      this.paper = await getTakeExam(this.$route.query)
+      this.paper = await getTakeExam(_.omit(this.$route.query, ['isReNew']))
+      // 监听联网断网
+      this.initWatchNetworks()
       // 初始化题目数据处理
       this.initQuestionList()
       // 逐题模式
@@ -638,6 +653,44 @@ export default {
       // 闭卷监听
       this.watchCloseBookExam()
     },
+    initWatchNetworks() {
+      const EventUtil = {
+        addHandler: function(element, type, handler) {
+          if (element.addEventListener) {
+            element.addEventListener(type, handler, false)
+          } else if (element.attachEvent) {
+            element.attachEvent('on' + type, handler)
+          } else {
+            element['on' + type] = handler
+          }
+        }
+      }
+      EventUtil.addHandler(window, 'online', () => {
+        this.$notify({
+          title: '联网提示',
+          type: 'success',
+          message: '当前网络环境已重新连接，请继续作答！',
+          showClose: false
+        })
+      })
+      EventUtil.addHandler(window, 'offline', () => {
+        this.offlineTips()
+        const examDataTemp = this.paper.answerMode === 1 ? this.questionList : this.tempQuestionList
+        const offLineExam = {
+          examId: this.$route.query.examId,
+          userId: this.userId,
+          examData: JSON.stringify(examDataTemp)
+        }
+        localStorage.setItem('offLineExam', JSON.stringify(offLineExam))
+      })
+    },
+    offlineTips() {
+      this.$notify.error({
+        title: '断网提示',
+        message: '当前网络环境已失去连接，已为您保存答案在本地！',
+        showClose: false
+      })
+    },
     initQuestionList() {
       this.questionList = _.chain(_.cloneDeep(this.paper.questions))
         .groupBy('parentSort')
@@ -646,6 +699,15 @@ export default {
           return _.sortBy(item, 'sort')
         })
         .value()
+      // 判断是否断网重连
+      this.reNewExam()
+    },
+    reNewExam() {
+      // 如果是断网后重连，数据需要覆盖一次
+      if (_.get(this.$route.query, 'isReNew')) {
+        const offLineExamData = JSON.parse(JSON.parse(localStorage.getItem('offLineExam')).examData)
+        this.questionList = _.assign(_.cloneDeep(this.questionList), _.cloneDeep(offLineExamData))
+      }
     },
     // 逐题模式下的相关初始化
     initAnswerByOne() {
@@ -745,7 +807,6 @@ export default {
           clearInterval(timeId)
           await this.automaticSubmit()
           this.centerDialogVisible = false
-          this.isSuccess = true
         } else {
           this.centerDialogVisible = true
         }
