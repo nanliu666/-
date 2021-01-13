@@ -198,7 +198,6 @@ export default {
         pageSize: 10
       },
       data: [],
-      userType: 1,
       total: 0
     }
   },
@@ -224,16 +223,14 @@ export default {
         endTime: this.date[1]
       })
       getList(params).then((res) => {
-        const { trainList = {}, type = 1 } = res
-        const { records, size, total, current } = trainList
+        const { records = [], size, total = 0, current } = res
         this.data = this.sortList(records)
-        this.userType = type
         this.total = total
         Object.assign(this.filterForm, { pageNo: current, pageSize: size })
       })
     },
     toDetail(item) {
-      const { id: trainId, trainName: title, trainWay } = item
+      const { id: trainId, trainName: title, trainWay, userType } = item
       // type 0:学员,1:讲师
       this.$router.push({
         name: 'trainDetail',
@@ -241,11 +238,11 @@ export default {
           title,
           trainId,
           trainWay,
-          userType: this.userType
+          userType
         }
       })
     },
-    sortList(list) {
+    sortList(list = []) {
       return list.sort((a, b) => b.status - a.status)
     }
   }
