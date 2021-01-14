@@ -144,67 +144,7 @@
         </div>
         <div class="score">
           234分
-        </div>
-      </div>
-      <div class="rankingItem">
-        <div class="rankingIndex rankingIndex3">
-          03
-        </div>
-        <div class="rankingImg">
-          <img
-            src="/img/userIconBig.png"
-            width="40"
-            height="40"
-            alt=""
-          />
-        </div>
-        <div class="rankingInfo">
-          <span class="rankingInfo1">小明</span>
-          <span class="rankingInfo2">开发部</span>
-        </div>
-        <div class="score">
-          234分
-        </div>
-      </div>
-      <div class="rankingItem">
-        <div class="rankingIndex rankingIndexOther">
-          04
-        </div>
-        <div class="rankingImg">
-          <img
-            src="/img/userIconBig.png"
-            width="40"
-            height="40"
-            alt=""
-          />
-        </div>
-        <div class="rankingInfo">
-          <span class="rankingInfo1">小明</span>
-          <span class="rankingInfo2">开发部</span>
-        </div>
-        <div class="score">
-          234分
-        </div>
-      </div>
-      <div class="rankingItem">
-        <div class="rankingIndex rankingIndexOther">
-          05
-        </div>
-        <div class="rankingImg">
-          <img
-            src="/img/userIconBig.png"
-            width="40"
-            height="40"
-            alt=""
-          />
-        </div>
-        <div class="rankingInfo">
-          <span class="rankingInfo1">小明</span>
-          <span class="rankingInfo2">开发部</span>
-        </div>
-        <div class="score">
-          234分
-        </div>
+        </div>      
       </div> -->
     </div>
     <div class="ranking">
@@ -212,7 +152,7 @@
         <span>月度学时排行榜</span>
         <!-- <router-link to="">更多</router-link> -->
       </div>
-      <div v-for="(item, i) in monthlyCreditData" :key="item.id" class="rankingItem">
+      <div v-for="(item, i) in monthlyPeriodData" :key="item.id" class="rankingItem">
         <div :class="['rankingIndex', 'rankingIndex' + i]">01</div>
         <div class="rankingImg">
           <img :src="item.url ? item.url : '/img/userIconBig.png'" width="40" height="40" alt="" />
