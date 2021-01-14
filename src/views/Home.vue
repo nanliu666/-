@@ -1,4 +1,5 @@
 <template>
+  <!-- 首页 -->
   <div class="home">
     <div class="homeMenu">
       <div class="homeMenu2">
@@ -18,6 +19,7 @@
           <span class="span1">我的任务</span>
           <span class="span2">待完成任务4项</span>
         </h3>
+        <!-- 我的任务 -->
         <div style="clear: both; ">
           <home-my-task />
         </div>

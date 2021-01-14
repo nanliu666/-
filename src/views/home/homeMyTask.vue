@@ -1,16 +1,8 @@
 <template>
-  <div
-    v-if="myMissions && myMissions.length > 0"
-    class="homeMyTask"
-  >
-    <swiper
-      ref="mySwiper"
-      :options="swiperOptions"
-    >
-      <swiper-slide
-        v-for="item in myMissions"
-        :key="item.id"
-      >
+  <!-- 首页我的任务 -->
+  <div v-if="myMissions && myMissions.length > 0" class="homeMyTask">
+    <swiper ref="mySwiper" :options="swiperOptions">
+      <swiper-slide v-for="item in myMissions" :key="item.id">
         <div class="homeMyTaskItem">
           <router-link to="">
             <h3 class="homeMyTaskItemTitle">
@@ -70,11 +62,7 @@
         class="swiper-button-prev"
         @click="prev"
       ></div>
-      <div
-        slot="button-next"
-        class="swiper-button-next homeMyTaskItemNext"
-        @click="next"
-      ></div>
+      <div slot="button-next" class="swiper-button-next homeMyTaskItemNext" @click="next"></div>
       <!-- <div class="swiper-pagination" slot="pagination"></div>       -->
     </swiper>
   </div>
