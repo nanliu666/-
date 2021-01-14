@@ -349,11 +349,12 @@ export default {
   activated() {
     this.initData()
     //阻止F5刷新
-    // this.stopF5Refresh()
+    this.stopF5Refresh()
   },
   beforeRouteLeave(from, to, next) {
     if (this.isLeave || this.isSuccess) {
       this.clearIntervalAll()
+      this.resetF5Refresh()
       next(true)
     } else {
       this.$message.error('禁止使用浏览器原生返回')
@@ -490,16 +491,16 @@ export default {
         })
       }
     },
-    addScore(args) {
-      return args.reduce((prev, curr) => {
-        return prev + curr
-      })
-    },
     getItemTotalScore(data) {
+      const addScore = (args) => {
+        return args.reduce((prev, curr) => {
+          return prev + curr
+        })
+      }
       const scoreList = _.map(data, (item) => {
         return item.score
       })
-      const totalScore = this.addScore(scoreList)
+      const totalScore = addScore(scoreList)
       return totalScore
     },
     // 交卷逻辑直接跳转检测后交卷逻辑
@@ -704,7 +705,8 @@ export default {
     },
     reNewExam() {
       // 如果是断网后重连，数据需要覆盖一次
-      if (_.get(this.$route.query, 'isReNew')) {
+      const { isReNew } = this.$route.query
+      if (isReNew && isReNew !== 'false') {
         const offLineExamData = JSON.parse(JSON.parse(localStorage.getItem('offLineExam')).examData)
         this.questionList = _.assign(_.cloneDeep(this.questionList), _.cloneDeep(offLineExamData))
       }
@@ -761,7 +763,15 @@ export default {
         }
       }
     },
-
+    // 离开重置刷新
+    // TODO: 内部逻辑待补充
+    resetF5Refresh() {
+      // console.log('111')
+      // document.removeEventListener('keydown', fn)
+      // function fn(ev) {
+      //   ev.preventDefault()
+      // }
+    },
     // TODO: 考试时间交卷逻辑需要补充
     initRemainingTime() {
       const { reckonTimeValue, strategy, examEndTime } = this.paper
