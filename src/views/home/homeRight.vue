@@ -1,4 +1,5 @@
 <template>
+  <!-- 首页左侧内容 -->
   <div class="homeRightP">
     <div class="homePrivateInfo">
       <div class="homePrivateInfoImg">
