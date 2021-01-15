@@ -98,7 +98,7 @@
 <script>
 import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
 import { getCourseDetail, getCommentList, addComment, getLearnRecord } from '@/api/course'
-import Comment from '../knowledge/Comment'
+import Comment from '@/components/common-comment/Comment'
 import { COURSE_CHAPTER_TYPE_MAP, COURSE_TYPE_MAP } from './config'
 export default {
   name: 'CourseDetail',

@@ -11,10 +11,7 @@
               src="https://scpic.chinaz.net/files/pic/pic9/202101/apic30172.jpg"
               fit="cover"
             >
-              <div
-                slot="error"
-                class="image__slot"
-              >
+              <div slot="error" class="image__slot">
                 <i class="el-icon-picture-outline"></i>
               </div>
             </el-image>
@@ -49,10 +46,7 @@
                 </div>
               </div>
             </div>
-            <el-button
-              type="primary"
-              size="medium"
-            >
+            <el-button type="primary" size="medium">
               继续直播
             </el-button>
           </div>
@@ -74,39 +68,27 @@
       </div>
     </el-card>
     <el-card class="live__main">
-      <el-tabs
-        v-model="activeIndex"
-        @tab-click="handleSelect"
-      >
-        <el-tab-pane
-          label="直播信息"
-          name="1"
-        >
+      <el-tabs v-model="activeIndex" @tab-click="handleSelect">
+        <el-tab-pane label="直播信息" name="1">
           <live-info />
         </el-tab-pane>
-        <el-tab-pane
-          label="数据统计"
-          name="2"
-        >
+        <el-tab-pane label="数据统计" name="2">
           <live-statistics />
         </el-tab-pane>
-        <el-tab-pane
-          label="直播详情"
-          name="3"
-        >
+        <el-tab-pane label="直播详情" name="3">
           <live-particulars />
         </el-tab-pane>
-        <el-tab-pane
-          label="直播回放"
-          name="4"
-        >
+        <el-tab-pane label="直播回放" name="4">
           <live-playback />
         </el-tab-pane>
-        <el-tab-pane
-          label="直播评论"
-          name="5"
-        >
-          <live-comment />
+        <el-tab-pane label="直播评论" name="5">
+          <Comment
+            :load="loadCommentList"
+            :submit="submitComment"
+            name="直播"
+            :is-editable="false"
+            disable-text="您还未观看直播，暂不能对直播评价，先去观看再来评价哦~"
+          />
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -114,17 +96,25 @@
 </template>
 
 <script>
+import { getEvaluateList, addCourseScope } from '@/api/knowledge'
+import Comment from '@/components/common-comment/Comment'
 import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
-// 导入components文件夹下所有的组件
-import { exportComponent } from '@/util/util'
-let componentList = exportComponent(require.context('./components', false, /\.vue$/))
-// 引入面包屑以及二维码生成
-const breadcrumb = { CommonBreadcrumb: CommonBreadcrumb }
-const vueQr = { vueQr: () => import('vue-qr') }
-_.assign(componentList, breadcrumb, vueQr)
+import LiveInfo from './components/LiveInfo'
+import LiveParticulars from './components/LiveParticulars'
+import LivePlayback from './components/LivePlayback'
+import LiveStatistics from './components/LiveStatistics'
+import vueQr from 'vue-qr'
 export default {
   name: 'LiveDetail',
-  components: componentList,
+  components: {
+    Comment,
+    CommonBreadcrumb,
+    LiveInfo,
+    LiveParticulars,
+    LivePlayback,
+    LiveStatistics,
+    vueQr
+  },
   data() {
     return {
       activeIndex: '1'
@@ -137,6 +127,12 @@ export default {
     // 切换nav
     handleSelect(tab) {
       this.activeIndex = tab.name
+    },
+    loadCommentList(params) {
+      return getEvaluateList({ ...params, knowledgeId: this.id })
+    },
+    submitComment(params) {
+      return addCourseScope({ ...params, knowledgeId: this.id })
     }
   }
 }
@@ -206,6 +202,7 @@ export default {
           display: flex;
           align-items: center;
           justify-content: center;
+          cursor: pointer;
           .play-icon {
             width: 0;
             height: 0;
@@ -271,6 +268,7 @@ export default {
   }
   .live__main {
     margin-top: 20px;
+    min-height: 55vh;
   }
 }
 </style>
