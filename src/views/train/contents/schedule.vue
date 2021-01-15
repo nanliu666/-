@@ -1,36 +1,20 @@
 <template>
   <div class="schedule">
-    <ul
-      v-show="!detailVisible"
-      class="schedule-list"
-    >
+    <ul v-show="!detailVisible" class="schedule-list">
       <li class="schedule-item">
         <div class="title">
           线下日程
         </div>
-        <div
-          v-for="(val, key) in offLineData"
-          :key="key"
-        >
-          <div
-            class="note"
-            @click="setFold(val)"
-          >
+        <div v-for="(val, key) in offLineData" :key="key">
+          <div class="note" @click="setFold(val)">
             <i
               :class="!val.isFold ? 'el-icon-arrow-right' : 'el-icon-arrow-down'"
               style="font-weight: 700; color: rgba(0,11,21,0.85);"
             ></i>
             {{ key }}
           </div>
-          <ul
-            v-show="!!val.isFold"
-            class="chapter-list"
-          >
-            <li
-              v-for="chapter in val"
-              :key="chapter.course"
-              class="chapter-item"
-            >
+          <ul v-show="!!val.isFold" class="chapter-list">
+            <li v-for="chapter in val" :key="chapter.course" class="chapter-item">
               <div class="time">
                 <span class="text">{{ chapter.todoTime }}</span>
               </div>
@@ -57,45 +41,19 @@
       </li>
 
       <li class="schedule-item">
-        <div
-          class="title"
-          style="margin-top: 24px;"
-        >
+        <div class="title" style="margin-top: 24px;">
           在线课程
         </div>
-        <el-table
-          :data="onLineData"
-          style="width: 100%"
-        >
-          <el-table-column
-            prop="classTime"
-            label="上课日期"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="course"
-            label="关联课程"
-            width="270"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="lecturer"
-            label="讲师"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="type"
-            label="修读类型"
-          >
+        <el-table :data="onLineData" style="width: 100%">
+          <el-table-column prop="classTime" label="上课日期"> </el-table-column>
+          <el-table-column prop="course" label="关联课程" width="270"> </el-table-column>
+          <el-table-column prop="lecturer" label="讲师"> </el-table-column>
+          <el-table-column prop="type" label="修读类型">
             <template slot-scope="scope">
               {{ scope.row.type === 0 ? '必修' : '选修' }}
             </template>
           </el-table-column>
-          <el-table-column
-            prop="status"
-            label="状态"
-            width="100"
-          >
+          <el-table-column prop="status" label="状态" width="100">
             <template slot-scope="scope">
               {{ scope.row.status === 1 ? '已结束' : scope.row.status === 2 ? '进行中' : '未开始' }}
             </template>
@@ -103,50 +61,21 @@
         </el-table>
       </li>
       <li class="schedule-item">
-        <div
-          class="title"
-          style="margin-top: 24px;"
-        >
+        <div class="title" style="margin-top: 24px;">
           考试安排
         </div>
-        <el-table
-          :data="examData"
-          style="width: 100%"
-        >
-          <el-table-column
-            prop="examTime"
-            label="考试日期"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="testPaper"
-            label="关联考试"
-            width="270"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="period"
-            label="考试时间（分钟）"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="status"
-            label="状态"
-          >
+        <el-table :data="examData" style="width: 100%">
+          <el-table-column prop="examTime" label="考试日期"> </el-table-column>
+          <el-table-column prop="testPaper" label="关联考试" width="270"> </el-table-column>
+          <el-table-column prop="period" label="考试时间（分钟）"> </el-table-column>
+          <el-table-column prop="status" label="状态">
             <template slot-scope="scope">
               {{ scope.row.type === 1 ? '未开始' : scope.row.type === 2 ? '进行中' : '已结束' }}
             </template>
           </el-table-column>
-          <el-table-column
-            label="操作"
-            width="100"
-          >
+          <el-table-column label="操作" width="100">
             <template slot-scope="scope">
-              <el-button
-                size="mini"
-                type="text"
-                @click="toExamDetail(scope.row.id)"
-              >
+              <el-button size="mini" type="text" @click="toExamDetail(scope.row.id)">
                 考试详情
               </el-button>
             </template>
@@ -155,15 +84,8 @@
       </li>
     </ul>
 
-    <div
-      v-show="detailVisible"
-      class="schedule-detail"
-    >
-      <el-button
-        icon="el-icon-back"
-        size="medium"
-        @click.native="setDetailVisible(false)"
-      >
+    <div v-show="detailVisible" class="schedule-detail">
+      <el-button icon="el-icon-back" size="medium" @click.native="setDetailVisible(false)">
         返回上一级
       </el-button>
 
@@ -211,32 +133,11 @@
       >
         考生列表
       </div>
-      <el-table
-        :data="studentList"
-        style="width: 100%"
-        height="431"
-      >
-        <el-table-column
-          prop="stuName"
-          label="姓名"
-          width="180"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="phone"
-          label="手机号"
-          width="180"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="deptName"
-          label="所属部门"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="examStatus"
-          label="状态"
-        >
+      <el-table :data="studentList" style="width: 100%" height="431">
+        <el-table-column prop="stuName" label="姓名" width="180"> </el-table-column>
+        <el-table-column prop="phone" label="手机号" width="180"> </el-table-column>
+        <el-table-column prop="deptName" label="所属部门"> </el-table-column>
+        <el-table-column prop="examStatus" label="状态">
           <template slot-scope="scope">
             {{
               scope.row.examStatus === 2
@@ -247,20 +148,9 @@
             }}
           </template>
         </el-table-column>
-        <el-table-column
-          prop="examTime"
-          label="考试时间"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="examScore"
-          label="成绩"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="examPass"
-          label="是否通过"
-        >
+        <el-table-column prop="examTime" label="考试时间"> </el-table-column>
+        <el-table-column prop="examScore" label="成绩"> </el-table-column>
+        <el-table-column prop="examPass" label="是否通过">
           <template slot-scope="scope">
             {{ scope.row.examPass === 1 ? '已通过' : '未通过' }}
           </template>

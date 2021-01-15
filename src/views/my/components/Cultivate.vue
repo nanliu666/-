@@ -11,41 +11,20 @@
         >
         </el-input>
 
-        <el-button
-          v-show="searchInput"
-          type="primary"
-          size="medium"
-          @click="searchInput = ''"
-        >
+        <el-button v-show="searchInput" type="primary" size="medium" @click="searchInput = ''">
           重置
         </el-button>
       </div>
     </div>
 
-    <div
-      v-show="listData.length"
-      class="courselist"
-    >
-      <div
-        v-for="(item, index) in listData"
-        :key="index"
-        class="floor"
-      >
+    <div v-show="listData.length" class="courselist">
+      <div v-for="(item, index) in listData" :key="index" class="floor">
         <div class="floor_title">
           <div class="text">
             <div>{{ item.trainName }}</div>
-            <span
-              v-show="item.status == 2"
-              class="underway"
-            >进行中</span>
-            <span
-              v-show="item.status == 1"
-              class="not"
-            >未开始</span>
-            <span
-              v-show="item.status == 0"
-              class="finished"
-            >已结办</span>
+            <span v-show="item.status == 2" class="underway">进行中</span>
+            <span v-show="item.status == 1" class="not">未开始</span>
+            <span v-show="item.status == 0" class="finished">已结办</span>
           </div>
           <div class="btn">
             <el-button
@@ -56,11 +35,7 @@
             >
               前往学习
             </el-button>
-            <el-button
-              v-show="item.isPass"
-              size="medium"
-              @click="toDetail(item.id)"
-            >
+            <el-button v-show="item.isPass" size="medium" @click="toDetail(item.id)">
               查看详情
             </el-button>
           </div>
@@ -85,22 +60,13 @@
             <span>{{ item.address }}</span>
           </div>
         </div>
-        <div
-          v-show="item.isPass"
-          class="seal"
-        >
-          <img
-            src="@/assets/images/my_seal.png"
-            alt=""
-          />
+        <div v-show="item.isPass" class="seal">
+          <img src="@/assets/images/my_seal.png" alt="" />
         </div>
       </div>
     </div>
 
-    <div
-      v-show="listData.length"
-      class="page"
-    >
+    <div v-show="listData.length" class="page">
       <el-pagination
         :page-sizes="[10, 20, 30, 50, 100]"
         layout="total, sizes, prev, pager, next, jumper"
@@ -113,15 +79,9 @@
     </div>
 
     <!-- 无数据 -->
-    <div
-      v-show="!listData.length"
-      class="content"
-    >
+    <div v-show="!listData.length" class="content">
       <div class="content_box">
-        <img
-          src="@/assets/images/my_noData.png"
-          alt=""
-        />
+        <img src="@/assets/images/my_noData.png" alt="" />
         <div class="text">
           还没有加入的培训
         </div>

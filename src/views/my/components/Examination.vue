@@ -46,21 +46,13 @@
         >
         </el-input>
 
-        <el-button
-          v-show="searchInput"
-          type="primary"
-          size="medium"
-          @click="searchInput = ''"
-        >
+        <el-button v-show="searchInput" type="primary" size="medium" @click="searchInput = ''">
           重置
         </el-button>
       </div>
     </div>
 
-    <div
-      v-show="tableData.length"
-      class="courselist"
-    >
+    <div v-show="tableData.length" class="courselist">
       <common-table
         ref="table"
         :columns="columnsVisible | columnsFilter"
@@ -72,27 +64,18 @@
         @page-size-change="handlePageSizeChange"
       >
         <!-- 考试次数 -->
-        <template
-          slot="joinNumValue"
-          slot-scope="{ row }"
-        >
+        <template slot="joinNumValue" slot-scope="{ row }">
           <span> {{ row.examTimes }}/{{ row.joinNumValue }} </span>
         </template>
 
         <!-- 是否通过: 0-否 1-是 -->
-        <template
-          slot="isPass"
-          slot-scope="{ row }"
-        >
+        <template slot="isPass" slot-scope="{ row }">
           <span v-if="row.isPass == 0">不通过</span>
           <span v-if="row.isPass == 1"> 通过</span>
         </template>
 
         <!--答卷状态: 1-已发布 2-考试中 3-已提交 4-阅卷中 5-已阅卷 6-缺考 -->
-        <template
-          slot="status"
-          slot-scope="{ row }"
-        >
+        <template slot="status" slot-scope="{ row }">
           <span v-if="row.status == 1">已发布</span>
           <span v-if="row.status == 2">考试中</span>
           <span v-if="row.status == 3">已提交</span>
@@ -101,10 +84,7 @@
           <span v-if="row.status == 6">缺考</span>
         </template>
 
-        <template
-          slot="handler"
-          slot-scope="scope"
-        >
+        <template slot="handler" slot-scope="scope">
           <el-button
             v-if="scope.row.status == 6 && scope.row.status == 4"
             type="text"
@@ -112,12 +92,7 @@
           >
             查看答卷
           </el-button>
-          <el-button
-            v-else
-            type="text"
-            disabled
-            @click="toAnswer(scope.row.id)"
-          >
+          <el-button v-else type="text" disabled @click="toAnswer(scope.row.id)">
             查看答卷
           </el-button>
         </template>
@@ -125,15 +100,9 @@
     </div>
 
     <!-- 无数据 -->
-    <div
-      v-show="!tableData.length"
-      class="content"
-    >
+    <div v-show="!tableData.length" class="content">
       <div class="content_box">
-        <img
-          src="@/assets/images/my_noData.png"
-          alt=""
-        />
+        <img src="@/assets/images/my_noData.png" alt="" />
         <div class="text">
           还没有参加的考试
         </div>

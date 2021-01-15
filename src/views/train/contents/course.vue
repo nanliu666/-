@@ -1,14 +1,7 @@
 <template>
   <div class="course">
-    <ul
-      v-if="data.trainWay === 3 || data.trainWay === 2"
-      class="course-list"
-    >
-      <li
-        v-for="(course, index) in onlineList"
-        :key="index"
-        class="course-item"
-      >
+    <ul v-if="data.trainWay === 3 || data.trainWay === 2" class="course-list">
+      <li v-for="(course, index) in onlineList" :key="index" class="course-item">
         <div class="title">
           {{ course.name }}
         </div>
@@ -16,11 +9,7 @@
           课程目录
         </div>
         <ul class="chapter-list">
-          <li
-            v-for="chapter in course.content"
-            :key="chapter.id"
-            class="chapter-item"
-          >
+          <li v-for="chapter in course.content" :key="chapter.id" class="chapter-item">
             <div
               class="tab video"
               :class="{
@@ -61,19 +50,12 @@
         <div class="title">
           面授课程
         </div>
-        <div
-          v-for="(val, key) in offlineList"
-          :key="key"
-        >
+        <div v-for="(val, key) in offlineList" :key="key">
           <div class="note">
             {{ key }}
           </div>
           <ul class="chapter-list">
-            <li
-              v-for="(chapter, index) in val"
-              :key="index"
-              class="o-chapter-item"
-            >
+            <li v-for="(chapter, index) in val" :key="index" class="o-chapter-item">
               <div class="begin">
                 {{ chapter.todoTime }}&nbsp;&nbsp;&nbsp;&nbsp;{{ chapter.course }}
               </div>

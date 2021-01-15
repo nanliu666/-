@@ -14,28 +14,18 @@
     <div class="content">
       <div class="btnBar">
         <div>
-          <el-button
-            size="small"
-            @click="tonewsList"
-          >
+          <el-button size="small" @click="tonewsList">
             &nbsp; <i class="icon-fanhui fanhuiicon"></i> &nbsp; 返回上一级
           </el-button>
         </div>
         <div class="btnBar_to">
           <div>
-            <el-button
-              size="small"
-              icon="el-icon-arrow-left"
-              @click="cutInfo(0)"
-            >
+            <el-button size="small" icon="el-icon-arrow-left" @click="cutInfo(0)">
               &nbsp;上一页
             </el-button>
           </div>
           <div>
-            <el-button
-              size="small"
-              @click="cutInfo(1)"
-            >
+            <el-button size="small" @click="cutInfo(1)">
               下一页&nbsp;<i class="el-icon-arrow-right el-icon--right"></i>
             </el-button>
           </div>
@@ -61,10 +51,7 @@
       </div>
 
       <div class="download">
-        <div
-          v-for="(item, index) in data.attachment"
-          :key="index"
-        >
+        <div v-for="(item, index) in data.attachment" :key="index">
           <el-button
             type="text"
             icon="el-icon-paperclip"
@@ -74,19 +61,12 @@
             附件下载
           </el-button>
           <span>{{ item.localName }}</span>
-          <a
-            ref="file"
-            href="#"
-            :download="item.url"
-          ></a>
+          <a ref="file" href="#" :download="item.url"></a>
         </div>
       </div>
 
       <div class="content_info">
-        <div
-          class="info"
-          v-html="data.content"
-        ></div>
+        <div class="info" v-html="data.content"></div>
       </div>
     </div>
   </div>

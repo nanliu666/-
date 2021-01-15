@@ -84,21 +84,14 @@
         active-text-color="rgba(1,170,252,1)"
         @select="handleSelect"
       >
-        <el-menu-item
-          v-for="tab in data.tabs"
-          :key="tab"
-          :index="tab"
-        >
+        <el-menu-item v-for="tab in data.tabs" :key="tab" :index="tab">
           {{ reference[tab] }}
         </el-menu-item>
       </el-menu>
 
       <div class="train-content">
         <keep-alive>
-          <component
-            :is="activeComponent"
-            :data="data"
-          ></component>
+          <component :is="activeComponent" :data="data"></component>
         </keep-alive>
       </div>
     </div>

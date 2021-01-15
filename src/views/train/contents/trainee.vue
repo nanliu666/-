@@ -11,12 +11,7 @@
       >
       </el-input>
 
-      <el-popover
-        v-model="filterFormVisible"
-        placement="bottom"
-        width="780"
-        transition="false"
-      >
+      <el-popover v-model="filterFormVisible" placement="bottom" width="780" transition="false">
         <el-form
           :inline="true"
           :model="filterForm"
@@ -35,101 +30,42 @@
           </el-form-item>
 
           <el-form-item label="在线学习进度（必修）">
-            <el-select
-              v-model="filterForm.onlineProgress"
-              clearable
-              placeholder="请选择"
-            >
-              <el-option
-                label="已完成"
-                :value="1"
-              ></el-option>
-              <el-option
-                label="未完成"
-                :value="2"
-              ></el-option>
+            <el-select v-model="filterForm.onlineProgress" clearable placeholder="请选择">
+              <el-option label="已完成" :value="1"></el-option>
+              <el-option label="未完成" :value="2"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="考试情况">
-            <el-select
-              v-model="filterForm.examStatus"
-              clearable
-              placeholder="请选择"
-            >
-              <el-option
-                label="已通过"
-                :value="1"
-              ></el-option>
-              <el-option
-                label="未通过"
-                :value="2"
-              ></el-option>
-              <el-option
-                label="未开始"
-                :value="3"
-              ></el-option>
+            <el-select v-model="filterForm.examStatus" clearable placeholder="请选择">
+              <el-option label="已通过" :value="1"></el-option>
+              <el-option label="未通过" :value="2"></el-option>
+              <el-option label="未开始" :value="3"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="评估情况">
-            <el-select
-              v-model="filterForm.evaluate"
-              clearable
-              placeholder="请选择"
-            >
-              <el-option
-                label="已评估"
-                :value="1"
-              ></el-option>
-              <el-option
-                label="未评估"
-                :value="2"
-              ></el-option>
-              <el-option
-                label="未开始"
-                :value="3"
-              ></el-option>
+            <el-select v-model="filterForm.evaluate" clearable placeholder="请选择">
+              <el-option label="已评估" :value="1"></el-option>
+              <el-option label="未评估" :value="2"></el-option>
+              <el-option label="未开始" :value="3"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="证书状态">
-            <el-select
-              v-model="filterForm.certificate"
-              clearable
-              placeholder="请选择"
-            >
-              <el-option
-                label="已获得"
-                :value="1"
-              ></el-option>
-              <el-option
-                label="未获得"
-                :value="2"
-              ></el-option>
-              <el-option
-                label="未开始"
-                :value="3"
-              ></el-option>
+            <el-select v-model="filterForm.certificate" clearable placeholder="请选择">
+              <el-option label="已获得" :value="1"></el-option>
+              <el-option label="未获得" :value="2"></el-option>
+              <el-option label="未开始" :value="3"></el-option>
             </el-select>
           </el-form-item>
           <div style="text-align: right; margin-right: 75px;">
-            <el-button
-              type="primary"
-              size="medium"
-              @click.native="getList"
-            >
+            <el-button type="primary" size="medium" @click.native="getList">
               搜索
             </el-button>
-            <el-button
-              size="medium"
-              @click="resetForm"
-            >
+            <el-button size="medium" @click="resetForm">
               重置
             </el-button>
           </div>
         </el-form>
-        <el-button
-          slot="reference"
-          size="medium"
-        >
+        <el-button slot="reference" size="medium">
           筛选
         </el-button>
       </el-popover>
@@ -141,32 +77,11 @@
         style="width: 100%"
         height="527"
       >
-        <el-table-column
-          type="selection"
-          width="55"
-          align="center"
-        >
+        <el-table-column type="selection" width="55" align="center"> </el-table-column>
+        <el-table-column fixed prop="stuName" label="姓名" width="76" align="center">
         </el-table-column>
-        <el-table-column
-          fixed
-          prop="stuName"
-          label="姓名"
-          width="76"
-          align="center"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="phone"
-          label="手机号"
-          align="center"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="deptName"
-          label="所属部门"
-          align="center"
-        >
-        </el-table-column>
+        <el-table-column prop="phone" label="手机号" align="center"> </el-table-column>
+        <el-table-column prop="deptName" label="所属部门" align="center"> </el-table-column>
         <el-table-column
           prop="onlineProgress"
           label="在线学习进度（必修）"
@@ -174,30 +89,15 @@
           align="center"
         >
           <template slot-scope="scope">
-            <el-progress
-              :percentage="scope.row.onlineProgress"
-              :stroke-width="4"
-            ></el-progress>
+            <el-progress :percentage="scope.row.onlineProgress" :stroke-width="4"></el-progress>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="electiveProgress"
-          label="选修学习进度"
-          width="200"
-          align="center"
-        >
+        <el-table-column prop="electiveProgress" label="选修学习进度" width="200" align="center">
           <template slot-scope="scope">
-            <el-progress
-              :percentage="scope.row.electiveProgress"
-              :stroke-width="4"
-            ></el-progress>
+            <el-progress :percentage="scope.row.electiveProgress" :stroke-width="4"></el-progress>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="examStatus"
-          label="考试情况"
-          align="center"
-        >
+        <el-table-column prop="examStatus" label="考试情况" align="center">
           <template slot-scope="scope">
             {{
               scope.row.examStatus === 1
@@ -208,11 +108,7 @@
             }}
           </template>
         </el-table-column>
-        <el-table-column
-          prop="evaluate"
-          label="评估情况"
-          align="center"
-        >
+        <el-table-column prop="evaluate" label="评估情况" align="center">
           <template slot-scope="scope">
             {{
               scope.row.evaluate === 1 ? '已评估' : scope.row.evaluate === 2 ? '未评估' : '未开始'

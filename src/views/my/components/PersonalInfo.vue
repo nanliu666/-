@@ -5,51 +5,29 @@
         <i class="wire"></i>
         <span>基本信息</span>
       </div>
-      <div
-        class="topImg"
-        @click="dialogVisible = true"
-      >
+      <div class="topImg" @click="dialogVisible = true">
         <img
           v-if="(imgdata[imgdata.length - 1] && imgdata[imgdata.length - 1].fileUrl) !== ''"
           class="img_in"
           :src="imgdata[imgdata.length - 1].fileUrl"
         />
-        <div
-          v-else
-          class="img_in"
-        ></div>
+        <div v-else class="img_in"></div>
         <span>修改</span>
       </div>
     </div>
     <!-- {{ (imgdata[0] && imgdata[imgdata.length - 1].fileUrl) !== '' }} -->
 
-    <common-form
-      ref="form"
-      :model="form"
-      :columns="columns"
-    >
-    </common-form>
+    <common-form ref="form" :model="form" :columns="columns"> </common-form>
     <div class="page-bottom">
-      <el-button
-        type="primary"
-        size="medium"
-        @click="setInfo"
-      >
+      <el-button type="primary" size="medium" @click="setInfo">
         保存
       </el-button>
-      <el-button
-        size="medium"
-        @click="goBack"
-      >
+      <el-button size="medium" @click="goBack">
         取消
       </el-button>
     </div>
 
-    <el-dialog
-      title="上传头像"
-      :visible.sync="dialogVisible"
-      width="400px"
-    >
+    <el-dialog title="上传头像" :visible.sync="dialogVisible" width="400px">
       <div class="dialog_box">
         <div class="uploading_box">
           <div class="box_img">
@@ -59,21 +37,14 @@
               :src="imgdata[imgdata.length - 1].fileUrl"
               alt=""
             />
-            <div
-              v-else
-              class="imgupload"
-            ></div>
+            <div v-else class="imgupload"></div>
             <div class="btn">
               <common-upload
                 v-model="imgdata"
                 :before-upload="beforeAvatarUpload"
                 :multiple="false"
               >
-                <el-button
-                  type="primary"
-                  plain
-                  size="medium"
-                >
+                <el-button type="primary" plain size="medium">
                   <span
                     v-if="
                       (imgdata[imgdata.length - 1] && imgdata[imgdata.length - 1].fileUrl) !== ''
@@ -91,10 +62,7 @@
               :src="imgdata[imgdata.length - 1].fileUrl"
               alt=""
             />
-            <div
-              v-else
-              class="imgpreview"
-            ></div>
+            <div v-else class="imgpreview"></div>
             <div>头像预览</div>
           </div>
         </div>
@@ -102,19 +70,9 @@
           支持上传png、jpg、jpeg格式文件，单个文件＜2MB；推荐上传图片尺寸比例为1：1
         </div>
       </div>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button
-          type="primary"
-          size="medium"
-          @click="dialogVisible = false"
-        >完成</el-button>
-        <el-button
-          size="medium"
-          @click="dialogVisible = false"
-        >取消</el-button>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" size="medium" @click="dialogVisible = false">完成</el-button>
+        <el-button size="medium" @click="dialogVisible = false">取消</el-button>
       </span>
     </el-dialog>
   </div>

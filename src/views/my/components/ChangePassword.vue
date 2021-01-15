@@ -1,26 +1,14 @@
 <template>
   <div class="changePassword">
-    <common-form
-      ref="form"
-      :model="form"
-      :columns="columns"
-    >
-    </common-form>
+    <common-form ref="form" :model="form" :columns="columns"> </common-form>
     <div class="text">
       (密码包含字母、符号或数字中至少两项且长度6～12字符的密码)
     </div>
     <div class="page-bottom">
-      <el-button
-        :type="setBtnPrimary"
-        size="medium"
-        @click="setPassword"
-      >
+      <el-button :type="setBtnPrimary" size="medium" @click="setPassword">
         保存
       </el-button>
-      <el-button
-        size="medium"
-        @click="goBack"
-      >
+      <el-button size="medium" @click="goBack">
         取消
       </el-button>
     </div>

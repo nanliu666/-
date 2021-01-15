@@ -349,12 +349,13 @@ export default {
   activated() {
     this.initData()
     //阻止F5刷新
-    this.stopF5Refresh()
+    // this.stopF5Refresh()
   },
   beforeRouteLeave(from, to, next) {
     if (this.isLeave || this.isSuccess) {
       this.clearIntervalAll()
       this.resetF5Refresh()
+      this.isSuccess = false
       next(true)
     } else {
       this.$message.error('禁止使用浏览器原生返回')

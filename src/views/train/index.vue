@@ -84,15 +84,8 @@
       </div>
     </div>
     <div class="bottom-container">
-      <ul
-        v-if="data.length"
-        class="train-list"
-      >
-        <li
-          v-for="item in data"
-          :key="item.id"
-          class="train-item"
-        >
+      <ul v-if="data.length" class="train-list">
+        <li v-for="item in data" :key="item.id" class="train-item">
           <div class="top-wrap">
             <div class="title">
               <div class="name">
@@ -136,28 +129,19 @@
               </div>
             </div>
             <div class="desc-list">
-              <div
-                class="desc-item"
-                style="margin-top: 16px;"
-              >
+              <div class="desc-item" style="margin-top: 16px;">
                 培训地点：
                 <span class="text">{{ item.address }}</span>
               </div>
             </div>
           </div>
-          <div
-            v-if="item.status === 0"
-            class="done-tips"
-          >
+          <div v-if="item.status === 0" class="done-tips">
             <img src="./done.png" />
           </div>
         </li>
       </ul>
 
-      <div
-        v-else
-        class="no-data"
-      >
+      <div v-else class="no-data">
         <i class="el-icon-search"> </i>
         <div class="text">
           无数据

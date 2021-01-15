@@ -1,38 +1,24 @@
 <template>
   <div class="exam">
     <ul class="course-list">
-      <li
-        v-for="(course, idx) in list"
-        :key="idx"
-        class="course-item"
-      >
+      <li v-for="(course, idx) in list" :key="idx" class="course-item">
         <div class="note">
           考试目录
         </div>
         <ul class="exam-list">
-          <li
-            v-for="exam in course"
-            :key="exam.examId"
-            class="exam-item"
-          >
+          <li v-for="exam in course" :key="exam.examId" class="exam-item">
             <div class="content">
               <div class="exam-detail">
                 <div class="name">
                   {{ exam.localName }}
                 </div>
-                <div class="time">
-                  提交时间：{{ exam.examBeginTime }}—{{ exam.examEndTime }}
-                </div>
+                <div class="time">提交时间：{{ exam.examBeginTime }}—{{ exam.examEndTime }}</div>
               </div>
               <div class="exam-result">
                 当前得分：
                 <span class="text">{{ exam.score }}</span>
               </div>
-              <el-button
-                size="medium"
-                type="primary"
-                class="button"
-              >
+              <el-button size="medium" type="primary" class="button">
                 前往作答
               </el-button>
               <el-link
@@ -43,41 +29,23 @@
                 详情
               </el-link>
             </div>
-            <div
-              v-show="!!exam.isFold"
-              class="detail-content"
-            >
+            <div v-show="!!exam.isFold" class="detail-content">
               <div class="intro-list">
-                <div
-                  class="intro-item"
-                  style="margin-right: 4px;"
-                >
+                <div class="intro-item" style="margin-right: 4px;">
                   题目数量：
-                  <span
-                    class="text"
-                    style="width: 100px;"
-                  >共{{ exam.totalNum }}道题</span>
+                  <span class="text" style="width: 100px;">共{{ exam.totalNum }}道题</span>
                 </div>
                 <div class="intro-item">
                   剩余有效答题次数：
-                  <span
-                    class="text"
-                    style="width: 64px;"
-                  >{{ exam.surplusParticipatNumber }}</span>
+                  <span class="text" style="width: 64px;">{{ exam.surplusParticipatNumber }}</span>
                 </div>
                 <div class="intro-item">
                   试卷总分：
-                  <span
-                    class="text"
-                    style="width: 32px;"
-                  >{{ exam.totalScore }}</span>
+                  <span class="text" style="width: 32px;">{{ exam.totalScore }}</span>
                 </div>
                 <div class="intro-item">
                   评分规则：
-                  <span
-                    class="text"
-                    style="width: 240px; white-space: pre-wrap;"
-                  >{{
+                  <span class="text" style="width: 240px; white-space: pre-wrap;">{{
                     exam.scoreRule
                   }}</span>
                 </div>
@@ -95,35 +63,14 @@
                 :header-cell-style="headerCellStyle"
                 :fit="false"
               >
-                <el-table-column
-                  prop="participatNumber"
-                  label="次数"
-                  width="280"
-                >
+                <el-table-column prop="participatNumber" label="次数" width="280">
                 </el-table-column>
-                <el-table-column
-                  prop="examBeginTime"
-                  label="提交时间"
-                  width="357"
-                >
+                <el-table-column prop="examBeginTime" label="提交时间" width="357">
                 </el-table-column>
-                <el-table-column
-                  prop="score"
-                  label="得分"
-                  width="314"
-                >
-                </el-table-column>
-                <el-table-column
-                  prop="id"
-                  label="操作"
-                  width="104"
-                >
+                <el-table-column prop="score" label="得分" width="314"> </el-table-column>
+                <el-table-column prop="id" label="操作" width="104">
                   <template slot-scope="scope">
-                    <el-button
-                      size="mini"
-                      type="text"
-                      @click="toTestPaper(scope.row.id)"
-                    >
+                    <el-button size="mini" type="text" @click="toTestPaper(scope.row.id)">
                       查看答卷
                     </el-button>
                   </template>

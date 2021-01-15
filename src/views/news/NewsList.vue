@@ -11,20 +11,10 @@
         </el-input>
       </div>
       <div class="btnBar">
-        <el-button
-          class="btn"
-          :class="{ pitch: pitch === 0 }"
-          type="text"
-          @click="showpitch(0)"
-        >
+        <el-button class="btn" :class="{ pitch: pitch === 0 }" type="text" @click="showpitch(0)">
           最新新闻
         </el-button>
-        <el-button
-          class="btn"
-          :class="{ pitch: pitch === 1 }"
-          type="text"
-          @click="showpitch(1)"
-        >
+        <el-button class="btn" :class="{ pitch: pitch === 1 }" type="text" @click="showpitch(1)">
           热门新闻
         </el-button>
       </div>
@@ -37,10 +27,7 @@
       @click="tonewsDetails(item, index)"
     >
       <div class="list_box_l">
-        <img
-          :src="item.picUrl"
-          alt=""
-        />
+        <img :src="item.picUrl" alt="" />
       </div>
       <div class="list_box_r">
         <div class="list_box_r_title">
@@ -60,10 +47,7 @@
             <span class="info_val">{{ item.hits }}</span>
           </div>
         </div>
-        <div
-          v-show="item.isTop && pitch == 0"
-          class="showTop"
-        >
+        <div v-show="item.isTop && pitch == 0" class="showTop">
           置顶
         </div>
       </div>
