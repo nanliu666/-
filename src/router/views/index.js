@@ -33,7 +33,8 @@ export default [
             name: 'Home',
             component: () => import(/* webpackChunkName: "page" */ '@/views/Home.vue'),
             meta: {
-              title: '首页'
+              title: '首页',
+              fullscreen: true
             }
           }
         ]
@@ -239,6 +240,11 @@ export default [
               title: '课程页面首页'
             },
             component: () => import(/* webpackChunkName: "page"*/ '@/views/train')
+          },
+          {
+            path: 'detail',
+            name: 'trainDetail',
+            component: () => import('@/views/train/detail')
           }
         ]
       },

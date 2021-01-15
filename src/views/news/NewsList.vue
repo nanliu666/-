@@ -5,26 +5,16 @@
         <el-input
           v-model="searchInput"
           class="searchInput"
-          placeholder="培训名称/讲师"
+          placeholder="请输入标题关键字搜索"
           suffix-icon="el-icon-search"
         >
         </el-input>
       </div>
       <div class="btnBar">
-        <el-button
-          class="btn"
-          :class="{ pitch: pitch === 0 }"
-          type="text"
-          @click="showpitch(0)"
-        >
+        <el-button class="btn" :class="{ pitch: pitch === 0 }" type="text" @click="showpitch(0)">
           最新新闻
         </el-button>
-        <el-button
-          class="btn"
-          :class="{ pitch: pitch === 1 }"
-          type="text"
-          @click="showpitch(1)"
-        >
+        <el-button class="btn" :class="{ pitch: pitch === 1 }" type="text" @click="showpitch(1)">
           热门新闻
         </el-button>
       </div>
@@ -37,10 +27,7 @@
       @click="tonewsDetails(item, index)"
     >
       <div class="list_box_l">
-        <img
-          :src="item.picUrl"
-          alt=""
-        />
+        <img :src="item.picUrl" alt="" />
       </div>
       <div class="list_box_r">
         <div class="list_box_r_title">
@@ -60,10 +47,7 @@
             <span class="info_val">{{ item.hits }}</span>
           </div>
         </div>
-        <div
-          v-show="item.isTop"
-          class="showTop"
-        >
+        <div v-show="item.isTop && pitch == 0" class="showTop">
           置顶
         </div>
       </div>
@@ -128,7 +112,8 @@ export default {
           id: row.id,
           hits: row.hits,
           index,
-          total: this.total
+          total: this.total,
+          isHot: this.pitch
         }
       })
     },
@@ -139,10 +124,12 @@ export default {
     handleSizeChange(val) {
       // console.log(`每页 ${val} 条`)
       this.page.pageSize = val
+      this.isnewsList()
     },
     handleCurrentChange(val) {
       // console.log(`当前页: ${val}`)
       this.page.pageNo = val
+      this.isnewsList()
     }
   }
 }

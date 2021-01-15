@@ -3,38 +3,56 @@
     <div class="search">
       <div class="search_btn">
         <span
-          :class="{ pitch: pitch === 0 }"
-          @click="showBtn(0)"
+          :class="{ pitch: pitch == 'CurrencyExam' }"
+          style="cursor:pointer;"
+          @click="showBtn('CurrencyExam')"
         >通用考试</span>
         <span
-          :class="{ pitch: pitch === 1 }"
-          @click="showBtn(1)"
+          :class="{ pitch: pitch == 'CourseExam' }"
+          style="cursor:pointer;"
+          @click="showBtn('CourseExam')"
         >课程考试</span>
         <span
-          :class="{ pitch: pitch === 2 }"
-          @click="showBtn(2)"
+          :class="{ pitch: pitch == 'TrainExam' }"
+          style="cursor:pointer;"
+          @click="showBtn('TrainExam')"
         >培训班考试</span>
       </div>
       <div class="search_bar">
         <el-input
+          v-show="pitch == 'CurrencyExam'"
           v-model="searchInput"
           class="searchInput"
-          placeholder="查找我的通过考试"
+          placeholder="查找我的通用考试"
           suffix-icon="el-icon-search"
         >
         </el-input>
 
-        <el-button
-          v-show="searchInput"
-          type="primary"
-          size="medium"
+        <el-input
+          v-show="pitch == 'CourseExam'"
+          v-model="searchInput"
+          class="searchInput"
+          placeholder="查找我的课程考试"
+          suffix-icon="el-icon-search"
         >
+        </el-input>
+
+        <el-input
+          v-show="pitch == 'TrainExam'"
+          v-model="searchInput"
+          class="searchInput"
+          placeholder="查找我的培训班考试"
+          suffix-icon="el-icon-search"
+        >
+        </el-input>
+
+        <el-button v-show="searchInput" type="primary" size="medium" @click="searchInput = ''">
           重置
         </el-button>
       </div>
     </div>
 
-    <div class="courselist">
+    <div v-show="tableData.length" class="courselist">
       <common-table
         ref="table"
         :columns="columnsVisible | columnsFilter"
@@ -45,63 +63,80 @@
         @current-page-change="handleCurrentPageChange"
         @page-size-change="handlePageSizeChange"
       >
-        <!-- 状态 -->
-        <!-- （2：已通过；3：未通过；4：未考试；5：缺考） -->
-        <template
-          slot="examStatus"
-          slot-scope="{ row }"
-        >
-          <span v-if="row.electiveType === 2">已通过</span>
-          <span v-if="row.electiveType === 3">未通过</span>
-          <span v-if="row.electiveType === 4">未考试</span>
-          <span v-if="row.electiveType === 5">缺考</span>
+        <!-- 考试次数 -->
+        <template slot="joinNumValue" slot-scope="{ row }">
+          <span> {{ row.examTimes }}/{{ row.joinNumValue }} </span>
         </template>
 
-        <!-- 是否及格 -->
-        <template
-          slot="examPass"
-          slot-scope="{ row }"
-        >
-          <span v-if="row.examPass === 0">不及格</span>
-          <span v-if="row.examPass === 1">及格</span>
+        <!-- 是否通过: 0-否 1-是 -->
+        <template slot="isPass" slot-scope="{ row }">
+          <span v-if="row.isPass == 0">不通过</span>
+          <span v-if="row.isPass == 1"> 通过</span>
         </template>
 
-        <template #handler>
-          <el-button type="text">
+        <!--答卷状态: 1-已发布 2-考试中 3-已提交 4-阅卷中 5-已阅卷 6-缺考 -->
+        <template slot="status" slot-scope="{ row }">
+          <span v-if="row.status == 1">已发布</span>
+          <span v-if="row.status == 2">考试中</span>
+          <span v-if="row.status == 3">已提交</span>
+          <span v-if="row.status == 4">阅卷中</span>
+          <span v-if="row.status == 5">已阅卷</span>
+          <span v-if="row.status == 6">缺考</span>
+        </template>
+
+        <template slot="handler" slot-scope="scope">
+          <el-button
+            v-if="scope.row.status == 6 && scope.row.status == 4"
+            type="text"
+            @click="toAnswer(scope.row.id)"
+          >
+            查看答卷
+          </el-button>
+          <el-button v-else type="text" disabled @click="toAnswer(scope.row.id)">
             查看答卷
           </el-button>
         </template>
       </common-table>
     </div>
+
+    <!-- 无数据 -->
+    <div v-show="!tableData.length" class="content">
+      <div class="content_box">
+        <img src="@/assets/images/my_noData.png" alt="" />
+        <div class="text">
+          还没有参加的考试
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import { examList } from '@/api/my'
 // 表格属性
 const TABLE_COLUMNS = [
   {
     label: '考试名称',
-    prop: 'stuName',
-    minWidth: 180
+    prop: 'examName'
   },
   {
     label: '考试次数',
-    prop: 'phone',
-    minWidth: 150
+    prop: 'joinNumValue',
+    slot: true
   },
   {
     label: '成绩',
-    prop: 'deptName',
-    minWidth: 180
+    prop: 'score'
   },
   {
     label: '是否通过',
-    prop: 'examStatus',
+    prop: 'isPass',
     slot: true
   },
   {
     label: '状态',
-    prop: 'examTime'
+    prop: 'status',
+    slot: true
   }
 ]
 const TABLE_CONFIG = {
@@ -124,10 +159,10 @@ export default {
   data() {
     return {
       searchInput: '',
-      pitch: 0,
+      pitch: 'CurrencyExam',
       page: {
-        currentPage: 1,
-        size: 10,
+        pageNo: 1,
+        pageSize: 10,
         total: 0
       },
 
@@ -136,55 +171,26 @@ export default {
       // query: {},
       tableColumns: TABLE_COLUMNS,
       tableConfig: TABLE_CONFIG,
-      tableData: [
-        {
-          isRecommend: 1,
-          passCondition: 'c',
-          catalogId: 4,
-          teacherId: 4,
-          isTop: 1,
-          createId: 4,
-          name: 'dd',
-          electiveType: 2,
-          id: 4,
-          type: 2,
-          createName: '小红'
-        },
-        {
-          isRecommend: 1,
-          passCondition: 'c',
-          catalogId: 4,
-          teacherId: 4,
-          isTop: 1,
-          createId: 4,
-          name: 'dd',
-          electiveType: 2,
-          id: 4,
-          type: 2,
-          createName: '小红'
-        },
-        {
-          isRecommend: 1,
-          passCondition: 'c',
-          catalogId: 4,
-          teacherId: 4,
-          isTop: 1,
-          createId: 4,
-          name: 'dd',
-          electiveType: 2,
-          id: 4,
-          type: 2,
-          createName: '小红'
-        }
-      ],
+      tableData: [],
       tablePageConfig: TABLE_PAGE_CONFIG
     }
   },
-  created() {},
+  watch: {
+    searchInput: function() {
+      this.getInfo()
+    }
+  },
+  created() {
+    this.getInfo()
+  },
   activated() {
     this.getInfo()
   },
   methods: {
+    // 去答案
+    toAnswer(id) {
+      window.console.log(id)
+    },
     // 查询培训考试结果列表
     isExamResult() {},
 
@@ -193,22 +199,30 @@ export default {
 
     //  处理页码改变
     handleCurrentPageChange(param) {
-      this.page.currentPage = param
+      this.page.pageNo = param
       this.isExamResult()
     },
     handlePageSizeChange(param) {
-      this.page.size = param
+      this.page.pageSize = param
       this.isExamResult()
     },
 
     // 拿数据
-    // getInfo(courseName) {
-    //   // currentPage	当前页	body	true
-    //   // size	页面显示数量	body	true
-    // },
+    async getInfo() {
+      // currentPage	当前页	body	true
+      // size	页面显示数量	body	true
+      let params = {
+        type: this.pitch, //考试类型 CurrencyExam-通用考试 CourseExam-课程考试 TrainExam-培训班考试
+        name: this.searchInput
+      }
+      let res = await examList({ ...params, ...this.page })
+      this.tableData = res.data
+      this.page.total = res.totalNum
+    },
 
     showBtn(i) {
       this.pitch = i
+      this.getInfo()
     }
   }
 }
@@ -216,7 +230,7 @@ export default {
 
 <style lang="scss" scoped>
 .cultivate {
-  margin-bottom: -100%;
+  // margin-bottom: -100%;
   .search {
     margin-top: 20px;
     padding: 24px 24px 0;
@@ -253,6 +267,32 @@ export default {
     width: 1200px;
     padding: 24px;
     background-color: #fff;
+  }
+  .content {
+    background: #ffffff;
+    box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
+    border-radius: 4px;
+    width: 1200px;
+    height: 627px;
+    display: flex;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .content_box {
+      width: 338px;
+      height: 290px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+      .text {
+        text-align: center;
+        margin-top: 16px;
+        font-size: 14px;
+        color: rgba(0, 11, 21, 0.65);
+        letter-spacing: 0;
+      }
+    }
   }
 }
 </style>

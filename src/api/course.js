@@ -90,3 +90,7 @@ export const updateLearnRecord = (params) =>
  * @param {Object} params
  */
 export const addViewLog = (params) => post('/manage/v1/study/plan/course/addLog', params)
+/**
+ * 热门课程
+ */
+export const queryCourseList = (params) => get('/manage/v1/web/index/queryCourseList', params)

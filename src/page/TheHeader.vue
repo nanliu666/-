@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <div :class="['header', { isFullscreenHead: isFullscreen }]">
     <div class="header-inner">
       <div class="logo">
         <img src="../assets/images/logo.png" />
@@ -25,10 +25,7 @@
                 class="top-bar__img "
                 :src="userInfo.avatar_url"
               />
-              <i
-                v-else
-                class="iconimage_icon_headportrait iconfont "
-              />
+              <i v-else class="iconimage_icon_headportrait iconfont " />
             </span>
             <el-dropdown-menu slot="dropdown">
               <!-- <el-dropdown-item>
@@ -36,6 +33,21 @@
               个人中心
             </div>
           </el-dropdown-item> -->
+              <el-dropdown-item @click.native="toMy('/my/info')">
+                个人信息
+              </el-dropdown-item>
+              <el-dropdown-item @click.native="toMy('/my/info', 1)">
+                修改密码
+              </el-dropdown-item>
+              <el-dropdown-item @click.native="toMy('/my/record')">
+                我的档案
+              </el-dropdown-item>
+              <el-dropdown-item>
+                审批中心
+              </el-dropdown-item>
+              <el-dropdown-item>
+                后台管理
+              </el-dropdown-item>
               <el-dropdown-item @click.native="logout">
                 退出登录
               </el-dropdown-item>
@@ -56,9 +68,7 @@ const menu = [
   { label: '知识库', path: '/knowledge' },
   { label: '考试', path: '/exam' },
   { label: '新闻', path: '/news' },
-  { label: '培训', path: '/train' },
-  { label: '个人中心', path: '/my/info' },
-  { label: '我的档案', path: '/my/record' }
+  { label: '培训', path: '/train' }
 ]
 import Notification from './Notification'
 import { mapGetters } from 'vuex'
@@ -74,6 +84,9 @@ export default {
     }
   },
   computed: {
+    isFullscreen() {
+      return this.$route.meta.fullscreen
+    },
     ...mapGetters(['userId', 'userInfo'])
   },
   beforeMount() {
@@ -81,6 +94,15 @@ export default {
     this.activePath = this.$route.path.match(/^\/\w*/g)[0]
   },
   methods: {
+    // 个人中心跳转
+    toMy(data, i) {
+      this.$router.push({
+        path: data,
+        query: {
+          pitch: i
+        }
+      })
+    },
     handleMenuClick(item) {
       if (this.$route.path === item.path) {
         return
@@ -174,5 +196,9 @@ export default {
       }
     }
   }
+}
+.isFullscreenHead {
+  background: none;
+  box-shadow: none;
 }
 </style>

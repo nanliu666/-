@@ -1,4 +1,4 @@
-import request from '@/util/axios'
+import request, { get } from '@/util/axios'
 import website from '@/config/website'
 
 export const loginByUsername = (tenantId, username, password, type, key, code, account) =>
@@ -126,3 +126,7 @@ export const userRegister = (params) => {
     }
   })
 }
+/**
+ * 我们的任务
+ * */
+export const queryMyMission = (params) => get('/manage/v1/web/index/queryMyMission', params)

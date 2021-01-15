@@ -7,7 +7,7 @@
           <router-view :key="$route.fullPath" />
         </keep-alive>
       </div>
-      <the-footer />
+      <the-footer v-if="!isFullscreen" />
     </div>
   </div>
 </template>
@@ -33,7 +33,7 @@ export default {
 .el-layout {
   background-color: $mainBackGray;
   // 父元素
-  display: flex;
+  // display: flex;
   justify-content: space-between;
   flex-direction: column;
   height: 100vh;

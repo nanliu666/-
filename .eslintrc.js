@@ -13,11 +13,23 @@ module.exports = {
     'no-prototype-builtins': 'off',
     semi: [2, 'never'],
     quotes: ['error', 'single'],
+    'vue/singleline-html-element-content-newline': 'off',
+    'vue/multiline-html-element-content-newline': 'off',
+    'vue/max-attributes-per-line': [
+      'error',
+      {
+        singleline: 20,
+        multiline: {
+          max: 20,
+          allowFirstLine: true
+        }
+      }
+    ],
     'vue/html-self-closing': 'off',
     'max-len': [
-      1,
+      0,
       {
-        code: 120
+        code: 920
       }
     ]
   },

@@ -1,15 +1,8 @@
 <template>
-  <el-card
-    shadow="never"
-    style="border: 0"
-  >
+  <el-card shadow="never" style="border: 0">
     <div class="empty-class">
-      <el-image
-        class="empty-image"
-        :src="emptyOption.src"
-        fit="fill"
-      />
-      <div v-text="emptyOption.text" />
+      <el-image class="empty-image" :src="src" fit="fill" />
+      <div v-text="text" />
     </div>
   </el-card>
 </template>
@@ -19,20 +12,17 @@ import nodata from '@/assets/images/nodata.png'
 export default {
   name: 'CommonEmpty',
   props: {
-    emptyOption: {
-      type: Object,
-      default: function() {
-        return {
-          visibile: true,
-          src: nodata,
-          text: '暂无数据~'
-        }
-      }
-    }
-  },
-  data() {
-    return {
-      emptyHeight: ''
+    src: {
+      type: String,
+      default: nodata
+    },
+    text: {
+      type: String,
+      default: '暂无数据~'
+    },
+    visibile: {
+      type: Boolean,
+      default: true
     }
   }
 }
