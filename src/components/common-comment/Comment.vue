@@ -1,14 +1,9 @@
 <template>
   <div class="comment-styles">
-    <div class="comment-top">
+    <div v-if="isEditable" class="comment-top">
       <div class="top-title">
-        <div class="title">
-          给该{{ name }}打分：
-        </div>
-        <el-rate
-          v-model="scopeParams.scope"
-          allow-half
-        ></el-rate>
+        <div class="title">给该{{ name }}打分：</div>
+        <el-rate v-model="scopeParams.scope" allow-half></el-rate>
       </div>
       <el-input
         v-model="scopeParams.remark"
@@ -31,33 +26,21 @@
         发布
       </el-button>
     </div>
-    <div
-      v-if="!_.isEmpty(commentList)"
-      class="comment-bottom"
-    >
+    <div v-else class="disabled-text">
+      <el-alert :title="disableText" type="warning" show-icon />
+    </div>
+    <div v-if="!_.isEmpty(commentList)" class="comment-bottom">
       <ul class="comment-ul">
-        <li
-          v-for="(item, index) in commentList"
-          :key="index"
-          class="comment-li"
-        >
+        <li v-for="(item, index) in commentList" :key="index" class="comment-li">
           <div class="li-top">
-            <el-avatar
-              size="small"
-              :src="item.avatarUrl || circleUrl"
-            ></el-avatar>
+            <el-avatar size="small" :src="item.avatarUrl || circleUrl"></el-avatar>
             <span class="title-name">{{ item.userName }}</span>
           </div>
           <div style="padding-left:36px">
             <div class="li-middle">
               {{ item.createTime }}
             </div>
-            <el-rate
-              v-if="item.scope"
-              v-model="item.scope"
-              disabled
-              allow-half
-            ></el-rate>
+            <el-rate v-model="item.scope" disabled allow-half></el-rate>
             <div class="li-bottom">
               {{ item.remark }}
             </div>
@@ -93,6 +76,14 @@ export default {
     name: {
       type: String,
       default: '课程'
+    },
+    isEditable: {
+      type: Boolean,
+      default: true
+    },
+    disableText: {
+      type: String,
+      default: '您还未学习本课程，暂不能对课程评价，先去学习再来评价哦~'
     }
   },
   data() {
@@ -100,10 +91,7 @@ export default {
       circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
       hasPublish: true,
       totalNum: 100,
-      scopeParams: {
-        scope: 0,
-        remark: ''
-      },
+      scopeParams: {},
       listParams: {
         pageNo: 1,
         pageSize: 10
@@ -116,6 +104,7 @@ export default {
       handler(val) {
         if (val > 0) {
           this.hasPublish = false
+          val = Number(val)
         }
       },
       deep: true
@@ -135,6 +124,10 @@ export default {
     },
     loadList() {
       this.load(this.listParams).then(({ data, totalNum }) => {
+        // 转成数字类型
+        _.each(data, (item) => {
+          item.scope = Number(item.scope)
+        })
         this.commentList = data
         this.totalNum = totalNum
       })
@@ -172,6 +165,10 @@ export default {
       margin-top: 16px;
       float: right;
     }
+  }
+  .disabled-text {
+    padding: 24px;
+    background-color: #f2f2f2;
   }
   .comment-bottom {
     .comment-ul {
