@@ -2,13 +2,8 @@
   <div class="comment-styles">
     <div class="comment-top">
       <div class="top-title">
-        <div class="title">
-          给该{{ name }}打分：
-        </div>
-        <el-rate
-          v-model="scopeParams.scope"
-          allow-half
-        ></el-rate>
+        <div class="title">给该{{ name }}打分：</div>
+        <el-rate v-model="scopeParams.scope" allow-half></el-rate>
       </div>
       <el-input
         v-model="scopeParams.remark"
@@ -31,33 +26,18 @@
         发布
       </el-button>
     </div>
-    <div
-      v-if="!_.isEmpty(commentList)"
-      class="comment-bottom"
-    >
+    <div v-if="!_.isEmpty(commentList)" class="comment-bottom">
       <ul class="comment-ul">
-        <li
-          v-for="(item, index) in commentList"
-          :key="index"
-          class="comment-li"
-        >
+        <li v-for="(item, index) in commentList" :key="index" class="comment-li">
           <div class="li-top">
-            <el-avatar
-              size="small"
-              :src="item.avatarUrl || circleUrl"
-            ></el-avatar>
+            <el-avatar size="small" :src="item.avatarUrl || circleUrl"></el-avatar>
             <span class="title-name">{{ item.userName }}</span>
           </div>
           <div style="padding-left:36px">
             <div class="li-middle">
               {{ item.createTime }}
             </div>
-            <el-rate
-              v-if="item.scope"
-              v-model="item.scope"
-              disabled
-              allow-half
-            ></el-rate>
+            <el-rate v-if="item.scope" v-model="item.scope" disabled allow-half></el-rate>
             <div class="li-bottom">
               {{ item.remark }}
             </div>
@@ -116,6 +96,7 @@ export default {
       handler(val) {
         if (val > 0) {
           this.hasPublish = false
+          val = Number(val)
         }
       },
       deep: true
