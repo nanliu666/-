@@ -202,6 +202,7 @@ export default {
           display: flex;
           align-items: center;
           justify-content: center;
+          cursor: pointer;
           .play-icon {
             width: 0;
             height: 0;
