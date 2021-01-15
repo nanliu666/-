@@ -2,60 +2,52 @@
   <div class="course">
     <div class="search">
       <div class="search_btn">
-        <span
-          :class="{ pitch: pitch === 0 }"
-          @click="showBtn(0)"
-        >线上课程</span>
-        <span
-          :class="{ pitch: pitch === 1 }"
-          @click="showBtn(1)"
-        >直播课程</span>
+        <span :class="{ pitch: pitch === 1 }" style="cursor:pointer;" @click="showBtn(1)">线上课程</span>
+        <span :class="{ pitch: pitch === 3 }" style="cursor:pointer;" @click="showBtn(3)">直播课程</span>
       </div>
       <div class="search_bar">
         <el-input
+          v-show="pitch === 1"
           v-model="searchInput"
           class="searchInput"
-          placeholder="信息技术"
+          placeholder="查找我的线上课程"
+          suffix-icon="el-icon-search"
+        >
+        </el-input>
+        <el-input
+          v-show="pitch === 3"
+          v-model="searchInput"
+          class="searchInput"
+          placeholder="查找我的直播课程"
           suffix-icon="el-icon-search"
         >
         </el-input>
 
-        <el-button
-          v-show="searchInput"
-          type="primary"
-          size="medium"
-        >
+        <el-button v-show="searchInput" type="primary" size="medium" @click="searchInput = ''">
           重置
         </el-button>
       </div>
     </div>
 
-    <div class="courselist">
+    <div v-show="formData.length" class="courselist">
       <div
-        v-for="(item, index) in 5"
+        v-for="(item, index) in formData"
         :key="index"
         class="course_item"
+        @click="toDetail(item)"
       >
-        <img
-          src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1608289740056&di=00f8f4b767c42fa1c8548b4e6731e4e8&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201901%2F23%2F20190123150727_byuwj.jpg"
-          alt=""
-        />
+        <img :src="item.url" />
         <div class="text">
           <div class="text_title">
-            信息安全在岗考试必要性在企业发展中的重要性
+            {{ item.name }}
           </div>
-          <el-progress
-            :percentage="50"
-            :show-text="false"
-          ></el-progress>
-          <div class="text_in">
-            已学习10/20课时
-          </div>
+          <el-progress :percentage="item.progressData" :show-text="false"></el-progress>
+          <div class="text_in">已学习{{ item.userPeriod || 0 }}/{{ item.period }}课时</div>
         </div>
       </div>
     </div>
 
-    <div class="page">
+    <div v-show="formData.length" class="page">
       <el-pagination
         :page-sizes="[10, 20, 30, 50, 100]"
         layout="total, sizes, prev, pager, next, jumper"
@@ -66,15 +58,27 @@
       >
       </el-pagination>
     </div>
+
+    <!-- 无数据 -->
+    <div v-show="!formData.length" class="content">
+      <div class="content_box">
+        <img src="@/assets/images/my_noData.png" alt="" />
+        <div class="text">
+          还没有加入的课程
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import { courseList } from '@/api/my'
 export default {
   name: 'Course',
   data() {
     return {
-      pitch: 0,
+      formData: [],
+      pitch: 1,
       searchInput: '',
       total: 100,
       page: {
@@ -83,17 +87,45 @@ export default {
       }
     }
   },
+  watch: {
+    searchInput: function() {
+      this.getInfo()
+    }
+  },
+  activated() {
+    this.getInfo()
+  },
+  created() {
+    this.getInfo()
+  },
   methods: {
+    toDetail(item) {
+      this.$router.push({ path: '/course/detail', query: { id: item.id } })
+    },
     showBtn(i) {
       this.pitch = i
+      this.getInfo()
     },
     handleSizeChange(val) {
-      // console.log(`每页 ${val} 条`)
       this.page.pageSize = val
+      this.getInfo()
     },
     handleCurrentChange(val) {
-      // console.log(`当前页: ${val}`)
       this.page.pageNo = val
+      this.getInfo()
+    },
+    async getInfo() {
+      let params = {
+        name: this.searchInput,
+        type: this.pitch //课程类型(1：在线 ；2：面授；3：直播)
+      }
+      let res = await courseList({ ...params, ...this.page })
+      this.formData = res.data
+      // progressData
+      this.formData.map((item) => {
+        item.progressData = (item.userPeriod / item.period) * 100
+      })
+      this.total = res.totalNum
     }
   }
 }
@@ -101,8 +133,7 @@ export default {
 
 <style lang="scss" scoped>
 .course {
-  margin-bottom: -100%;
-
+  // margin-bottom: -100%;
   .search {
     margin-top: 20px;
     padding: 0 24px;
@@ -146,6 +177,7 @@ export default {
       overflow: hidden;
       margin-top: 20px;
       margin-right: 20px;
+      cursor: pointer;
       &:nth-child(4n) {
         margin-right: 0;
       }
@@ -176,6 +208,33 @@ export default {
       position: absolute;
       top: 24px;
       right: 24px;
+    }
+  }
+  .content {
+    background: #ffffff;
+    box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
+    border-radius: 4px;
+    margin-top: 20px;
+    width: 1200px;
+    height: 627px;
+    display: flex;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .content_box {
+      width: 338px;
+      height: 290px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+      .text {
+        text-align: center;
+        margin-top: 16px;
+        font-size: 14px;
+        color: rgba(0, 11, 21, 0.65);
+        letter-spacing: 0;
+      }
     }
   }
 }

@@ -14,28 +14,18 @@
     <div class="content">
       <div class="btnBar">
         <div>
-          <el-button
-            size="small"
-            @click="tonewsList"
-          >
+          <el-button size="small" @click="tonewsList">
             &nbsp; <i class="icon-fanhui fanhuiicon"></i> &nbsp; 返回上一级
           </el-button>
         </div>
         <div class="btnBar_to">
           <div>
-            <el-button
-              size="small"
-              icon="el-icon-arrow-left"
-              @click="cutInfo(0)"
-            >
+            <el-button size="small" icon="el-icon-arrow-left" @click="cutInfo(0)">
               &nbsp;上一页
             </el-button>
           </div>
           <div>
-            <el-button
-              size="small"
-              @click="cutInfo(1)"
-            >
+            <el-button size="small" @click="cutInfo(1)">
               下一页&nbsp;<i class="el-icon-arrow-right el-icon--right"></i>
             </el-button>
           </div>
@@ -61,10 +51,7 @@
       </div>
 
       <div class="download">
-        <div
-          v-for="(item, index) in data.attachment"
-          :key="index"
-        >
+        <div v-for="(item, index) in data.attachment" :key="index">
           <el-button
             type="text"
             icon="el-icon-paperclip"
@@ -74,19 +61,12 @@
             附件下载
           </el-button>
           <span>{{ item.localName }}</span>
-          <a
-            ref="file"
-            href="#"
-            :download="item.url"
-          ></a>
+          <a ref="file" href="#" :download="item.url"></a>
         </div>
       </div>
 
       <div class="content_info">
-        <div
-          class="info"
-          v-html="data.content"
-        ></div>
+        <div class="info" v-html="data.content"></div>
       </div>
     </div>
   </div>
@@ -98,7 +78,10 @@ export default {
   name: 'NewsDetails',
   data() {
     return {
-      data: {},
+      data: {
+        hits: '',
+        topTime: ''
+      },
       id: '',
       disabledBottom: false
     }
@@ -107,8 +90,11 @@ export default {
   watch: {},
 
   created() {
-    this.getInfo()
+    // this.getInfo()
     // console.log(Date.parse(new Date()).toString());
+  },
+  activated() {
+    this.getInfo()
   },
   methods: {
     cutInfo(type) {
@@ -126,7 +112,7 @@ export default {
       if (!data) {
         params = {
           id: this.$route.query.id,
-          hits: this.$route.query.hits
+          hits: this.data.hits || this.$route.query.hits
         }
       } else {
         params = {
@@ -134,9 +120,13 @@ export default {
         }
       }
 
+      params.isHot = this.$route.query.isHot
+      params.topTime = this.data.topTime
+      // console.log(params)
       let res = await newsInfo(params)
       if (JSON.stringify(res) != '{}') {
         this.data = res
+        this.data.content = _.unescape(this.data.content)
       } else {
         let info = data.type ? '下一页' : '上一页'
         this.$message.error(info + '没有内容了哦!')

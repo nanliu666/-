@@ -2,11 +2,7 @@
   <div class="login">
     <div class="login_container">
       <div class="layout_left">
-        <img
-          class="hellWelcom"
-          src="../../assets/images/HelloWelcome.svg"
-          alt=""
-        />
+        <img class="hellWelcom" src="../../assets/images/HelloWelcome.svg" alt="" />
         <span>欢迎登录ePRO Learning易宝人才培育系统软件</span>
       </div>
       <div class="layout_right">
@@ -54,34 +50,20 @@
               </el-col>
               <el-col :span="8">
                 <div class="login-code">
-                  <img
-                    :src="loginForm.image"
-                    class="login-code-img"
-                    @click="refreshCode"
-                  />
+                  <img :src="loginForm.image" class="login-code-img" @click="refreshCode" />
                 </div>
               </el-col>
             </el-row>
           </el-form-item>
 
-          <el-button
-            class="loginBtn"
-            type="primary"
-            @click="handleLogin()"
-          >
+          <el-button class="loginBtn" type="primary" @click="handleLogin()">
             登录
           </el-button>
           <div class="layout_opations">
-            <router-link
-              to="/register"
-              tag="span"
-            >
+            <router-link to="/register" tag="span">
               立即注册
             </router-link>
-            <router-link
-              to="/forgetPassword"
-              tag="span"
-            >
+            <router-link to="/forgetPassword" tag="span">
               忘记密码?
             </router-link>
           </div>
@@ -124,7 +106,7 @@ export default {
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 1, message: '密码长度最少为6位', trigger: 'blur' }
+          { min: 6, max: 12, message: '密码长度需要满足6～12字符', trigger: 'blur' }
         ],
         code: [{ required: true, message: '请输入验证码', trigger: 'blur' }]
       }

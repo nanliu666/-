@@ -1,42 +1,25 @@
 <template>
   <!-- 注册页面 -->
   <el-card class="register">
-    <div
-      v-if="!succeed"
-      class="layout_container"
-    >
+    <div v-if="!succeed" class="layout_container">
       <div class="layout_label">
         注册
       </div>
-      <common-form
-        ref="form"
-        :model="form"
-        :columns="columns"
-      >
+      <common-form ref="form" :model="form" :columns="columns">
         <template slot="captchaCode">
           <el-input
             v-model="form.captchaCode"
             class="captchaCode"
             placeholder="请输入验证码"
-          ></el-input><el-button
-            class="captchaCodeBtn"
-            @click="getCapthaCode"
-          >
+          ></el-input><el-button class="captchaCodeBtn" @click="getCapthaCode">
             获取验证码
           </el-button>
         </template>
         <template slot="opations">
-          <el-button
-            type="primary"
-            class="submit"
-            @click="submit"
-          >
+          <el-button type="primary" class="submit" @click="submit">
             立即注册
           </el-button>
-          <router-link
-            class="returnLogin"
-            to="/login"
-          >
+          <router-link class="returnLogin" to="/login">
             <el-button type="text">
               返回登录
             </el-button>
@@ -44,27 +27,15 @@
         </template>
       </common-form>
     </div>
-    <div
-      v-else
-      class="success-page"
-    >
-      <svg
-        class="icon success-icon"
-        aria-hidden="true"
-      >
+    <div v-else class="success-page">
+      <svg class="icon success-icon" aria-hidden="true">
         <use xlink:href="#iconimage_icon_Correctprompt"></use>
       </svg>
       <div class="text">
         注册成功
       </div>
-      <div class="tips">
-        {{ timeoutCount }}秒后自动返回
-      </div>
-      <el-button
-        type="primary"
-        size="medium"
-        @click="goToLogin"
-      >
+      <div class="tips">{{ timeoutCount }}秒后自动返回</div>
+      <el-button type="primary" size="medium" @click="goToLogin">
         返回
       </el-button>
     </div>
@@ -151,7 +122,7 @@ export default {
           rules: [
             { min: 6, max: 12, message: '密码长度需要满足6～12字符' },
             {
-              pattern: /^(?=.*[a-zA-Z0-9].*)(?=.*[a-zA-Z\\W].*)(?=.*[0-9\\W].*).{6,12}$/,
+              pattern: /(?!^\d+$)(?!^[A-Za-z]+$)(?!^[^A-Za-z0-9]+$)(?!^.*[\u4E00-\u9FA5].*$)^\S{6,16}$/,
               message: '密码需要包含字母、符号或数字中至少两项'
             },
             { validator: validatePass }
@@ -164,12 +135,12 @@ export default {
           itemType: 'passInput',
           label: '重复密码',
           span: 24,
-          desc: '密码包含字母、符号或数字中至少两项且长度5～12字符的密码',
+          desc: '密码包含字母、符号或数字中至少两项且长度6～12字符的密码',
           rules: [
             { validator: validatePass2 },
             { min: 6, max: 12, message: '密码长度需要满足6～12字符' },
             {
-              pattern: /^(?=.*[a-zA-Z0-9].*)(?=.*[a-zA-Z\\W].*)(?=.*[0-9\\W].*).{6,12}$/,
+              pattern: /(?!^\d+$)(?!^[A-Za-z]+$)(?!^[^A-Za-z0-9]+$)(?!^.*[\u4E00-\u9FA5].*$)^\S{6,16}$/,
               message: '密码需要包含字母、符号或数字中至少两项'
             }
           ],

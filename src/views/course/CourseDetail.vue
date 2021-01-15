@@ -4,10 +4,7 @@
     <div class="course-detail--card course-detail__info">
       <div class="course-detail__info__img">
         <el-image :src="courseData.url">
-          <div
-            slot="error"
-            class="image-slot"
-          >
+          <div slot="error" class="image-slot">
             <i class="el-icon-picture-outline"></i>
           </div>
         </el-image>
@@ -22,7 +19,7 @@
               讲师：
             </span>
             <span class="course-detail__info__value">
-              {{ courseData.tearchName }}
+              {{ courseData.teacherName }}
             </span>
           </div>
           <span class="course-detail__info__column">
@@ -42,7 +39,7 @@
             {{ COURSE_TYPE_MAP[courseData.type] || '' }}
           </span>
         </div>
-        <div class="course-detail__info__column">
+        <div v-if="courseData.peirod" class="course-detail__info__column">
           <span class="course-detail__info__label">
             学时：
           </span>
@@ -50,30 +47,17 @@
             {{ courseData.peirod }}
           </span>
         </div>
-        <el-button
-          type="primary"
-          size="medium"
-          @click="jumpToLearn(id, null)"
-        >
+        <el-button type="primary" size="medium" @click="jumpToLearn(id, null)">
           立即学习
         </el-button>
       </div>
     </div>
     <div class="course-detail--card course-detail__detail">
       <el-tabs v-model="activeName">
-        <el-tab-pane
-          label="课程信息"
-          name="first"
-        >
-          <div
-            v-show="courseData.introduction"
-            v-html="_.unescape(courseData.introduction)"
-          />
+        <el-tab-pane label="课程信息" name="first">
+          <div v-show="courseData.introduction" v-html="_.unescape(courseData.introduction)" />
         </el-tab-pane>
-        <el-tab-pane
-          label="课程目录"
-          name="second"
-        >
+        <el-tab-pane label="课程目录" name="second">
           <ul class="course-detail__chapters">
             <li
               v-for="(chapter, index) in chapters"
@@ -103,15 +87,8 @@
             </li>
           </ul>
         </el-tab-pane>
-        <el-tab-pane
-          label="课程评价"
-          name="third"
-        >
-          <Comment
-            :load="loadCommentList"
-            :submit="submitComment"
-            name="课程"
-          />
+        <el-tab-pane label="课程评价" name="third">
+          <Comment :load="loadCommentList" :submit="submitComment" name="课程" />
         </el-tab-pane>
       </el-tabs>
     </div>

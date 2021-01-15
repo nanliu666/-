@@ -1,21 +1,14 @@
 <template>
   <div class="course-learn">
     <div class="course-learn__header">
-      <i
-        class="iconimage_icon_leftarrow iconfont"
-        @click="goBack()"
-      ></i>
+      <i class="iconimage_icon_leftarrow iconfont" @click="goBack()"></i>
       <span class="course-learn__header__title">
         {{ course.name }}
       </span>
     </div>
     <div class="course-learn__main">
       <div :class="['left-bar', { hidden: leftHidden }]">
-        <el-menu
-          :default-active="activeIndex"
-          mode="horizontal"
-          @select="handleMenuChange"
-        >
+        <el-menu :default-active="activeIndex" mode="horizontal" @select="handleMenuChange">
           <el-menu-item index="1">
             目录
           </el-menu-item>
@@ -24,10 +17,7 @@
           </el-menu-item>
         </el-menu>
         <div class="left-bar__main">
-          <div
-            v-show="activeIndex === '1'"
-            class="chapters"
-          >
+          <div v-show="activeIndex === '1'" class="chapters">
             <ul>
               <li
                 v-for="(chapter, index) in chapters"
@@ -54,19 +44,13 @@
                     :width="14"
                     :stroke-width="2"
                   ></el-progress>
-                  <i
-                    v-else
-                    class="iconimage_icon_time1 iconfont"
-                  ></i>
+                  <i v-else class="iconimage_icon_time1 iconfont"></i>
                   <span class="chapters__status">{{ getChapterStatus(chapter) }}</span>
                 </div>
               </li>
             </ul>
           </div>
-          <div
-            v-show="activeIndex === '2'"
-            class="left-bar__notes"
-          >
+          <div v-show="activeIndex === '2'" class="left-bar__notes">
             <el-input
               v-model="note"
               type="textarea"
@@ -76,26 +60,14 @@
               resize="none"
               :rows="5"
             ></el-input>
-            <el-button
-              v-loading="submitting"
-              type="primary"
-              size="medium"
-              @click="submitNote"
-            >
+            <el-button v-loading="submitting" type="primary" size="medium" @click="submitNote">
               保存
             </el-button>
             <ul class="notes-list">
-              <li
-                v-for="item in notes"
-                :key="item.noteId"
-                class="note"
-              >
+              <li v-for="item in notes" :key="item.noteId" class="note">
                 <div class="note__top">
                   <span class="note__user">
-                    <el-avatar
-                      :size="24"
-                      :src="userInfo.avatar_url || circleUrl"
-                    ></el-avatar>
+                    <el-avatar :size="24" :src="userInfo.avatar_url || circleUrl"></el-avatar>
                     <span class="note__username">{{ userInfo.user_name }}</span>
                   </span>
                   <span class="note__time">{{ item.createTime }}</span>
@@ -114,18 +86,9 @@
         :class="['main-content', { fullwidth: leftHidden }]"
         :style="`${currentChapter.type == '5' ? 'overflow:hidden;' : ''}`"
       >
-        <div
-          class="collapse-btn"
-          @click="collapseLeft()"
-        >
-          <i
-            v-if="!leftHidden"
-            class="iconimage_icon_Doubleleftarrow iconfont"
-          ></i>
-          <i
-            v-else
-            class="iconimage_icon_Doublerightarrow iconfont"
-          ></i>
+        <div class="collapse-btn" @click="collapseLeft()">
+          <i v-if="!leftHidden" class="iconimage_icon_Doubleleftarrow iconfont"></i>
+          <i v-else class="iconimage_icon_Doublerightarrow iconfont"></i>
         </div>
         <!-- 文章类型 -->
         <div
@@ -134,10 +97,7 @@
           v-html="_.unescape(currentChapter.content)"
         ></div>
         <!-- 课件 -->
-        <div
-          v-if="currentChapter.type == '2'"
-          class="content--iframe"
-        >
+        <div v-if="currentChapter.type == '2'" class="content--iframe">
           <iframe
             :src="getContentUrl(currentChapter)"
             width="100%"
@@ -146,10 +106,7 @@
           ></iframe>
         </div>
         <!--资料-->
-        <div
-          v-if="currentChapter.type == '3'"
-          class="content--download"
-        >
+        <div v-if="currentChapter.type == '3'" class="content--download">
           <div class="img-wr">
             <img :src="getFileImageUrl(currentChapter.content)" />
           </div>
@@ -157,26 +114,14 @@
             <div class="file-name">
               {{ currentChapter.localName }}
             </div>
-            <a
-              target="_blank"
-              :href="currentChapter.content"
-            >
-              <el-button
-                type="primary"
-                size="medium"
-              >立即下载</el-button>
+            <a target="_blank" :href="currentChapter.content">
+              <el-button type="primary" size="medium">立即下载</el-button>
             </a>
           </div>
         </div>
         <!--考试-->
-        <div
-          v-if="currentChapter.type == '4'"
-          class="content--test"
-        >
-          <el-button
-            type="primary"
-            size="medium"
-          >
+        <div v-if="currentChapter.type == '4'" class="content--test">
+          <el-button type="primary" size="medium">
             前往考试
           </el-button>
         </div>
@@ -248,7 +193,7 @@ export default {
       } else {
         oldVal.progress = 1
       }
-      // this.submitLearnRecords()
+      this.submitLearnRecords()
     }
   },
   activated() {
@@ -258,7 +203,7 @@ export default {
     this.loadNoteList()
     this.setTimer()
   },
-  unactivated() {
+  deactivated() {
     clearInterval(this.timer)
   },
   methods: {

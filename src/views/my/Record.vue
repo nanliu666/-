@@ -3,67 +3,42 @@
     <div class="userInfo">
       <div class="userInfo_in">
         <div class="userInfo_in_img">
-          <img
-            src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1608289740056&di=00f8f4b767c42fa1c8548b4e6731e4e8&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201901%2F23%2F20190123150727_byuwj.jpg"
-            alt=""
-          />
+          <img v-if="infoData.avatarUrl" class="img" :src="infoData.avatarUrl" />
+          <div v-else class="img"></div>
         </div>
         <div class="userInfo_in_r">
           <div class="userInfo_name">
-            Serati Ma <span>（GZ00253）</span>
+            {{ infoData.name }} <span>（{{ infoData.workNo }}）</span>
           </div>
           <div class="userInfo_text">
-            <div>
+            <div v-if="infoData.orgName">
               <span class="text_title">部门：</span>
-              <span> 设计小组 </span>
+              <span> {{ infoData.orgName }} </span>
             </div>
-            <div>
+            <div v-if="infoData.position">
               <span class="text_title">职位：</span>
-              <span> 产品经理 </span>
+              <span> {{ infoData.position }} </span>
             </div>
             <div>
               <span class="text_title">电话：</span>
-              <span> 17746614024 </span>
+              <span> {{ infoData.phonenum }} </span>
             </div>
           </div>
         </div>
       </div>
 
       <div class="userInfo_btn">
-        <el-button type="primary">
+        <el-button type="primary" @click="toPersonal">
           编辑信息
         </el-button>
       </div>
 
       <div class="userInfo_bar">
-        <span
-          :class="{ pitch: pitch === 0 }"
-          @click="showBtn(0)"
-        >课程</span>
-        <span
-          :class="{ pitch: pitch === 1 }"
-          @click="showBtn(1)"
-        >培训</span>
-        <span
-          :class="{ pitch: pitch === 2 }"
-          @click="showBtn(2)"
-        >考试</span>
-        <span
-          :class="{ pitch: pitch === 3 }"
-          @click="showBtn(3)"
-        >学分</span>
-        <span
-          :class="{ pitch: pitch === 4 }"
-          @click="showBtn(4)"
-        >证书</span>
-        <span
-          :class="{ pitch: pitch === 5 }"
-          @click="showBtn(5)"
-        >无数据</span>
-        <span
-          :class="{ pitch: pitch === 6 }"
-          @click="showBtn(6)"
-        >证书详情</span>
+        <span :class="{ pitch: pitch === 0 }" style="cursor:pointer;" @click="showBtn(0)">课程</span>
+        <span :class="{ pitch: pitch === 1 }" style="cursor:pointer;" @click="showBtn(1)">培训</span>
+        <span :class="{ pitch: pitch === 2 }" style="cursor:pointer;" @click="showBtn(2)">考试</span>
+        <span :class="{ pitch: pitch === 3 }" style="cursor:pointer;" @click="showBtn(3)">学分</span>
+        <span :class="{ pitch: pitch === 4 }" style="cursor:pointer;" @click="showBtn(4)">证书</span>
       </div>
     </div>
     <course v-show="pitch === 0"></course>
@@ -71,27 +46,11 @@
     <examination v-show="pitch === 2"></examination>
     <credit v-show="pitch === 3"></credit>
     <certificate v-show="pitch === 4"></certificate>
-    <div
-      v-show="pitch === 5"
-      class="content"
-    >
-      <div class="content_box">
-        <img
-          src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1608289740056&di=00f8f4b767c42fa1c8548b4e6731e4e8&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201901%2F23%2F20190123150727_byuwj.jpg"
-          alt=""
-        />
-        <div class="text">
-          还没有加入的课程
-        </div>
-      </div>
-    </div>
-
-    <certificate-detail v-show="pitch === 6">
-    </certificate-detail>
   </div>
 </template>
 
 <script>
+import { getuserInfo } from '@/api/my'
 export default {
   name: 'Record',
   components: {
@@ -99,18 +58,32 @@ export default {
     cultivate: () => import('./components/Cultivate'),
     examination: () => import('./components/Examination'),
     credit: () => import('./components/Credit'),
-    certificate: () => import('./components/Certificate'),
-    certificateDetail: () => import('./components/CertificateDetail')
+    certificate: () => import('./components/Certificate')
   },
   data() {
     return {
-      pitch: 0
+      pitch: 0,
+      infoData: {}
     }
   },
-
+  created() {
+    this.getInfo()
+  },
+  activated() {
+    this.getInfo()
+  },
   methods: {
+    // 去编辑
+    toPersonal() {
+      this.$router.push({
+        path: '/my/info'
+      })
+    },
     showBtn(i) {
       this.pitch = i
+    },
+    async getInfo() {
+      this.infoData = await getuserInfo()
     }
   }
 }
@@ -121,7 +94,8 @@ export default {
   .userInfo {
     width: 1200px;
     height: 184px;
-    background-color: #ecf6fe;
+    // background-color: #ecf6fe;
+    background-image: url(../../assets/images/my_record_bg.png);
     margin-top: 20px;
     padding: 24px;
     position: relative;
@@ -133,9 +107,10 @@ export default {
         border-radius: 50%;
         overflow: hidden;
         margin-right: 24px;
-        img {
+        .img {
           width: 100%;
           height: 100%;
+          background-color: #f2f2f2;
         }
       }
 
@@ -203,35 +178,6 @@ export default {
         font-weight: bold;
         color: #01aafc;
         border-bottom: 2px solid #01aafc;
-      }
-    }
-  }
-
-  .content {
-    background: #ffffff;
-    box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
-    border-radius: 4px;
-    margin-top: 20px;
-    width: 1200px;
-    height: 627px;
-    display: flex;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    .content_box {
-      width: 338px;
-      height: 290px;
-      background-color: #ff3;
-      img {
-        width: 100%;
-        height: 100%;
-      }
-      .text {
-        text-align: center;
-        margin-top: 16px;
-        font-size: 14px;
-        color: rgba(0, 11, 21, 0.65);
-        letter-spacing: 0;
       }
     }
   }

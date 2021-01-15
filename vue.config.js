@@ -128,6 +128,9 @@ module.exports = {
         // 殷云
         // target: 'http://192.168.40.110',
 
+        // 王佳
+        // target: 'http://192.168.40.111',
+
         // saber远程演示服务地址
         // target: 'https://saber.bladex.vip/',
         ws: true,

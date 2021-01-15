@@ -1,66 +1,33 @@
 <template>
   <!-- 忘记密码 -->
-  <div
-    id="forgetPassword"
-    class="forgetPassword"
-  >
-    <div
-      v-if="!successPageShow"
-      class="title"
-    >
+  <div id="forgetPassword" class="forgetPassword">
+    <div v-if="!successPageShow" class="title">
       找回密码
     </div>
     <div class="layout_container">
-      <div
-        v-if="!successPageShow"
-        class="layout_content"
-      >
-        <el-steps
-          :active="stepIndex"
-          finish-status="success"
-        >
+      <div v-if="!successPageShow" class="layout_content">
+        <el-steps :active="stepIndex" finish-status="success">
           <el-step title="确认账户"></el-step>
           <el-step title="安全验证"></el-step>
           <el-step title="重置密码"></el-step>
         </el-steps>
         <div class="layout_category">
-          <el-form
-            ref="form"
-            :rules="rules"
-            :model="formData"
-          >
-            <div
-              v-show="stepIndex == 0"
-              class="el-step-content"
-            >
+          <el-form ref="form" :rules="rules" :model="formData">
+            <div v-show="stepIndex == 0" class="el-step-content">
               <div class="email-label">
                 通过邮箱找回密码
               </div>
               <el-form-item prop="email">
-                <el-input
-                  v-model="formData.email"
-                  type="text"
-                  placeholder="请输入您绑定的邮箱"
-                />
+                <el-input v-model="formData.email" type="text" placeholder="请输入您绑定的邮箱" />
               </el-form-item>
             </div>
-            <div
-              v-show="stepIndex == 1"
-              class="el-step-content"
-            >
-              您正在对<el-button
-                type="text"
-                style="cursor:text;padding: 0;"
-              >
-                {{ formData.email }}
-              </el-button>进行找回密码操作,请先进行验证:
+            <div v-show="stepIndex == 1" class="el-step-content">
+              您正在对<el-button type="text" style="cursor:text;padding: 0;">
+                {{ formData.email }} </el-button>进行找回密码操作,请先进行验证:
               <div class="subtitle-wr">
                 <span class="subtitle">去邮箱查看,输入验证码</span>
                 <span class="countdown-wr">
-                  <span
-                    v-if="countdown > 0"
-                    class="countdown"
-                  >剩余{{ countdown }}秒</span>
+                  <span v-if="countdown > 0" class="countdown">剩余{{ countdown }}秒</span>
                   <el-button
                     v-else
                     type="text"
@@ -72,10 +39,7 @@
               </div>
 
               <el-form-item prop="verification">
-                <el-input
-                  v-model="formData.verification"
-                  placeholder="请输入验证码"
-                ></el-input>
+                <el-input v-model="formData.verification" placeholder="请输入验证码"></el-input>
               </el-form-item>
               <!-- <el-form-item prop="captchaCode">
                 <div style="display: flex">
@@ -96,62 +60,35 @@
                 </div>
               </el-form-item> -->
             </div>
-            <div
-              v-show="stepIndex == 2"
-              class="el-step-content"
-            >
+            <div v-show="stepIndex == 2" class="el-step-content">
               请输入重置的密码
               <el-form-item prop="restPassword">
-                <pass-input
-                  v-model="formData.restPassword"
-                  placeholder="请输入重置的密码"
-                >
+                <pass-input v-model="formData.restPassword" placeholder="请输入重置的密码">
                 </pass-input>
               </el-form-item>
               <span>密码包含字母、符号或数字中至少两项且长度6～12字符的密码</span>
               <el-form-item prop="againRestPassword">
-                <pass-input
-                  v-model="formData.againRestPassword"
-                  placeholder="请再次输入重置的密码"
-                >
+                <pass-input v-model="formData.againRestPassword" placeholder="请再次输入重置的密码">
                 </pass-input>
               </el-form-item>
             </div>
-            <el-button
-              class="nextStep"
-              type="primary"
-              size="medium"
-              @click="nextStep"
-            >
+            <el-button class="nextStep" type="primary" size="medium" @click="nextStep">
               下一步
             </el-button>
-            <router-link
-              to="/home"
-              class="rebackLogin"
-            >
+            <router-link to="/home" class="rebackLogin">
               返回登录
             </router-link>
           </el-form>
         </div>
       </div>
-      <div
-        v-else
-        class="successPage"
-      >
-        <svg
-          class="icon success-icon"
-          aria-hidden="true"
-        >
+      <div v-else class="successPage">
+        <svg class="icon success-icon" aria-hidden="true">
           <use xlink:href="#iconimage_icon_Correctprompt"></use>
         </svg>
         <p>设置成功</p>
         <p>新密码设置成功，请牢记您的密码</p>
         <p>{{ timeOutNum }}秒后自动返回</p>
-        <el-button
-          type="primary"
-          size="medium"
-          @click="returnLogin"
-        >
+        <el-button type="primary" size="medium" @click="returnLogin">
           返回
         </el-button>
       </div>
@@ -272,7 +209,7 @@ export default {
           restPassword: [
             { min: 6, max: 12, message: '密码长度需要满足6～12字符', required: true },
             {
-              pattern: /^(?=.*[a-zA-Z0-9].*)(?=.*[a-zA-Z\\W].*)(?=.*[0-9\\W].*).{6,12}$/,
+              pattern: /(?!^\d+$)(?!^[A-Za-z]+$)(?!^[^A-Za-z0-9]+$)(?!^.*[\u4E00-\u9FA5].*$)^\S{6,16}$/,
               message: '密码需要包含字母、符号或数字中至少两项'
             },
             { validator: this.validatePass }
