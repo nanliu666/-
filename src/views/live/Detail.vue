@@ -82,8 +82,13 @@
           <live-playback />
         </el-tab-pane>
         <el-tab-pane label="直播评论" name="5">
-          <live-comment />
-          <Comment :load="loadCommentList" :submit="submitComment" name="知识" />
+          <Comment
+            :load="loadCommentList"
+            :submit="submitComment"
+            name="直播"
+            :is-editable="false"
+            disable-text="您还未观看直播，暂不能对直播评价，先去观看再来评价哦~"
+          />
         </el-tab-pane>
       </el-tabs>
     </el-card>

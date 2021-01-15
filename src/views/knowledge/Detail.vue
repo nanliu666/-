@@ -86,6 +86,7 @@
           :load="loadCommentList"
           :submit="submitComment"
           name="知识"
+          disable-text="您还未学习知识，暂不能对知识评价，先去学习再来评价哦~"
         />
       </div>
     </el-card>
@@ -117,9 +118,7 @@ export default {
       previewSrcList: [],
       fileGroup: {},
       activeIndex: '1',
-      konwledgeDetail: {
-        resName: 'Java 函数式编程'
-      }
+      konwledgeDetail: {}
     }
   },
   computed: {
