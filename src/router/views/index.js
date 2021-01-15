@@ -130,6 +130,30 @@ export default [
         ]
       },
       {
+        path: '/live',
+        redirect: '/live/list',
+        component: EmptyLayout,
+        title: '直播',
+        children: [
+          {
+            name: 'LiveList',
+            path: 'list',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/live/List.vue'),
+            meta: {
+              title: '直播'
+            }
+          },
+          {
+            name: 'LiveDetail',
+            path: 'Detail',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/live/Detail.vue'),
+            meta: {
+              title: '直播详情'
+            }
+          }
+        ]
+      },
+      {
         path: '/learn',
         redirect: '/learn/list',
         component: EmptyLayout,

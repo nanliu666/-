@@ -57,6 +57,7 @@ const menu = [
   { label: '考试', path: '/exam' },
   { label: '新闻', path: '/news' },
   { label: '培训', path: '/train' },
+  { label: '直播', path: '/live' },
   { label: '个人中心', path: '/my/info' },
   { label: '我的档案', path: '/my/record' }
 ]

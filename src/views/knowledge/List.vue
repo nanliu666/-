@@ -133,7 +133,7 @@ export default {
       activeIndex: '1',
       columnsVisible: TABLE_COLUMNS,
       tableConfig: TABLE_CONFIG,
-      tableData: [{ resName: 'Java函数式编程', id: '1154' }],
+      tableData: [],
       tableLoading: false
     }
   },
@@ -166,9 +166,9 @@ export default {
       this.loadTableData()
     },
     // 切换nav
-    handleSelect(key) {
-      this.activeIndex = key
-      this.handleSearch({ sortChoice: Number(key) })
+    handleSelect(tab) {
+      this.activeIndex = tab.name
+      this.handleSearch({ sortChoice: Number(this.activeIndex) })
     },
     handleView(row) {
       this.$router.push({ name: 'KnowledgeDetail', query: { id: row.id } })
