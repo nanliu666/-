@@ -94,19 +94,19 @@
           label="直播详情"
           name="3"
         >
-          直播详情
+          <live-particulars />
         </el-tab-pane>
         <el-tab-pane
           label="直播回放"
           name="4"
         >
-          直播回放
+          <live-playback />
         </el-tab-pane>
         <el-tab-pane
           label="直播评论"
           name="5"
         >
-          直播评论
+          <live-comment />
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -115,18 +115,16 @@
 
 <script>
 import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
-import LiveInfo from './components/LiveInfo'
-import LiveStatistics from './components/LiveStatistics'
-
-import vueQr from 'vue-qr'
+// 导入components文件夹下所有的组件
+import { exportComponent } from '@/util/util'
+let componentList = exportComponent(require.context('./components', false, /\.vue$/))
+// 引入面包屑以及二维码生成
+const breadcrumb = { CommonBreadcrumb: CommonBreadcrumb }
+const vueQr = { vueQr: () => import('vue-qr') }
+_.assign(componentList, breadcrumb, vueQr)
 export default {
   name: 'LiveDetail',
-  components: {
-    CommonBreadcrumb,
-    LiveInfo,
-    LiveStatistics,
-    vueQr
-  },
+  components: componentList,
   data() {
     return {
       activeIndex: '1'
