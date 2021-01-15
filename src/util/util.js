@@ -1,19 +1,6 @@
 import { validatenull } from './validate'
 import moment from 'moment'
 /**
- * 导出相同文件夹下的所有的同一类型的文件
- * @param {*} modules - 经过require.context处理过的对象
- * 示例：require.context('./components', false, /\.vue$/)
- */
-export const exportComponent = (modules) => {
-  let componentList = {}
-  modules.keys().forEach((fileName) => {
-    let comp = modules(fileName)
-    _.assign(componentList, { [fileName.replace(/^\.\/(.*)\.\w+$/, '$1')]: comp.default })
-  })
-  return componentList
-}
-/**
  * 计算两个时间差经历的时间的文字描述
  * @param {*} timestamp - 毫秒
  */
