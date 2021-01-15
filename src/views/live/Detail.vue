@@ -267,6 +267,7 @@ export default {
   }
   .live__main {
     margin-top: 20px;
+    min-height: 55vh;
   }
 }
 </style>
