@@ -183,7 +183,7 @@ export default {
           getCode(params)
             .then(() => {
               this.$message.success(
-                `我们已向您的邮箱${this.form.userEmail}发送邮件，请接受邮件，查收验证码`
+                `我们已向您的邮箱${this.form.userEmail}发送邮件，请接收邮件，查收验证码`
               )
             })
             .catch(() => {
