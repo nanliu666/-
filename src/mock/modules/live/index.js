@@ -29,6 +29,7 @@ export default ({ mock }) => {
       liveRemark: '@cparagraph',
       qcodeImageUrl: '@url',
       watchLink: '@url',
+      'status|+1': ['live', 'init', 'end'], //Guest-嘉宾 Assistant-助教 Lecturer-主讲师
       viewersNumber: 1,
       loginInfo
     })

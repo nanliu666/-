@@ -16,9 +16,9 @@
               <span>{{ detailData.viewersNumber }}</span>
             </div>
             <div class="header__status">
-              直播中
+              {{ statusMap[detailData.status] }}
             </div>
-            <div class="header__play">
+            <div class="header__play" @click="play">
               <span class="play-icon" />
             </div>
           </div>
@@ -37,13 +37,18 @@
                   <span class="value">{{ detailData.lecturerName }}</span>
                 </div>
                 <div class="content">
-                  <span class="label">课程类型：</span>
-                  <span class="value">在线类型</span>
+                  <span class="label">直播时间：</span>
+                  <span class="value">{{ detailData.liveTime }}</span>
+                </div>
+                <div class="content">
+                  <span class="label">直播日期：</span>
+                  <span class="value">{{ detailData.liveDate }}</span>
                 </div>
               </div>
             </div>
-            <el-button type="primary" size="medium">
-              继续直播
+            <el-button v-if="detailData.status !== 'end'" type="primary" size="medium">
+              <span v-if="detailData.status === 'live'">继续直播</span>
+              <span v-if="detailData.status === 'init'">开始直播</span>
             </el-button>
           </div>
         </div>
@@ -99,8 +104,7 @@
 </template>
 
 <script>
-import { getEvaluateList, addCourseScope } from '@/api/knowledge'
-import { getLiveDetail } from '@/api/live'
+import { getLiveDetail, getCommentList, postComment } from '@/api/live'
 import Comment from '@/components/common-comment/Comment'
 import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
 import LiveInfo from './components/LiveInfo'
@@ -108,6 +112,11 @@ import LiveParticulars from './components/LiveParticulars'
 import LivePlayback from './components/LivePlayback'
 import LiveStatistics from './components/LiveStatistics'
 import vueQr from 'vue-qr'
+const STATUS_MAP = {
+  live: '直播中',
+  init: '初始化',
+  end: '结束'
+}
 export default {
   name: 'LiveDetail',
   components: {
@@ -121,9 +130,15 @@ export default {
   },
   data() {
     return {
+      statusMap: STATUS_MAP,
       copyeLink: '111',
       activeIndex: '1',
       detailData: {}
+    }
+  },
+  computed: {
+    id() {
+      return _.get(this.$route, 'query.id', null)
     }
   },
   mounted() {
@@ -133,6 +148,7 @@ export default {
     })
   },
   methods: {
+    play() {},
     onCopy() {
       this.$message.success('您已成功复制二维码链接')
     },
@@ -141,10 +157,10 @@ export default {
       this.activeIndex = tab.name
     },
     loadCommentList(params) {
-      return getEvaluateList({ ...params, knowledgeId: this.id })
+      return getCommentList({ ...params, livePlanId: this.id })
     },
     submitComment(params) {
-      return addCourseScope({ ...params, knowledgeId: this.id })
+      return postComment({ ...params, livePlanId: this.id })
     }
   }
 }
