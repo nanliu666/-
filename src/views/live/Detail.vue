@@ -48,14 +48,17 @@
           </div>
         </div>
         <div class="header__right">
-          <vue-qr
-            class="qrcode__img"
-            :text="detailData.watchLink"
-            :margin="0"
-            color-light="#fff"
-            :logo-corner-radius="11"
-            :size="200"
-          />
+          <div class="qrcode__img">
+            <vue-qr
+              v-if="detailData.watchLink"
+              class="img"
+              :text="detailData.watchLink"
+              :margin="0"
+              color-light="#fff"
+              :logo-corner-radius="11"
+              :size="200"
+            />
+          </div>
           <div class="qrcode__handler">
             <span>扫码观看</span>
             <span
@@ -256,6 +259,10 @@ export default {
       .qrcode__img {
         width: 130px;
         height: 130px;
+        .img {
+          width: 100%;
+          height: 100%;
+        }
       }
       .qrcode__handler {
         display: flex;
