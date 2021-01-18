@@ -80,7 +80,7 @@
         </div>
         <h3 class="LMTitle">
           <span class="span1">热门课程</span>
-          <router-link to="">
+          <router-link :to="'/course/list'">
             更多
           </router-link>
         </h3>
@@ -88,7 +88,7 @@
           <div class="LModule2">
             <template v-for="(item, i) in hotCourseData">
               <div v-if="i > 0" :key="item.courseId" class="homeCourse">
-                <router-link to="">
+                <router-link :to="'/course/detail?id=' + item.courseId">
                   <div class="homeCourseImg">
                     <img
                       :src="item.coverUrl ? item.coverUrl : '/img/autoL.png'"
@@ -117,7 +117,7 @@
                 </router-link>
               </div>
               <div v-if="i == 0" :key="item.courseId" class="recommendCourse">
-                <router-link to="">
+                <router-link :to="'/course/detail?id=' + item.courseId">
                   <img
                     :src="item.coverUrl ? item.coverUrl : '/img/autoB.png'"
                     width="590"
@@ -145,60 +145,7 @@
                   </div>
                 </router-link>
               </div>
-              <!-- <div class="homeCourse">
-                <router-link to="">
-                  <div class="homeCourseImg">
-                    <img src="../assets/images/photo1.png" width="285" height="168" alt="" />
-                  </div>
-                  <div class="homeCourseText">
-                    <span class="homeCourseTitle" to=""
-                      >信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性</span
-                    >
-                    <div class="grade">
-                      <el-rate
-                        v-model="value"
-                        disabled
-                        show-score
-                        text-color="#72787E"
-                        disabled-void-color="#ccc"
-                        score-template="{value}"
-                      >
-                      </el-rate>
-                    </div>
-                    <div class="livePerInfo">
-                      <span class="iconimage_icon_user iconfont userIcon"></span>
-                      <span>6人学习</span>
-                    </div>
-                  </div>
-                </router-link>
-              </div>
-              <div class="homeCourse">
-                <router-link to="">
-                  <div class="homeCourseImg">
-                    <img src="../assets/images/photo1.png" width="285" height="168" alt="" />
-                  </div>
-                  <div class="homeCourseText">
-                    <span class="homeCourseTitle" to=""
-                      >信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性</span
-                    >
-                    <div class="grade">
-                      <el-rate
-                        v-model="value"
-                        disabled
-                        show-score
-                        text-color="#72787E"
-                        disabled-void-color="#ccc"
-                        score-template="{value}"
-                      >
-                      </el-rate>
-                    </div>
-                    <div class="livePerInfo">
-                      <span class="iconimage_icon_user iconfont userIcon"></span>
-                      <span>6人学习</span>
-                    </div>
-                  </div>
-                </router-link>
-              </div>
+              <!-- 
               <div class="homeCourse">
                 <router-link to="">
                   <div class="homeCourseImg">
@@ -231,63 +178,45 @@
         </div>
         <h3 class="LMTitle">
           <span class="span1">培训中心</span>
-          <router-link to="">
+          <router-link to="/train/index">
             更多
           </router-link>
         </h3>
         <div class="LModule">
           <div class="LModule2">
-            <div v-for="item in trainListData" :key="item.id" class="homeTrain">
-              <router-link to="">
-                <h3 class="homeTrainTitle">
-                  {{ item.trainName }}
-                </h3>
-                <div class="homeTrainText">
-                  <div class="homeTrainTextItem">
-                    <span class="iconimage_icon_address iconfont traingIcon"></span>
-                    <span class="homeTrainTextItem2">{{ item.address }}</span>
-                  </div>
-                  <div class="homeTrainTextItem">
-                    <span class="iconimage_icon_time iconfont traingIcon"></span>
-                    <span class="homeTrainTextItem2">{{ item.startTime }}</span>
-                  </div>
-                  <div class="homeTrainTextItem">
-                    <img
-                      :src="item.avatarUrl ? item.avatarUrl : '/img/userIconBig.png'"
-                      width="24"
-                      height="24"
-                      alt=""
-                    />
-                    <span class="homeTrainTextItem2">{{ item.lecturerName }}</span>
-                    <span
-                      :class="[item.status ? trainStatus[item.status].class : '', homeTraining]"
-                    >{{ trainStatus[item.status].text }}</span>
-                  </div>
+            <div
+              v-for="item in trainListData"
+              :key="item.id"
+              class="homeTrain"
+              @click="toTrainDetaill(item)"
+            >
+              <h3 class="homeTrainTitle">
+                {{ item.trainName }}
+              </h3>
+              <div class="homeTrainText">
+                <div class="homeTrainTextItem">
+                  <span class="iconimage_icon_address iconfont traingIcon"></span>
+                  <span class="homeTrainTextItem2">{{ item.address }}</span>
                 </div>
-              </router-link>
-            </div>
-            <!-- <div class="homeTrain">
-              <router-link to="">
-                <h3 class="homeTrainTitle">
-                  职场礼仪职场礼仪职场礼仪职场礼仪职场礼仪职场礼仪
-                </h3>
-                <div class="homeTrainText">
-                  <div class="homeTrainTextItem">
-                    <span class="iconimage_icon_address iconfont traingIcon"></span>
-                    <span class="homeTrainTextItem2">环普产业园G1座</span>
-                  </div>
-                  <div class="homeTrainTextItem">
-                    <span class="iconimage_icon_time iconfont traingIcon"></span>
-                    <span class="homeTrainTextItem2">2020-09-12 14:30</span>
-                  </div>
-                  <div class="homeTrainTextItem">
-                    <img src="../assets/images/welcome.png" width="24" height="24" alt="" />
-                    <span class="homeTrainTextItem2">老周</span>
-                    <span class="homeTraining ing">进行中</span>
-                  </div>
+                <div class="homeTrainTextItem">
+                  <span class="iconimage_icon_time iconfont traingIcon"></span>
+                  <span class="homeTrainTextItem2">{{ item.startTime }}</span>
                 </div>
-              </router-link>
+                <div class="homeTrainTextItem">
+                  <img
+                    :src="item.avatarUrl ? item.avatarUrl : '/img/userIconBig.png'"
+                    width="24"
+                    height="24"
+                    alt=""
+                  />
+                  <span class="homeTrainTextItem2">{{ item.lecturerName }}</span>
+                  <span
+                    :class="[item.status ? trainStatus[item.status].class : '', homeTraining]"
+                  >{{ trainStatus[item.status].text }}</span>
+                </div>
+              </div>
             </div>
+            <!-- 
             <div class="homeTrain">
               <router-link to="">
                 <h3 class="homeTrainTitle">
@@ -314,14 +243,14 @@
         </div>
         <h3 class="LMTitle">
           <span class="span1">新闻中心</span>
-          <router-link to="">
+          <router-link to="/news/list">
             更多
           </router-link>
         </h3>
         <div class="LModule">
           <div class="LModule2">
             <div v-for="item in newsListData" :key="item.id" class="homeCourse">
-              <router-link to="">
+              <router-link :to="`/news/Details?id=${item.id}&hits=${item.hits}&isHot=1`">
                 <div class="homeCourseImg">
                   <img
                     :src="item.picUrl ? item.picUrl : '/img/autoL.png'"
@@ -339,22 +268,7 @@
                 </div>
               </router-link>
             </div>
-            <!-- <div class="homeCourse">
-              <router-link to="">
-                <div class="homeCourseImg">
-                  <img src="../assets/images/photo1.png" width="285" height="168" alt="" />
-                </div>
-                <div class="homeCourseText">
-                  <span class="homeCourseTitle"
-                    >信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性</span
-                  >
-                  <span class="homeCourseTime iconeyeopen-outlined iconfont">11</span>
-                  <div class="livePerInfo">
-                    <span>2020-10-30</span>
-                  </div>
-                </div>
-              </router-link>
-            </div>
+            <!-- 
             <div class="homeCourse">
               <router-link to="">
                 <div class="homeCourseImg">
@@ -443,6 +357,18 @@ export default {
     this.getNewsList()
   },
   methods: {
+    toTrainDetaill(item) {
+      const { id: trainId, trainName: title, trainWay, userType } = item
+      this.$router.push({
+        name: 'trainDetail',
+        params: {
+          title,
+          trainId,
+          trainWay,
+          userType
+        }
+      })
+    },
     async getHotCourse() {
       // 热门课程
       let res = await queryCourseList({ pageSize: 5, pageNo: 1 })
@@ -636,6 +562,7 @@ export default {
 }
 
 .homeTrain {
+  cursor: pointer;
   width: 285px;
   height: 172px;
   text-align: left;
