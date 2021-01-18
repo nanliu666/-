@@ -14,11 +14,17 @@ export default (enable) => {
    * mock是否开启模拟数据拦截
    */
   const options = { mock: false }
+  // 开启mock
+  const mackOptions = { mock: true }
   // 设置500毫秒的时延长
   Mock.setup({
     timeout: 500
   })
   modules.keys().forEach((key) => {
-    modules(key).default(options)
+    if (key === './live/index.js') {
+      modules(key).default(mackOptions)
+    } else {
+      modules(key).default(options)
+    }
   })
 }

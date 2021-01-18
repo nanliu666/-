@@ -6,18 +6,14 @@
       <div class="live__header">
         <div class="header__left">
           <div class="header__logo">
-            <el-image
-              class="logo__img"
-              src="https://scpic.chinaz.net/files/pic/pic9/202101/apic30172.jpg"
-              fit="cover"
-            >
+            <el-image class="logo__img" :src="detailData.coverImageUrl" fit="cover">
               <div slot="error" class="image__slot">
                 <i class="el-icon-picture-outline"></i>
               </div>
             </el-image>
             <div class="header__person">
               <i class="iconimage_icon_user iconfont" />
-              <span>321</span>
+              <span>{{ detailData.viewersNumber }}</span>
             </div>
             <div class="header__status">
               直播中
@@ -29,16 +25,16 @@
           <div class="header__content">
             <div>
               <div class="header__title">
-                JAVA函数编程
+                {{ detailData.channelName }}
               </div>
               <div>
                 <div class="content__classify content">
                   <span class="label">直播分类：</span>
-                  <span class="value">UCD中心</span>
+                  <span class="value">{{ detailData.categoryName }}</span>
                 </div>
                 <div class="content">
                   <span class="label">直播讲师：</span>
-                  <span class="value">李文、赵老师</span>
+                  <span class="value">{{ detailData.lecturerName }}</span>
                 </div>
                 <div class="content">
                   <span class="label">课程类型：</span>
@@ -54,7 +50,7 @@
         <div class="header__right">
           <vue-qr
             class="qrcode__img"
-            text="qrcode.url"
+            :text="detailData.watchLink"
             :margin="0"
             color-light="#fff"
             :logo-corner-radius="11"
@@ -62,7 +58,11 @@
           />
           <div class="qrcode__handler">
             <span>扫码观看</span>
-            <span v-clipboard:copy="copyeLink" v-clipboard:success="onCopy" class="qrcode__copy">复制链接</span>
+            <span
+              v-clipboard:copy="detailData.watchLink"
+              v-clipboard:success="onCopy"
+              class="qrcode__copy"
+            >复制链接</span>
           </div>
         </div>
       </div>
@@ -70,13 +70,13 @@
     <el-card class="live__main">
       <el-tabs v-model="activeIndex" @tab-click="handleSelect">
         <el-tab-pane label="直播信息" name="1">
-          <live-info />
+          <live-info :data="detailData" />
         </el-tab-pane>
         <el-tab-pane label="数据统计" name="2">
           <live-statistics />
         </el-tab-pane>
         <el-tab-pane label="直播详情" name="3">
-          <live-particulars />
+          <live-particulars :data="detailData" />
         </el-tab-pane>
         <el-tab-pane label="直播回放" name="4">
           <live-playback />
@@ -97,6 +97,7 @@
 
 <script>
 import { getEvaluateList, addCourseScope } from '@/api/knowledge'
+import { getLiveDetail } from '@/api/live'
 import Comment from '@/components/common-comment/Comment'
 import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
 import LiveInfo from './components/LiveInfo'
@@ -118,11 +119,15 @@ export default {
   data() {
     return {
       copyeLink: '111',
-      activeIndex: '1'
+      activeIndex: '1',
+      detailData: {}
     }
   },
   mounted() {
-    // this.$refs.breadcrumb.setBreadcrumbTitle('信息安全')
+    const params = { channelId: '1' }
+    getLiveDetail(params).then((res) => {
+      this.detailData = res
+    })
   },
   methods: {
     onCopy() {
