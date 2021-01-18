@@ -182,7 +182,22 @@ export default {
         pageSize: 10
       },
       data: [],
-      total: 0
+      total: 0,
+      cacheSatus: '',
+      cacheTrainWay: ''
+    }
+  },
+
+  watch: {
+    filterForm: {
+      handler(val) {
+        if (val.status != this.cacheSatus || val.trainWay != this.cacheTrainWay) {
+          this.filterList()
+          this.cacheTrainWay = val.trainWay
+          this.cacheSatus = val.status
+        }
+      },
+      deep: true
     }
   },
   activated() {
