@@ -5,18 +5,18 @@
         登录信息
       </div>
       <ul class="content__box">
-        <li v-for="item in teacherList" :key="item.id" class="box__li">
+        <li v-for="item in data.loginInfo" :key="item.id" class="box__li">
           <div class="content__title">
-            {{ item.name }}
+            {{ item.roleName === 'Lecturer' ? '主讲师' : item.userName }}
           </div>
           <ul class="content__list">
             <li class="content__li">
               <span class="label">频道号：</span>
-              <span class="value">{{ item.channel }}</span>
+              <span class="value">{{ data.channelId }}</span>
             </li>
             <li class="content__li">
               <span class="label">密码：</span>
-              <span class="value">{{ item.password }}</span>
+              <span class="value">{{ item.loginPassword }}</span>
             </li>
           </ul>
         </li>
@@ -73,6 +73,12 @@ const TABLE_CONFIG = {
 import { getKnowledgeList } from '@/api/knowledge'
 export default {
   name: 'LiveInfo',
+  props: {
+    data: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data() {
     return {
       tableLoading: false,
@@ -88,11 +94,6 @@ export default {
         knowledgeName: '',
         sortChoice: '' //排序选项 1：综合排序；2：最新上传；3：评分最高
       },
-      teacherList: [
-        { id: '1', name: '主讲师', channel: '124455', password: '552555' },
-        { id: '12', name: '主讲师1', channel: '124455', password: '552555' },
-        { id: '13', name: '主讲师2', channel: '124455', password: '552555' }
-      ],
       columnsVisible: TABLE_COLUMNS,
       tableConfig: TABLE_CONFIG,
       tableData: []

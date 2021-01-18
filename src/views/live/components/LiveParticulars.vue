@@ -6,21 +6,21 @@
       </div>
       <ul class="content__box">
         <span class="label">直播验证码：</span>
-        <span class="value">{{ particularInfo.channel }}</span>
+        <span v-if="data.qcodeImageUrl" class="value">{{ data.qcodeImageUrl }}</span>
       </ul>
     </div>
     <div class="info__login">
       <div class="common__title">
         直播介绍
       </div>
-      <div v-html="particularInfo.html"></div>
+      <div v-html="_.unescape(data.liveRemark)"></div>
     </div>
     <div>
       <div class="common__title">
         关联课程
       </div>
       <ul class="course__ul">
-        <li v-for="item in particularInfo.courseList" :key="item.id" class="course__li">
+        <li v-for="item in courseList" :key="item.id" class="course__li">
           <el-image class="logo__img" :src="item.logo" fit="cover">
             <div slot="error" class="image__slot">
               <i class="el-icon-picture-outline"></i>
@@ -46,59 +46,61 @@
 <script>
 export default {
   name: 'LiveParticulars',
+  props: {
+    data: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data() {
     return {
-      particularInfo: {
-        channel: 11111,
-        html: '介绍',
-        courseList: [
-          {
-            id: '21',
-            title: '课程标题课程标题',
-            name: '赵老师',
-            person: 324,
-            score: 4.5,
-            logo:
-              'https://car2.autoimg.cn/cardfs/product/g29/M03/48/EF/1024x0_1_q95_autohomecar__ChsEn155d2aAXLzSAAMaJS8gWwA607.jpg'
-          },
-          {
-            id: '127',
-            title: '课程标题课程标题',
-            name: '赵老师',
-            person: 324,
-            score: 4.5,
-            logo:
-              'https://car2.autoimg.cn/cardfs/product/g29/M03/48/EF/1024x0_1_q95_autohomecar__ChsEn155d2aAXLzSAAMaJS8gWwA607.jpg'
-          },
-          {
-            id: '14',
-            title: '课程标题课程标题',
-            name: '赵老师',
-            person: 324,
-            score: 4.5,
-            logo:
-              'https://car2.autoimg.cn/cardfs/product/g29/M03/48/EF/1024x0_1_q95_autohomecar__ChsEn155d2aAXLzSAAMaJS8gWwA607.jpg'
-          },
-          {
-            id: '121',
-            title: '课程标题课程标题',
-            name: '赵老师',
-            person: 324,
-            score: 4.5,
-            logo:
-              'https://car2.autoimg.cn/cardfs/product/g29/M03/48/EF/1024x0_1_q95_autohomecar__ChsEn155d2aAXLzSAAMaJS8gWwA607.jpg'
-          },
-          {
-            id: '1116',
-            title: '课程标题课程标题',
-            name: '赵老师',
-            person: 324,
-            score: 4.5,
-            logo:
-              'https://car2.autoimg.cn/cardfs/product/g29/M03/48/EF/1024x0_1_q95_autohomecar__ChsEn155d2aAXLzSAAMaJS8gWwA607.jpg'
-          }
-        ]
-      }
+      courseList: [
+        {
+          id: '21',
+          title: '课程标题课程标题',
+          name: '赵老师',
+          person: 324,
+          score: 4.5,
+          logo:
+            'https://car2.autoimg.cn/cardfs/product/g29/M03/48/EF/1024x0_1_q95_autohomecar__ChsEn155d2aAXLzSAAMaJS8gWwA607.jpg'
+        },
+        {
+          id: '127',
+          title: '课程标题课程标题',
+          name: '赵老师',
+          person: 324,
+          score: 4.5,
+          logo:
+            'https://car2.autoimg.cn/cardfs/product/g29/M03/48/EF/1024x0_1_q95_autohomecar__ChsEn155d2aAXLzSAAMaJS8gWwA607.jpg'
+        },
+        {
+          id: '14',
+          title: '课程标题课程标题',
+          name: '赵老师',
+          person: 324,
+          score: 4.5,
+          logo:
+            'https://car2.autoimg.cn/cardfs/product/g29/M03/48/EF/1024x0_1_q95_autohomecar__ChsEn155d2aAXLzSAAMaJS8gWwA607.jpg'
+        },
+        {
+          id: '121',
+          title: '课程标题课程标题',
+          name: '赵老师',
+          person: 324,
+          score: 4.5,
+          logo:
+            'https://car2.autoimg.cn/cardfs/product/g29/M03/48/EF/1024x0_1_q95_autohomecar__ChsEn155d2aAXLzSAAMaJS8gWwA607.jpg'
+        },
+        {
+          id: '1116',
+          title: '课程标题课程标题',
+          name: '赵老师',
+          person: 324,
+          score: 4.5,
+          logo:
+            'https://car2.autoimg.cn/cardfs/product/g29/M03/48/EF/1024x0_1_q95_autohomecar__ChsEn155d2aAXLzSAAMaJS8gWwA607.jpg'
+        }
+      ]
     }
   },
   created() {

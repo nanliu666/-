@@ -38,7 +38,12 @@
         <span>学习中的课程</span>
         <!-- <router-link to="">更多</router-link> -->
       </div>
-      <div v-for="item in learningCourseData.data" :key="item.id" class="learningCourseItem">
+      <div
+        v-for="item in learningCourseData.data"
+        :key="item.id"
+        class="learningCourseItem"
+        @click="learningCourseFn(item)"
+      >
         <img
           :src="item.coverUrl ? item.coverUrl : '/img/autoL.png'"
           width="102"
@@ -189,6 +194,12 @@ export default {
     format() {
       return '' //percentage === 100 ? '满' : `${percentage}%`;
     },
+    learningCourseFn(item) {
+      // 我学习中的课程跳转
+      this.$router.push({
+        path: `/course/detail?id=${item.id}`
+      })
+    },
     async getHomePInfo() {
       // 获取首页个人信息
       this.homePInfoData = await homePInfo({ pageSize: 3, pageNo: 1 })
@@ -296,6 +307,7 @@ export default {
 }
 
 .homeRightP .learningCourseItem {
+  cursor: pointer;
   display: flex;
   margin-bottom: 18px;
 }
