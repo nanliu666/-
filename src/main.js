@@ -16,7 +16,8 @@ import commonTable from 'vue-common-table'
 import Permission from '@/directive/pcheck'
 import _ from 'lodash'
 import loadmore from './directive/loadmore'
-
+import VueClipboard from 'vue-clipboard2'
+Vue.use(VueClipboard)
 Vue.prototype._ = _
 Vue.component('commonTable', commonTable)
 
