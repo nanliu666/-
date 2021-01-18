@@ -62,7 +62,7 @@
           />
           <div class="qrcode__handler">
             <span>扫码观看</span>
-            <span class="qrcode__copy">复制链接</span>
+            <span v-clipboard:copy="copyeLink" v-clipboard:success="onCopy" class="qrcode__copy">复制链接</span>
           </div>
         </div>
       </div>
@@ -117,6 +117,7 @@ export default {
   },
   data() {
     return {
+      copyeLink: '111',
       activeIndex: '1'
     }
   },
@@ -124,6 +125,9 @@ export default {
     // this.$refs.breadcrumb.setBreadcrumbTitle('信息安全')
   },
   methods: {
+    onCopy() {
+      this.$message.success('您已成功复制二维码链接')
+    },
     // 切换nav
     handleSelect(tab) {
       this.activeIndex = tab.name
