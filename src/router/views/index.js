@@ -31,6 +31,7 @@ export default [
   },
   {
     path: '/',
+    redirect: '/home',
     component: Layout,
     children: [
       {
