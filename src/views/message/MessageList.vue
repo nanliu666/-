@@ -2,19 +2,17 @@
   <div class="message">
     <div class="flex-flow flex flex-justify-between hander">
       <div class="title">
-        系统消息
+        <span>系统消息</span>
+        <span class="sub__title">
+          <span>（未读<span class="warn__num">{{ unreadCount }}</span>条，</span>
+          <span>共{{ page.total }}条）</span>
+        </span>
       </div>
       <div>
-        <el-button
-          size="medium"
-          @click="handleAllRead"
-        >
+        <el-button size="medium" @click="handleAllRead">
           全部已读
         </el-button>
-        <el-button
-          size="medium"
-          @click="handleNoRead"
-        >
+        <el-button size="medium" @click="handleNoRead">
           未读
         </el-button>
       </div>
@@ -22,30 +20,19 @@
     <div>
       <div class="list">
         <ul>
-          <li
-            v-for="item in listData"
-            :key="item.id"
-            class="flex flex-flow flex-items"
-          >
+          <li v-for="item in listData" :key="item.id" class="flex flex-flow flex-items">
             <div class="image">
               <i class="el-icon-s-comment icon"></i>
             </div>
             <div class="content">
               <div class="title">
-                <span> <span
-                  v-if="!item.isRead"
-                  class="spot"
-                ></span>【{{ item.title }}】</span>
+                <span> <span v-if="!item.isRead" class="spot"></span>【{{ item.title }}】</span>
                 <span class="time">系统发布 {{ item.createTime }}</span>
               </div>
               <div>
                 <div class="text">
                   {{ item.content }}
-                  <el-button
-                    v-if="item.type"
-                    size="mini"
-                    type="text"
-                  >
+                  <el-button v-if="item.type" size="mini" type="text">
                     查看详情
                   </el-button>
                 </div>
@@ -75,26 +62,21 @@
           </el-pagination>
         </div>
       </div>
-      <div
-        v-if="listData.length == 0"
-        class="noData"
-      >
-        <img
-          src="../../assets/images/nodata.jpg"
-          alt=""
-        />
+      <div v-if="listData.length == 0" class="noData">
+        <img src="../../assets/images/nodata.jpg" alt="" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { getMsgNotify, postMsgNotify } from '@/api/messgeCenter'
+import { getMsgNotify, postMsgNotify, postMsgNotifyCount } from '@/api/messgeCenter'
 import { mapState } from 'vuex'
 export default {
   name: 'MessageCenter',
   data() {
     return {
+      unreadCount: 0,
       page: {
         currentPage: 1,
         pageSize: 10,
@@ -141,21 +123,20 @@ export default {
     },
     getData() {
       let params = {
-        userId: this.$store.getters.userId || '1333945383927181314',
+        userId: this.$store.getters.userId,
         pageNo: this.page.currentPage,
         pageSize: this.page.pageSize,
         isRead: this.searchParams.isRead
       }
       getMsgNotify(params).then((res) => {
-        this.$store.dispatch('messageCount', {
-          userId: this.$store.getters.userId || '1333945383927181314'
-        })
-        this.$store.dispatch(
-          'messageList',
-          Object.assign(params, { isRead: 0, pageSize: 5, pageNo: 1 })
-        )
-        this.listData = res.data
-        this.page.total = res.totalNum
+        const { data, totalNum } = res
+        this.listData = data
+        this.page.total = totalNum
+      })
+      postMsgNotifyCount({
+        userId: this.$store.getters.userId
+      }).then((data) => {
+        this.unreadCount = data.unreadCount
       })
     },
     handleSizeChange(data) {
@@ -178,12 +159,21 @@ export default {
   min-height: calc(100vh - 64px - 40px);
   position: relative;
   .hander {
-    line-height: 68px;
     padding: 0px 24px;
+    height: 68px;
+    align-items: center;
     .title {
       font-size: 18px;
       color: rgba(0, 11, 21, 0.85);
       letter-spacing: 0;
+      display: flex;
+      align-items: flex-end;
+      .sub__title {
+        font-size: 14px;
+        .warn__num {
+          color: red;
+        }
+      }
     }
   }
 }
