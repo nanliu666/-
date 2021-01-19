@@ -14,15 +14,9 @@
     </el-card>
     <el-card class="table-style">
       <el-tabs v-model="activeIndex" @tab-click="handleSelect">
-        <el-tab-pane label="综合排序" name="1">
-          综合排序
-        </el-tab-pane>
-        <el-tab-pane label="最新上传" name="2">
-          最新上传
-        </el-tab-pane>
-        <el-tab-pane label="评分最高" name="3">
-          评分最高
-        </el-tab-pane>
+        <el-tab-pane label="综合排序" name="1" />
+        <el-tab-pane label="最新上传" name="2" />
+        <el-tab-pane label="评分最高" name="3" />
       </el-tabs>
       <common-table
         id="demo"

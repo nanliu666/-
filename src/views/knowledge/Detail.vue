@@ -34,27 +34,16 @@
         </li>
       </ul>
     </el-card>
-    <el-card class="bottom-card">
+    <el-card class="bottom-card" style="min-height:50vh">
       <el-tabs v-model="activeIndex" @tab-click="handleSelect">
         <el-tab-pane label="资源介绍" name="1">
-          资源介绍
-        </el-tab-pane>
-        <el-tab-pane label="附件" name="2">
-          附件
-        </el-tab-pane>
-        <el-tab-pane label="评论" name="3">
-          评论
-        </el-tab-pane>
-      </el-tabs>
-      <div style="padding: 20px 0; min-height:50vh">
-        <div v-show="activeIndex === '1'">
           <div
             v-show="konwledgeDetail.introduction"
             v-html="_.unescape(konwledgeDetail.introduction)"
           />
           <common-empty v-show="!konwledgeDetail.introduction" />
-        </div>
-        <section v-show="activeIndex === '2'">
+        </el-tab-pane>
+        <el-tab-pane label="附件" name="2">
           <div v-if="!_.isEmpty(fileGroup)">
             <div class="image-ul">
               <div v-for="(item, index) in fileGroup.true" :key="index">
@@ -68,6 +57,7 @@
               </div>
             </div>
             <ul v-for="(item, index) in fileGroup.false" :key="index">
+              <!-- <iframe class="filename" :src="item.url" width="100%" height="600" frameborder="1"></iframe> -->
               <li class="file-title">
                 <span>{{ item.fileName }}</span>
                 <i
@@ -80,15 +70,17 @@
             </ul>
           </div>
           <common-empty v-if="_.isEmpty(fileGroup)" />
-        </section>
-        <Comment
-          v-show="activeIndex === '3'"
-          :load="loadCommentList"
-          :submit="submitComment"
-          name="知识"
-          disable-text="您还未学习知识，暂不能对知识评价，先去学习再来评价哦~"
-        />
-      </div>
+        </el-tab-pane>
+        <el-tab-pane label="评论" name="3">
+          <Comment
+            v-show="activeIndex === '3'"
+            :load="loadCommentList"
+            :submit="submitComment"
+            name="知识"
+            disable-text="您还未学习知识，暂不能对知识评价，先去学习再来评价哦~"
+          />
+        </el-tab-pane>
+      </el-tabs>
     </el-card>
   </div>
 </template>
