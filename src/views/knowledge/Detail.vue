@@ -25,12 +25,12 @@
           <span>{{ konwledgeDetail.watchNum }}</span>
         </li>
         <li>
-          <i class="iconimage_icon_comment iconfont" />
-          <span>{{ konwledgeDetail.commentNum }}</span>
-        </li>
-        <li>
           <i class="iconimage_icon_download iconfont" />
           <span>{{ konwledgeDetail.downloadNum }}</span>
+        </li>
+        <li>
+          <i class="iconimage_icon_comment iconfont" />
+          <span>{{ konwledgeDetail.commentNum }}</span>
         </li>
       </ul>
     </el-card>
