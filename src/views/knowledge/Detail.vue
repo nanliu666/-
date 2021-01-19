@@ -57,7 +57,6 @@
               </div>
             </div>
             <ul v-for="(item, index) in fileGroup.false" :key="index">
-              <!-- <iframe class="filename" :src="item.url" width="100%" height="600" frameborder="1"></iframe> -->
               <li class="file-title">
                 <span>{{ item.fileName }}</span>
                 <i
