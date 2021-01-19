@@ -48,7 +48,7 @@ const TABLE_COLUMNS = [
     minWidth: 150
   },
   {
-    label: '创建人',
+    label: '提供人',
     prop: 'providerName',
     minWidth: 120
   },
