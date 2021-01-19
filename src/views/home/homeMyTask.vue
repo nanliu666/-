@@ -3,30 +3,28 @@
   <div v-if="myMissions && myMissions.length > 0" class="homeMyTask">
     <swiper ref="mySwiper" :options="swiperOptions">
       <swiper-slide v-for="item in myMissions" :key="item.id">
-        <div class="homeMyTaskItem">
-          <router-link to="">
-            <h3 class="homeMyTaskItemTitle">
-              <span class="homeMyTaskItemTitle2">{{ item.name }}</span>
-              <span class="homeMyTaskType">{{ myMissionsType[item.type] }}</span>
-            </h3>
-            <div class="homeMyTaskItemText">
-              <div class="homeMyTaskItemTextItem">
-                <span class="homeMyTaskItemTextItem2 iconimage_icon_address iconfont">{{
-                  item.address
-                }}</span>
-              </div>
-              <div class="homeMyTaskItemTextItem">
-                <span class="homeMyTaskItemTextItem2 iconimage_icon_time iconfont">{{
-                  item.time
-                }}</span>
-              </div>
-              <div class="homeMyTaskItemTextItem">
-                <span class="homeMyTaskItemTextItem2 iconimage_icon_user iconfont">{{
-                  item.lecturer
-                }}</span>
-              </div>
+        <div class="homeMyTaskItem" @click="myTaskToDetaill(item)">
+          <h3 class="homeMyTaskItemTitle">
+            <span class="homeMyTaskItemTitle2">{{ item.name }}</span>
+            <span class="homeMyTaskType">{{ myMissionsType[item.type] }}</span>
+          </h3>
+          <div class="homeMyTaskItemText">
+            <div class="homeMyTaskItemTextItem">
+              <span class="homeMyTaskItemTextItem2 iconimage_icon_address iconfont">{{
+                item.address
+              }}</span>
             </div>
-          </router-link>
+            <div class="homeMyTaskItemTextItem">
+              <span class="homeMyTaskItemTextItem2 iconimage_icon_time iconfont">{{
+                item.time
+              }}</span>
+            </div>
+            <div class="homeMyTaskItemTextItem">
+              <span class="homeMyTaskItemTextItem2 iconimage_icon_user iconfont">{{
+                item.lecturer
+              }}</span>
+            </div>
+          </div>
         </div>
       </swiper-slide>
       <!-- <swiper-slide>
@@ -142,6 +140,27 @@ export default {
     //this.swiper.slideTo(3, 1000, false)
   },
   methods: {
+    myTaskToDetaill(item) {
+      const { id: trainId, name: title, type: userType } = item
+      // type 0:考试,1:培训
+      if (item.type == 1) {
+        this.$router.push({
+          name: 'trainDetail',
+          params: {
+            title,
+            trainId,
+            trainWay: 3,
+            userType
+          }
+        })
+      } else {
+        this.$router.push({
+          name: 'ExamList'
+        })
+      }
+
+      //:to="item.type==1?'/exam/list':'/exam/list'"
+    },
     prev() {
       // 我的任务前进
       this.$nextTick(() => {
@@ -170,6 +189,7 @@ export default {
 <style lang="scss" scoped>
 //.homeMyTask{width: 837px;}
 .homeMyTaskItem {
+  cursor: pointer;
   width: 265px;
   height: 153px;
   text-align: left;

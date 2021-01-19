@@ -97,9 +97,16 @@
 
 <script>
 import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
-import { getCourseDetail, getCommentList, addComment, getLearnRecord } from '@/api/course'
+import {
+  getCourseDetail,
+  getCommentList,
+  addComment,
+  getLearnRecord,
+  addViewLog
+} from '@/api/course'
 import Comment from '@/components/common-comment/Comment'
 import { COURSE_CHAPTER_TYPE_MAP, COURSE_TYPE_MAP } from './config'
+import { mapGetters } from 'vuex'
 export default {
   name: 'CourseDetail',
   components: { CommonBreadcrumb, Comment },
@@ -117,7 +124,8 @@ export default {
       return this.$route.query.id
     },
     COURSE_TYPE_MAP: () => COURSE_TYPE_MAP,
-    COURSE_CHAPTER_TYPE_MAP: () => COURSE_CHAPTER_TYPE_MAP
+    COURSE_CHAPTER_TYPE_MAP: () => COURSE_CHAPTER_TYPE_MAP,
+    ...mapGetters(['userInfo'])
   },
   activated() {
     this.loadDetail()
@@ -126,31 +134,15 @@ export default {
   },
   methods: {
     calcProcess(chapter) {
-      if (chapter.type !== '5') {
-        if (chapter.progress == 1) {
-          return 100
-        } else {
-          return 0
-        }
-      } else {
-        return parseInt(chapter.progress)
-      }
+      return parseInt(chapter.progress) || 0
     },
     getChapterStatus(chapter) {
-      if (chapter.type !== '5') {
-        if (chapter.progress == 1) {
-          return '已学习'
-        } else {
-          return '未学习'
-        }
+      if (chapter.progress == '0') {
+        return '未学习'
+      } else if (chapter.progress == '100') {
+        return '已学习'
       } else {
-        if (chapter.progress == '0') {
-          return '未学习'
-        } else if (chapter.progress == '100') {
-          return '已学习'
-        } else {
-          return '学习中'
-        }
+        return '学习中'
       }
     },
     loadDetail() {
@@ -179,6 +171,14 @@ export default {
       return addComment({ ...params, courseId: this.id })
     },
     jumpToLearn(courseId, chapterId = null) {
+      addViewLog({
+        coursePlanNo: courseId,
+        coursePlanName: this.courseData.name,
+        departmentId: this.userInfo.org_id,
+        userName: this.userInfo.nick_name,
+        tenantId: this.userInfo.tenant_id,
+        workNo: this.userInfo.work_no
+      })
       this.$router.push({ path: '/course/learn', query: { courseId, chapterId } })
     }
   }

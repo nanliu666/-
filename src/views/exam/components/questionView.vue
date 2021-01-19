@@ -1,18 +1,9 @@
 <template>
   <div>
-    <div
-      v-if="url"
-      class="qustion__options-image"
-    >
-      <el-image
-        class="image-box"
-        :src="url"
-      ></el-image>
+    <div v-if="url" class="qustion__options-image">
+      <el-image class="image-box" :src="url"></el-image>
       <div class="upload__cover">
-        <i
-          class="iconimage_icon_Preview1 iconfont"
-          @click.stop="handlePreviewImage([url])"
-        ></i>
+        <i class="iconimage_icon_Preview1 iconfont" @click.stop="handlePreviewImage([url])"></i>
       </div>
     </div>
     <image-viewer

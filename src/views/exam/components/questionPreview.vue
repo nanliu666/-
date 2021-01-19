@@ -5,15 +5,8 @@
       class="qustion-content-box"
       v-html="_.unescape(data.content)"
     ></span>
-    <div
-      v-if="!_.isEmpty(data.attachments)"
-      class="qustion__attachments"
-    >
-      <div
-        v-for="(attachment, index) in data.attachments"
-        :key="index"
-        class="qustion__attachment"
-      >
+    <div v-if="!_.isEmpty(data.attachments)" class="qustion__attachments">
+      <div v-for="(attachment, index) in data.attachments" :key="index" class="qustion__attachment">
         <question-view :url="attachment.fileUrl" />
       </div>
     </div>
@@ -24,11 +17,7 @@
         v-if="[QUESTION_TYPE_SINGLE, QUESTION_TYPE_JUDGE].includes(data.type)"
         class="qustion__options"
       >
-        <el-radio-group
-          v-model="data.answer"
-          :disabled="disabled"
-          class="group-container"
-        >
+        <el-radio-group v-model="data.answer" :disabled="disabled" class="group-container">
           <el-radio
             v-for="option in data.options"
             :key="option.key"
@@ -36,10 +25,7 @@
             :label="option.id"
           >
             <span>{{ _.unescape(option.content) }}</span>
-            <question-view
-              v-if="option.url"
-              :url="option.url"
-            />
+            <question-view v-if="option.url" :url="option.url" />
           </el-radio>
         </el-radio-group>
       </div>
@@ -59,10 +45,7 @@
             @change="changeMultiple(option)"
           >
             <span>{{ _.unescape(option.content) }}</span>
-            <question-view
-              v-if="option.url"
-              :url="option.url"
-            />
+            <question-view v-if="option.url" :url="option.url" />
           </el-checkbox>
         </li>
       </div>
@@ -75,14 +58,8 @@
         placeholder="请输入内容"
       >
       </el-input>
-      <ul
-        v-if="[QUESTION_TYPE_BLANK].includes(data.type)"
-        class="blank-ul"
-      >
-        <li
-          v-for="(item, index) in blankList"
-          :key="index"
-        >
+      <ul v-if="[QUESTION_TYPE_BLANK].includes(data.type)" class="blank-ul">
+        <li v-for="(item, index) in blankList" :key="index">
           <el-input
             v-if="item === ''"
             v-model="data[`answerModel${index}`]"
@@ -92,17 +69,11 @@
             maxlength="32"
           >
           </el-input>
-          <span
-            v-else
-            v-html="_.unescape(item)"
-          />
+          <span v-else v-html="_.unescape(item)" />
         </li>
       </ul>
     </div>
-    <div
-      v-else
-      class="view-contain-box"
-    >
+    <div v-else class="view-contain-box">
       <select-view
         v-if="
           [QUESTION_TYPE_MULTIPLE, QUESTION_TYPE_SINGLE, QUESTION_TYPE_JUDGE].includes(data.type)

@@ -5,11 +5,7 @@
         <span>全部课程</span>
         <span v-if="!_.isEmpty(menuList)">（{{ menuList[0].num + menuList[1].num }}）</span>
       </div>
-      <div
-        v-for="(menuItem, menuIndex) in menuList"
-        :key="menuIndex"
-        class="course-list"
-      >
+      <div v-for="(menuItem, menuIndex) in menuList" :key="menuIndex" class="course-list">
         <div
           class="course-title"
           :class="{ active: menuActive(menuItem) }"
@@ -42,10 +38,7 @@
         </ul>
       </div>
     </el-card>
-    <el-card
-      v-loading="containerLoad"
-      class="li-container"
-    >
+    <el-card v-loading="containerLoad" class="li-container">
       <div class="top">
         <el-input
           v-model="queryInfo.name"
@@ -59,11 +52,7 @@
         <div v-if="currentFirstType === 'required'">
           <div class="status-box">
             <span class="label">状态</span>
-            <el-radio-group
-              v-model="queryInfo.status"
-              class="status-radio"
-              @change="statusChange"
-            >
+            <el-radio-group v-model="queryInfo.status" class="status-radio" @change="statusChange">
               <el-radio :label="0">
                 全部
               </el-radio>
@@ -87,32 +76,17 @@
               start-placeholder="开始日期"
               end-placeholder="结束日期"
             />
-            <el-button
-              type="primary"
-              style="margin-left: 10px"
-              size="medium"
-              @click="submitSearch"
-            >
+            <el-button type="primary" style="margin-left: 10px" size="medium" @click="submitSearch">
               查询
             </el-button>
           </div>
         </div>
       </div>
       <div class="bottom">
-        <ul
-          v-if="!_.isEmpty(courseList)"
-          class="bottom-ul"
-        >
-          <li
-            v-for="(item, index) in courseList"
-            :key="index"
-            class="bottom-li"
-          >
+        <ul v-if="!_.isEmpty(courseList)" class="bottom-ul">
+          <li v-for="(item, index) in courseList" :key="index" class="bottom-li">
             <div class="li-top">
-              <div
-                class="li-left"
-                @click="startStudy(item)"
-              >
+              <div class="li-left" @click="startStudy(item)">
                 <img
                   :src="item.coverUrl"
                   class="left-image"
@@ -126,10 +100,7 @@
               <div class="li-right">
                 <div class="content-box">
                   <div class="content-title">
-                    <div
-                      class="title"
-                      @click="startStudy(item)"
-                    >
+                    <div class="title" @click="startStudy(item)">
                       {{ item.name }}
                     </div>
                     <el-tag :type="statusFilter(item.status).type">
@@ -142,10 +113,7 @@
                     </div>
                     <div class="content-progress">
                       <span class="progress-title">已完成：</span>
-                      <el-progress
-                        class="progress"
-                        :percentage="item.progress"
-                      ></el-progress>
+                      <el-progress class="progress" :percentage="item.progress"></el-progress>
                     </div>
                   </div>
                   <div class="file-button">
@@ -203,11 +171,7 @@
               v-if="currentTestExpand === index || currentFileExpand === index"
               class="file-card"
             >
-              <li
-                v-for="(fileItem, fileIndex) in expandList"
-                :key="fileIndex"
-                class="file-card-li"
-              >
+              <li v-for="(fileItem, fileIndex) in expandList" :key="fileIndex" class="file-card-li">
                 <div class="file-left">
                   <div class="file-title">
                     <span class="title ellipsis">{{
@@ -250,9 +214,7 @@
                 class="more-file"
                 @click="getMore(index)"
               >
-                <span
-                  style="margin-right: 10px; cursor: pointer"
-                >展开更多{{
+                <span style="margin-right: 10px; cursor: pointer">展开更多{{
                   _.size(currentExpandType === 'examList' ? item.examList : item.attachList) - 3
                 }}个{{ currentExpandType === 'examList' ? '考试' : '附件' }}</span>
                 <i

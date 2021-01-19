@@ -16,17 +16,11 @@
             :class="{ 'is-correct': option.isCorrect, 'is-fault': getFault(option) }"
           >
             <span>{{ _.unescape(option.content) }}</span>
-            <question-view
-              v-if="option.url"
-              :url="option.url"
-            />
+            <question-view v-if="option.url" :url="option.url" />
           </li>
         </ul>
       </div>
-      <div
-        v-if="correctContent"
-        class="correct-answer-box"
-      >
+      <div v-if="correctContent" class="correct-answer-box">
         <span class="label">正确答案：</span>
         <span class="value is-correct">{{ getCorrect() }}</span>
       </div>
@@ -41,10 +35,7 @@
         <span class="value">{{ data.scoreUser }}分</span>
       </div>
     </div>
-    <div
-      v-if="data.analysis"
-      class="analysis-box common-box"
-    >
+    <div v-if="data.analysis" class="analysis-box common-box">
       <span class="label">试题分析：</span>
       <span class="value">{{ data.analysis }}</span>
     </div>

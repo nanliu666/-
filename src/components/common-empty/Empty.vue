@@ -1,14 +1,7 @@
 <template>
-  <el-card
-    shadow="never"
-    style="border: 0"
-  >
+  <el-card shadow="never" style="border: 0">
     <div class="empty-class">
-      <el-image
-        class="empty-image"
-        :src="src"
-        fit="fill"
-      />
+      <el-image class="empty-image" :src="src" fit="fill" />
       <div v-text="text" />
     </div>
   </el-card>

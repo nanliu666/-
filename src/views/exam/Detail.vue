@@ -1,17 +1,11 @@
 <template>
   <div>
-    <common-breadcrumb
-      ref="breadcrumb"
-      :route-list="routeList"
-    />
+    <common-breadcrumb ref="breadcrumb" :route-list="routeList" />
     <el-card class="top-card">
       <div class="card-header">
         <div class="header-title-box">
           <span class="title">{{ examDetail.examName }}</span>
-          <el-tag
-            v-if="_.get(examDetail.status)"
-            :type="getStatus(examDetail.status).type"
-          >
+          <el-tag v-if="_.get(examDetail.status)" :type="getStatus(examDetail.status).type">
             {{ getStatus(examDetail.status).text }}
           </el-tag>
         </div>
@@ -58,10 +52,7 @@
       </div>
       <div class="card-bottom">
         <span class="bottom-title">查看试题范围</span>
-        <el-radio-group
-          v-model="queryInfo.type"
-          @change="radioChange"
-        >
+        <el-radio-group v-model="queryInfo.type" @change="radioChange">
           <el-radio :label="0">
             全部试题
           </el-radio>
@@ -79,11 +70,7 @@
     </el-card>
     <el-card class="paper-card">
       <ul class="question-ul">
-        <li
-          v-for="(item, index) in questionList"
-          :key="index"
-          class="question-li"
-        >
+        <li v-for="(item, index) in questionList" :key="index" class="question-li">
           <div class="title-box">
             <div class="question-li-title">
               <span>{{ (index + 1) | number2zhcn }}、</span>
@@ -96,11 +83,7 @@
           </div>
           <div class="content-box">
             <ul class="content-ul">
-              <li
-                v-for="(conItem, conIndex) in item"
-                :key="conItem.id"
-                class="content-li"
-              >
+              <li v-for="(conItem, conIndex) in item" :key="conItem.id" class="content-li">
                 <span>{{ conIndex + 1 }}.</span>
                 <QustionPreview
                   v-if="QUESTION_TYPE_GROUP !== conItem.type"
@@ -108,10 +91,7 @@
                   type="view"
                 />
                 <span v-else>
-                  <span
-                    class="right-title"
-                    v-html="_.unescape(conItem.content)"
-                  ></span>
+                  <span class="right-title" v-html="_.unescape(conItem.content)"></span>
                   <ul>
                     <li
                       v-for="(paperItem, paperIndex) in conItem.subQuestions"
@@ -119,10 +99,7 @@
                       class=""
                     >
                       <span>{{ paperIndex + 1 }}.</span>
-                      <QustionPreview
-                        :data="paperItem"
-                        type="view"
-                      />
+                      <QustionPreview :data="paperItem" type="view" />
                     </li>
                   </ul>
                 </span>

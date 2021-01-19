@@ -99,6 +99,7 @@ export default {
           itemType: 'input',
           label: '姓名',
           maxlength: 20,
+          placeholder: '请输入真实姓名，后续不可自行修改',
           rules: [{ min: 2, max: 20, message: '姓名长度需要满足2到20个字符' }],
           required: true
         },
@@ -182,7 +183,7 @@ export default {
           getCode(params)
             .then(() => {
               this.$message.success(
-                `我们已向您的邮箱${this.form.userEmail}发送邮件，请接受邮件，查收验证码`
+                `我们已向您的邮箱${this.form.userEmail}发送邮件，请接收邮件，查收验证码`
               )
             })
             .catch(() => {

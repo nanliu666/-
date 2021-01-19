@@ -7,38 +7,20 @@
         style="width: 380px"
         @input="searchFun"
       >
-        <i
-          slot="suffix"
-          class="el-input__icon el-icon-search"
-        ></i>
+        <i slot="suffix" class="el-input__icon el-icon-search"></i>
       </el-input>
       <div class="split"></div>
-      <category-select
-        :load="loadCategory"
-        @change="handleCategoryChange"
-      ></category-select>
+      <category-select :load="loadCategory" @change="handleCategoryChange"></category-select>
     </el-card>
     <el-card class="table-style">
-      <el-tabs
-        v-model="activeIndex"
-        @tab-click="handleSelect"
-      >
-        <el-tab-pane
-          label="综合排序"
-          name="1"
-        >
+      <el-tabs v-model="activeIndex" @tab-click="handleSelect">
+        <el-tab-pane label="综合排序" name="1">
           综合排序
         </el-tab-pane>
-        <el-tab-pane
-          label="最新上传"
-          name="2"
-        >
+        <el-tab-pane label="最新上传" name="2">
           最新上传
         </el-tab-pane>
-        <el-tab-pane
-          label="评分最高"
-          name="3"
-        >
+        <el-tab-pane label="评分最高" name="3">
           评分最高
         </el-tab-pane>
       </el-tabs>
@@ -55,10 +37,7 @@
         @page-size-change="handlePageSizeChange"
       >
         <template #handler="{row}">
-          <el-button
-            type="text"
-            @click="handleView(row)"
-          >
+          <el-button type="text" @click="handleView(row)">
             查看
           </el-button>
         </template>
