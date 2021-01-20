@@ -45,22 +45,22 @@
 const TABLE_COLUMNS = [
   {
     label: '用户编号',
-    prop: 'resName',
+    prop: 'userNo',
     minWidth: 150
   },
   {
     label: '姓名',
-    prop: 'providerName',
+    prop: 'userName',
     minWidth: 120
   },
   {
     label: '所在部门',
-    prop: 'watchPeople',
+    prop: 'orgName',
     minWidth: 120
   },
   {
     label: '手机号码',
-    prop: 'downloadPeople',
+    prop: 'phoneNum',
     minWidth: 120
   }
 ]
