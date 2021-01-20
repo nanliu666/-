@@ -11,4 +11,11 @@ export const getCommentList = (params) => get('/common/v1/live/comment/commentLi
 /**
  * 保存评论
  * */
-export const postComment = (params) => get('/common/v1/live/comment/comment', params)
+export const postComment = (params) => post('/common/v1/live/comment/comment', params)
+/**
+ * 讲师直播详情-学员列表
+ * channelId 直播频道id
+ * pageNo 请求页码
+ * pageSize 每页条数
+ */
+export const getStudentList = (params) => get('/common/v1/live/student', params)

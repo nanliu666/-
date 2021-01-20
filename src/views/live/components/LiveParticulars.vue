@@ -111,6 +111,7 @@ export default {
     flex-wrap: wrap;
     justify-content: space-between;
     flex-direction: row;
+    padding-bottom: 10px;
     &::after {
       content: '';
       width: calc(100% / 4);

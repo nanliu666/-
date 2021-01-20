@@ -132,7 +132,7 @@ export default {
   },
   computed: {
     id() {
-      return _.get(this.$route, 'query.id', null)
+      return _.get(this.$route, 'query.id', '555')
     }
   },
   mounted() {
