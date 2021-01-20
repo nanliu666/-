@@ -70,7 +70,7 @@
                 <el-table-column prop="score" label="得分" width="314"> </el-table-column>
                 <el-table-column prop="id" label="操作" width="104">
                   <template slot-scope="scope">
-                    <el-button size="mini" type="text" @click="toTestPaper(scope.row.id)">
+                    <el-button size="mini" type="text" @click="toTestPaper(scope.row)">
                       查看答卷
                     </el-button>
                   </template>
@@ -118,11 +118,12 @@ export default {
         this.list = res
       })
     },
-    toTestPaper(index, examId) {
-      this.$route.push({
+    toTestPaper(exam) {
+      const { examId, batchId } = exam
+      this.$router.push({
         path: '/exam/detail',
         params: {
-          batchId: '',
+          batchId,
           examId
         }
       })

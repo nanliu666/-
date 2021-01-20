@@ -1,25 +1,28 @@
 <template>
   <div class="image-li">
-    <el-image
-      class="el-image"
-      :src="url"
-      :preview-src-list="previewSrcList"
-    />
+    <el-image class="el-image" :src="url" />
+    <image-viewer
+      :url-list="previewSrcList"
+      :visible.sync="viewing"
+      :initial-index="viewIndex"
+    ></image-viewer>
     <div class="image-name">
       {{ fileName }}
     </div>
     <div class="handle-box">
-      <span
-        v-if="isDownload"
-        @click.stop="downloadFile(url)"
-      ><i class="el-icon-download"></i></span>
+      <span v-if="isDownload" @click.stop="downloadFile(url)"><i class="el-icon-download"></i></span>
+      <span @click.stop="handlePreviewImage([url])"><i class="el-icon-view" /></span>
     </div>
   </div>
 </template>
 
 <script>
+import ImageViewer from '@/components/image-viewer/ImageViewer'
 export default {
   name: 'CommonImageView',
+  components: {
+    ImageViewer
+  },
   props: {
     isDownload: {
       type: Boolean,
@@ -41,12 +44,21 @@ export default {
       default: ''
     }
   },
+
   data() {
-    return {}
+    return {
+      viewing: false,
+      viewIndex: 0
+    }
   },
   methods: {
     downloadFile(url) {
       this.$emit('downloadFile', url)
+    },
+    handlePreviewImage(list, index = 0) {
+      this.viewing = true
+      this.viewingImages = list
+      this.viewIndex = index
     }
   }
 }

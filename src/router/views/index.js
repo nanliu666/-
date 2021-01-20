@@ -20,25 +20,20 @@ import EmptyLayout from '@/page/EmptyLayout'
  * 注：最下面的demo路由是预留的本地演示或者测试用的路由
  */
 export default [
+  // 首页与layout同级
+  {
+    path: '/home',
+    name: 'Home',
+    component: () => import(/* webpackChunkName: "page" */ '@/views/Home.vue'),
+    meta: {
+      title: '首页'
+    }
+  },
   {
     path: '/',
+    redirect: '/home',
     component: Layout,
     children: [
-      {
-        path: '/home',
-        component: EmptyLayout,
-        children: [
-          {
-            path: '',
-            name: 'Home',
-            component: () => import(/* webpackChunkName: "page" */ '@/views/Home.vue'),
-            meta: {
-              title: '首页',
-              fullscreen: true
-            }
-          }
-        ]
-      },
       {
         path: '/course',
         redirect: '/course/list',

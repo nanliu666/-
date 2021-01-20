@@ -138,8 +138,6 @@ export default {
 <style lang="scss" scoped>
 .newsList {
   width: 100%;
-  height: 100vh;
-  margin-bottom: -600px;
   .title {
     width: 1200px;
     height: 145px;
@@ -226,7 +224,7 @@ export default {
     }
   }
   .page {
-    height: 100px;
+    height: 50px;
     position: relative;
     .pagination {
       position: absolute;
