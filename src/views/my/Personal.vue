@@ -1,9 +1,6 @@
 <template>
   <div class="personal">
-    <el-breadcrumb
-      separator="/"
-      class="breadcrumb"
-    >
+    <el-breadcrumb separator="/" class="breadcrumb">
       <el-breadcrumb-item>个人中心</el-breadcrumb-item>
       <el-breadcrumb-item>编辑信息</el-breadcrumb-item>
       <el-breadcrumb-item>
@@ -13,16 +10,8 @@
 
     <div class="content">
       <div class="content_title">
-        <span
-          :class="{ pitch: pitch === 0 }"
-          style="cursor:pointer;"
-          @click="showpitch(0)"
-        >个人信息</span>
-        <span
-          :class="{ pitch: pitch === 1 }"
-          style="cursor:pointer;"
-          @click="showpitch(1)"
-        >修改密码</span>
+        <span :class="{ pitch: pitch === 0 }" style="cursor:pointer;" @click="showpitch(0)">个人信息</span>
+        <span :class="{ pitch: pitch === 1 }" style="cursor:pointer;" @click="showpitch(1)">修改密码</span>
       </div>
 
       <div class="routerinfo">

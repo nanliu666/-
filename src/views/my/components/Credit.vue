@@ -35,16 +35,10 @@
     <div class="table_box">
       <div class="sehrch_bar">
         <div class="bar">
-          <div
-            :class="{ btn: sehrchBtn === 0 }"
-            @click="showBtn(0)"
-          >
+          <div :class="{ btn: sehrchBtn === 0 }" @click="showBtn(0)">
             系统学分
           </div>
-          <div
-            :class="{ btn: sehrchBtn === 1 }"
-            @click="showBtn(1)"
-          >
+          <div :class="{ btn: sehrchBtn === 1 }" @click="showBtn(1)">
             考评学分
           </div>
         </div>
@@ -62,12 +56,7 @@
             ></el-input>
           </div>
           <div class="sehrch_btn">
-            <el-button
-              v-show="searchInput"
-              type="primary"
-              size="medium"
-              @click="searchInput = ''"
-            >
+            <el-button v-show="searchInput" type="primary" size="medium" @click="searchInput = ''">
               重置
             </el-button>
           </div>
@@ -75,10 +64,7 @@
       </div>
       <div class="select_bar">
         <span>类型：</span>
-        <span
-          :class="{ typeBtn: sysRuleSource === '' }"
-          @click="sysRuleSource = ''"
-        >全部</span>
+        <span :class="{ typeBtn: sysRuleSource === '' }" @click="sysRuleSource = ''">全部</span>
         <span
           v-show="sehrchBtn === 0"
           :class="{ typeBtn: sysRuleSource === '登录学分' }"
@@ -128,19 +114,12 @@
         >
         </el-date-picker>
         &nbsp; &nbsp;&nbsp; &nbsp;
-        <el-button
-          type="primary"
-          size="medium"
-          @click="getInfo"
-        >
+        <el-button type="primary" size="medium" @click="getInfo">
           查询
         </el-button>
       </div>
 
-      <div
-        v-show="tableData.length"
-        class="table"
-      >
+      <div v-show="tableData.length" class="table">
         <common-table
           ref="table"
           :columns="columnsVisible | columnsFilter"
@@ -153,10 +132,7 @@
         >
           <!-- 状态 -->
           <!-- （2：已通过；3：未通过；4：未考试；5：缺考） -->
-          <template
-            slot="examStatus"
-            slot-scope="{ row }"
-          >
+          <template slot="examStatus" slot-scope="{ row }">
             <span v-if="row.electiveType === 2">已通过</span>
             <span v-if="row.electiveType === 3">未通过</span>
             <span v-if="row.electiveType === 4">未考试</span>
@@ -164,10 +140,7 @@
           </template>
 
           <!-- 是否及格 -->
-          <template
-            slot="examPass"
-            slot-scope="{ row }"
-          >
+          <template slot="examPass" slot-scope="{ row }">
             <span v-if="row.examPass === 0">不及格</span>
             <span v-if="row.examPass === 1">及格</span>
           </template>
@@ -175,15 +148,9 @@
       </div>
 
       <!-- 无数据 -->
-      <div
-        v-show="!tableData.length"
-        class="content"
-      >
+      <div v-show="!tableData.length" class="content">
         <div class="content_box">
-          <img
-            src="@/assets/images/my_noData.png"
-            alt=""
-          />
+          <img src="@/assets/images/my_noData.png" alt="" />
           <div class="text">
             还没有累计的学分
           </div>

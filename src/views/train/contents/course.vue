@@ -1,14 +1,7 @@
 <template>
   <div class="course">
-    <ul
-      v-if="data.trainWay === 3 || data.trainWay === 2"
-      class="course-list"
-    >
-      <li
-        v-for="(course, index) in onlineList"
-        :key="index"
-        class="course-item"
-      >
+    <ul v-if="data.trainWay === 3 || data.trainWay === 2" class="course-list">
+      <li v-for="(course, index) in onlineList" :key="index" class="course-item">
         <div class="title">
           {{ course.name }}
         </div>
@@ -17,18 +10,18 @@
         </div>
         <ul class="chapter-list">
           <li
-            v-for="chapter in course.content"
-            :key="chapter.id"
+            v-for="(chapter, idx) in course.content"
+            :key="chapter.id || idx"
             class="chapter-item"
           >
             <div
               class="tab video"
               :class="{
-                video: chapter.type === 5,
-                article: chapter.type === 1,
-                point: chapter.type === 3,
-                exam: chapter.type === 4,
-                course: chapter.type === 2
+                video: chapter.type == 5,
+                article: chapter.type == 1,
+                point: chapter.type == 3,
+                exam: chapter.type == 4,
+                course: chapter.type == 2
               }"
             >
               {{ getChapterType(chapter.type) }}
@@ -61,19 +54,12 @@
         <div class="title">
           面授课程
         </div>
-        <div
-          v-for="(val, key) in offlineList"
-          :key="key"
-        >
+        <div v-for="(val, key) in offlineList" :key="key">
           <div class="note">
             {{ key }}
           </div>
           <ul class="chapter-list">
-            <li
-              v-for="(chapter, index) in val"
-              :key="index"
-              class="o-chapter-item"
-            >
+            <li v-for="(chapter, index) in val" :key="index" class="o-chapter-item">
               <div class="begin">
                 {{ chapter.todoTime }}&nbsp;&nbsp;&nbsp;&nbsp;{{ chapter.course }}
               </div>
@@ -113,21 +99,26 @@ export default {
   methods: {
     getChapterType(type) {
       switch (type) {
-        case 1:
+        case '1':
           return '文章'
-        case 2:
+        case '2':
           return '普通课件'
-        case 3:
+        case '3':
           return '知识点'
-        case 4:
+        case '4':
           return '考试'
-        case 5:
+        case '5':
           return '视频'
       }
     },
     getOnlineList() {
       getCourseList({ trainId: this.data.trainId }).then((res) => {
         this.onlineList = res.data
+        this.onlineList.forEach((course) => {
+          course.content.sort((a, b) => {
+            return a - b
+          })
+        })
       })
     },
     getOfflineList() {

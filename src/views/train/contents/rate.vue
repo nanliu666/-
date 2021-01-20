@@ -100,11 +100,7 @@
     </div>
 
     <div class="rate-bottom">
-      <div
-        v-for="teacher in rate.teachersEvaluate"
-        :key="teacher.teacherId"
-        class="rate-list"
-      >
+      <div v-for="teacher in rate.teachersEvaluate" :key="teacher.teacherId" class="rate-list">
         <div class="rate-item">
           <span class="rate-teacher"> {{ teacher.teacherName }}（讲师） </span>
           授课质量：

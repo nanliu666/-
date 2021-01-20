@@ -1,42 +1,25 @@
 <template>
   <!-- 注册页面 -->
   <el-card class="register">
-    <div
-      v-if="!succeed"
-      class="layout_container"
-    >
+    <div v-if="!succeed" class="layout_container">
       <div class="layout_label">
         注册
       </div>
-      <common-form
-        ref="form"
-        :model="form"
-        :columns="columns"
-      >
+      <common-form ref="form" :model="form" :columns="columns">
         <template slot="captchaCode">
           <el-input
             v-model="form.captchaCode"
             class="captchaCode"
             placeholder="请输入验证码"
-          ></el-input><el-button
-            class="captchaCodeBtn"
-            @click="getCapthaCode"
-          >
+          ></el-input><el-button class="captchaCodeBtn" @click="getCapthaCode">
             获取验证码
           </el-button>
         </template>
         <template slot="opations">
-          <el-button
-            type="primary"
-            class="submit"
-            @click="submit"
-          >
+          <el-button type="primary" class="submit" @click="submit">
             立即注册
           </el-button>
-          <router-link
-            class="returnLogin"
-            to="/login"
-          >
+          <router-link class="returnLogin" to="/login">
             <el-button type="text">
               返回登录
             </el-button>
@@ -44,27 +27,15 @@
         </template>
       </common-form>
     </div>
-    <div
-      v-else
-      class="success-page"
-    >
-      <svg
-        class="icon success-icon"
-        aria-hidden="true"
-      >
+    <div v-else class="success-page">
+      <svg class="icon success-icon" aria-hidden="true">
         <use xlink:href="#iconimage_icon_Correctprompt"></use>
       </svg>
       <div class="text">
         注册成功
       </div>
-      <div class="tips">
-        {{ timeoutCount }}秒后自动返回
-      </div>
-      <el-button
-        type="primary"
-        size="medium"
-        @click="goToLogin"
-      >
+      <div class="tips">{{ timeoutCount }}秒后自动返回</div>
+      <el-button type="primary" size="medium" @click="goToLogin">
         返回
       </el-button>
     </div>
@@ -128,6 +99,7 @@ export default {
           itemType: 'input',
           label: '姓名',
           maxlength: 20,
+          placeholder: '请输入真实姓名，后续不可自行修改',
           rules: [{ min: 2, max: 20, message: '姓名长度需要满足2到20个字符' }],
           required: true
         },
@@ -211,7 +183,7 @@ export default {
           getCode(params)
             .then(() => {
               this.$message.success(
-                `我们已向您的邮箱${this.form.userEmail}发送邮件，请接受邮件，查收验证码`
+                `我们已向您的邮箱${this.form.userEmail}发送邮件，请接收邮件，查收验证码`
               )
             })
             .catch(() => {

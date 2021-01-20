@@ -1,10 +1,7 @@
 <template>
   <!-- 大盒子 -->
   <div>
-    <div
-      v-show="!shuowItem"
-      class="course"
-    >
+    <div v-show="!shuowItem" class="course">
       <div class="search">
         <div class="search_btn"></div>
         <div class="search_bar">
@@ -16,20 +13,13 @@
           >
           </el-input>
 
-          <el-button
-            v-show="searchInput"
-            type="primary"
-            size="medium"
-          >
+          <el-button v-show="searchInput" type="primary" size="medium">
             重置
           </el-button>
         </div>
       </div>
 
-      <div
-        v-show="certificateData.length"
-        class="courselist"
-      >
+      <div v-show="certificateData.length" class="courselist">
         <div
           v-for="(item, index) in certificateData"
           :key="index"
@@ -38,22 +28,14 @@
         >
           <div class="preview_right_in">
             <div class="preview_right_box">
-              <img
-                :src="item.backUrl"
-                alt=""
-                class="bgimg"
-              />
+              <img :src="item.backUrl" alt="" class="bgimg" />
               <div class="name">
                 {{ item.templateName }}
               </div>
               <div class="text">
                 {{ item.text }}
               </div>
-              <img
-                :src="item.logoUrl"
-                alt=""
-                class="logo"
-              />
+              <img :src="item.logoUrl" alt="" class="logo" />
               <div class="studentName">
                 {{ item.stuName }}
               </div>
@@ -77,10 +59,7 @@
         </div>
       </div>
 
-      <div
-        v-show="certificateData.length"
-        class="page"
-      >
+      <div v-show="certificateData.length" class="page">
         <el-pagination
           :page-sizes="[10, 20, 30, 50, 100]"
           layout="total, sizes, prev, pager, next, jumper"
@@ -92,23 +71,13 @@
         </el-pagination>
       </div>
     </div>
-    <certificate-detail
-      v-show="shuowItem"
-      :sondata="sondata"
-      @ChangeBtn="sonBtn"
-    >
+    <certificate-detail v-show="shuowItem" :sondata="sondata" @ChangeBtn="sonBtn">
     </certificate-detail>
 
     <!-- 无数据 -->
-    <div
-      v-show="!certificateData.length"
-      class="contentShow"
-    >
+    <div v-show="!certificateData.length" class="contentShow">
       <div class="content_box">
-        <img
-          src="@/assets/images/my_noData.png"
-          alt=""
-        />
+        <img src="@/assets/images/my_noData.png" alt="" />
         <div class="text">
           还没有取得的证书
         </div>

@@ -16,21 +16,11 @@
         :disabled="disabled"
       />
       <span v-else>
-        <span
-          class="right-title"
-          v-html="_.unescape(conItem.content)"
-        ></span>
+        <span class="right-title" v-html="_.unescape(conItem.content)"></span>
         <ul>
-          <li
-            v-for="(paperItem, paperIndex) in conItem.subQuestions"
-            :key="paperIndex"
-            class=""
-          >
+          <li v-for="(paperItem, paperIndex) in conItem.subQuestions" :key="paperIndex" class="">
             <span>{{ paperIndex + 1 }}.</span>
-            <QustionPreview
-              :data="paperItem"
-              :disabled="disabled"
-            />
+            <QustionPreview :data="paperItem" :disabled="disabled" />
           </li>
         </ul>
       </span>

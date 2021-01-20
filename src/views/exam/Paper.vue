@@ -2,15 +2,9 @@
   <div class="paper-container">
     <div class="paper-header">
       <div class="header-left">
-        <i
-          class="iconimage_icon_leftarrow iconfont"
-          @click="goBack"
-        />
+        <i class="iconimage_icon_leftarrow iconfont" @click="goBack" />
         <span class="title">{{ paper.name }}</span>
-        <span
-          v-if="!isSuccess"
-          class="content"
-        >
+        <span v-if="!isSuccess" class="content">
           <span>共{{ paper.questionNum }}题，</span>
           <span v-if="paper.totalScore">总分{{ paper.totalScore }}分，</span>
           <span>限定最高分为100分</span>
@@ -20,30 +14,17 @@
           <span>标记）</span>
         </span>
       </div>
-      <div
-        v-if="!isSuccess"
-        class="header-right"
-      >
-        <span
-          class="time"
-          :class="{ 'warning-time': isWarningTimeLine }"
-        >
+      <div v-if="!isSuccess" class="header-right">
+        <span class="time" :class="{ 'warning-time': isWarningTimeLine }">
           <span>剩余时间：</span>
           <span>{{ remainingTime }}</span>
         </span>
-        <el-button
-          type="primary"
-          size="medium"
-          @click="carryOut"
-        >
+        <el-button type="primary" size="medium" @click="carryOut">
           交卷
         </el-button>
       </div>
     </div>
-    <div
-      v-if="paper.isDecoil"
-      class="close-book"
-    >
+    <div v-if="paper.isDecoil" class="close-book">
       <el-alert
         title="本次为闭卷考试，考试期间若切换程序离开考试页面，则自动提交答卷！"
         type="warning"
@@ -51,26 +32,14 @@
       >
       </el-alert>
     </div>
-    <section
-      ref="paperScroll"
-      class="container-section"
-    >
+    <section ref="paperScroll" class="container-section">
       <div class="middle-container">
-        <div
-          v-if="!isSuccess"
-          class="paper-main"
-        >
+        <div v-if="!isSuccess" class="paper-main">
           <div class="main-left">
-            <div
-              ref="controlScroll"
-              class="left-inner-box"
-            >
+            <div ref="controlScroll" class="left-inner-box">
               <el-card style="margin-bottom: 20px">
                 <div class="avatar-card">
-                  <el-avatar
-                    :size="80"
-                    :src="userInfo.avatar_url || circleUrl"
-                  ></el-avatar>
+                  <el-avatar :size="80" :src="userInfo.avatar_url || circleUrl"></el-avatar>
                   <div class="exam-box">
                     <div class="name">
                       {{ userInfo.nick_name }}
@@ -83,11 +52,7 @@
               </el-card>
               <el-card class="control-card">
                 <ul class="question-ul">
-                  <li
-                    v-for="(item, index) in questionList"
-                    :key="index"
-                    class="question-li"
-                  >
+                  <li v-for="(item, index) in questionList" :key="index" class="question-li">
                     <div class="li-title">
                       <span>{{ (index + 1) | number2zhcn }}、</span>
                       <span>{{ item[0].type | typeFilter }}</span>
@@ -126,15 +91,8 @@
             </div>
           </div>
           <el-card class="main-right">
-            <ul
-              v-if="paper.answerMode === 1"
-              class="question-ul"
-            >
-              <li
-                v-for="(item, index) in questionList"
-                :key="index"
-                class="question-li"
-              >
+            <ul v-if="paper.answerMode === 1" class="question-ul">
+              <li v-for="(item, index) in questionList" :key="index" class="question-li">
                 <div class="title-box">
                   <div class="question-li-title">
                     <span>{{ (index + 1) | number2zhcn }}、</span>
@@ -161,18 +119,9 @@
                 </ul>
               </li>
             </ul>
-            <ul
-              v-if="paper.answerMode === 2"
-              class="question-ul"
-            >
-              <li
-                v-for="(item, index) in tempQuestionList"
-                :key="index"
-              >
-                <div
-                  v-if="currentQuestion === index"
-                  class="question-li"
-                >
+            <ul v-if="paper.answerMode === 2" class="question-ul">
+              <li v-for="(item, index) in tempQuestionList" :key="index">
+                <div v-if="currentQuestion === index" class="question-li">
                   <div class="title-box">
                     <div class="question-li-title">
                       <span>{{ (getByOneIndex(item).key + 1) | number2zhcn }}、</span>
@@ -196,11 +145,7 @@
                 </div>
               </li>
               <div class="handle-button-box">
-                <el-button
-                  size="medium"
-                  :disabled="prevButtonDisabled"
-                  @click="prevQuestion"
-                >
+                <el-button size="medium" :disabled="prevButtonDisabled" @click="prevQuestion">
                   上一题
                 </el-button>
                 <el-button
@@ -239,14 +184,8 @@
       :show-close="false"
     >
       <span>{{ submitTips }}</span>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button
-          type="primary"
-          @click="automaticSubmit"
-        >{{ confirmTips }}</el-button>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="automaticSubmit">{{ confirmTips }}</el-button>
       </span>
     </el-dialog>
   </div>
@@ -349,12 +288,13 @@ export default {
   activated() {
     this.initData()
     //阻止F5刷新
-    this.stopF5Refresh()
+    // this.stopF5Refresh()
   },
   beforeRouteLeave(from, to, next) {
     if (this.isLeave || this.isSuccess) {
       this.clearIntervalAll()
       this.resetF5Refresh()
+      this.isSuccess = false
       next(true)
     } else {
       this.$message.error('禁止使用浏览器原生返回')

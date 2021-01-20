@@ -28,10 +28,7 @@
           <span class="value">王平</span>
         </div>
       </div>
-      <div
-        v-if="data.reviewRemark"
-        class="remark-box"
-      >
+      <div v-if="data.reviewRemark" class="remark-box">
         <span class="label">评语：</span>
         <span class="value">{{ data.reviewRemark }}</span>
       </div>

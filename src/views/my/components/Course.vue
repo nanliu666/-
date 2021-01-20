@@ -2,16 +2,8 @@
   <div class="course">
     <div class="search">
       <div class="search_btn">
-        <span
-          :class="{ pitch: pitch === 1 }"
-          style="cursor:pointer;"
-          @click="showBtn(1)"
-        >线上课程</span>
-        <span
-          :class="{ pitch: pitch === 3 }"
-          style="cursor:pointer;"
-          @click="showBtn(3)"
-        >直播课程</span>
+        <span :class="{ pitch: pitch === 1 }" style="cursor:pointer;" @click="showBtn(1)">线上课程</span>
+        <span :class="{ pitch: pitch === 3 }" style="cursor:pointer;" @click="showBtn(3)">直播课程</span>
       </div>
       <div class="search_bar">
         <el-input
@@ -31,21 +23,13 @@
         >
         </el-input>
 
-        <el-button
-          v-show="searchInput"
-          type="primary"
-          size="medium"
-          @click="searchInput = ''"
-        >
+        <el-button v-show="searchInput" type="primary" size="medium" @click="searchInput = ''">
           重置
         </el-button>
       </div>
     </div>
 
-    <div
-      v-show="formData.length"
-      class="courselist"
-    >
+    <div v-show="formData.length" class="courselist">
       <div
         v-for="(item, index) in formData"
         :key="index"
@@ -57,21 +41,13 @@
           <div class="text_title">
             {{ item.name }}
           </div>
-          <el-progress
-            :percentage="item.progressData"
-            :show-text="false"
-          ></el-progress>
-          <div class="text_in">
-            已学习{{ item.userPeriod || 0 }}/{{ item.period }}课时
-          </div>
+          <el-progress :percentage="item.progressData" :show-text="false"></el-progress>
+          <div class="text_in">已学习{{ item.userPeriod || 0 }}/{{ item.period }}课时</div>
         </div>
       </div>
     </div>
 
-    <div
-      v-show="formData.length"
-      class="page"
-    >
+    <div v-show="formData.length" class="page">
       <el-pagination
         :page-sizes="[10, 20, 30, 50, 100]"
         layout="total, sizes, prev, pager, next, jumper"
@@ -84,15 +60,9 @@
     </div>
 
     <!-- 无数据 -->
-    <div
-      v-show="!formData.length"
-      class="content"
-    >
+    <div v-show="!formData.length" class="content">
       <div class="content_box">
-        <img
-          src="@/assets/images/my_noData.png"
-          alt=""
-        />
+        <img src="@/assets/images/my_noData.png" alt="" />
         <div class="text">
           还没有加入的课程
         </div>

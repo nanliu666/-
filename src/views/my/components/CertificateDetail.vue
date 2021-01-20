@@ -9,9 +9,7 @@
       </el-button>
     </div>
 
-    <div class="title">
-      {{ sondata.templateName }}（{{ sondata.certificateNo }}）
-    </div>
+    <div class="title">{{ sondata.templateName }}（{{ sondata.certificateNo }}）</div>
 
     <div class="info">
       <span>颁发机构：{{ sondata.awardAgency }}</span>
@@ -24,22 +22,14 @@
 
     <div class="preview_right_in">
       <div class="preview_right_box">
-        <img
-          :src="sondata.backUrl"
-          alt=""
-          class="bgimg"
-        />
+        <img :src="sondata.backUrl" alt="" class="bgimg" />
         <div class="name">
           {{ sondata.templateName }}
         </div>
         <div class="text">
           {{ sondata.text }}
         </div>
-        <img
-          :src="sondata.logoUrl"
-          alt=""
-          class="logo"
-        />
+        <img :src="sondata.logoUrl" alt="" class="logo" />
         <div class="studentName">
           {{ sondata.stuName }}
         </div>

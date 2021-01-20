@@ -3,15 +3,8 @@
     <div class="userInfo">
       <div class="userInfo_in">
         <div class="userInfo_in_img">
-          <img
-            v-if="infoData.avatarUrl"
-            class="img"
-            :src="infoData.avatarUrl"
-          />
-          <div
-            v-else
-            class="img"
-          ></div>
+          <img v-if="infoData.avatarUrl" class="img" :src="infoData.avatarUrl" />
+          <div v-else class="img"></div>
         </div>
         <div class="userInfo_in_r">
           <div class="userInfo_name">
@@ -35,40 +28,17 @@
       </div>
 
       <div class="userInfo_btn">
-        <el-button
-          type="primary"
-          @click="toPersonal"
-        >
+        <el-button type="primary" @click="toPersonal">
           编辑信息
         </el-button>
       </div>
 
       <div class="userInfo_bar">
-        <span
-          :class="{ pitch: pitch === 0 }"
-          style="cursor:pointer;"
-          @click="showBtn(0)"
-        >课程</span>
-        <span
-          :class="{ pitch: pitch === 1 }"
-          style="cursor:pointer;"
-          @click="showBtn(1)"
-        >培训</span>
-        <span
-          :class="{ pitch: pitch === 2 }"
-          style="cursor:pointer;"
-          @click="showBtn(2)"
-        >考试</span>
-        <span
-          :class="{ pitch: pitch === 3 }"
-          style="cursor:pointer;"
-          @click="showBtn(3)"
-        >学分</span>
-        <span
-          :class="{ pitch: pitch === 4 }"
-          style="cursor:pointer;"
-          @click="showBtn(4)"
-        >证书</span>
+        <span :class="{ pitch: pitch === 0 }" style="cursor:pointer;" @click="showBtn(0)">课程</span>
+        <span :class="{ pitch: pitch === 1 }" style="cursor:pointer;" @click="showBtn(1)">培训</span>
+        <span :class="{ pitch: pitch === 2 }" style="cursor:pointer;" @click="showBtn(2)">考试</span>
+        <span :class="{ pitch: pitch === 3 }" style="cursor:pointer;" @click="showBtn(3)">学分</span>
+        <span :class="{ pitch: pitch === 4 }" style="cursor:pointer;" @click="showBtn(4)">证书</span>
       </div>
     </div>
     <course v-show="pitch === 0"></course>

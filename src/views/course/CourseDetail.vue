@@ -4,10 +4,7 @@
     <div class="course-detail--card course-detail__info">
       <div class="course-detail__info__img">
         <el-image :src="courseData.url">
-          <div
-            slot="error"
-            class="image-slot"
-          >
+          <div slot="error" class="image-slot">
             <i class="el-icon-picture-outline"></i>
           </div>
         </el-image>
@@ -42,10 +39,7 @@
             {{ COURSE_TYPE_MAP[courseData.type] || '' }}
           </span>
         </div>
-        <div
-          v-if="courseData.peirod"
-          class="course-detail__info__column"
-        >
+        <div v-if="courseData.peirod" class="course-detail__info__column">
           <span class="course-detail__info__label">
             学时：
           </span>
@@ -53,30 +47,17 @@
             {{ courseData.peirod }}
           </span>
         </div>
-        <el-button
-          type="primary"
-          size="medium"
-          @click="jumpToLearn(id, null)"
-        >
+        <el-button type="primary" size="medium" @click="jumpToLearn(id, null)">
           立即学习
         </el-button>
       </div>
     </div>
     <div class="course-detail--card course-detail__detail">
       <el-tabs v-model="activeName">
-        <el-tab-pane
-          label="课程信息"
-          name="first"
-        >
-          <div
-            v-show="courseData.introduction"
-            v-html="_.unescape(courseData.introduction)"
-          />
+        <el-tab-pane label="课程信息" name="first">
+          <div v-show="courseData.introduction" v-html="_.unescape(courseData.introduction)" />
         </el-tab-pane>
-        <el-tab-pane
-          label="课程目录"
-          name="second"
-        >
+        <el-tab-pane label="课程目录" name="second">
           <ul class="course-detail__chapters">
             <li
               v-for="(chapter, index) in chapters"
@@ -106,15 +87,8 @@
             </li>
           </ul>
         </el-tab-pane>
-        <el-tab-pane
-          label="课程评价"
-          name="third"
-        >
-          <Comment
-            :load="loadCommentList"
-            :submit="submitComment"
-            name="课程"
-          />
+        <el-tab-pane label="课程评价" name="third">
+          <Comment :load="loadCommentList" :submit="submitComment" name="课程" />
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -123,9 +97,16 @@
 
 <script>
 import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
-import { getCourseDetail, getCommentList, addComment, getLearnRecord } from '@/api/course'
-import Comment from '../knowledge/Comment'
+import {
+  getCourseDetail,
+  getCommentList,
+  addComment,
+  getLearnRecord,
+  addViewLog
+} from '@/api/course'
+import Comment from '@/components/common-comment/Comment'
 import { COURSE_CHAPTER_TYPE_MAP, COURSE_TYPE_MAP } from './config'
+import { mapGetters } from 'vuex'
 export default {
   name: 'CourseDetail',
   components: { CommonBreadcrumb, Comment },
@@ -143,7 +124,8 @@ export default {
       return this.$route.query.id
     },
     COURSE_TYPE_MAP: () => COURSE_TYPE_MAP,
-    COURSE_CHAPTER_TYPE_MAP: () => COURSE_CHAPTER_TYPE_MAP
+    COURSE_CHAPTER_TYPE_MAP: () => COURSE_CHAPTER_TYPE_MAP,
+    ...mapGetters(['userInfo'])
   },
   activated() {
     this.loadDetail()
@@ -152,31 +134,15 @@ export default {
   },
   methods: {
     calcProcess(chapter) {
-      if (chapter.type !== '5') {
-        if (chapter.progress == 1) {
-          return 100
-        } else {
-          return 0
-        }
-      } else {
-        return parseInt(chapter.progress)
-      }
+      return parseInt(chapter.progress) || 0
     },
     getChapterStatus(chapter) {
-      if (chapter.type !== '5') {
-        if (chapter.progress == 1) {
-          return '已学习'
-        } else {
-          return '未学习'
-        }
+      if (chapter.progress == '0') {
+        return '未学习'
+      } else if (chapter.progress == '100') {
+        return '已学习'
       } else {
-        if (chapter.progress == '0') {
-          return '未学习'
-        } else if (chapter.progress == '100') {
-          return '已学习'
-        } else {
-          return '学习中'
-        }
+        return '学习中'
       }
     },
     loadDetail() {
@@ -205,6 +171,14 @@ export default {
       return addComment({ ...params, courseId: this.id })
     },
     jumpToLearn(courseId, chapterId = null) {
+      addViewLog({
+        coursePlanNo: courseId,
+        coursePlanName: this.courseData.name,
+        departmentId: this.userInfo.org_id,
+        userName: this.userInfo.nick_name,
+        tenantId: this.userInfo.tenant_id,
+        workNo: this.userInfo.work_no
+      })
       this.$router.push({ path: '/course/learn', query: { courseId, chapterId } })
     }
   }

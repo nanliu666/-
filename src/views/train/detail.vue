@@ -24,7 +24,7 @@
         </div>
         <div class="intro-item">
           培训时间：
-          <span class="text">{{ data.startTime }} ~ {{ data.endTime }}</span>
+          <span class="text">{{ data.trainBeginTime }} ~ {{ data.trainEndTime }}</span>
         </div>
         <div class="intro-item">
           计划人数：
@@ -84,21 +84,14 @@
         active-text-color="rgba(1,170,252,1)"
         @select="handleSelect"
       >
-        <el-menu-item
-          v-for="tab in data.tabs"
-          :key="tab"
-          :index="tab"
-        >
+        <el-menu-item v-for="tab in data.tabs" :key="tab" :index="tab">
           {{ reference[tab] }}
         </el-menu-item>
       </el-menu>
 
       <div class="train-content">
         <keep-alive>
-          <component
-            :is="activeComponent"
-            :data="data"
-          ></component>
+          <component :is="activeComponent" :data="data"></component>
         </keep-alive>
       </div>
     </div>
@@ -139,7 +132,6 @@ export default {
   deactivated() {
     this.data = {}
     this.activeComponent = ''
-    localStorage.removeItem(globalKey.trainDataKey)
   },
   methods: {
     handleSelect(name) {
@@ -153,15 +145,17 @@ export default {
         this.data = JSON.parse(localStorage.getItem(trainDataKey))
         this.activeComponent = this.data.activeComponent
       } else {
-        const { title, trainId, trainWay, userType } = params
+        const { trainId, userType } = params
         const tabs =
           userType === 0
             ? ['Course', 'Exam', 'Intro', 'Rate']
             : ['Trainee', 'Schedule', 'Intro', 'Rate']
         this.activeComponent = tabs[0]
+        this.data = { tabs, activeComponent: this.activeComponent, ...params }
         getDetail({ trainId }).then((res) => {
-          this.data = { title, trainId, trainWay, userType, tabs, ...res }
+          this.data = Object.assign(this.data, res)
           localStorage.setItem(trainDataKey, JSON.stringify(this.data))
+          this.$forceUpdate()
         })
       }
     }

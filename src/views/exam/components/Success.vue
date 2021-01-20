@@ -7,16 +7,9 @@
       <div class="success-title">
         提交成功
       </div>
-      <div
-        class="content"
-        v-html="paper.successPaper.msg"
-      ></div>
+      <div class="content" v-html="paper.successPaper.msg"></div>
       <div class="handle-box">
-        <el-button
-          v-if="paper.successPaper.openAnswerSheet"
-          type="primary"
-          @click="goDetail"
-        >
+        <el-button v-if="paper.successPaper.openAnswerSheet" type="primary" @click="goDetail">
           查看答卷
         </el-button>
         <el-button @click="goList">

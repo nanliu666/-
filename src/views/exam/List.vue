@@ -65,25 +65,15 @@
             </el-select>
           </li>
           <div class="course-list-filter-pop__footer">
-            <el-button
-              type="primary"
-              size="medium"
-              @click="filterFun"
-            >
+            <el-button type="primary" size="medium" @click="filterFun">
               确定
             </el-button>
-            <el-button
-              size="medium"
-              @click="restSearch"
-            >
+            <el-button size="medium" @click="restSearch">
               重置
             </el-button>
           </div>
         </ul>
-        <el-button
-          slot="reference"
-          size="medium"
-        >
+        <el-button slot="reference" size="medium">
           高级检索
         </el-button>
       </el-popover>
@@ -101,9 +91,7 @@
         @current-page-change="handleCurrentPageChange"
         @page-size-change="handlePageSizeChange"
       >
-        <template #examTime="{row}">
-          {{ row.examBeginTime }} - {{ row.examEndTime }}
-        </template>
+        <template #examTime="{row}"> {{ row.examBeginTime }} - {{ row.examEndTime }} </template>
         <template #isPass="{row}">
           {{ getPass(row) }}
         </template>
@@ -114,18 +102,10 @@
           {{ row.score ? row.score : '--' }}
         </template>
         <template #handler="{row}">
-          <el-button
-            type="text"
-            :disabled="JoinDisabled(row)"
-            @click="joinExam(row)"
-          >
+          <el-button type="text" :disabled="JoinDisabled(row)" @click="joinExam(row)">
             参加考试
           </el-button>
-          <el-button
-            type="text"
-            :disabled="JoinView(row)"
-            @click="handleView(row)"
-          >
+          <el-button type="text" :disabled="JoinView(row)" @click="handleView(row)">
             查看答卷
           </el-button>
         </template>

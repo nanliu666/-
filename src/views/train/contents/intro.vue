@@ -3,10 +3,7 @@
     <div class="title">
       培训详情
     </div>
-    <div
-      class="intro-content"
-      v-html="text"
-    ></div>
+    <div class="intro-content" v-html="text"></div>
   </div>
 </template>
 

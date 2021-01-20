@@ -25,10 +25,7 @@
                 class="top-bar__img "
                 :src="userInfo.avatar_url"
               />
-              <i
-                v-else
-                class="iconimage_icon_headportrait iconfont "
-              />
+              <i v-else class="iconimage_icon_headportrait iconfont " />
             </span>
             <el-dropdown-menu slot="dropdown">
               <!-- <el-dropdown-item>
@@ -71,7 +68,10 @@ const menu = [
   { label: '知识库', path: '/knowledge' },
   { label: '考试', path: '/exam' },
   { label: '新闻', path: '/news' },
-  { label: '培训', path: '/train' }
+  { label: '培训', path: '/train' },
+  { label: '直播', path: '/live' },
+  { label: '个人中心', path: '/my/info' },
+  { label: '我的档案', path: '/my/record' }
 ]
 import Notification from './Notification'
 import { mapGetters } from 'vuex'
