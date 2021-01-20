@@ -9,7 +9,7 @@
             <span class="homeMyTaskType">{{ myMissionsType[item.type] }}</span>
           </h3>
           <div class="homeMyTaskItemText">
-            <div class="homeMyTaskItemTextItem">
+            <div v-if="item.type == 1" class="homeMyTaskItemTextItem">
               <span class="homeMyTaskItemTextItem2 iconimage_icon_address iconfont">{{
                 item.address
               }}</span>
@@ -19,7 +19,7 @@
                 item.time
               }}</span>
             </div>
-            <div class="homeMyTaskItemTextItem">
+            <div v-if="item.type == 1" class="homeMyTaskItemTextItem">
               <span class="homeMyTaskItemTextItem2 iconimage_icon_user iconfont">{{
                 item.lecturer
               }}</span>
