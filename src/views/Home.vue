@@ -37,7 +37,7 @@
                   <img src="../assets/images/photo1.png" width="285" height="168" alt="" />
                 </div>
                 <div class="homeCourseText">
-                  <span class="homeCourseTitle">信息安全在岗考试必要性在企业发展中的重要性信息安全在岗在岗考试必要性在企业发展中的重要性信息性</span>
+                  <span class="homeCourseTitle">信息安全在岗在岗考试必要性</span>
                   <span class="homeCourseTime">今天 20:00</span>
                   <div class="livePerInfo">
                     <img src="/img/userIconBig.png" width="24" height="24" alt="" />
@@ -52,7 +52,7 @@
                   <img src="../assets/images/photo1.png" width="285" height="168" alt="" />
                 </div>
                 <div class="homeCourseText">
-                  <span class="homeCourseTitle">信息业发展中的重要性信息考试必要性在企业发展中的重要性的重要性</span>
+                  <span class="homeCourseTitle">信息业发展中的重要性信息考试必要</span>
                   <span class="homeCourseTime">今天 20:00</span>
                   <div class="livePerInfo">
                     <img src="/img/userIconBig.png" width="24" height="24" alt="" />
@@ -67,7 +67,7 @@
                   <img src="../assets/images/photo1.png" width="285" height="168" alt="" />
                 </div>
                 <div class="homeCourseText">
-                  <span class="homeCourseTitle">信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性</span>
+                  <span class="homeCourseTitle">信息安全在岗考试必要性在企业发展中的重要性信息安全在</span>
                   <span class="homeCourseTime">今天 20:00</span>
                   <div class="livePerInfo">
                     <img src="/img/userIconBig.png" width="24" height="24" alt="" />
@@ -407,6 +407,7 @@ export default {
 }
 .banner .b_item {
   height: 600px;
+  background-position: center 0;
 }
 .homeMain {
   margin: auto;
