@@ -94,7 +94,7 @@
         <div
           v-if="currentChapter.type == '1'"
           class="content--richtext"
-          v-html="_.unescape(currentChapter.content)"
+          v-html="_.unescape(_.unescape(currentChapter.content))"
         ></div>
         <!-- 课件 -->
         <div v-if="currentChapter.type == '2'" class="content--iframe">
