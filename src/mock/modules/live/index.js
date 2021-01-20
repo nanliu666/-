@@ -17,6 +17,14 @@ export default ({ mock }) => {
         loginPassword: '@integer(100000, 10000000000)'
       })
     )
+    const courseInfo = _.times(5, () =>
+      Mock.mock({
+        coverUrl: '@url',
+        teacherName: '@cword(2,3)',
+        courseId: '@integer(100000, 10000000000)',
+        courseName: '@cword(2,3)'
+      })
+    )
     const list = Mock.mock({
       liveTime: '@date()',
       livePlanId: '@integer(100000, 10000000000)',
@@ -31,7 +39,8 @@ export default ({ mock }) => {
       watchLink: '@url',
       'status|+1': ['live', 'init', 'end'], //Guest-嘉宾 Assistant-助教 Lecturer-主讲师
       viewersNumber: 1,
-      loginInfo
+      loginInfo,
+      courseInfo
     })
     return {
       ...normalData,

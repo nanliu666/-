@@ -20,23 +20,28 @@
         关联课程
       </div>
       <ul class="course__ul">
-        <li v-for="item in courseList" :key="item.id" class="course__li">
-          <el-image class="logo__img" :src="item.logo" fit="cover">
+        <li
+          v-for="item in data.courseInfo"
+          :key="item.id"
+          class="course__li"
+          @click="goDetail(item)"
+        >
+          <el-image class="logo__img" :src="item.coverUrl" fit="cover">
             <div slot="error" class="image__slot">
               <i class="el-icon-picture-outline"></i>
             </div>
           </el-image>
           <div class="li__title">
-            {{ item.title }}
+            {{ item.courseName }}
           </div>
           <div class="li__name">
-            <span class="name">{{ item.name }}</span>
-            <span>
+            <span class="name">{{ item.teacherName }}</span>
+            <!-- <span>
               <i class="iconimage_icon_user iconfont" />
               <span>{{ item.person }}</span>
-            </span>
+            </span> -->
           </div>
-          <el-rate v-model="item.score"></el-rate>
+          <!-- <el-rate v-model="item.score"></el-rate> -->
         </li>
       </ul>
     </div>
@@ -53,62 +58,13 @@ export default {
     }
   },
   data() {
-    return {
-      courseList: [
-        {
-          id: '21',
-          title: '课程标题课程标题',
-          name: '赵老师',
-          person: 324,
-          score: 4.5,
-          logo:
-            'https://car2.autoimg.cn/cardfs/product/g29/M03/48/EF/1024x0_1_q95_autohomecar__ChsEn155d2aAXLzSAAMaJS8gWwA607.jpg'
-        },
-        {
-          id: '127',
-          title: '课程标题课程标题',
-          name: '赵老师',
-          person: 324,
-          score: 4.5,
-          logo:
-            'https://car2.autoimg.cn/cardfs/product/g29/M03/48/EF/1024x0_1_q95_autohomecar__ChsEn155d2aAXLzSAAMaJS8gWwA607.jpg'
-        },
-        {
-          id: '14',
-          title: '课程标题课程标题',
-          name: '赵老师',
-          person: 324,
-          score: 4.5,
-          logo:
-            'https://car2.autoimg.cn/cardfs/product/g29/M03/48/EF/1024x0_1_q95_autohomecar__ChsEn155d2aAXLzSAAMaJS8gWwA607.jpg'
-        },
-        {
-          id: '121',
-          title: '课程标题课程标题',
-          name: '赵老师',
-          person: 324,
-          score: 4.5,
-          logo:
-            'https://car2.autoimg.cn/cardfs/product/g29/M03/48/EF/1024x0_1_q95_autohomecar__ChsEn155d2aAXLzSAAMaJS8gWwA607.jpg'
-        },
-        {
-          id: '1116',
-          title: '课程标题课程标题',
-          name: '赵老师',
-          person: 324,
-          score: 4.5,
-          logo:
-            'https://car2.autoimg.cn/cardfs/product/g29/M03/48/EF/1024x0_1_q95_autohomecar__ChsEn155d2aAXLzSAAMaJS8gWwA607.jpg'
-        }
-      ]
-    }
+    return {}
   },
-  created() {
-    this.loadTableData()
-  },
+  created() {},
   methods: {
-    // 加载函数
-    async loadTableData() {}
+    goDetail(data) {
+      this.$router.push({ path: '/course/detail', query: { id: data.courseId } })
+    }
   }
 }
 </script>
@@ -167,14 +123,14 @@ export default {
         width: 273px;
         height: 158px;
         border-radius: 8px;
-        margin-bottom: 16px;
+        margin-bottom: 10px;
       }
       .li__title {
         font-family: PingFangSC-Medium;
         font-size: 14px;
         color: #000b15;
         font-weight: 550;
-        margin-bottom: 16px;
+        margin-bottom: 6px;
       }
       .li__name {
         font-family: PingFangSC-Regular;

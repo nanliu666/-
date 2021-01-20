@@ -136,7 +136,7 @@ export default {
     }
   },
   mounted() {
-    const params = { channelId: '1' }
+    const params = { channelId: this.id }
     getLiveDetail(params).then((res) => {
       this.detailData = res
     })
