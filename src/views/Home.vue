@@ -329,21 +329,21 @@ export default {
       banner: [
         {
           css: {
-            backgroundImage: 'url(' + require('../assets/images/banner.jpg') + ')',
+            backgroundImage: 'url(' + require('../assets/images/banner2.jpg') + ')',
             backgroundRepeat: 'no-repeat'
           },
           id: '11'
         },
         {
           css: {
-            backgroundImage: 'url(' + require('../assets/images/banner.jpg') + ')',
+            backgroundImage: 'url(' + require('../assets/images/banner3.jpg') + ')',
             backgroundRepeat: 'no-repeat'
           },
           id: '22'
         },
         {
           css: {
-            backgroundImage: 'url(' + require('../assets/images/banner.jpg') + ')',
+            backgroundImage: 'url(' + require('../assets/images/banner4.jpg') + ')',
             backgroundRepeat: 'no-repeat'
           },
           id: '33'

@@ -167,7 +167,7 @@
           <span class="rankingInfo1">{{ item.name }}</span>
           <span class="rankingInfo2">{{ item.orgCode }}</span>
         </div>
-        <div class="score">{{ item.monthlyScore }}分</div>
+        <div class="score">{{ item.monthlyPeriod }}H</div>
       </div>
     </div>
   </div>
