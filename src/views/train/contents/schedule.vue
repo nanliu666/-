@@ -208,7 +208,7 @@ export default {
       studentTotal: 0
     }
   },
-  activated() {
+  created() {
     this.getData(this.data.trainId)
     this.setDetailVisible(false)
   },
