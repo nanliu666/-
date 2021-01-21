@@ -21,10 +21,6 @@ export default (enable) => {
     timeout: 500
   })
   modules.keys().forEach((key) => {
-    if (key === './live/index.js') {
-      modules(key).default(mackOptions)
-    } else {
-      modules(key).default(options)
-    }
+    modules(key).default(options)
   })
 }

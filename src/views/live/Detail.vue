@@ -132,11 +132,11 @@ export default {
   },
   computed: {
     id() {
-      return _.get(this.$route, 'query.id', null)
+      return _.get(this.$route, 'query.id', '555')
     }
   },
   mounted() {
-    const params = { channelId: '1' }
+    const params = { channelId: this.id }
     getLiveDetail(params).then((res) => {
       this.detailData = res
     })

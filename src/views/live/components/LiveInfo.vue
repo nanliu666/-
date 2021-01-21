@@ -70,7 +70,7 @@ const TABLE_CONFIG = {
   enablePagination: true,
   enableMultiSelect: false
 }
-import { getKnowledgeList } from '@/api/knowledge'
+import { getStudentList } from '@/api/live'
 export default {
   name: 'LiveInfo',
   props: {
@@ -90,9 +90,7 @@ export default {
       queryInfo: {
         pageNo: 1,
         pageSize: 10,
-        catalogId: '',
-        knowledgeName: '',
-        sortChoice: '' //排序选项 1：综合排序；2：最新上传；3：评分最高
+        channelId: this.$route.query.id || '555'
       },
       columnsVisible: TABLE_COLUMNS,
       tableConfig: TABLE_CONFIG,
@@ -123,7 +121,7 @@ export default {
       try {
         this.tableData = []
         this.tableLoading = true
-        let { totalNum, data } = await getKnowledgeList(this.queryInfo)
+        let { totalNum, data } = await getStudentList(this.queryInfo)
         this.tableLoading = false
         this.tableData = data
         this.page.total = totalNum

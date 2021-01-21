@@ -138,6 +138,7 @@ export default {
     publish() {
       this.submit(this.scopeParams).then(() => {
         this.hasPublish = true
+        this.scopeParams.remark = ''
         this.loadList()
       })
     }
