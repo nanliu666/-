@@ -7,7 +7,7 @@
       :initial-index="viewIndex"
     ></image-viewer>
     <div class="image-name">
-      {{ fileName }}
+      <span class="ellipsis"> {{ fileName }}</span>
     </div>
     <div class="handle-box">
       <span v-if="isDownload" @click.stop="downloadFile(url)"><i class="el-icon-download"></i></span>
