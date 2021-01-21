@@ -19,3 +19,7 @@ export const postComment = (params) => post('/common/v1/live/comment/comment', p
  * pageSize 每页条数
  */
 export const getStudentList = (params) => get('/common/v1/live/student', params)
+
+export const getSummary = (params) => get('/common/v1/live/data/summary', params)
+
+export const getAudience = (params) => get('/common/v1/live/data/audience', params)

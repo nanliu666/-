@@ -92,7 +92,7 @@ export default {
       offlineList: []
     }
   },
-  activated() {
+  created() {
     this.getOnlineList()
     this.getOfflineList()
   },

@@ -77,23 +77,13 @@
     </div>
 
     <div class="train-main">
-      <el-menu
-        :default-active="activeComponent"
-        mode="horizontal"
-        text-color="rgba(0,11,21,0.65)"
-        active-text-color="rgba(1,170,252,1)"
-        @select="handleSelect"
-      >
-        <el-menu-item v-for="tab in data.tabs" :key="tab" :index="tab">
-          {{ reference[tab] }}
-        </el-menu-item>
-      </el-menu>
-
-      <div class="train-content">
-        <keep-alive>
-          <component :is="activeComponent" :data="data"></component>
-        </keep-alive>
-      </div>
+      <el-tabs v-model="activeComponent" class="tabs" @tab-click="handleSelect">
+        <el-tab-pane v-for="tab in data.tabs" :key="tab" :label="reference[tab]" :name="tab">
+          <div class="train-content">
+            <component :is="tab" :data="data"></component>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
     </div>
   </div>
 </template>
@@ -134,8 +124,8 @@ export default {
     this.activeComponent = ''
   },
   methods: {
-    handleSelect(name) {
-      this.data.activeComponent = this.activeComponent = name
+    handleSelect(tab) {
+      this.data.activeComponent = tab.name
       localStorage.setItem(globalKey.trainDataKey, JSON.stringify(this.data))
     },
     getData() {
@@ -154,6 +144,7 @@ export default {
         this.data = { tabs, activeComponent: this.activeComponent, ...params }
         getDetail({ trainId }).then((res) => {
           this.data = Object.assign(this.data, res)
+          this.data.userType = userType
           localStorage.setItem(trainDataKey, JSON.stringify(this.data))
           this.$forceUpdate()
         })
@@ -162,7 +153,6 @@ export default {
   }
 }
 </script>
-
 <style lang="scss" scoped>
 .train-detail {
   .breadcrumb-wrap {
@@ -234,7 +224,7 @@ export default {
     background: #ffffff;
     box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
     border-radius: 4px;
-    .el-menu-item {
+    .el-tabs__item {
       font-size: 16px;
       padding: 0 !important;
       margin: 0 20px;

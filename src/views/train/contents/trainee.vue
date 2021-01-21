@@ -178,7 +178,7 @@ export default {
       deep: true
     }
   },
-  activated() {
+  created() {
     this.filterForm.trainId = this.data.trainId
     this.getList()
   },

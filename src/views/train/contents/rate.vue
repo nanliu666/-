@@ -159,7 +159,7 @@ export default {
       disabled: true
     }
   },
-  async activated() {
+  async created() {
     await this.getTrainEvaluate()
     const composite = this.rate.composite
     this.disabled = this.data.userType === 0 && composite !== '' && !isNaN(composite)
@@ -184,8 +184,8 @@ export default {
       })
     },
     getTrainEvaluate() {
-      const { trainId, trainWay } = this.data
-      return getTrainEvaluate({ trainId, trainWay }).then((res) => {
+      const { trainId, trainWay, userType } = this.data
+      return getTrainEvaluate({ trainId, trainWay, userType }).then((res) => {
         const data = JSON.parse(JSON.stringify(res))
         if (isEmptyString(data.composite)) {
           const teachersEvaluate = data.teachersEvaluate.map((item) => {

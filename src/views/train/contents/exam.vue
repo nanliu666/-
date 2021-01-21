@@ -102,7 +102,7 @@ export default {
       isFold: true
     }
   },
-  activated() {
+  created() {
     this.queryExamList()
   },
   methods: {
@@ -121,7 +121,7 @@ export default {
     toTestPaper(exam) {
       const { examId, batchId } = exam
       this.$router.push({
-        path: '/exam/detail',
+        name: 'ExamDetail',
         params: {
           batchId,
           examId
