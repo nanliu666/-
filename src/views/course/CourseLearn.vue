@@ -41,7 +41,7 @@
                     type="circle"
                     :show-text="false"
                     :percentage="calcProcess(chapter)"
-                    :width="14"
+                    :width="16"
                     :stroke-width="2"
                   ></el-progress>
                   <i v-else class="iconimage_icon_time1 iconfont"></i>
@@ -98,7 +98,17 @@
         ></div>
         <!-- 课件 -->
         <div v-if="currentChapter.type == '2'" class="content--iframe">
+          <video
+            v-if="isVideo"
+            ref="video"
+            preload
+            controls
+            :src="currentChapter.content"
+            :height="contentHeight"
+            :width="contentWidth"
+          ></video>
           <iframe
+            v-else
             :src="getContentUrl(currentChapter)"
             width="100%"
             height="100%"
@@ -124,17 +134,6 @@
           <el-button type="primary" size="medium">
             前往考试
           </el-button>
-        </div>
-        <!--视频-->
-        <div v-if="currentChapter.type == '5'">
-          <video
-            ref="video"
-            preload
-            controls
-            :src="currentChapter.content"
-            :height="contentHeight"
-            :width="contentWidth"
-          ></video>
         </div>
       </div>
     </div>
@@ -182,14 +181,17 @@ export default {
     contentHeight() {
       return this.$refs.content.offsetHeight
     },
+    isVideo() {
+      const regx = /^.*\.(avi|wmv|mp4|3gp|rm|rmvb|mov)$/
+      return regx.test(this.currentChapter.content)
+    },
     COURSE_CHAPTER_TYPE_MAP: () => COURSE_CHAPTER_TYPE_MAP,
     ...mapGetters(['userInfo'])
   },
   watch: {
     currentChapter(newVal, oldVal) {
-      if (oldVal.type == '5' && oldVal.duration) {
-        let progress = Number(((this.$refs.video.currentTime / oldVal.duration) * 100).toFixed())
-        oldVal.progress = progress > oldVal.progress ? progress : oldVal.progress
+      if (this.isChapterVideo(oldVal) && oldVal.duration) {
+        this.updateVideoProgress(oldVal)
       } else {
         oldVal.progress = 100
       }
@@ -203,10 +205,23 @@ export default {
     this.loadNoteList()
     this.setTimer()
   },
-  deactivated() {
+  beforeRouteLeave(from, to, next) {
+    this.updateVideoProgress(this.currentChapter)
+    this.submitLearnRecords()
     clearInterval(this.timer)
+    next()
   },
   methods: {
+    /**
+     * 更新视频播放进度
+     */
+    updateVideoProgress(chapter) {
+      if (!this.isChapterVideo(chapter) || !chapter.duration) {
+        return
+      }
+      let progress = Number(((this.$refs.video.currentTime / chapter.duration) * 100).toFixed())
+      chapter.progress = progress > chapter.progress ? progress : chapter.progress
+    },
     getFileImageUrl(url = '') {
       const fileDict = {
         doc: 'word',
@@ -246,11 +261,15 @@ export default {
     isActive(chapter) {
       return this.currentChapter.contentId === chapter.contentId
     },
+    isChapterVideo(chapter) {
+      const regx = /^.*\.(avi|wmv|mp4|3gp|rm|rmvb|mov)$/
+      return regx.test(chapter.content)
+    },
     handleChapterClick(chapter) {
       this.currentChapter = chapter
     },
     calcProcess(chapter) {
-      if (chapter.type != '5') {
+      if (!this.isChapterVideo(chapter)) {
         if (chapter.progress == 1) {
           return 100
         } else {
@@ -264,8 +283,8 @@ export default {
       if (this.isActive(chapter)) {
         return '正在学'
       }
-      if (chapter.type != '5') {
-        if (chapter.progress == 1) {
+      if (!this.isChapterVideo(chapter)) {
+        if (chapter.progress == 100) {
           return '已学习'
         } else {
           return '未学习'
@@ -273,7 +292,7 @@ export default {
       } else {
         if (chapter.progress == '0') {
           return '未学习'
-        } else if (chapter.progress == '100') {
+        } else if (chapter.progress == 100) {
           return '已学习'
         } else {
           return '学习中'
@@ -289,11 +308,14 @@ export default {
       })
     },
     submitLearnRecords() {
-      let params = { contentRecords: '', period: 5, courseId: this.courseId }
+      let params = { period: 5, courseId: this.courseId }
       params.contentRecords = _.map(
         this.chapters,
         (chapter) => `${chapter.contentId}:${chapter.progress}`
       ).join(',')
+      if (!params.contentRecords) {
+        return
+      }
       updateLearnRecord(params)
         .then()
         .catch()
@@ -305,16 +327,16 @@ export default {
       getLearnRecord({ courseId: this.courseId }).then((res) => {
         this.chapters = _.sortBy(res, 'sort')
         _.forEach(this.chapters, (chapter) => {
-          if (chapter.type == '5') {
+          if (this.isChapterVideo(chapter)) {
             // chapter.content =
             //   'https://oa-file-dev.bestgrand.com.cn/b8a6256a5a31464fa28a3ae46992e850.mp4'
             this.setDuration(chapter).catch()
           }
-          if (chapter.type == '2') {
-            // chapter.content = 'http://ieee802.org:80/secmail/docIZSEwEqHFr.doc'
-            // chapter.content =
-            //   'https://oa-file-dev.bestgrand.com.cn/7f6c5943b4d14733b61f7efaa7b4ec30.txt'
-          }
+          // if (chapter.type == '2') {
+          // chapter.content = 'http://ieee802.org:80/secmail/docIZSEwEqHFr.doc'
+          // chapter.content =
+          //   'https://oa-file-dev.bestgrand.com.cn/7f6c5943b4d14733b61f7efaa7b4ec30.txt'
+          // }
           if (chapter.contentId == this.chapterId) {
             this.currentChapter = chapter
           }
@@ -430,10 +452,12 @@ export default {
         }
         li {
           display: flex;
-          height: 44px;
           align-items: center;
           padding-left: 24px;
           padding-right: 21px;
+          min-height: 44px;
+          padding-top: 6px;
+          padding-bottom: 6px;
           justify-content: space-between;
           cursor: pointer;
           border-bottom: 1px solid $mainLineGray;
@@ -447,6 +471,11 @@ export default {
               color: $primaryColor;
             }
           }
+        }
+        &__wrap {
+          line-height: 16px;
+          // display: flex;
+          // align-items: center;
         }
         &__tag {
           font-size: 12px;
@@ -464,7 +493,8 @@ export default {
         }
         &__handler {
           display: flex;
-          align-items: center;
+          width: 60px;
+          // align-items: center;
           i {
             font-size: 16px;
             color: $primaryColor;
