@@ -13,38 +13,28 @@
         <div class="course-detail__info__name">
           {{ courseData.name }}
         </div>
-        <div class="course-detail__info__info">
-          <div class="course-detail__info__column">
-            <span class="course-detail__info__label">
-              讲师：
-            </span>
-            <span class="course-detail__info__value">
-              {{ courseData.teacherName }}
-            </span>
-          </div>
-          <span class="course-detail__info__column">
-            <span class="course-detail__info__label">
-              学分：
-            </span>
-            <span class="course-detail__info__value">
-              {{ courseData.credit }}
-            </span>
+        <div class="course-detail__info__column">
+          <span class="course-detail__info__label">
+            讲师：
+          </span>
+          <span class="course-detail__info__value">
+            {{ courseData.teacherName }}
           </span>
         </div>
         <div class="course-detail__info__column">
           <span class="course-detail__info__label">
-            课程类型：
+            学分：
           </span>
           <span class="course-detail__info__value">
-            {{ COURSE_TYPE_MAP[courseData.type] || '' }}
+            {{ courseData.credit }}
           </span>
         </div>
-        <div v-if="courseData.peirod" class="course-detail__info__column">
+        <div v-if="courseData.period" class="course-detail__info__column">
           <span class="course-detail__info__label">
             学时：
           </span>
           <span class="course-detail__info__value">
-            {{ courseData.peirod }}
+            {{ courseData.period + 'h' }}
           </span>
         </div>
         <el-button type="primary" size="medium" @click="jumpToLearn(id, null)">
@@ -227,13 +217,8 @@ export default {
       letter-spacing: 0;
       line-height: 28px;
     }
-    &__info {
-      margin-top: 8px;
-      font-size: 1rem;
-    }
+
     &__column {
-      width: 50%;
-      display: inline-block;
       text-align: left;
       line-height: 22px;
       margin-top: 8px;
