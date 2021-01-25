@@ -162,8 +162,8 @@ export default {
     },
     jumpToLearn(courseId, chapterId = null) {
       addViewLog({
-        coursePlanNo: courseId,
-        coursePlanName: this.courseData.name,
+        courseId: courseId,
+        courseName: this.courseData.name,
         departmentId: this.userInfo.org_id,
         userName: this.userInfo.nick_name,
         tenantId: this.userInfo.tenant_id,
