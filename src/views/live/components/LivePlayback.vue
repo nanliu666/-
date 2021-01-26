@@ -1,14 +1,245 @@
 <template>
-  <div>直播回放</div>
+  <div class="PlayBackListSingleC">
+    <div>
+      <div v-for="item in playBackListData" :key="item.id" class="PBLS">
+        <div class="img">
+          <img
+            :src="item.coverImageUrl ? item.coverImageUrl : '/img/autol.png'"
+            alt=""
+            width="220"
+            height="124"
+          />
+        </div>
+        <div class="text">
+          <h3>直播回放：{{ item.channelName }}</h3>
+          <span>直播分类：{{ item.fullName }}</span>
+          <span>讲师：{{ item.lecturerName }}</span>
+          <span>直播时间：{{ item.startTime }}</span>
+        </div>
+        <div class="operation">
+          <span
+            v-if="item.lecturerDeleted == '1' && rePlayData.identityType == '1'"
+            @click="repRecover(item)"
+          >恢复</span>
+          <span
+            v-if="item.shelfStatus == '1' && rePlayData.identityType == '1'"
+            @click="repRelease(item)"
+          >发布</span>
+          <span
+            v-if="item.shelfStatus == '0' && rePlayData.identityType == '1'"
+            @click="repOffShelf(item)"
+          >下架</span>
+          <span v-if="rePlayData.identityType == '1'" @click="repDownload(item)">下载</span>
+          <!-- <span @click="repDelete(item)">删除</span> -->
+        </div>
+      </div>
+    </div>
+    <div class="pagePbls">
+      <el-pagination
+        background
+        :page-sizes="PBLPageObj.pageSizes"
+        :page-size="5"
+        :current-page="PBLPageObj.currentPage"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="PBLPageObj.totalNum"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
+  </div>
 </template>
 <script>
+import { liveReplayList, setReplayStatus } from '@/api/live'
 export default {
-  name: 'LivePlayback',
+  name: 'PlayBackListSingle',
+  // computed: {
+  //   liveId() {
+  //     return _.get(this.$route, 'query.id', '555')
+  //   }
+  // },
+  props: ['detailData'],
   data() {
-    return {}
+    return {
+      playBackListData: [],
+      rePlayData: {},
+      PBLParmas: {
+        sourceType: '2',
+        livePlanId: _.get(this.$route, 'query.id', '11358435434386543'), //this.$route.query.id,
+        pageNo: 1,
+        pageSize: 5
+      },
+      PBLPageObj: {
+        pageSizes: [5, 10],
+        currentPage: 0,
+        totalNum: 0
+      }
+    }
   },
-  created() {},
-  methods: {}
+  activated() {
+    this.initPlayBackData()
+  },
+  methods: {
+    toPlay(item) {
+      // 调整到视频播放
+      this.router.push({
+        path: '',
+        query: {
+          item: item
+        }
+      })
+    },
+    repRecover(item) {
+      // 恢复
+      let sendPar = { videoId: item.id.toString(), lecturerDeleted: '0' }
+      setReplayStatus(sendPar).then(() => {
+        this.initPlayBackData()
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+      })
+    },
+    repRelease(item) {
+      // 发布
+      let sendPar = { videoId: item.id.toString(), shelfStatus: '0' }
+      setReplayStatus(sendPar).then(() => {
+        this.initPlayBackData()
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+      })
+    },
+    repDownload(item) {
+      // 下载
+      if (item.localUrl) {
+        window.open(item.localUrl)
+      } else {
+        this.$message({
+          message: '没有视频文件',
+          type: 'error'
+        })
+      }
+    },
+    // repDelete(item) {
+    //   // 删除
+    //   let sendPar = { videoId: item.id.toString(), isDeleted: '1' }
+    //   this.$confirm('是否删除该视频?', '提示', {
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消',
+    //     type: 'warning'
+    //   })
+    //     .then(() => {
+    //       setReplayStatus(sendPar).then(() => {
+    //         this.initPlayBackData()
+    //         this.$message({
+    //           message: '操作成功',
+    //           type: 'success'
+    //         })
+    //       })
+    //     })
+    //     .catch(() => {})
+    // },
+    repOffShelf(item) {
+      // 下架
+      let sendPar = { videoId: item.id.toString(), shelfStatus: '1' }
+      setReplayStatus(sendPar).then(() => {
+        this.initPlayBackData()
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+      })
+    },
+    initPlayBackData() {
+      // 初始化直播回放列表
+      liveReplayList(this.PBLParmas).then((res) => {
+        let { data, totalNum, totalPage } = (this.rePlayData = res.result)
+        this.playBackListData = data
+        this.PBLPageObj.totalNum = totalNum
+        this.PBLPageObj.totalPage = totalPage
+      })
+    },
+    handleSizeChange(val) {
+      // 改变分页回调
+      this.PBLParmas.pageSize = val
+      this.initPlayBackData()
+    },
+    handleCurrentChange(val) {
+      // 改变每页显示条数回调
+      this.PBLParmas.pageNo = val
+      this.initPlayBackData()
+    }
+  }
 }
 </script>
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+// .crumbs {
+//   overflow: hidden;
+//   margin: 0 0 20px 0;
+// }
+// .crumbs span {
+//   float: left;
+// }
+// .crumbs .title {
+//   font-size: 22px;
+//   color: #000b15;
+//   opacity: 0.85;
+// }
+// .crumbs .tip {
+//   font-size: 12px;
+//   color: #000b15;
+//   opacity: 0.45;
+//   padding: 6px 0 0 10px;
+// }
+.PlayBackListSingleC {
+  background: #fff;
+  padding-top: 23px;
+}
+.PBLS {
+  display: flex;
+  height: 124px;
+  margin: 0 0 40px 0;
+}
+.PBLS .img {
+  width: 220px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.PBLS .text {
+  flex: 1;
+  padding: 0 20px 0 27px;
+}
+.PBLS .text h3 {
+  cursor: pointer;
+  color: #000b15;
+  font-size: 16px;
+  opacity: 0.85;
+  margin: 0;
+  padding: 5px 0 15px 0;
+}
+.PBLS .text span {
+  display: block;
+  color: #000b15;
+  opacity: 0.65;
+  padding: 4px 0;
+  font-size: 12px;
+}
+.PBLS .operation {
+  width: 300px;
+  text-align: right;
+}
+.PBLS .operation span {
+  color: #01aafc;
+  font-size: 12px;
+  padding: 2px 15px;
+  border-right: solid 1px #ebeced;
+  cursor: pointer;
+}
+.PBLS .operation span:last-child {
+  border: 0;
+}
+.PlayBackListSingleC .pagePbls {
+  float: right;
+}
+</style>
