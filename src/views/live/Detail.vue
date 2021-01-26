@@ -66,11 +66,8 @@
           </div>
           <div class="qrcode__handler">
             <span>扫码观看</span>
-            <span
-              v-clipboard:copy="detailData.watchLink"
-              v-clipboard:success="onCopy"
-              class="qrcode__copy"
-            >复制链接</span>
+            <!-- detailData.watchLink -->
+            <span v-clipboard:copy="watchLiveLink" v-clipboard:success="onCopy" class="qrcode__copy">复制链接</span>
           </div>
         </div>
       </div>
@@ -124,6 +121,11 @@ export default {
   },
   data() {
     return {
+      watchLiveLink: `${location.origin}/#/live/WatchLive?id=${_.get(
+        this.$route,
+        'query.id',
+        '555'
+      )}`,
       statusMap: STATUS_MAP,
       copyeLink: '111',
       activeIndex: '1',

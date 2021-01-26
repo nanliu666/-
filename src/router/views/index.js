@@ -146,6 +146,14 @@ export default [
             meta: {
               title: '直播详情'
             }
+          },
+          {
+            name: 'WatchLive',
+            path: 'WatchLive',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/live/WatchLive.vue'),
+            meta: {
+              title: '观看直播'
+            }
           }
         ]
       },
