@@ -192,8 +192,9 @@ export default {
     currentChapter(newVal, oldVal) {
       if (this.isChapterVideo(oldVal) && oldVal.duration) {
         this.updateVideoProgress(oldVal)
-      } else {
-        oldVal.progress = 100
+      }
+      if (!this.isChapterVideo(newVal)) {
+        newVal.progress = 100
       }
       this.submitLearnRecords()
     }
@@ -270,7 +271,8 @@ export default {
     },
     calcProcess(chapter) {
       if (!this.isChapterVideo(chapter)) {
-        if (chapter.progress == 1) {
+        // 兼容旧数据，现在视频以外的类型进度都是100，之前是1
+        if (chapter.progress > 0) {
           return 100
         } else {
           return 0
