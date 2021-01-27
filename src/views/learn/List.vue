@@ -103,7 +103,7 @@
                     <div class="title" @click="startStudy(item)">
                       {{ item.name }}
                     </div>
-                    <el-tag :type="statusFilter(item.status).type">
+                    <el-tag v-if="item.status" :type="statusFilter(item.status).type">
                       {{ statusFilter(item.status).text }}
                     </el-tag>
                   </div>
@@ -398,7 +398,7 @@ export default {
         .then(({ data, totalNum }) => {
           _.each(data, (item) => {
             item.userPeriod = item.userPeriod === '' ? 0 : item.userPeriod
-            item.progress = Math.round(item.userPeriod / (item.period * 60))
+            item.progress = item.period === 0 ? 0 : Math.round(item.userPeriod / (item.period * 60))
           })
           this.courseList = data
           this.totalNum = totalNum
