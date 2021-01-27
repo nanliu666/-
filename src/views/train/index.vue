@@ -56,8 +56,8 @@
           >进行中</span>
           <span
             class="filter-radio"
-            :class="{ selected: filterForm.status === 0 }"
-            @click="filterForm.status = 0"
+            :class="{ selected: filterForm.status === 3 }"
+            @click="filterForm.status = 3"
           >已结办</span>
         </div>
         <div class="filter-item">
@@ -95,11 +95,11 @@
                 class="status"
                 :class="{
                   doing: item.status === 2,
-                  done: item.status === 0,
+                  done: item.status === 3,
                   will: item.status === 1
                 }"
               >
-                {{ item.status === 2 ? '进行中' : item.status === 0 ? '已办结' : '未开始' }}
+                {{ item.status === 2 ? '进行中' : item.status === 3 ? '已办结' : '未开始' }}
               </div>
             </div>
             <el-button
@@ -135,7 +135,7 @@
               </div>
             </div>
           </div>
-          <div v-if="item.status === 0" class="done-tips">
+          <div v-if="item.status === 3" class="done-tips">
             <img src="./done.png" />
           </div>
         </li>
@@ -242,7 +242,7 @@ export default {
       })
     },
     sortList(list = []) {
-      return list.sort((a, b) => b.status - a.status)
+      return list.sort((a, b) => a.status - b.status)
     }
   }
 }
@@ -250,6 +250,7 @@ export default {
 
 <style lang="scss" scoped>
 .train {
+  height: 100%;
   .top-container {
     margin-top: 20px;
     padding: 24px;
