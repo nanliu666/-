@@ -47,8 +47,8 @@
               </div>
             </div>
             <el-button v-if="detailData.status !== 'end'" type="primary" size="medium">
-              <span v-if="detailData.status === 'live'">继续直播</span>
-              <span v-if="detailData.status === 'init'">开始直播</span>
+              <span v-if="detailData.status === 'live'" @click="beginLiveFn">继续直播</span>
+              <span v-if="detailData.status === 'init'" @click="beginLiveFn">开始直播</span>
             </el-button>
           </div>
         </div>
@@ -121,10 +121,10 @@ export default {
   },
   data() {
     return {
-      watchLiveLink: `${location.origin}/#/live/WatchLive?id=${_.get(
+      watchLiveLink: `${location.origin}/#/WatchLive?id=${_.get(
         this.$route,
         'query.id',
-        '555'
+        '1353968896999862273'
       )}`,
       statusMap: STATUS_MAP,
       copyeLink: '111',
@@ -134,7 +134,7 @@ export default {
   },
   computed: {
     id() {
-      return _.get(this.$route, 'query.id', '555')
+      return _.get(this.$route, 'query.id', '1353968896999862273')
     }
   },
   mounted() {
@@ -145,6 +145,13 @@ export default {
   },
   methods: {
     play() {},
+    beginLiveFn() {
+      // 开播
+      this.$router.push({
+        path: '/beginLive',
+        query: { id: '1353968896999862273' }
+      })
+    },
     onCopy() {
       this.$message.success('您已成功复制二维码链接')
     },

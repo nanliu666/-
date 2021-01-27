@@ -30,6 +30,22 @@ export default [
     }
   },
   {
+    name: 'WatchLive',
+    path: '/watchLive',
+    component: () => import('@/views/live/WatchLive.vue'),
+    meta: {
+      title: '观看直播'
+    }
+  },
+  {
+    name: 'BeginLive',
+    path: '/beginLive',
+    component: () => import('@/views/live/BeginLive.vue'),
+    meta: {
+      title: '开始直播'
+    }
+  },
+  {
     path: '/',
     redirect: '/home',
     component: Layout,
@@ -145,14 +161,6 @@ export default [
             component: () => import(/* webpackChunkName: "page"*/ '@/views/live/Detail.vue'),
             meta: {
               title: '直播详情'
-            }
-          },
-          {
-            name: 'WatchLive',
-            path: 'WatchLive',
-            component: () => import(/* webpackChunkName: "page"*/ '@/views/live/WatchLive.vue'),
-            meta: {
-              title: '观看直播'
             }
           }
         ]
