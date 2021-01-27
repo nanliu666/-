@@ -55,3 +55,26 @@ export const reject = (params) => post('/api/appr/v2/appr/apply/reject', params)
  * @param {String} params.processInstanceId  
  * */
 export const cancel = (params) => get('/api/v2/appr/approve/course/cancel', params)
+/**
+ * 用户申请详情查询接口
+ * @param {object} params 参数
+ * @param {string} params.apprNo 审批编号
+ * @returns {object}
+ */
+export const getApprDetail = (params) => get('/appr/v2/appr/process/apply/detail', params)
+// 审批历史记录、审批进度
+export const getApprRecord = (params) => get('/appr/v2/appr/apply/record', params)
+// 撤销
+export const createApprCancel = (params) => post('/appr/v2/appr/apply/cancel', params)
+// 同意审批
+export const createApprPass = (params) => post('/appr/v2/appr/apply/pass', params)
+// 审批拒绝
+export const createApprReject = (params) => post('/appr/v2/appr/apply/reject', params)
+// 催一下
+export const createApprUrge = (params) => post('/appr/v2/appr/apply/urge', params)
+/**
+ * 审批流程查询接口
+ * @param {Object} params - 参数
+ * @param {String} params.processId - 流程ID
+ * */
+export const getProcessDetail = (params) => get('/appr/v2/appr/process', params)
