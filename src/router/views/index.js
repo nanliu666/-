@@ -24,7 +24,7 @@ export default [
   {
     path: '/home',
     name: 'Home',
-    component: () => import(/* webpackChunkName: "page" */ '@/views/Home.vue'),
+    component: () => import( /* webpackChunkName: "page" */ '@/views/Home.vue'),
     meta: {
       title: '首页'
     }
@@ -33,17 +33,15 @@ export default [
     path: '/',
     redirect: '/home',
     component: Layout,
-    children: [
-      {
+    children: [{
         path: '/course',
         redirect: '/course/list',
         component: EmptyLayout,
         title: '课程',
-        children: [
-          {
+        children: [{
             path: 'list',
             name: 'CourseList',
-            component: () => import(/* webpackChunkName: "page"*/ '@/views/course/CourseList.vue'),
+            component: () => import( /* webpackChunkName: "page"*/ '@/views/course/CourseList.vue'),
             meta: {
               title: '课程列表'
             }
@@ -52,7 +50,7 @@ export default [
             path: 'detail',
             name: 'CourseDetail',
             component: () =>
-              import(/* webpackChunkName: "page"*/ '@/views/course/CourseDetail.vue'),
+              import( /* webpackChunkName: "page"*/ '@/views/course/CourseDetail.vue'),
             meta: {
               title: '课程详情'
             }
@@ -60,7 +58,7 @@ export default [
           {
             path: 'learn',
             name: 'CourseLearn',
-            component: () => import(/* webpackChunkName: "page"*/ '@/views/course/CourseLearn.vue'),
+            component: () => import( /* webpackChunkName: "page"*/ '@/views/course/CourseLearn.vue'),
             meta: {
               title: '课程学习',
               fullscreen: true
@@ -73,11 +71,10 @@ export default [
         redirect: '/knowledge/list',
         component: EmptyLayout,
         title: '知识库',
-        children: [
-          {
+        children: [{
             name: 'KnowledgeList',
             path: 'list',
-            component: () => import(/* webpackChunkName: "page"*/ '@/views/knowledge/List.vue'),
+            component: () => import( /* webpackChunkName: "page"*/ '@/views/knowledge/List.vue'),
             meta: {
               title: '知识库'
             }
@@ -85,7 +82,7 @@ export default [
           {
             path: 'detail',
             name: 'KnowledgeDetail',
-            component: () => import(/* webpackChunkName: "page"*/ '@/views/knowledge/Detail.vue'),
+            component: () => import( /* webpackChunkName: "page"*/ '@/views/knowledge/Detail.vue'),
             meta: {
               title: '知识详情'
             }
@@ -97,11 +94,10 @@ export default [
         redirect: '/exam/list',
         component: EmptyLayout,
         title: '考试',
-        children: [
-          {
+        children: [{
             name: 'ExamList',
             path: 'list',
-            component: () => import(/* webpackChunkName: "page"*/ '@/views/exam/List.vue'),
+            component: () => import( /* webpackChunkName: "page"*/ '@/views/exam/List.vue'),
             meta: {
               title: '考试'
             }
@@ -109,7 +105,7 @@ export default [
           {
             path: 'detail',
             name: 'ExamDetail',
-            component: () => import(/* webpackChunkName: "page"*/ '@/views/exam/Detail.vue'),
+            component: () => import( /* webpackChunkName: "page"*/ '@/views/exam/Detail.vue'),
             meta: {
               title: '查看答卷'
             }
@@ -117,7 +113,7 @@ export default [
           {
             path: 'paper',
             name: 'ExamPaper',
-            component: () => import(/* webpackChunkName: "page"*/ '@/views/exam/Paper.vue'),
+            component: () => import( /* webpackChunkName: "page"*/ '@/views/exam/Paper.vue'),
             meta: {
               title: '参与考试',
               fullscreen: true
@@ -130,11 +126,10 @@ export default [
         redirect: '/live/list',
         component: EmptyLayout,
         title: '直播',
-        children: [
-          {
+        children: [{
             name: 'LiveList',
             path: 'list',
-            component: () => import(/* webpackChunkName: "page"*/ '@/views/live/List.vue'),
+            component: () => import( /* webpackChunkName: "page"*/ '@/views/live/List.vue'),
             meta: {
               title: '直播'
             }
@@ -142,7 +137,7 @@ export default [
           {
             name: 'LiveDetail',
             path: 'Detail',
-            component: () => import(/* webpackChunkName: "page"*/ '@/views/live/Detail.vue'),
+            component: () => import( /* webpackChunkName: "page"*/ '@/views/live/Detail.vue'),
             meta: {
               title: '直播详情'
             }
@@ -150,7 +145,7 @@ export default [
           {
             name: 'WatchLive',
             path: 'WatchLive',
-            component: () => import(/* webpackChunkName: "page"*/ '@/views/live/WatchLive.vue'),
+            component: () => import( /* webpackChunkName: "page"*/ '@/views/live/WatchLive.vue'),
             meta: {
               title: '观看直播'
             }
@@ -162,30 +157,27 @@ export default [
         redirect: '/learn/list',
         component: EmptyLayout,
         title: '学习',
-        children: [
-          {
-            path: 'list',
-            name: 'LearnList',
-            component: () => import(/* webpackChunkName: "page"*/ '@/views/learn/List.vue'),
-            meta: {
-              title: '学习列表'
-            }
+        children: [{
+          path: 'list',
+          name: 'LearnList',
+          component: () => import( /* webpackChunkName: "page"*/ '@/views/learn/List.vue'),
+          meta: {
+            title: '学习列表'
           }
-        ]
+        }]
       },
       {
         path: '/auth', // 注册页面
         redirect: '/login',
         component: EmptyLayout,
-        children: [
-          {
+        children: [{
             path: '/login',
             name: 'Login',
             meta: {
               title: '登录页面',
               isAuth: false
             },
-            component: () => import(/* webpackChunkName: "page"*/ '@/views/auth/Login.vue')
+            component: () => import( /* webpackChunkName: "page"*/ '@/views/auth/Login.vue')
           },
           {
             path: '/register', // 注册页面
@@ -194,7 +186,7 @@ export default [
               isAuth: false,
               title: '注册页面'
             },
-            component: () => import(/* webpackChunkName: "page"*/ '@/views/auth/Register.vue')
+            component: () => import( /* webpackChunkName: "page"*/ '@/views/auth/Register.vue')
           },
           {
             path: '/forgetPassword', // 忘记密码页面
@@ -203,7 +195,7 @@ export default [
               isAuth: false,
               title: '忘记密码页面'
             },
-            component: () => import(/* webpackChunkName: "page"*/ '@/views/auth/ForgetPassword.vue')
+            component: () => import( /* webpackChunkName: "page"*/ '@/views/auth/ForgetPassword.vue')
           }
         ]
       },
@@ -212,11 +204,10 @@ export default [
         redirect: '/news/list',
         component: EmptyLayout,
         title: '新闻',
-        children: [
-          {
+        children: [{
             path: 'list',
             name: 'list',
-            component: () => import(/* webpackChunkName: "page" */ '@/views/news/NewsList.vue'),
+            component: () => import( /* webpackChunkName: "page" */ '@/views/news/NewsList.vue'),
             meta: {
               title: '新闻'
             }
@@ -224,7 +215,7 @@ export default [
           {
             path: 'Details',
             name: 'newsDetails',
-            component: () => import(/* webpackChunkName: "page" */ '@/views/news/NewsDetail.vue'),
+            component: () => import( /* webpackChunkName: "page" */ '@/views/news/NewsDetail.vue'),
             meta: {
               title: '文章详情'
             }
@@ -236,11 +227,10 @@ export default [
         redirect: '/my/info',
         component: EmptyLayout,
         title: '个人中心',
-        children: [
-          {
+        children: [{
             path: 'info',
             name: 'personal',
-            component: () => import(/* webpackChunkName: "page" */ '@/views/my/Personal.vue'),
+            component: () => import( /* webpackChunkName: "page" */ '@/views/my/Personal.vue'),
             meta: {
               title: '个人信息'
             }
@@ -248,7 +238,7 @@ export default [
           {
             path: 'record',
             name: 'record',
-            component: () => import(/* webpackChunkName: "page" */ '@/views/my/Record.vue'),
+            component: () => import( /* webpackChunkName: "page" */ '@/views/my/Record.vue'),
             meta: {
               title: '我的档案'
             }
@@ -259,14 +249,13 @@ export default [
         path: '/train', // 培训页面
         redirect: '/train/index',
         component: EmptyLayout,
-        children: [
-          {
+        children: [{
             path: 'index',
             name: 'trainIndex',
             meta: {
               title: '课程页面首页'
             },
-            component: () => import(/* webpackChunkName: "page"*/ '@/views/train')
+            component: () => import( /* webpackChunkName: "page"*/ '@/views/train')
           },
           {
             path: 'detail',
@@ -280,14 +269,46 @@ export default [
         redirect: '/message/list',
         component: EmptyLayout,
         title: '消息',
-        children: [
-          {
-            name: 'MessageList',
-            path: 'list',
+        children: [{
+          name: 'MessageList',
+          path: 'list',
+          component: () =>
+            import( /* webpackChunkName: "page"*/ '@/views/message/MessageList.vue'),
+          meta: {
+            title: '消息列表'
+          }
+        }]
+      },
+      {
+        path: '/approvalCenter',
+        redirect: '/approvalCenter/center',
+        component: EmptyLayout,
+        title: '审批中心',
+        children: [{
+            path: 'center',
+            name: 'center',
             component: () =>
-              import(/* webpackChunkName: "page"*/ '@/views/message/MessageList.vue'),
+              import( /* webpackChunkName: "page" */ '@/views/approvalCenter/center.vue'),
             meta: {
-              title: '消息列表'
+              title: '审批中心'
+            }
+          },
+          {
+            path: 'details',
+            name: 'details',
+            component: () =>
+              import( /* webpackChunkName: "page" */ '@/views/approvalCenter/details.vue'),
+            meta: {
+              title: '审批详情'
+            }
+          },
+          {
+            path: 'chapter',
+            name: 'chapter',
+            component: () =>
+              import( /* webpackChunkName: "page" */ '@/views/approvalCenter/chapter.vue'),
+            meta: {
+              title: '章节详情'
             }
           }
         ]
