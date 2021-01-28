@@ -3,7 +3,7 @@
     <span
       v-if="data.type !== QUESTION_TYPE_BLANK || type === 'view'"
       class="qustion-content-box"
-      v-html="_.unescape(data.content)"
+      v-html="getHTML(data.content)"
     ></span>
     <div v-if="!_.isEmpty(data.attachments)" class="qustion__attachments">
       <div v-for="(attachment, index) in data.attachments" :key="index" class="qustion__attachment">
@@ -11,7 +11,7 @@
       </div>
     </div>
     <!-- 考试用来可编辑的状态 -->
-    <div v-if="type === 'edit'">
+    <div v-if="type === 'edit'" :class="{ 'blank-box': [QUESTION_TYPE_BLANK].includes(data.type) }">
       <!-- 判断题、单选题 -->
       <div
         v-if="[QUESTION_TYPE_SINGLE, QUESTION_TYPE_JUDGE].includes(data.type)"
@@ -204,6 +204,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.blank-box {
+  display: inline-block;
+}
 .blank-ul {
   display: flex;
   justify-content: flex-start;
