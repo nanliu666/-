@@ -91,7 +91,7 @@
                   type="view"
                 />
                 <span v-else>
-                  <span class="right-title" v-html="_.unescape(conItem.content)"></span>
+                  <span class="right-title" v-html="getHTML(conItem.content)"></span>
                   <ul>
                     <li
                       v-for="(paperItem, paperIndex) in conItem.subQuestions"
@@ -139,6 +139,7 @@ const STATUS = {
     text: '已阅卷'
   }
 }
+import { addLine } from '@/util/util'
 const nzhcn = require('nzh/cn')
 import { QUESTION_TYPE_MAP, QUESTION_TYPE_GROUP } from '@/const/exam'
 export default {
@@ -181,6 +182,9 @@ export default {
     this.initData()
   },
   methods: {
+    getHTML(content) {
+      return addLine(content)
+    },
     moment,
     async initData() {
       this.examDetail = await getViewAnswer(_.assign(this.queryInfo, this.$route.query))

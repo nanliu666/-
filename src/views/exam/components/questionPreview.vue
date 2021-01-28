@@ -69,7 +69,7 @@
             maxlength="32"
           >
           </el-input>
-          <span v-else v-html="_.unescape(item)" />
+          <span v-else v-html="getHTML(item)" />
         </li>
       </ul>
     </div>
@@ -93,6 +93,7 @@ import { deleteHTMLTag } from '@/util/util'
 import questionView from './questionView'
 import SelectView from './SelectView'
 import GapAndShort from './GapAndShort'
+import { addLine } from '@/util/util'
 import {
   QUESTION_TYPE_MAP,
   QUESTION_TYPE_MULTIPLE,
@@ -158,6 +159,9 @@ export default {
     }
   },
   methods: {
+    getHTML(content) {
+      return addLine(content)
+    },
     handleMulipleValue(value) {
       const temp = _.cloneDeep(value.answerModel)
       let target = _.map(temp, (item) => {

@@ -1,6 +1,19 @@
 import { validatenull } from './validate'
 import moment from 'moment'
 /**
+ * 给试题富文本加行内样式
+ * @param {string} html
+ */
+export const addLine = (content) => {
+  const P_TAG = '&lt;p'
+  const inlineStyle = ' style="display: inline"'
+  const startTag = content.slice(0, 5)
+  const setLineHTML = `${startTag}${inlineStyle}${content.slice(5)}`
+  const targetHTML = startTag === P_TAG ? setLineHTML : content
+  const HTML = _.unescape(targetHTML)
+  return HTML
+}
+/**
  * 计算两个时间差经历的时间的文字描述
  * @param {*} timestamp - 毫秒
  */
