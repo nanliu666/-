@@ -31,34 +31,21 @@
               }"
             ></lazy-select>
             <div class="course-list-filter-pop__footer">
-              <el-button
-                type="primary"
-                size="medium"
-                @click="refreshData"
-              >
+              <el-button type="primary" size="medium" @click="refreshData">
                 确定
               </el-button>
-              <el-button
-                size="medium"
-                @click="resetExtraParams"
-              >
+              <el-button size="medium" @click="resetExtraParams">
                 重置
               </el-button>
             </div>
           </div>
-          <el-button
-            slot="reference"
-            size="medium"
-          >
+          <el-button slot="reference" size="medium">
             高级检索
           </el-button>
         </el-popover>
       </div>
       <div class="course-list__filter-divider"></div>
-      <category-select
-        :load="loadCategory"
-        @change="handleCategoryChange"
-      ></category-select>
+      <category-select :load="loadCategory" @change="handleCategoryChange"></category-select>
       <div class="course-list__filter-type">
         <span class="course-list__filter-label">
           类型：
@@ -87,23 +74,13 @@
         </li>
       </ul>
     </div>
-    <div
-      v-loading="loading"
-      class="course-list__list"
-    >
+    <div v-loading="loading" class="course-list__list">
       <template v-if="!loading && !_.isEmpty(courseList)">
         <ul>
-          <li
-            v-for="item in courseList"
-            :key="item.courseId"
-            @click="handleCourseClick(item)"
-          >
+          <li v-for="item in courseList" :key="item.courseId" @click="handleCourseClick(item)">
             <div class="course-list__list__img">
               <el-image :src="item.coverUrl">
-                <div
-                  slot="error"
-                  class="image-slot"
-                >
+                <div slot="error" class="image-slot">
                   <i class="el-icon-picture-outline"></i>
                 </div>
               </el-image>
@@ -115,10 +92,7 @@
               <div class="course-list__list__info">
                 <span class="course-list__list__teacher">{{ item.teacherName }}</span>
                 <span class="course-list__list__learn">学习：{{ item.people || 0 }}</span>
-                <span
-                  v-if="COURSE_TYPE_MAP[item.type]"
-                  class="course-list__list__tag"
-                >{{
+                <span v-if="COURSE_TYPE_MAP[item.type]" class="course-list__list__tag">{{
                   COURSE_TYPE_MAP[item.type]
                 }}</span>
               </div>
@@ -146,10 +120,7 @@
         >
         </el-pagination>
       </template>
-      <div
-        v-if="!loading && _.isEmpty(courseList)"
-        class="course-list__empty"
-      >
+      <div v-if="!loading && _.isEmpty(courseList)" class="course-list__empty">
         <img src="../../assets/images/nodata.png" />
         <div>暂无数据</div>
       </div>

@@ -1,9 +1,6 @@
 <template>
   <div class="category">
-    <div
-      v-if="_.size(selected) > 0"
-      class="category__selected"
-    >
+    <div v-if="_.size(selected) > 0" class="category__selected">
       <span class="category__label">
         已选条件：
       </span>
@@ -12,43 +9,24 @@
           分类：
         </span>
         <ul>
-          <li
-            v-for="(item, index) in selected"
-            :key="item[valueKey]"
-          >
+          <li v-for="(item, index) in selected" :key="item[valueKey]">
             <span class="category__selected--label">
               {{ item[labelKey] }}
             </span>
-            <i
-              class="el-icon-close close"
-              @click="handleDelete(index, item)"
-            ></i>
-            <i
-              v-if="index !== selected.length - 1"
-              class="el-icon-arrow-right arrow"
-            ></i>
+            <i class="el-icon-close close" @click="handleDelete(index, item)"></i>
+            <i v-if="index !== selected.length - 1" class="el-icon-arrow-right arrow"></i>
           </li>
         </ul>
       </div>
-      <i
-        v-if="$scopedSlots.selected"
-        class="el-icon-arrow-right arrow"
-      ></i>
+      <i v-if="$scopedSlots.selected" class="el-icon-arrow-right arrow"></i>
       <slot name="selected"></slot>
     </div>
-    <div
-      v-show="!_.isEmpty(categoryList)"
-      class="category__list"
-    >
+    <div v-show="!_.isEmpty(categoryList)" class="category__list">
       <span class="category__label">
         分类：
       </span>
       <ul>
-        <li
-          v-for="item in categoryList"
-          :key="item[valueKey]"
-          @click="handleCategoryClick(item)"
-        >
+        <li v-for="item in categoryList" :key="item[valueKey]" @click="handleCategoryClick(item)">
           {{ item[labelKey] }}
         </li>
       </ul>

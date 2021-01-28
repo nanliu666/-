@@ -18,24 +18,15 @@
       :label="optionProps.formatter ? optionProps.formatter(item) : item[optionProps.label]"
       :value="item[optionProps.value]"
     />
-    <div
-      v-show="loading"
-      class="loading"
-    >
+    <div v-show="loading" class="loading">
       <i class="el-icon-loading" />
     </div>
-    <div
-      v-if="loading"
-      slot="empty"
-    >
+    <div v-if="loading" slot="empty">
       <div class="loading">
         <i class="el-icon-loading" />
       </div>
     </div>
-    <div
-      v-show="noMore"
-      style="text-align:center;font-size:14px;color:#606266;line-height:34px;"
-    >
+    <div v-show="noMore" style="text-align:center;font-size:14px;color:#606266;line-height:34px;">
       没有更多了
     </div>
   </el-select>

@@ -4,11 +4,7 @@
     :separator="separator"
     style="margin-top:24px; margin-bottom: 16px;"
   >
-    <el-breadcrumb-item
-      v-for="(item, index) in _configs"
-      :key="index"
-      :to="{ path: item.path }"
-    >
+    <el-breadcrumb-item v-for="(item, index) in _configs" :key="index" :to="{ path: item.path }">
       {{ item.title }}
     </el-breadcrumb-item>
   </el-breadcrumb>

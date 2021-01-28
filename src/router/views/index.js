@@ -162,6 +162,14 @@ export default [
             meta: {
               title: '直播详情'
             }
+          },
+          {
+            name: 'WatchLive',
+            path: 'WatchLive',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/live/WatchLive.vue'),
+            meta: {
+              title: '观看直播'
+            }
           }
         ]
       },
@@ -296,6 +304,41 @@ export default [
               import(/* webpackChunkName: "page"*/ '@/views/message/MessageList.vue'),
             meta: {
               title: '消息列表'
+            }
+          }
+        ]
+      },
+      {
+        path: '/approvalCenter',
+        redirect: '/approvalCenter/center',
+        component: EmptyLayout,
+        title: '审批中心',
+        children: [
+          {
+            path: 'center',
+            name: 'center',
+            component: () =>
+              import(/* webpackChunkName: "page" */ '@/views/approvalCenter/center.vue'),
+            meta: {
+              title: '审批中心'
+            }
+          },
+          {
+            path: 'details',
+            name: 'details',
+            component: () =>
+              import(/* webpackChunkName: "page" */ '@/views/approvalCenter/details.vue'),
+            meta: {
+              title: '审批详情'
+            }
+          },
+          {
+            path: 'chapter',
+            name: 'chapter',
+            component: () =>
+              import(/* webpackChunkName: "page" */ '@/views/approvalCenter/chapter.vue'),
+            meta: {
+              title: '章节详情'
             }
           }
         ]

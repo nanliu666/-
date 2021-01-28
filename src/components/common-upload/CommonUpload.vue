@@ -15,10 +15,7 @@
     v-bind="$attrs"
   >
     <slot />
-    <slot
-      slot="tip"
-      name="tip"
-    />
+    <slot slot="tip" name="tip" />
   </el-upload>
 </template>
 
