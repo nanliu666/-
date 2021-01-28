@@ -1,9 +1,5 @@
 <template>
-  <el-form
-    ref="form"
-    :model="model"
-    v-bind="elFormAttrs"
-  >
+  <el-form ref="form" :model="model" v-bind="elFormAttrs">
     <el-row>
       <el-col
         v-for="column in columns"
@@ -17,10 +13,7 @@
           v-bind="elFormItemAttrs(column)"
           :rules="getRules(column)"
         >
-          <slot
-            slot="label"
-            :name="column.prop + '-label'"
-          >
+          <slot slot="label" :name="column.prop + '-label'">
             {{ column.label }}
           </slot>
           <el-input-number
@@ -141,23 +134,12 @@
             v-model="model[column.prop]"
             v-bind="itemAttrs(column)"
           />
-          <slot
-            v-if="column.itemType == 'slot'"
-            v-bind="itemAttrs(column)"
-            :name="column.prop"
-          />
-          <div
-            v-if="column.desc"
-            class="desc"
-          >
+          <slot v-if="column.itemType == 'slot'" v-bind="itemAttrs(column)" :name="column.prop" />
+          <div v-if="column.desc" class="desc">
             {{ column.desc }}
           </div>
         </el-form-item>
-        <slot
-          v-if="column.itemType == 'slotout'"
-          v-bind="itemAttrs(column)"
-          :name="column.prop"
-        >
+        <slot v-if="column.itemType == 'slotout'" v-bind="itemAttrs(column)" :name="column.prop">
         </slot>
       </el-col>
     </el-row>

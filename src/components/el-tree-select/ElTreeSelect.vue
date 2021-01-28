@@ -6,10 +6,7 @@
  * @LastEditTime: 2020-03-13 16:18:32
  -->
 <template>
-  <div
-    class="el-tree-select"
-    :class="selectClass"
-  >
+  <div class="el-tree-select" :class="selectClass">
     <!-- 下拉文本 -->
     <el-select
       ref="select"
@@ -47,10 +44,7 @@
         class="input-with-select mb10"
         @change="_searchFun"
       >
-        <el-button
-          slot="append"
-          icon="el-icon-search"
-        />
+        <el-button slot="append" icon="el-icon-search" />
       </el-input>
       <el-scrollbar
         tag="div"
@@ -74,10 +68,7 @@
           @check="_treeCheckFun"
         />
         <!-- 暂无数据 -->
-        <div
-          v-if="data.length === 0"
-          class="no-data"
-        >
+        <div v-if="data.length === 0" class="no-data">
           暂无数据
         </div>
       </el-scrollbar>
