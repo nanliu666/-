@@ -161,7 +161,7 @@
       <steps :progress.sync="progress" />
 
       <!-- 嵌入 -->
-      <div class="details_comment" v-show="centerPitch() == 1 && centerPitch() == 4">
+      <!-- <div class="details_comment" v-show="centerPitch() == 1 && centerPitch() == 4">
         <div class="details_comment_title">审批意见</div>
 
         <div class="details_comment_textarea" v-show="centerPitch() == 1">
@@ -197,7 +197,7 @@
         >
           重新申请
         </el-button>
-      </div>
+      </div> -->
       <!-- 嵌入 end-->
     </div>
     <div v-if="!isFished && !isPreview" class="cancel-btn-box">
@@ -241,6 +241,34 @@
         </el-button>
       </el-tooltip>
     </div>
+    <el-dialog
+      :title="apprTitle"
+      :visible.sync="dialogVisible"
+      width="600px"
+      top="30vh"
+      :modal-append-to-body="false"
+    >
+      <el-form
+        ref="apprForm"
+        label-position="top"
+        :model="apprForm"
+        :rules="{
+          comment: [{ required: true, message: '请输入审批意见', trigger: 'blur' }]
+        }"
+        label-width="100px"
+        class="demo-ruleForm"
+      >
+        <el-form-item label="审批意见" :prop="isOpinion ? 'comment' : ''">
+          <el-input v-model="apprForm.comment" type="textarea" :rows="4" :placeholder="tip" />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="medium" @click="dialogVisible = false">取 消</el-button>
+        <el-button size="medium" type="primary" :loading="btnloading" @click="handelConfirm"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -390,8 +418,8 @@ export default {
 
     // 是否是预览状态
     isPreview() {
-      return true
-      // return _.get(this.$route.query, 'preview', false)
+      // return true
+      return _.get(this.$route.query, 'preview', false)
     },
 
     ...mapGetters(['userId', 'tag'])
