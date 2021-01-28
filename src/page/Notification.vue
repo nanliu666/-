@@ -10,64 +10,29 @@
       <div class="flex flex-justify-between">
         <span class="noreading"> 未读消息（{{ count || 0 }}） </span>
         <span class="reading">
-          <el-button
-            size="mini"
-            :disabled="!count"
-            @click="handleAllRead"
-          >全部已读</el-button>
+          <el-button size="mini" :disabled="!count" @click="handleAllRead">全部已读</el-button>
         </span>
       </div>
       <div class="content">
-        <ul
-          v-if="notifyList.length > 0"
-          class="list"
-        >
-          <li
-            v-for="(info, i) in notifyList"
-            :key="i"
-            class="info"
-            @click="handleJump(info)"
-          >
-            <div
-              v-if="info.title"
-              class="title"
-            >
-              <span
-                v-if="!info.isRead"
-                class="spot"
-              ></span>【<span class="ellipsis">{{
+        <ul v-if="notifyList.length > 0" class="list">
+          <li v-for="(info, i) in notifyList" :key="i" class="info" @click="handleJump(info)">
+            <div v-if="info.title" class="title">
+              <span v-if="!info.isRead" class="spot"></span>【<span class="ellipsis">{{
                 info.title
               }}</span>】
             </div>
-            <div class="time">
-              系统发布 {{ info.createTime }}
-            </div>
+            <div class="time">系统发布 {{ info.createTime }}</div>
           </li>
         </ul>
-        <div
-          v-else
-          class="noData"
-        >
-          <img
-            style="height: 141px ;width: 141px"
-            src="../assets/images/nodata.jpg"
-            alt=""
-          />
+        <div v-else class="noData">
+          <img style="height: 141px ;width: 141px" src="../assets/images/nodata.jpg" alt="" />
         </div>
       </div>
-      <div
-        class="more"
-        @click="handleJump"
-      >
+      <div class="more" @click="handleJump">
         查看更多消息
       </div>
     </div>
-    <el-badge
-      slot="reference"
-      :hidden="!count"
-      :value="count"
-      class="notify-icon"
-    >
+    <el-badge slot="reference" :hidden="!count" :value="count" class="notify-icon">
       <div class="iconimage_icon_notice iconfont message"></div>
     </el-badge>
   </el-popover>

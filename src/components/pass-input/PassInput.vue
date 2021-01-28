@@ -1,22 +1,12 @@
 <template>
-  <el-input
-    :type="inputType"
-    v-bind="$attrs"
-    class="pass-input"
-    v-on="$listeners"
-  >
+  <el-input :type="inputType" v-bind="$attrs" class="pass-input" v-on="$listeners">
     <i
       v-if="inputType !== 'password'"
       slot="suffix"
       class="iconeyeopen-outlined iconfont eye-icon"
       @click="toggleType"
     />
-    <i
-      v-else
-      slot="suffix"
-      class="iconeyeblind-outlined iconfont eye-icon"
-      @click="toggleType"
-    />
+    <i v-else slot="suffix" class="iconeyeblind-outlined iconfont eye-icon" @click="toggleType" />
   </el-input>
 </template>
 
