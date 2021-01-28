@@ -23,41 +23,54 @@
         <div class="search_popover">
           <el-popover v-model="visible" placement="bottom" width="428">
             <div class="popover_box">
-              <el-form ref="form" :model="form" label-position="top">
+              <el-form ref="form" :model="searchForm" label-position="top">
                 <el-form-item label="流程类型">
-                  <el-select v-model="form.region" placeholder="请选择">
-                    <el-option label="课程审批" value="1"></el-option>
+                  <el-select v-model="searchForm.categoryId" placeholder="请选择">
+                    <el-option
+                      v-for="(item, index) in tableData"
+                      :key="index"
+                      :label="item.processName"
+                      :value="item.categoryId"
+                    ></el-option>
                   </el-select>
                 </el-form-item>
 
                 <el-form-item v-show="pitch != 4" label="申请人">
-                  <el-select v-model="form.region" placeholder="请选择">
-                    <el-option label="一" value="shanghai"></el-option>
-                    <el-option label="fg" value="beijing"></el-option>
+                  <el-select v-model="searchForm.applyUserId" placeholder="请选择">
+                    <el-option
+                      v-for="(item, index) in tableData"
+                      :key="index"
+                      :label="item.userName"
+                      :value="item.userId"
+                    ></el-option>
                   </el-select>
                 </el-form-item>
 
                 <el-form-item label="申请时间">
                   <el-date-picker
-                    v-model="form.dateValue"
+                    v-model="searchForm.dateValue"
                     type="daterange"
                     range-separator="~"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    value-format="yyyy-MM-dd HH:mm:ss"
                   >
                   </el-date-picker>
                 </el-form-item>
 
                 <el-form-item v-show="pitch != 1" label="当着状态">
-                  <el-select v-model="form.region" placeholder="请选择">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
+                  <el-select v-model="searchForm.status" placeholder="请选择">
+                    <el-option label="审批中" value="Approve"></el-option>
+                    <el-option label="已通过" value="Pass"></el-option>
+                    <el-option label="已拒绝" value="Reject"></el-option>
+                    <el-option label="已撤回" value="Cancel"></el-option>
+                    <el-option label="待完善" value="Corvidae"></el-option>
                   </el-select>
                 </el-form-item>
 
                 <el-form-item>
                   <div class="popover_btn">
-                    <el-button size="medium" type="primary"> 确定 </el-button>
+                    <el-button size="medium" type="primary" @click="searchBtn"> 确定 </el-button>
                     <el-button size="medium" @click="visible = false"> 取消 </el-button>
                   </div>
                 </el-form-item>
@@ -160,10 +173,7 @@ export default {
       searchInput: '',
       visible: false,
       pitch: 1,
-      form: {
-        region: '',
-        dateValue: ''
-      },
+      searchForm: {},
 
       // 默认选中所有列
       columnsVisible: _.map(TABLE_COLUMNS, ({ prop }) => prop),
@@ -188,8 +198,21 @@ export default {
     this.setPitch(1)
   },
   methods: {
+    searchBtn() {
+      this.visible = false
+      if (this.searchForm.dateValue && this.searchForm.dateValue.length) {
+        this.setPitch(this.pitch, this.searchForm.dateValue[0], this.searchForm.dateValue[1])
+      }
+      this.setPitch(this.pitch)
+    },
     //   导航栏btn
-    setPitch(i) {
+    setPitch(i, beginApplyTime = '', endApplyTime = '') {
+      if (this.pitch != i) {
+        this.searchInput = ''
+        this.searchForm = {}
+        this.page.pageNo = 1
+        this.page.pageSize = 10
+      }
       this.pitch = i
       if (i == 1) {
         TABLE_COLUMNS.splice(4, 1)
@@ -211,8 +234,17 @@ export default {
         }
       }
 
+      if (this.searchInput || this.searchForm != {}) {
+        this.page.pageNo = 1
+        this.page.pageSize = 10
+      }
       let params = {
-        ...this.page
+        ...this.page,
+        ...this.searchForm,
+        search: this.searchInput,
+        categoryId: '1', //分类ID
+        beginApplyTime: beginApplyTime,
+        endApplyTime: endApplyTime
       }
 
       // 调接口
@@ -226,6 +258,7 @@ export default {
       } else if (i == 2) {
         // 我已审批
         hasApproveList(params).then((res) => {
+          window.console.log(res)
           this.tableData = res.data
           this.page.total = res.totalNum
         })
