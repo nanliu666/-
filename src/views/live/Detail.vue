@@ -38,7 +38,13 @@
                 </div>
                 <div class="content">
                   <span class="label">直播时间：</span>
-                  <span class="value">{{ detailData.liveTime }}</span>
+                  <span class="value">
+                    <ul v-if="!_.isEmpty(detailData.liveTime)">
+                      <li v-for="(item, index) in detailData.liveTime" :key="index">
+                        {{ item }}
+                      </li>
+                    </ul>
+                  </span>
                 </div>
                 <div class="content">
                   <span class="label">直播日期：</span>
@@ -127,7 +133,6 @@ export default {
         '1353968896999862273'
       )}`,
       statusMap: STATUS_MAP,
-      copyeLink: '111',
       activeIndex: '1',
       detailData: {}
     }
@@ -138,7 +143,7 @@ export default {
     }
   },
   mounted() {
-    const params = { channelId: this.id }
+    const params = { liveId: this.id }
     getLiveDetail(params).then((res) => {
       this.detailData = res
     })
