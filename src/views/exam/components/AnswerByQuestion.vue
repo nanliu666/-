@@ -16,7 +16,7 @@
         :disabled="disabled"
       />
       <span v-else>
-        <span class="right-title" v-html="_.unescape(conItem.content)"></span>
+        <span class="right-title" v-html="getHTML(conItem.content)"></span>
         <ul>
           <li v-for="(paperItem, paperIndex) in conItem.subQuestions" :key="paperIndex" class="">
             <span>{{ paperIndex + 1 }}.</span>
@@ -39,6 +39,7 @@ import {
   QUESTION_TYPE_GROUP
 } from '@/const/exam'
 import QustionPreview from './questionPreview'
+import { addLine } from '@/util/util'
 export default {
   inject: ['paper'],
   name: 'AnswerByQuestion',
@@ -73,8 +74,10 @@ export default {
     QUESTION_TYPE_MAP: () => QUESTION_TYPE_MAP,
     QUESTION_TYPE_GROUP: () => QUESTION_TYPE_GROUP
   },
-  created() {},
   methods: {
+    getHTML(content) {
+      return addLine(content)
+    },
     setImpeach(data) {
       this.getCurrentImpeach(data)
       this.$emit('setImpeach', data)
