@@ -1,7 +1,7 @@
 <template>
   <div class="watchLiveCla">
     <iframe
-      :src="`https://live.polyv.cn/watch/2095856`"
+      :src="`https://live.polyv.net/web-start/?channelId=2095856`"
       frameborder="0"
       allowfullscreen="true"
     ></iframe>

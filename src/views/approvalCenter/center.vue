@@ -228,21 +228,18 @@ export default {
         hasApproveList(params).then((res) => {
           this.tableData = res.data
           this.page.total = res.totalNum
-          this.totalNum = res.totalNum
         })
       } else if (i == 3) {
         // 抄送我的
         myApproveList(params).then((res) => {
           this.tableData = res.data
           this.page.total = res.totalNum
-          this.totalNum = res.totalNum
         })
       } else if (i == 4) {
         // 我发起的
         ccApproveList(params).then((res) => {
           this.tableData = res.data
           this.page.total = res.totalNum
-          this.totalNum = res.totalNum
         })
       }
     },
