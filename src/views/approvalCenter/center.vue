@@ -202,11 +202,12 @@ export default {
       this.visible = false
       if (this.searchForm.dateValue && this.searchForm.dateValue.length) {
         this.setPitch(this.pitch, this.searchForm.dateValue[0], this.searchForm.dateValue[1])
+      } else {
+        this.setPitch(this.pitch)
       }
-      this.setPitch(this.pitch)
     },
     //   导航栏btn
-    setPitch(i, beginApplyTime = '', endApplyTime = '') {
+    setPitch(i, beginApplyTime, endApplyTime) {
       if (this.pitch != i) {
         this.searchInput = ''
         this.searchForm = {}
@@ -246,7 +247,6 @@ export default {
         beginApplyTime: beginApplyTime,
         endApplyTime: endApplyTime
       }
-
       // 调接口
       if (i == 1) {
         // 待我审批
@@ -258,7 +258,6 @@ export default {
       } else if (i == 2) {
         // 我已审批
         hasApproveList(params).then((res) => {
-          window.console.log(res)
           this.tableData = res.data
           this.page.total = res.totalNum
         })
