@@ -26,3 +26,8 @@ export const homeMonthlyCredit = (params) => get('/manage/v1/web/index/queryMont
  * 首页月度学时排行榜
  * */
 export const homeMonthlyPeriod = (params) => get('/manage/v1/web/index/queryMonthlyPeriod', params)
+
+/**
+ * 首页我的直播
+ * */
+export const homeMyLiveList = (params) => get('/manage/v1/web/index/queryLiveStreamingList', params)
