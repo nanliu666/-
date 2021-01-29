@@ -31,22 +31,32 @@
         </h3>
         <div class="LModule">
           <div class="LModule2">
-            <div class="homeCourse">
-              <router-link to="">
+            <div v-for="item in myLiveData" :key="item.liveId" class="homeCourse">
+              <router-link :to="{ path: '/live/Detail', query: { id: id } }">
                 <div class="homeCourseImg">
-                  <img src="../assets/images/photo1.png" width="285" height="168" alt="" />
+                  <img
+                    :src="item.coverImageUrl ? item.coverImageUrl : '/img/autoL.png'"
+                    width="285"
+                    height="168"
+                    alt=""
+                  />
                 </div>
                 <div class="homeCourseText">
-                  <span class="homeCourseTitle">信息安全在岗在岗考试必要性</span>
-                  <span class="homeCourseTime">今天 20:00</span>
+                  <span class="homeCourseTitle">{{ item.channelName }}</span>
+                  <span class="homeCourseTime">{{ item.startTime }}</span>
                   <div class="livePerInfo">
-                    <img src="/img/userIconBig.png" width="24" height="24" alt="" />
-                    <span>陆小曼</span>
+                    <img
+                      :src="item.avatarUrl ? item.avatarUrl : '/img/userIconBig.png'"
+                      width="24"
+                      height="24"
+                      alt=""
+                    />
+                    <span>{{ item.lecturerName }}</span>
                   </div>
                 </div>
               </router-link>
             </div>
-            <div class="homeCourse">
+            <!-- <div class="homeCourse">
               <router-link to="">
                 <div class="homeCourseImg">
                   <img src="../assets/images/photo1.png" width="285" height="168" alt="" />
@@ -75,7 +85,7 @@
                   </div>
                 </div>
               </router-link>
-            </div>
+            </div> -->
           </div>
         </div>
         <h3 class="LMTitle">
@@ -300,7 +310,7 @@ import TheHeader from '@/page/TheHeader'
 import HomeMyTask from '@/views/home/homeMyTask'
 import HomeRight from '@/views/home/homeRight'
 import { queryCourseList } from '@/api/course'
-import { homeQueryTrainList, homeNewsList } from '@/api/home'
+import { homeQueryTrainList, homeNewsList, homeMyLiveList } from '@/api/home'
 
 export default {
   name: 'Home',
@@ -329,6 +339,7 @@ export default {
       hotCourseData: [], // 热门课程
       trainListData: [], // 培训中心
       newsListData: [], // 新闻
+      myLiveData: [], // 我的直播
       banner: [
         {
           css: {
@@ -358,6 +369,7 @@ export default {
     this.getHotCourse()
     this.getTrainList()
     this.getNewsList()
+    this.getHomeMyLive()
   },
   methods: {
     toTrainDetaill(item) {
@@ -371,6 +383,11 @@ export default {
           userType
         }
       })
+    },
+    async getHomeMyLive() {
+      // 我的直播
+      let res = await homeMyLiveList({ pageSize: 3, pageNo: 1 })
+      this.myLiveData = res.data
     },
     async getHotCourse() {
       // 热门课程
