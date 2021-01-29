@@ -80,6 +80,7 @@ export default {
     Swiper,
     SwiperSlide
   },
+  props: ['myTaskInfo'],
   data() {
     return {
       myMissions: [], //我的任务数据
@@ -179,6 +180,7 @@ export default {
       // 我的任务
       this.myMissions
       let backData = await queryMyMission({ pageSize: 100, pageNo: 1 })
+      this.myTaskInfo.nub = backData.data.length
       if (backData && backData.data) {
         this.myMissions = backData.data
       }
