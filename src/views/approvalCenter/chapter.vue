@@ -1,7 +1,7 @@
 <template>
   <div class="course-learn">
     <div class="course-learn__header">
-      <ul>
+      <ul @click="goBack">
         <li>审批中心</li>
         <li>/</li>
         <li>待我审批</li>
@@ -282,7 +282,9 @@ export default {
       if (!params.contentRecords) {
         return
       }
-      updateLearnRecord(params).then().catch()
+      updateLearnRecord(params)
+        .then()
+        .catch()
     },
     loadChapters() {
       if (!this.courseId) {
@@ -356,6 +358,7 @@ export default {
   &__header {
     height: 57px;
     line-height: 57px;
+    cursor: pointer;
     ul {
       display: flex;
       li {
