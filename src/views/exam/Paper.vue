@@ -24,7 +24,7 @@
         </el-button>
       </div>
     </div>
-    <div v-if="paper.isDecoil" class="close-book">
+    <div v-if="paper.isDecoil == 0" class="close-book">
       <el-alert
         title="本次为闭卷考试，考试期间若切换程序离开考试页面，则自动提交答卷！"
         type="warning"
@@ -336,8 +336,8 @@ export default {
     // 检测闭卷
     watchCloseBookExam() {
       const { isDecoil } = this.paper
-      // isDecoil：0是否，1为真
-      if (isDecoil === 1) {
+      // isDecoil：0是闭卷，1为开卷
+      if (isDecoil === 0) {
         // 跳转其他页面触发交卷
         window.onbeforeunload = function() {
           this.changeAutoEndExam()
