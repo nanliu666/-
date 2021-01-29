@@ -1,7 +1,7 @@
 <template>
   <div class="PlayBackListSingleC">
     <div>
-      <div v-for="item in playBackListData" :key="item.id" class="PBLS">
+      <div v-for="item in playBackListData" :key="item.id" class="PBLS" @click="toPlay">
         <div class="img">
           <img
             :src="item.coverImageUrl ? item.coverImageUrl : '/img/autol.png'"
@@ -19,17 +19,17 @@
         <div class="operation">
           <span
             v-if="item.lecturerDeleted == '1' && rePlayData.identityType == '1'"
-            @click="repRecover(item)"
+            @click.stop="repRecover(item)"
           >恢复</span>
           <span
             v-if="item.shelfStatus == '1' && rePlayData.identityType == '1'"
-            @click="repRelease(item)"
+            @click.stop="repRelease(item)"
           >发布</span>
           <span
             v-if="item.shelfStatus == '0' && rePlayData.identityType == '1'"
-            @click="repOffShelf(item)"
+            @click.stop="repOffShelf(item)"
           >下架</span>
-          <span v-if="rePlayData.identityType == '1'" @click="repDownload(item)">下载</span>
+          <span v-if="rePlayData.identityType == '1'" @click.stop="repDownload(item)">下载</span>
           <!-- <span @click="repDelete(item)">删除</span> -->
         </div>
       </div>
@@ -81,10 +81,10 @@ export default {
   methods: {
     toPlay(item) {
       // 调整到视频播放
-      this.router.push({
-        path: '',
+      this.$router.push({
+        path: 'replay',
         query: {
-          item: item
+          id: this.PBLParmas.livePlanId
         }
       })
     },

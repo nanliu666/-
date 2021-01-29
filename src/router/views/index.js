@@ -170,6 +170,14 @@ export default [
             meta: {
               title: '观看直播'
             }
+          },
+          {
+            name: 'replay',
+            path: 'replay',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/live/Replay.vue'),
+            meta: {
+              title: '直播回放'
+            }
           }
         ]
       },
