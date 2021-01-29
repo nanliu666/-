@@ -90,7 +90,7 @@ export default {
       queryInfo: {
         pageNo: 1,
         pageSize: 10,
-        channelId: this.$route.query.id || '555'
+        liveId: this.$route.query.id || '555'
       },
       columnsVisible: TABLE_COLUMNS,
       tableConfig: TABLE_CONFIG,
