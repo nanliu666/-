@@ -640,7 +640,7 @@ export default {
     },
     // 处理重新发起申请
     handleReapplyClick() {
-      window.open(`${process.env.MANAG_URL}/#/course/establishCourse?id=${this.formId}`)
+      window.open(`${process.env.VUE_APP_MANAGE_URL}/#/course/establishCourse?id=${this.formId}`)
     },
     // 点击撤回
     handleCancelClick() {
