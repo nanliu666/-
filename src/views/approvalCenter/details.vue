@@ -1,6 +1,5 @@
 <template>
   <div v-loading="loading">
-    <!-- <page-header :title="`${applyDetail.processName}`" show-back :back="handleBack" /> -->
     <div class="details_header">
       <ul @click="handleBack">
         <li>审批中心</li>
@@ -95,12 +94,9 @@
                     <span class="text">通过条件：</span>
                     <span v-for="(item, index) in courseData.passCondition" :key="index">
                       <span v-show="item == 'a'">教师评定 </span>
-                      <span v-show="item == 'b'"
-                        >考试通过
-                        {{ courseData.passCondition.split(',').length >= 3 ? ',' : '' }}</span
-                      >
-                      <span v-show="item == 'c'"
-                        >达到课程学时
+                      <span v-show="item == 'b'">考试通过
+                        {{ courseData.passCondition.split(',').length >= 3 ? ',' : '' }}</span>
+                      <span v-show="item == 'c'">达到课程学时
                         {{ courseData.passCondition.split(',').length >= 2 ? ',' : '' }}
                       </span>
                     </span>
@@ -160,77 +156,65 @@
       <div class="record-wrap-title">审批流程</div>
       <steps :progress.sync="progress" />
 
-      <!-- 嵌入 -->
-      <!-- <div class="details_comment" v-show="centerPitch() == 1 && centerPitch() == 4">
-        <div class="details_comment_title">审批意见</div>
-
-        <div class="details_comment_textarea" v-show="centerPitch() == 1">
-          <el-input v-model="textarea" type="textarea" :rows="4" placeholder="请输入（必填）">
-          </el-input>
-        </div>
-      </div>
-      <div class="details_btn" v-show="centerPitch() == 1 && centerPitch() == 4">
-        <div v-show="centerPitch() == 1">
-          <el-tooltip content="拒绝审批后，该审批将终止" placement="top">
-            <el-button @click="refuseBtn">拒绝</el-button>
-          </el-tooltip>
-          <el-tooltip content="同意该审批，审批将继续向下流转" placement="top">
-            <el-button type="primary" @click="agreeBtn">同意</el-button>
-          </el-tooltip>
-        </div>
-
-        <div v-show="centerPitch() == 4">
-          <el-tooltip
-            v-if="this.progress.length > 2"
-            content="已有人审批，无法撤回"
-            placement="top"
-          >
-            <el-button disabled>撤回</el-button>
-          </el-tooltip>
-
-          <el-button v-else @click="withdrawBtn">撤回</el-button>
-        </div>
+      <el-form
+        v-show="isApprover"
+        ref="apprForm"
+        label-position="top"
+        :model="apprForm"
+        :rules="{
+          comment: [{ required: !!isOpinion, message: '请输入审批意见', trigger: 'blur' }]
+        }"
+        label-width="100px"
+        class="demo-ruleForm"
+      >
+        <el-form-item label="审批意见" prop="comment">
+          <el-input v-model="apprForm.comment" type="textarea" :rows="4" :placeholder="tip" />
+        </el-form-item>
+      </el-form>
+      <div v-if="!isFished && !isPreview" class="cancel-btn-box">
         <el-button
+          v-if="!isFished && hasCancel && isApplyUser"
           type="primary"
-          v-show="centerPitch() == 4 && StatusCN[applyDetail.status] == '已拒绝'"
-          @click="handleReapplyClick"
+          size="medium"
+          @click="handleCancelClick"
         >
-          重新申请
+          撤回
         </el-button>
-      </div> -->
-      <!-- 嵌入 end-->
-    </div>
-    <div v-if="!isFished && !isPreview" class="cancel-btn-box">
-      <el-button
-        v-if="!isFished && hasCancel && isApplyUser"
-        type="primary"
-        size="medium"
-        @click="handleCancelClick"
-      >
-        撤回
-      </el-button>
-      <el-tooltip
-        effect="dark"
-        content="拒绝审批后，该审批将终止"
-        :enterable="false"
-        placement="top"
-      >
-        <el-button v-if="isApprover" type="primary" size="medium" @click="handelClick('Reject')">
-          拒绝
-        </el-button>
-      </el-tooltip>
-      <el-tooltip
-        effect="dark"
-        content="同意该审批，审批将继续向下流转"
-        :enterable="false"
-        placement="top"
-      >
-        <el-button v-if="isApprover" type="primary" size="medium" @click="handelClick('Pass')">
-          同意
-        </el-button>
-      </el-tooltip>
-
-      <el-tooltip effect="dark" content="催一下" :enterable="false" placement="top">
+        <el-tooltip
+          effect="dark"
+          content="拒绝审批后，该审批将终止"
+          :enterable="false"
+          placement="top"
+        >
+          <el-button
+            v-if="isApprover"
+            type="primary"
+            size="medium"
+            @click="handelConfirm('Reject')"
+          >
+            拒绝
+          </el-button>
+        </el-tooltip>
+        <el-tooltip
+          effect="dark"
+          content="同意该审批，审批将继续向下流转"
+          :enterable="false"
+          placement="top"
+        >
+          <el-button v-if="isApprover" type="primary" size="medium" @click="handelConfirm('Pass')">
+            同意
+          </el-button>
+        </el-tooltip>
+        <el-tooltip
+          v-if="(isReject && isApplyUser) || (isCancel && isApplyUser)"
+          effect="dark"
+          content="重新申请"
+          placement="top"
+        >
+          <el-button type="primary" size="medium" @click="handleReapplyClick">
+            重新申请
+          </el-button>
+        </el-tooltip>
         <el-button
           v-if="!isCancel && !isFished && !isReject && isApplyUser"
           type="primary"
@@ -239,36 +223,8 @@
         >
           催一下
         </el-button>
-      </el-tooltip>
+      </div>
     </div>
-    <el-dialog
-      :title="apprTitle"
-      :visible.sync="dialogVisible"
-      width="600px"
-      top="30vh"
-      :modal-append-to-body="false"
-    >
-      <el-form
-        ref="apprForm"
-        label-position="top"
-        :model="apprForm"
-        :rules="{
-          comment: [{ required: true, message: '请输入审批意见', trigger: 'blur' }]
-        }"
-        label-width="100px"
-        class="demo-ruleForm"
-      >
-        <el-form-item label="审批意见" :prop="isOpinion ? 'comment' : ''">
-          <el-input v-model="apprForm.comment" type="textarea" :rows="4" :placeholder="tip" />
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button size="medium" @click="dialogVisible = false">取 消</el-button>
-        <el-button size="medium" type="primary" :loading="btnloading" @click="handelConfirm"
-          >确 定</el-button
-        >
-      </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -282,19 +238,11 @@ import {
   createApprPass,
   createApprReject,
   createApprUrge,
-  getProcessDetail,
-  // postOverrule
-  // putApprForm,
-  detail,
-  record,
-  urge,
-  pass,
-  reject,
-  cancel
+  getProcessDetail
 } from '@/api/approvalCenter'
 import moment from 'moment'
 import 'moment/locale/zh-cn'
-import { listTeacher, getCourseDetail, getCatalog, getTeacherList } from '@/api/course'
+import { getCourseDetail, getTeacherList } from '@/api/course'
 moment.locale('zh-cn')
 
 // 审批状态
@@ -330,7 +278,7 @@ export default {
       loading: false,
       // 流程ID
       processId: '',
-      // 当前审批人id
+      // 当前审批人id,可能有多个
       apprUserIdList: [],
       // 审批详情
       StatusCN: {
@@ -342,9 +290,11 @@ export default {
       show: true,
       // 审批进度
       activeStep: 0,
-      // 是否已撤销 已拒绝 已完成
+      // 是否已撤销
       isCancel: false,
+      // 流程是否结束
       isFished: false,
+      // 是否已拒绝
       isReject: false,
       // 控制显示模态框
       dialogVisible: false,
@@ -374,27 +324,17 @@ export default {
     apprNo() {
       return _.get(this.applyDetail, 'apprNo', null)
     },
+    // 当前审批详情的表单id,例如课程ID
+    formId() {
+      return _.get(this.applyDetail, 'formId', null)
+    },
     // 发起用户的id
     applyUserId() {
       return _.get(this.applyRecord, 'data[0].userId', null)
     },
-
     // 审批实例ID
     processInstanceId() {
       return _.get(this.applyRecord, 'processInstanceId', null)
-    },
-    // 当前用户的taskId（可以用于标记退回）
-    taskId() {
-      const { recordList, userId } = this
-      return _.get(_.find(_.filter(recordList, { result: EMPTY }), { userId }), 'taskId', null)
-    },
-    // 模态框标题
-    apprTitle() {
-      let apprTitleCN = {
-        Pass: '同意审批',
-        Reject: '拒绝审批'
-      }
-      return apprTitleCN[this.apprType] || ''
     },
     // 撤回按钮是否显示
     hasCancel() {
@@ -412,89 +352,21 @@ export default {
     },
 
     // 提交人跟当前用户是否同一个人
-    isApplyUser: function () {
+    isApplyUser: function() {
       return this.userId === this.applyUserId
     },
-
-    // 是否是预览状态
+    // 是否是预览状态,预览状态不允许操作
     isPreview() {
       // return true
       return _.get(this.$route.query, 'preview', false)
     },
 
-    ...mapGetters(['userId', 'tag'])
+    ...mapGetters(['userId'])
   },
   activated() {
     this.loadData()
-    this.getCourseData()
   },
   methods: {
-    // 第几个页面进来的
-    centerPitch() {
-      return this.$route.query.pitch
-    },
-    formId() {
-      return this.$route.query.id
-    },
-    // 同意
-    agreeBtn() {
-      // window.console.log(this.progress)
-      pass({
-        userId: this.userId,
-        taskId: this.taskId,
-        processInstanceId: this.processInstanceId,
-        comment: this.textarea
-      }).then(() => {
-        this.goBack()
-
-        this.$message({
-          message: `你已同意${this.applyDetail.userName}的课程审批申请`,
-          type: 'success'
-        })
-      })
-    },
-    // 拒绝
-    refuseBtn() {
-      reject({
-        userId: this.userId,
-        taskId: this.taskId,
-        processInstanceId: this.processInstanceId,
-        comment: this.textarea
-      }).then(() => {
-        this.goBack()
-
-        this.$message({
-          message: `你已拒绝${this.applyDetail.userName}的课程审批申请`,
-          type: 'success'
-        })
-      })
-    },
-    // 撤回
-    withdrawBtn() {
-      this.$confirm('确定撤销申请吗？撤销后可重新提交', '撤销申请', {
-        confirmButtonText: '撤销',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          cancel({
-            processInstanceId: this.processInstanceId
-          }).then(() => {
-            this.goBack()
-
-            this.$message({
-              message: '撤回成功',
-              type: 'success'
-            })
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消撤回'
-          })
-        })
-    },
     // 查看课程内容
     jumpToLearn(item) {
       this.$router.push({
@@ -504,8 +376,7 @@ export default {
     },
     // 获取课程信息
     async getCourseData() {
-      let res = await getCourseDetail({ courseId: this.formId() })
-      window.console.log(res)
+      let res = await getCourseDetail({ courseId: this.formId })
       res.introduction = _.unescape(res.introduction)
       res.thinkContent = _.unescape(res.thinkContent)
       this.courseData = res
@@ -541,16 +412,9 @@ export default {
     setPitch(i) {
       this.pitch = i
     },
-    // 处理重新发起申请
-    handleReapplyClick() {
-      window.console.log('重新申请')
-      // this.$store.commit('DEL_TAG', this.tag)
-      // this.$router.push({
-      //   path: '/apprProcess/apprSubmit',
-      //   query: { processId: this.processId, apprNo: this.apprNo }
-      // })
+    handleBack() {
+      this.$router.back()
     },
-
     // 流程数据通过当前审批节点是否存在当前用户获取流程内的节点
     // 当前审批节点可以有多个
     findCurrentNode(processData) {
@@ -596,15 +460,18 @@ export default {
         this.apprForm.processInstanceId = processInstanceId
         this.processId = processId
         this.recordList = data
-        // 当前审批处于审批中状态
-        if (!(this.isCancel || this.isReject || this.isFinished)) {
-          this.apprUserIdList = []
-          this.recordList.forEach((item, index) => {
-            if (index && item.result === EMPTY) {
-              this.apprUserIdList.push(item.userId)
-            }
-          })
-        }
+        // 记录所有审批中节点的用户id
+        this.apprUserIdList = []
+        this.recordList.forEach((item, index) => {
+          if (index && item.result === EMPTY) {
+            this.apprUserIdList.push(item.userId)
+          }
+        })
+        // 获取课程详情
+        this.getCourseData()
+        // 获取审批流程详情
+        this.getProcessDetail()
+        // 处理流程数据
         this.handleNodeData()
       } catch (error) {
         console.error(error)
@@ -635,6 +502,7 @@ export default {
         }
       })
     },
+    // 标记所有节点的属性
     tagAllNode(recordList, nodeList) {
       recordList.forEach((record) => {
         // TODO: 消除 backParams
@@ -643,6 +511,7 @@ export default {
         this.tagNode(record, nodeList)
       })
     },
+    // 获取整个流程的状态
     handleStatus() {
       // 开始节点的状态即代表整个流程的状态
       const firstNode = _.head(this.recordList)
@@ -769,10 +638,9 @@ export default {
       })
       this.progress = _.concat(this.progress, addNodes)
     },
-
-    handleBack() {
-      this.$store.commit('DEL_TAG', this.tag)
-      this.$router.back()
+    // 处理重新发起申请
+    handleReapplyClick() {
+      window.open(`${process.env.MANAG_URL}/#/course/establishCourse?courseId=${this.formId}`)
     },
     // 点击撤回
     handleCancelClick() {
@@ -792,27 +660,26 @@ export default {
           })
       })
     },
-    // 点击同意或拒绝按钮展示模态框
-    handelClick(type) {
+    // 获取审批流程详情
+    getProcessDetail() {
       // 获取审批流程，获取审批意见是否必填，和审批提示语
       getProcessDetail({ processId: this.processId })
         .then((res) => {
-          this.apprType = type
           let { isOpinion, tip } = res
           this.tip = tip
           this.isOpinion = isOpinion
-          this.dialogVisible = true
           this.apprForm.comment = ''
+          this.$nextTick(() => {
+            this.$refs.apprForm.clearValidate()
+          })
         })
         .finally(() => {})
     },
-    // 点击确定审批
-    handelConfirm() {
-      const { apprType } = this
+    // 点击同意或拒绝
+    handelConfirm(type) {
       this.$refs.apprForm.validate().then((result) => {
         if (!result) return
         this.btnloading = true
-        // let { userId, taskId } = this.recordList[this.activeStep]
         let userId = this.userId
         let taskId = ''
         this.recordList.forEach((it) => {
@@ -828,18 +695,17 @@ export default {
             text: '同意'
           }
         }
-        let submitFun = TYPE[apprType].api
+        let submitFun = TYPE[type].api
         submitFun({
           userId,
           taskId,
           processInstanceId: this.processInstanceId,
-          comment: this.comment
+          comment: this.apprForm.comment
         })
           .then(() => {
-            this.$message.success(`你已${TYPE[apprType].text}这个申请`)
+            this.$message.success(`你已${TYPE[type].text}这个申请`)
           })
           .finally(() => {
-            this.dialogVisible = false
             this.btnloading = false
             this.handleBack()
           })
