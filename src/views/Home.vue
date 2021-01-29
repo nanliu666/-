@@ -17,11 +17,11 @@
       <div class="homeLeft">
         <h3 class="LMTitle">
           <span class="span1">我的任务</span>
-          <span class="span2">待完成任务4项</span>
+          <span class="span2">待完成任务{{ myTaskInfo.nub }}项</span>
         </h3>
         <!-- 我的任务 -->
         <div style="clear: both; ">
-          <home-my-task />
+          <home-my-task :my-task-info="myTaskInfo" />
         </div>
         <h3 class="LMTitle">
           <span class="span1">最新直播</span>
@@ -311,6 +311,9 @@ export default {
   },
   data() {
     return {
+      myTaskInfo: {
+        nub: 0
+      },
       value: 3.7,
       trainStatus: {
         1: {
