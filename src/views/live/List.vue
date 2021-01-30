@@ -114,19 +114,51 @@
                 content="Bottom Center 提示文字"
                 placement="top"
               >
-                <p class="department">
+                <p v-if="item.planTime.length > 0" class="department">
                   {{ item.lecturerName }} |
-                  <!-- 每周三/周五 08:00:00 -->
-                  <span v-show="item.batchDeclare == 'single'">{{
-                    item.planTime[0].split('~')[0]
-                  }}</span>
-                  <!-- <span v-show="item.batchDeclare == 'plural'">{{item.planTime[0].split("~")[0]}}</span> -->
-                  <!-- <span v-show="item.batchDeclare == 'cycle'">{{item.planTime[0].split("~")[0]}}</span> -->
+
+                  <span v-if="item.batchDeclare == 'plural' || item.batchDeclare == 'single'">
+                    {{ item.planTime[0].split('~')[0] }} ~ {{ item.planTime[0].split('~')[1] }}
+                  </span>
+
+                  <span v-if="item.cycleInfo.cycleMode == 'day'">
+                    <span>每天 </span>
+                  </span>
+                  <span v-if="item.cycleInfo.cycleMode == 'week'">
+                    <span>每周 </span>
+                    <span v-for="(item, index) in item.cycleInfo.cycleTime.split(',')" :key="index">周{{ item }}/</span>
+                  </span>
+                  <span v-if="item.cycleInfo.cycleMode == 'month'">
+                    <span>每月 </span>
+                    <span v-for="(item, index) in item.cycleInfo.cycleTime.split(',')" :key="index">{{ item }}号/</span>
+                  </span>
+                  <span>
+                    {{ item.planTime[0].split('~')[0].split(' ')[1] }} ~
+                    {{ item.planTime[0].split('~')[1].split(' ')[1] }}</span>
                 </p>
+
                 <div slot="content">
-                  <p>每周三/周五</p>
-                  <p>第一次：08:00:00 ~ 10:00:00</p>
-                  <p>第二次：08:00:00 ~ 10:00:00</p>
+                  <div v-if="item.batchDeclare == 'plural' || item.batchDeclare == 'single'">
+                    <p v-for="(i, index) in item.planTime" :key="index">
+                      第{{ index + 1 }}次：{{ i.split('~')[0] }} ~ {{ i.split('~')[1] }}
+                    </p>
+                  </div>
+                  <p v-if="item.cycleInfo.cycleMode == 'day'">每天</p>
+                  <p v-if="item.cycleInfo.cycleMode == 'week'">
+                    每周
+                    <span v-for="(item, index) in item.cycleInfo.cycleTime.split(',')" :key="index">周{{ item }}/</span>
+                  </p>
+                  <p v-if="item.cycleInfo.cycleMode == 'month'">
+                    每月
+                    <span v-for="(item, index) in item.cycleInfo.cycleTime.split(',')" :key="index">{{ item }}号/</span>
+                  </p>
+
+                  <div v-if="item.batchDeclare == 'cycle'">
+                    <p v-for="(i, index) in item.planTime" :key="index">
+                      第{{ index + 1 }}次：{{ i.split('~')[0].split(' ')[1] }} ~
+                      {{ i.split('~')[1].split(' ')[1] }}
+                    </p>
+                  </div>
                 </div>
               </el-tooltip>
             </div>
@@ -263,6 +295,7 @@ export default {
       } else {
         getLiveList().then((res) => {
           this.liveList = res.data
+          console.log(res.data)
           this.queryData.totalNum = res.totalNum
         })
       }
@@ -469,6 +502,9 @@ export default {
       color: #ccc;
       font-size: 12px;
       margin: 5px 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .tabs-box {
       background: #fff;
