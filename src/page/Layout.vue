@@ -4,8 +4,9 @@
     <div :class="['el-main', { 'el-main--fullscreen': isFullscreen }]">
       <div class="el-view">
         <keep-alive>
-          <router-view :key="$route.fullPath" />
+          <router-view v-if="_.get($route.meta, 'keepAlive', true)" :key="$route.fullPath" />
         </keep-alive>
+        <router-view v-if="!_.get($route.meta, 'keepAlive', true)" :key="$route.fullPath" />
       </div>
       <the-footer v-if="!isFullscreen" />
     </div>
