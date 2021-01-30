@@ -14,8 +14,8 @@
           <span>标记）</span>
         </span>
       </div>
-      <div v-if="!isSuccess && paper.reckonTime" class="header-right">
-        <span class="time" :class="{ 'warning-time': isWarningTimeLine }">
+      <div v-if="!isSuccess" class="header-right">
+        <span v-if="paper.reckonTime" class="time" :class="{ 'warning-time': isWarningTimeLine }">
           <span>剩余时间：</span>
           <span>{{ remainingTime }}</span>
         </span>
