@@ -14,18 +14,18 @@
         <span class="label">考生答案：</span>
         <span class="value">{{ data.answerUser ? data.answerUser : '考生未作答' }}</span>
       </div>
-      <div class="blank-middle">
+      <div v-if="_.get(data, 'result', '-1') !== '-1'" class="blank-middle">
         <div>
           <span class="label">评分结果：</span>
-          <span class="value">对</span>
+          <span class="value">{{ getResult(data) }}</span>
         </div>
         <div>
           <span class="label">得分：</span>
-          <span class="value">{{ data.scoreUser ? data.scoreUser : 0 }}分</span>
+          <span class="value">{{ data.scoreUser }}</span>
         </div>
         <div>
           <span class="label">评卷人：</span>
-          <span class="value">王平</span>
+          <span class="value">{{ data.review }}</span>
         </div>
       </div>
       <div v-if="data.reviewRemark" class="remark-box">
@@ -63,6 +63,16 @@ export default {
       // return target
       // TODO: 填空题的标准答案获取
       return _.get(this.data, 'options[0].content', '未设置标椎答案')
+    },
+    getResult(data) {
+      const key = _.get(data, 'result', '-1')
+      const RESULT = {
+        '-1': '',
+        '0': '对',
+        '1': '错',
+        '2': '部分对'
+      }
+      return RESULT[key]
     },
     // 获取考生答案
     getAnswerValue() {
@@ -105,11 +115,11 @@ export default {
   }
   .blank-box {
     .blank-top {
-      padding-bottom: 24px;
-      border-bottom: 1px solid rgba(0, 11, 21, 0.05);
     }
     .blank-middle {
+      border-top: 1px solid rgba(0, 11, 21, 0.05);
       padding-top: 24px;
+      margin-top: 24px;
       display: flex;
       justify-content: space-between;
     }

@@ -44,8 +44,10 @@
             <span class="li-label">考试得分：</span>
             <span class="li-value">
               <span>{{ examDetail.score }}分</span>
-              <span>（客观题{{ examDetail.objectiveScore }}分），</span>
-              <span>（主观题{{ examDetail.subjectiveScore }}分）</span>
+              <span>（客观题{{ examDetail.objectiveScore }}分，</span>
+              <span>主观题{{
+                examDetail.subjectiveScore ? `${examDetail.subjectiveScore}分` : ' - - '
+              }}）</span>
             </span>
           </li>
         </ul>
@@ -69,7 +71,7 @@
       </div>
     </el-card>
     <el-card class="paper-card">
-      <ul class="question-ul">
+      <ul v-if="!_.isEmpty(questionList)" class="question-ul">
         <li v-for="(item, index) in questionList" :key="index" class="question-li">
           <div class="title-box">
             <div class="question-li-title">
@@ -108,6 +110,7 @@
           </div>
         </li>
       </ul>
+      <common-empty v-else />
     </el-card>
   </div>
 </template>
@@ -117,6 +120,7 @@ import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
 import { getViewAnswer } from '@/api/exam'
 import moment from 'moment'
 import QustionPreview from './components/questionPreview'
+import CommonEmpty from '@/components/common-empty/Empty'
 const STATUS = {
   1: {
     type: 'success',
@@ -145,7 +149,8 @@ import { QUESTION_TYPE_MAP, QUESTION_TYPE_GROUP } from '@/const/exam'
 export default {
   components: {
     CommonBreadcrumb,
-    QustionPreview
+    QustionPreview,
+    CommonEmpty
   },
   filters: {
     typeFilter(data) {
