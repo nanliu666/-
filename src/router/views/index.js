@@ -136,7 +136,8 @@ export default [
             component: () => import(/* webpackChunkName: "page"*/ '@/views/exam/Paper.vue'),
             meta: {
               title: '参与考试',
-              fullscreen: true
+              fullscreen: true,
+              keepAlive: false
             }
           }
         ]
