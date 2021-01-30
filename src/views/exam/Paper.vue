@@ -14,7 +14,7 @@
           <span>标记）</span>
         </span>
       </div>
-      <div v-if="!isSuccess" class="header-right">
+      <div v-if="!isSuccess && paper.reckonTime" class="header-right">
         <span class="time" :class="{ 'warning-time': isWarningTimeLine }">
           <span>剩余时间：</span>
           <span>{{ remainingTime }}</span>
@@ -714,7 +714,9 @@ export default {
     },
     // TODO: 考试时间交卷逻辑需要补充
     initRemainingTime() {
-      const { reckonTimeValue, strategy, examEndTime } = this.paper
+      const { reckonTimeValue, strategy, examEndTime, reckonTime } = this.paper
+      // 不计时不需要进行以下步骤
+      if (!reckonTime) return
       // 如果考试时长不计时，并且考试策略为true，最后5分钟需要爆红提示。计时就按照计时的算。
       const canUseUpTime = moment(new Date()).add(reckonTimeValue, 'm')
       // 考试策略strategy影响考试时长，如果为true，到了考试结束时间就必须交卷，否则可以考满设置的考试时间
