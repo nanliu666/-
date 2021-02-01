@@ -20,7 +20,7 @@
           </li>
         </ul>
       </div>
-      <div v-if="correctContent" class="correct-answer-box">
+      <div class="correct-answer-box">
         <span class="label">正确答案：</span>
         <span class="value is-correct">{{ getCorrect() }}</span>
       </div>
@@ -60,9 +60,7 @@ export default {
     }
   },
   data() {
-    return {
-      correctContent: ''
-    }
+    return {}
   },
   methods: {
     // 当前选项被选且未错误答案
@@ -71,15 +69,13 @@ export default {
     },
     // 获取正确答案
     getCorrect() {
-      const target = _.chain(this.data.options)
-        .filter((item) => {
-          return item.isCorrect
-        })
-        .map('isCorrect')
-        .join(' ')
-        .value()
-      this.correctContent = target
-      return target
+      let target = []
+      _.each(this.data.options, (item) => {
+        if (_.includes(this.data.answerQuestion, item.id)) {
+          target.push(item.content)
+        }
+      })
+      return target.join(',')
     },
     // 获取考生答案
     getAnswerValue() {
