@@ -1,7 +1,7 @@
 <template>
   <div class="watchLiveCla">
     <iframe
-      :src="`https://live.polyv.cn/watch/2095856`"
+      :src="`https://live.polyv.cn/watch/${id}`"
       frameborder="0"
       allowfullscreen="true"
     ></iframe>
@@ -11,7 +11,9 @@
 export default {
   name: 'WatchLive',
   data() {
-    return {}
+    return {
+      id: this.$route.query.wId
+    }
   }
 }
 </script>
