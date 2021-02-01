@@ -36,11 +36,15 @@
                   <span class="label">直播讲师：</span>
                   <span class="value">{{ detailData.lecturerName }}</span>
                 </div>
-                <div class="content">
+                <div class="content live__time">
                   <span class="label">直播时间：</span>
-                  <span class="value">
+                  <span class="value ">
                     <ul v-if="!_.isEmpty(detailData.liveTime)">
-                      <li v-for="(item, index) in detailData.liveTime" :key="index">
+                      <li
+                        v-for="(item, index) in detailData.liveTime"
+                        :key="index"
+                        class="value__li"
+                      >
                         {{ item }}
                       </li>
                     </ul>
@@ -271,6 +275,15 @@ export default {
           margin-bottom: 16px;
         }
         .content__classify {
+        }
+        .live__time {
+          display: flex;
+          .value__li {
+            margin-bottom: 6px;
+            &:last-child {
+              margin-bottom: 0;
+            }
+          }
         }
         .content {
           margin-bottom: 8px;

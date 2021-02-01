@@ -31,7 +31,7 @@
               <span>分钟</span>
             </span>
           </li>
-          <li class="header-li">
+          <li v-if="isViewResults" class="header-li">
             <span class="li-label">试卷总分：</span>
             <span class="li-value">
               <span>{{ examDetail.totalScore }}分</span>
@@ -91,6 +91,7 @@
                   v-if="QUESTION_TYPE_GROUP !== conItem.type"
                   :data="conItem"
                   type="view"
+                  :is-view-results="isViewResults"
                 />
                 <span v-else>
                   <span class="right-title" v-html="getHTML(conItem.content)"></span>
@@ -101,7 +102,11 @@
                       class=""
                     >
                       <span>{{ paperIndex + 1 }}.</span>
-                      <QustionPreview :data="paperItem" type="view" />
+                      <QustionPreview
+                        :data="paperItem"
+                        type="view"
+                        :is-view-results="isViewResults"
+                      />
                     </li>
                   </ul>
                 </span>
@@ -162,6 +167,7 @@ export default {
   },
   data() {
     return {
+      isViewResults: false,
       routeList: [
         {
           path: '/exam',
@@ -193,6 +199,10 @@ export default {
     moment,
     async initData() {
       this.examDetail = await getViewAnswer(_.assign(this.queryInfo, this.$route.query))
+      // 若创建考试时，允许考生查看答卷且查看天数不为0，且超过规定天数, 起始时间为评卷结束时间。则不能查看答卷，按钮置灰
+      const { openResults, openResultsValue, publishTime } = this.examDetail
+      this.isViewResults =
+        openResults && moment(new Date()).diff(moment(publishTime)) < openResultsValue
       this.initQuestionList()
     },
     addScore(args) {

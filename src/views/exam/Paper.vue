@@ -7,7 +7,7 @@
         <span v-if="!isSuccess" class="content">
           <span>共{{ paper.questionNum }}题，</span>
           <span v-if="paper.totalScore">总分{{ paper.totalScore }}分，</span>
-          <span>限定最高分为100分</span>
+          <span>限定最高分为{{ paper.scopeLimitValue }}分</span>
           <span v-if="paper.reckonTime">，计时{{ paper.reckonTimeValue }}分钟</span>
           <span>（答题不确定时，可用</span>
           <i class="iconimage_icon_help_normal iconfont" />
