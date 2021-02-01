@@ -56,17 +56,7 @@ export default {
   methods: {
     // 获取正确答案
     getCorrect() {
-      // const target = _.chain(this.data.options)
-      //   .filter((item) => {
-      //     return item.isCorrect
-      //   })
-      //   .map('isCorrect')
-      //   .join(' ')
-      //   .value()
-      // this.correctContent = target
-      // return target
-      // TODO: 填空题的标准答案获取
-      return _.get(this.data, 'options[0].content', '未设置标椎答案')
+      return _.get(this.data, 'answerQuestion', '未设置标椎答案')
     },
     getResult(data) {
       const key = _.get(data, 'result', '-1')
