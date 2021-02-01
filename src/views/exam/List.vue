@@ -314,11 +314,11 @@ export default {
         tips = joinTips
       }
       // 若已通过考试，且还在考试时间和限定次数内，点击出现弹框
+      // 不限次数可以参加、限制了次数且参加次数在限次之内可以参加
       if (
         row.isPass === 3 &&
-        moment(new Date()).diff(moment(row.examEndTime), 'minutes') > 0 &&
-        row.joinNum &&
-        row.joinNumValue < row.examTimes
+        moment(moment(row.examEndTime)).diff(new Date(), 'minutes') > 0 &&
+        (!row.joinNum || (row.joinNum && row.joinNumValue < row.examTimes))
       ) {
         tips = isPassAndJoin
       }
