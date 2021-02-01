@@ -78,10 +78,12 @@
         v-if="
           [QUESTION_TYPE_MULTIPLE, QUESTION_TYPE_SINGLE, QUESTION_TYPE_JUDGE].includes(data.type)
         "
+        :is-view-results="isViewResults"
         :data="data"
       />
       <gap-and-short
         v-if="[QUESTION_TYPE_BLANK, QUESTION_TYPE_SHOER].includes(data.type)"
+        :is-view-results="isViewResults"
         :data="data"
       />
     </div>
@@ -111,6 +113,10 @@ export default {
     GapAndShort
   },
   props: {
+    isViewResults: {
+      type: Boolean,
+      default: false
+    },
     type: {
       type: String,
       default: 'edit'

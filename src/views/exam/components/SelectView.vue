@@ -30,7 +30,7 @@
         <span class="label">考生答案：</span>
         <span class="value">{{ getAnswerValue() }}</span>
       </div>
-      <div class="answer">
+      <div v-if="isViewResults" class="answer">
         <span class="label">得分：</span>
         <span class="value">{{ data.scoreUser }}分</span>
       </div>
@@ -50,6 +50,10 @@ export default {
     questionView
   },
   props: {
+    isViewResults: {
+      type: Boolean,
+      default: false
+    },
     data: {
       type: Object,
       default: () => ({})

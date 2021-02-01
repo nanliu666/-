@@ -19,7 +19,7 @@
           <span class="label">评分结果：</span>
           <span class="value">{{ getResult(data) }}</span>
         </div>
-        <div>
+        <div v-if="isViewResults">
           <span class="label">得分：</span>
           <span class="value">{{ data.scoreUser }}</span>
         </div>
@@ -40,6 +40,10 @@
 export default {
   name: 'GapAndShort',
   props: {
+    isViewResults: {
+      type: Boolean,
+      default: false
+    },
     data: {
       type: Object,
       default: () => ({})

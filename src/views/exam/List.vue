@@ -350,13 +350,13 @@ export default {
         })
       })
     },
-    // 查看置灰规则
+    // 查看答卷置灰规则
     JoinView(row) {
       // status缺考4、未考试2和未开考1状态下，不能查看答卷，按钮置灰
       // 若创建考试时，不允许考生查看答卷。则不能查看答卷，按钮置灰
       // 已提交过答卷的点击“查看答卷”挑跳转到【查看答卷】页面
-      const isJoinDisabled =
-        row.status === 1 || row.status === 2 || row.status === 4 || !row.openAnswerSheet
+      const { status, openAnswerSheet } = row
+      const isJoinDisabled = status === 1 || status === 2 || status === 4 || !openAnswerSheet
       return isJoinDisabled
     },
     // 查看答案
