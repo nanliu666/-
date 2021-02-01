@@ -1,23 +1,20 @@
 <template>
   <div class="course-learn">
     <div class="course-learn__header">
-      <i class="iconimage_icon_leftarrow iconfont" @click="goBack()"></i>
-      <span class="course-learn__header__title">
-        {{ course.name }}
-      </span>
+      <ul @click="goBack">
+        <li>审批中心</li>
+        <li>/</li>
+        <li>待我审批</li>
+        <li>/</li>
+        <li>审批详情</li>
+        <li>/</li>
+        <li class="text_color">查看章节内容</li>
+      </ul>
     </div>
     <div class="course-learn__main">
       <div :class="['left-bar', { hidden: leftHidden }]">
-        <el-menu :default-active="activeIndex" mode="horizontal" @select="handleMenuChange">
-          <el-menu-item index="1">
-            目录
-          </el-menu-item>
-          <el-menu-item index="2">
-            笔记
-          </el-menu-item>
-        </el-menu>
         <div class="left-bar__main">
-          <div v-show="activeIndex === '1'" class="chapters">
+          <div class="chapters">
             <ul>
               <li
                 v-for="(chapter, index) in chapters"
@@ -32,48 +29,9 @@
                       color: _.get(COURSE_CHAPTER_TYPE_MAP, `${chapter.type}.color`, ''),
                       'border-color': _.get(COURSE_CHAPTER_TYPE_MAP, `${chapter.type}.color`, '')
                     }"
-                  >{{ _.get(COURSE_CHAPTER_TYPE_MAP, `${chapter.type}.text`, '') }}</span>
+                    >{{ _.get(COURSE_CHAPTER_TYPE_MAP, `${chapter.type}.text`, '') }}</span
+                  >
                   <span class="chapters__title">{{ chapter.name }}</span>
-                </div>
-                <div class="chapters__handler">
-                  <el-progress
-                    v-if="!isActive(chapter)"
-                    type="circle"
-                    :show-text="false"
-                    :percentage="calcProcess(chapter)"
-                    :width="16"
-                    :stroke-width="2"
-                  ></el-progress>
-                  <i v-else class="iconimage_icon_time1 iconfont"></i>
-                  <span class="chapters__status">{{ getChapterStatus(chapter) }}</span>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <div v-show="activeIndex === '2'" class="left-bar__notes">
-            <el-input
-              v-model="note"
-              type="textarea"
-              placeholder="记录你的想法吧～"
-              maxlength="200"
-              show-word-limit
-              resize="none"
-              :rows="5"
-            ></el-input>
-            <el-button v-loading="submitting" type="primary" size="medium" @click="submitNote">
-              保存
-            </el-button>
-            <ul class="notes-list">
-              <li v-for="item in notes" :key="item.noteId" class="note">
-                <div class="note__top">
-                  <span class="note__user">
-                    <el-avatar :size="24" :src="userInfo.avatar_url || circleUrl"></el-avatar>
-                    <span class="note__username">{{ userInfo.user_name }}</span>
-                  </span>
-                  <span class="note__time">{{ item.createTime }}</span>
-                </div>
-                <div class="note__remark">
-                  {{ item.remark }}
                 </div>
               </li>
             </ul>
@@ -94,7 +52,7 @@
         <div
           v-if="currentChapter.type == '1'"
           class="content--richtext"
-          v-html="_.unescape(_.unescape(currentChapter.content))"
+          v-html="_.unescape(currentChapter.content)"
         ></div>
         <!-- 课件 -->
         <div v-if="currentChapter.type == '2'" class="content--iframe">
@@ -108,7 +66,6 @@
             :width="contentWidth"
           ></video>
           <iframe
-            v-else
             :src="getContentUrl(currentChapter)"
             width="100%"
             height="100%"
@@ -131,9 +88,18 @@
         </div>
         <!--考试-->
         <div v-if="currentChapter.type == '4'" class="content--test">
-          <el-button type="primary" size="medium">
-            前往考试
-          </el-button>
+          <el-button type="primary" size="medium"> 前往考试 </el-button>
+        </div>
+        <!--视频-->
+        <div v-if="currentChapter.type == '5'">
+          <video
+            ref="video"
+            preload
+            controls
+            :src="currentChapter.content"
+            :height="contentHeight"
+            :width="contentWidth"
+          ></video>
         </div>
       </div>
     </div>
@@ -192,9 +158,8 @@ export default {
     currentChapter(newVal, oldVal) {
       if (this.isChapterVideo(oldVal) && oldVal.duration) {
         this.updateVideoProgress(oldVal)
-      }
-      if (!this.isChapterVideo(newVal)) {
-        newVal.progress = 100
+      } else {
+        oldVal.progress = 100
       }
       this.submitLearnRecords()
     }
@@ -271,8 +236,7 @@ export default {
     },
     calcProcess(chapter) {
       if (!this.isChapterVideo(chapter)) {
-        // 兼容旧数据，现在视频以外的类型进度都是100，之前是1
-        if (chapter.progress > 0) {
+        if (chapter.progress == 1) {
           return 100
         } else {
           return 0
@@ -392,24 +356,22 @@ export default {
 <style lang="scss" scoped>
 .course-learn {
   &__header {
-    height: 64px;
-    width: 100%;
-    box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
-    background-color: white;
-    line-height: 64px;
-    padding-left: 36px;
-    color: rgba($primaryFontColor, 0.85);
-    display: flex;
-    align-items: center;
-    font-size: 18px;
-    i {
-      font-size: 18px;
-      cursor: pointer;
-      margin-right: 10px;
+    height: 57px;
+    line-height: 57px;
+    cursor: pointer;
+    ul {
+      display: flex;
+      li {
+        margin-right: 5px;
+        font-size: 14px;
+        color: rgba(0, 11, 21, 0.45);
+      }
+      .text_color {
+        color: rgba(0, 11, 21, 0.85);
+      }
     }
   }
   &__main {
-    margin: 20px;
     height: calc(100vh - #{$headerHeight} - 40px);
     .left-bar {
       width: 384px;
@@ -454,12 +416,10 @@ export default {
         }
         li {
           display: flex;
+          height: 44px;
           align-items: center;
           padding-left: 24px;
           padding-right: 21px;
-          min-height: 44px;
-          padding-top: 6px;
-          padding-bottom: 6px;
           justify-content: space-between;
           cursor: pointer;
           border-bottom: 1px solid $mainLineGray;
@@ -473,11 +433,6 @@ export default {
               color: $primaryColor;
             }
           }
-        }
-        &__wrap {
-          line-height: 16px;
-          // display: flex;
-          // align-items: center;
         }
         &__tag {
           font-size: 12px;
@@ -495,8 +450,7 @@ export default {
         }
         &__handler {
           display: flex;
-          width: 60px;
-          // align-items: center;
+          align-items: center;
           i {
             font-size: 16px;
             color: $primaryColor;

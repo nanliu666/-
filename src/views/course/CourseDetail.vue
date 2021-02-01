@@ -21,7 +21,7 @@
             {{ courseData.teacherName }}
           </span>
         </div>
-        <div class="course-detail__info__column">
+        <div v-if="courseData.credit" class="course-detail__info__column">
           <span class="course-detail__info__label">
             学分：
           </span>

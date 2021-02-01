@@ -127,17 +127,15 @@ export default {
   },
   data() {
     return {
-      watchLiveLink: `${location.origin}/#/WatchLive?id=${_.get(
-        this.$route,
-        'query.id',
-        '1353968896999862273'
-      )}`,
       statusMap: STATUS_MAP,
       activeIndex: '1',
       detailData: {}
     }
   },
   computed: {
+    watchLiveLink() {
+      return `${location.origin}/#/WatchLive?wId=${this.detailData.channelId}`
+    },
     id() {
       return _.get(this.$route, 'query.id', '1353968896999862273')
     }
@@ -154,7 +152,7 @@ export default {
       // 开播
       this.$router.push({
         path: '/beginLive',
-        query: { id: '1353968896999862273' }
+        query: { beginId: this.detailData.channelId }
       })
     },
     onCopy() {

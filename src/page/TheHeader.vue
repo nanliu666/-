@@ -22,10 +22,10 @@
             <span class="el-dropdown-link avatar">
               <img
                 v-if="userInfo && userInfo.avatar_url"
-                class="top-bar__img "
+                class="top-bar__img"
                 :src="userInfo.avatar_url"
               />
-              <i v-else class="iconimage_icon_headportrait iconfont " />
+              <i v-else class="iconimage_icon_headportrait iconfont" />
             </span>
             <el-dropdown-menu slot="dropdown">
               <!-- <el-dropdown-item>
@@ -33,24 +33,18 @@
               个人中心
             </div>
           </el-dropdown-item> -->
-              <el-dropdown-item @click.native="toMy('/my/info')">
-                个人信息
-              </el-dropdown-item>
-              <el-dropdown-item @click.native="toMy('/my/info', 1)">
+              <el-dropdown-item @click.native="toRouter('/my/info')"> 个人信息 </el-dropdown-item>
+              <el-dropdown-item @click.native="toRouter('/my/info', 1)">
                 修改密码
               </el-dropdown-item>
-              <el-dropdown-item @click.native="toMy('/my/record')">
-                我的档案
-              </el-dropdown-item>
-              <el-dropdown-item>
+              <el-dropdown-item @click.native="toRouter('/my/record')"> 我的档案 </el-dropdown-item>
+              <el-dropdown-item @click.native="toRouter('/approvalCenter/center')">
                 审批中心
               </el-dropdown-item>
-              <el-dropdown-item>
+              <!-- <el-dropdown-item>
                 后台管理
-              </el-dropdown-item>
-              <el-dropdown-item @click.native="logout">
-                退出登录
-              </el-dropdown-item>
+              </el-dropdown-item> -->
+              <el-dropdown-item @click.native="logout"> 退出登录 </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
           <!-- <div class="el-icon-picture-outline hander"></div> -->
@@ -69,9 +63,7 @@ const menu = [
   { label: '考试', path: '/exam' },
   { label: '新闻', path: '/news' },
   { label: '培训', path: '/train' },
-  { label: '直播', path: '/live' },
-  { label: '个人中心', path: '/my/info' },
-  { label: '我的档案', path: '/my/record' }
+  { label: '直播', path: '/live' }
 ]
 import Notification from './Notification'
 import { mapGetters } from 'vuex'
@@ -98,7 +90,7 @@ export default {
   },
   methods: {
     // 个人中心跳转
-    toMy(data, i) {
+    toRouter(data, i) {
       this.$router.push({
         path: data,
         query: {
