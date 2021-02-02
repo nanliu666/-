@@ -1,7 +1,17 @@
 <template>
   <div class="LiveStatistics">
     <div class="container-header">
-      <div class="title">统计汇总</div>
+      <div class="title">
+        统计汇总
+        <el-popover transition="none" trigger="click">
+          <i slot="reference" class="el-icon-question" style="cursor: pointer;"></i>
+          <template slot>
+            <div>
+              <span>提示一下数据取值时间 待确定</span>
+            </div>
+          </template>
+        </el-popover>
+      </div>
     </div>
 
     <div class="data-wrapper">
@@ -85,7 +95,28 @@
 
     <div class="table-container">
       <div class="table-header">
-        <div class="title">数据统计</div>
+        <div class="title">
+          数据统计
+        </div>
+
+        <div class="operate-area">
+          <el-checkbox v-model="getData2params.isMerge" class="checkbox">
+            合并同一用户
+          </el-checkbox>
+          <el-date-picker
+            v-model="getData2Date"
+            value-format="yyyy-MM-dd"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          >
+          </el-date-picker>
+          <div class="export-btn" @click="handleDownload">
+            <i class="iconimage_icon_export iconfont"></i>
+            导出数据
+          </div>
+        </div>
       </div>
 
       <el-table v-loading="tableLoading" :data="tableData" height="50vh">
@@ -101,8 +132,8 @@
     <div class="page-container">
       <pagination
         :total="total"
-        :page="query.pageNo"
-        :limit="query.pageSize"
+        :page="getData2params.pageNo"
+        :limit="getData2params.pageSize"
         @pagination="pagination"
       ></pagination>
     </div>
@@ -112,6 +143,7 @@
 <script>
 import { getSummary, getAudience } from '@/api/live'
 import Pagination from 'src/components/common-pagination'
+import { parseTime } from '@/util/util'
 
 export default {
   name: 'LiveStatistics',
@@ -126,6 +158,14 @@ export default {
   },
   data() {
     return {
+      checked: false,
+      tableData: [],
+      filename: '直播数据统计',
+      autoWidth: true,
+      bookType: 'xlsx',
+      downloadLoading: false,
+      tableLoading: true,
+      total: 0,
       data: {
         pcTimes: 0,
         pcDuration: 0,
@@ -138,22 +178,35 @@ export default {
         mobileAveTimes: 0,
         mobileAveDuration: 0
       },
-      tableData: [],
-      tableLoading: true,
-      total: 0,
-      query: {
+      getData2params: {
+        livePlanId: '',
+        startDate: '',
+        endDate: '',
+        isMerge: false,
         pageNo: 1,
         pageSize: 10
-      }
+      },
+      getData2Date: ''
     }
   },
   watch: {
     livePlanId() {
       this.getData()
+    },
+    getData2Date(val) {
+      const [startDate = '', endDate = ''] = val || []
+      this.getData2params.startDate = startDate
+      this.getData2params.endDate = endDate
+    },
+    getData2params: {
+      handler() {
+        this.getAudience()
+      },
+      deep: true
     }
   },
   activated() {
-    this.query.livePlanId = this.livePlanId
+    this.getData2params.livePlanId = this.livePlanId
     this.getData()
   },
   methods: {
@@ -170,7 +223,7 @@ export default {
     },
     getAudience() {
       this.tableLoading = true
-      getAudience(this.query)
+      getAudience(this.getData2params)
         .then((res) => {
           this.tableData = res.data
           this.tableLoading = false
@@ -180,9 +233,37 @@ export default {
         })
     },
     pagination({ page, limit }) {
-      this.query.pageNo = page
-      this.query.pageSize = limit
+      this.getData2params.pageNo = page
+      this.getData2params.pageSize = limit
       this.getAudience()
+    },
+    handleDownload() {
+      this.downloadLoading = true
+      import('@/vendor/Export2Excel').then((excel) => {
+        const tHeader = ['用户名称', '观看时长', '进入时间', '离开时间', '地区', '城市']
+        const filterVal = ['userName', 'viewDuration', 'startDate', 'leaveDate', 'district', 'city']
+        const list = this.tableData
+        const data = this.formatJson(filterVal, list)
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: this.filename,
+          autoWidth: this.autoWidth,
+          bookType: this.bookType
+        })
+        this.downloadLoading = false
+      })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map((v) =>
+        filterVal.map((j) => {
+          if (j === 'startDate' || j == 'leaveDate') {
+            return parseTime(v[j])
+          } else {
+            return v[j]
+          }
+        })
+      )
     }
   }
 }
