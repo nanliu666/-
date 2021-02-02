@@ -222,10 +222,9 @@ export default {
         endTime: this.date[1]
       })
       getList(params).then((res) => {
-        const { records = [], size, total = 0, current } = res
+        const { records = [], total = 0 } = res
         this.data = this.sortList(records)
         this.total = total
-        Object.assign(this.filterForm, { pageNo: current, pageSize: size })
       })
     },
     toDetail(item) {
