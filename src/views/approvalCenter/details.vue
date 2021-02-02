@@ -161,9 +161,7 @@
         ref="apprForm"
         label-position="top"
         :model="apprForm"
-        :rules="{
-          comment: [{ required: !!isOpinion, message: '请输入审批意见', trigger: 'blur' }]
-        }"
+        :rules="formRules"
         label-width="100px"
         class="demo-ruleForm"
       >
@@ -367,7 +365,11 @@ export default {
       // return true
       return _.get(this.$route.query, 'preview', false)
     },
-
+    formRules() {
+      return {
+        comment: [{ required: !!this.isOpinion, message: '请输入审批意见', trigger: 'blur' }]
+      }
+    },
     ...mapGetters(['userId'])
   },
   activated() {
