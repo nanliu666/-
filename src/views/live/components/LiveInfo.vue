@@ -27,7 +27,7 @@
         学员列表
       </div>
       <common-table
-        v-if="data.qcodeImageUrl"
+        v-if="data.authType === 'direct'"
         id="demo"
         ref="table"
         :columns="columnsVisible"
@@ -41,13 +41,13 @@
       <div v-else>
         <div>
           <span>学员总数：</span>
-          <span>{{ data.qcodeImageUrl }}</span>
+          <span>{{ data.traineeCount }}</span>
         </div>
         <div>学员登录平台即可观看，链接分享给任意人员可以进行观看</div>
         <!-- 需要验证码 -->
-        <div v-if="data.qcodeImageUrl">
+        <div v-if="data.authType === 'code'">
           <span>直播验证码：</span>
-          <span>{{ data.qcodeImageUrl }}</span>
+          <span>{{ data.authSecretOrCode }}</span>
         </div>
       </div>
     </div>
