@@ -1,6 +1,6 @@
 <template>
   <div class="detail">
-    <div class="info__login">
+    <div v-if="isStudent" class="info__login">
       <div class="common__title">
         登录信息
       </div>
@@ -50,6 +50,7 @@
 
 <script>
 export default {
+  inject: ['isStudent'],
   name: 'LiveParticulars',
   props: {
     data: {
