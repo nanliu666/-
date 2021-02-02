@@ -183,7 +183,7 @@ export default {
       this.studentButtonText = STUDENT_BUTTON_TEXT[this.detailData.status]
     })
     getUserRole(params).then((res) => {
-      this.isStudent = res.roleName !== 'Trainee'
+      this.isStudent = res.roleName === 'Trainee'
       this.activeIndex = res.roleName === 'Trainee' ? '3' : '1'
     })
   },
