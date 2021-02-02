@@ -18,7 +18,7 @@
             <div class="header__status">
               {{ statusMap[detailData.status] }}
             </div>
-            <div class="header__play" @click="play">
+            <div class="header__play" @click="beginLiveFn">
               <span class="play-icon" />
             </div>
           </div>
@@ -151,7 +151,6 @@ export default {
     })
   },
   methods: {
-    play() {},
     beginLiveFn() {
       // 开播
       this.$router.push({
