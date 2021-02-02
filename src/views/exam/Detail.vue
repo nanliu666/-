@@ -31,7 +31,7 @@
               <span>分钟</span>
             </span>
           </li>
-          <li class="header-li">
+          <li v-if="isViewResults" class="header-li">
             <span class="li-label">试卷总分：</span>
             <span class="li-value">
               <span>{{ examDetail.totalScore }}分</span>
@@ -44,8 +44,10 @@
             <span class="li-label">考试得分：</span>
             <span class="li-value">
               <span>{{ examDetail.score }}分</span>
-              <span>（客观题{{ examDetail.objectiveScore }}分），</span>
-              <span>（主观题{{ examDetail.subjectiveScore }}分）</span>
+              <span>（客观题{{ examDetail.objectiveScore }}分，</span>
+              <span>主观题{{
+                examDetail.subjectiveScore ? `${examDetail.subjectiveScore}分` : ' - - '
+              }}）</span>
             </span>
           </li>
         </ul>
@@ -69,7 +71,7 @@
       </div>
     </el-card>
     <el-card class="paper-card">
-      <ul class="question-ul">
+      <ul v-if="!_.isEmpty(questionList)" class="question-ul">
         <li v-for="(item, index) in questionList" :key="index" class="question-li">
           <div class="title-box">
             <div class="question-li-title">
@@ -89,6 +91,7 @@
                   v-if="QUESTION_TYPE_GROUP !== conItem.type"
                   :data="conItem"
                   type="view"
+                  :is-view-results="isViewResults"
                 />
                 <span v-else>
                   <span class="right-title" v-html="getHTML(conItem.content)"></span>
@@ -99,7 +102,11 @@
                       class=""
                     >
                       <span>{{ paperIndex + 1 }}.</span>
-                      <QustionPreview :data="paperItem" type="view" />
+                      <QustionPreview
+                        :data="paperItem"
+                        type="view"
+                        :is-view-results="isViewResults"
+                      />
                     </li>
                   </ul>
                 </span>
@@ -108,6 +115,7 @@
           </div>
         </li>
       </ul>
+      <common-empty v-else />
     </el-card>
   </div>
 </template>
@@ -117,6 +125,7 @@ import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
 import { getViewAnswer } from '@/api/exam'
 import moment from 'moment'
 import QustionPreview from './components/questionPreview'
+import CommonEmpty from '@/components/common-empty/Empty'
 const STATUS = {
   1: {
     type: 'success',
@@ -145,7 +154,8 @@ import { QUESTION_TYPE_MAP, QUESTION_TYPE_GROUP } from '@/const/exam'
 export default {
   components: {
     CommonBreadcrumb,
-    QustionPreview
+    QustionPreview,
+    CommonEmpty
   },
   filters: {
     typeFilter(data) {
@@ -157,6 +167,7 @@ export default {
   },
   data() {
     return {
+      isViewResults: false,
       routeList: [
         {
           path: '/exam',
@@ -188,6 +199,10 @@ export default {
     moment,
     async initData() {
       this.examDetail = await getViewAnswer(_.assign(this.queryInfo, this.$route.query))
+      // 若创建考试时，允许考生查看答卷且查看天数不为0，且超过规定天数, 起始时间为评卷结束时间。则不能查看答卷，按钮置灰
+      const { openResults, openResultsValue, publishTime } = this.examDetail
+      this.isViewResults =
+        openResults && moment(new Date()).diff(moment(publishTime)) < openResultsValue
       this.initQuestionList()
     },
     addScore(args) {
