@@ -1,12 +1,12 @@
 <template>
   <div class="detail">
-    <div class="info__login">
+    <div v-if="data.authType === 'code'" class="info__login">
       <div class="common__title">
         登录信息
       </div>
       <ul class="content__box">
         <span class="label">直播验证码：</span>
-        <span v-if="data.qcodeImageUrl" class="value">{{ data.qcodeImageUrl }}</span>
+        <span v-if="data.authSecretOrCode" class="value">{{ data.authSecretOrCode }}</span>
       </ul>
     </div>
     <div class="info__login">
@@ -50,6 +50,7 @@
 
 <script>
 export default {
+  inject: ['isStudent'],
   name: 'LiveParticulars',
   props: {
     data: {

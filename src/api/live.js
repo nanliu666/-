@@ -21,11 +21,16 @@ export const getCommentList = (params) => get('/common/v1/live/comment/commentLi
 export const postComment = (params) => post('/common/v1/live/comment/comment', params)
 /**
  * 讲师直播详情-学员列表
- * channelId 直播频道id
+ * liveId 直播id
  * pageNo 请求页码
  * pageSize 每页条数
  */
 export const getStudentList = (params) => get('/common/v1/live/student', params)
+/**
+ * 用户角色判定
+ * liveId 直播id
+ */
+export const getUserRole = (params) => get('/common/v1/live/user/role', params)
 
 export const getSummary = (params) => get('/common/v1/live/data/summary', params)
 
@@ -36,4 +41,3 @@ export const liveReplayList = (params) => get('/api/common/v1/live/replay/videoL
 
 // 查看单个直播回放列表
 export const setReplayStatus = (params) => get('/api/common/v1/live/replay/status', params)
-
