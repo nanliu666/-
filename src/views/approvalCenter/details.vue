@@ -168,7 +168,14 @@
         class="demo-ruleForm"
       >
         <el-form-item label="审批意见" prop="comment">
-          <el-input v-model="apprForm.comment" type="textarea" :rows="4" :placeholder="tip" />
+          <el-input
+            v-model="apprForm.comment"
+            type="textarea"
+            :rows="4"
+            :placeholder="tip"
+            :maxlength="200"
+            show-word-limit
+          />
         </el-form-item>
       </el-form>
       <div v-if="!isFished && !isPreview" class="cancel-btn-box">
@@ -573,6 +580,7 @@ export default {
           }
           return {
             ...firstUser,
+            remark: '',
             result,
             userList: users
           }
