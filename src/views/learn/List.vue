@@ -370,10 +370,10 @@ export default {
     selectLi(index, item) {
       if (this.currentFirstType === 'required') {
         this.currentRequiredNav = index
-        this.queryInfo.courseType = item.courseType
       } else {
         this.currentElectiveNav = index
       }
+      this.queryInfo.courseType = item.courseType
       this.queryInfo.id = item.id
       this.loadTableData()
     },
