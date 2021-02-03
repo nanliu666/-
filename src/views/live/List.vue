@@ -441,6 +441,7 @@ export default {
   .index-container {
     .image_live {
       width: 100%;
+      height: 166px;
     }
     .item_live {
       margin-bottom: 25px;
