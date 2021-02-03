@@ -31,3 +31,9 @@ export const putDownloadOperate = (params) =>
  * 添加知识库评价
  * */
 export const addCourseScope = (params) => post('/manage/v1/web/knowledge/addCourseScope', params)
+
+/**
+ * 保存知识库学分
+ * */
+export const saveKnowledgeOperateCredit = (params) =>
+  get('/manage/v1/knowledge/manage/saveKnowledgeOperateCredit', params)

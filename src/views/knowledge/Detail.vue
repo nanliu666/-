@@ -94,7 +94,8 @@ import {
   putWatchOperate,
   putDownloadOperate,
   getEvaluateList,
-  addCourseScope
+  addCourseScope,
+  saveKnowledgeOperateCredit
 } from '@/api/knowledge'
 export default {
   name: 'KnowledgeDetail',
@@ -123,10 +124,14 @@ export default {
   methods: {
     // 下载
     downloadFile(data) {
+      // 保存知识库学分
+      saveKnowledgeOperateCredit()
       putDownloadOperate({ knowledgeId: this.$route.query.id })
       window.open(data)
     },
     initData() {
+      // 保存知识库学分
+      saveKnowledgeOperateCredit()
       putWatchOperate({ knowledgeId: this.id })
       getKnowledgeDetails({ id: this.id }).then((res) => {
         this.konwledgeDetail = res

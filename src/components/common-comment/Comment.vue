@@ -1,33 +1,35 @@
 <template>
   <div class="comment-styles">
-    <div v-if="isEditable" class="comment-top">
-      <div class="top-title">
-        <div class="title">给该{{ name }}打分：</div>
-        <el-rate v-model="scopeParams.scope" allow-half></el-rate>
+    <div v-if="hasHandle">
+      <div v-if="isEditable" class="comment-top">
+        <div class="top-title">
+          <div class="title">给该{{ name }}打分：</div>
+          <el-rate v-model="scopeParams.scope" allow-half></el-rate>
+        </div>
+        <el-input
+          v-model="scopeParams.remark"
+          type="textarea"
+          :rows="2"
+          placeholder="评论一下吧"
+          maxlength="500"
+          resize="none"
+          show-word-limit
+          @focus="inputFocus"
+        >
+        </el-input>
+        <el-button
+          :disabled="hasPublish"
+          class="button-box"
+          type="primary"
+          size="medium"
+          @click="publish"
+        >
+          发布
+        </el-button>
       </div>
-      <el-input
-        v-model="scopeParams.remark"
-        type="textarea"
-        :rows="2"
-        placeholder="评论一下吧"
-        maxlength="500"
-        resize="none"
-        show-word-limit
-        @focus="inputFocus"
-      >
-      </el-input>
-      <el-button
-        :disabled="hasPublish"
-        class="button-box"
-        type="primary"
-        size="medium"
-        @click="publish"
-      >
-        发布
-      </el-button>
-    </div>
-    <div v-else class="disabled-text">
-      <el-alert :title="disableText" type="warning" show-icon />
+      <div v-else class="disabled-text">
+        <el-alert :title="disableText" type="warning" show-icon />
+      </div>
     </div>
     <div v-if="!_.isEmpty(commentList)" class="comment-bottom">
       <ul class="comment-ul">
@@ -58,12 +60,17 @@
       >
       </el-pagination>
     </div>
+    <common-empty v-else />
   </div>
 </template>
 
 <script>
+import CommonEmpty from '@/components/common-empty/Empty'
 export default {
   name: 'Comment',
+  components: {
+    CommonEmpty
+  },
   props: {
     load: {
       type: Function,
@@ -78,6 +85,10 @@ export default {
       default: '课程'
     },
     isEditable: {
+      type: Boolean,
+      default: true
+    },
+    hasHandle: {
       type: Boolean,
       default: true
     },
