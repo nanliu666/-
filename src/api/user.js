@@ -1,6 +1,14 @@
 import request, { get } from '@/util/axios'
 import website from '@/config/website'
 
+// 邮箱和手机号可用性校验
+export const checkUserInfo = (params) => {
+  return request({
+    url: '/api/user/v1/user/info/check',
+    method: 'post',
+    params: params
+  })
+}
 export const loginByUsername = (tenantId, username, password, type, key, code, account) =>
   request({
     url: '/api/blade-auth/oauth/token',
