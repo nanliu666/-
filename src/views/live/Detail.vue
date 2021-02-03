@@ -112,7 +112,7 @@
         <el-tab-pane label="直播评论" name="5">
           <Comment
             :load="loadCommentList"
-            :is-editable="isStudent"
+            :has-handle="isStudent"
             :submit="submitComment"
             name="直播"
           />
