@@ -40,7 +40,7 @@
           </div>
           <div class="info_box">
             <span class="info_title">创建时间 :&nbsp;</span>
-            <span class="info_val">{{ item.beginPublishTime }}</span>
+            <span class="info_val">{{ item.createTime }}</span>
           </div>
           <div class="info_box">
             <span class="info_title">阅读量 :&nbsp;</span>
@@ -61,6 +61,7 @@
         class="pagination"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
+       
       >
       </el-pagination>
     </div>
@@ -86,6 +87,7 @@ export default {
 
   watch: {
     searchInput: function() {
+      
       this.isnewsList()
     }
   },
@@ -97,8 +99,12 @@ export default {
   methods: {
     // 拿数据
     async isnewsList() {
+      if( this.searchInput !=""){
+           this.page.pageNo = 1
+      }
       let params = { ...this.page, isHot: this.pitch, search: this.searchInput }
       let res = await newsList(params)
+      
       this.data = res.data
       this.total = res.totalNum
     },

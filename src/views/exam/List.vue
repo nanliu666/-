@@ -314,11 +314,11 @@ export default {
         tips = joinTips
       }
       // 若已通过考试，且还在考试时间和限定次数内，点击出现弹框
+      // 不限次数可以参加、限制了次数且参加次数在限次之内可以参加
       if (
         row.isPass === 3 &&
-        moment(new Date()).diff(moment(row.examEndTime), 'minutes') > 0 &&
-        row.joinNum &&
-        row.joinNumValue < row.examTimes
+        moment(moment(row.examEndTime)).diff(new Date(), 'minutes') > 0 &&
+        (!row.joinNum || (row.joinNum && row.joinNumValue < row.examTimes))
       ) {
         tips = isPassAndJoin
       }
@@ -350,13 +350,13 @@ export default {
         })
       })
     },
-    // 查看置灰规则
+    // 查看答卷置灰规则
     JoinView(row) {
       // status缺考4、未考试2和未开考1状态下，不能查看答卷，按钮置灰
       // 若创建考试时，不允许考生查看答卷。则不能查看答卷，按钮置灰
       // 已提交过答卷的点击“查看答卷”挑跳转到【查看答卷】页面
-      const isJoinDisabled =
-        row.status === 1 || row.status === 2 || row.status === 4 || !row.openAnswerSheet
+      const { status, openAnswerSheet } = row
+      const isJoinDisabled = status === 1 || status === 2 || status === 4 || !openAnswerSheet
       return isJoinDisabled
     },
     // 查看答案

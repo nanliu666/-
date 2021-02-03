@@ -68,7 +68,7 @@
                 <div class="note__top">
                   <span class="note__user">
                     <el-avatar :size="24" :src="userInfo.avatar_url || circleUrl"></el-avatar>
-                    <span class="note__username">{{ userInfo.user_name }}</span>
+                    <span class="note__username">{{ userInfo.nick_name }}</span>
                   </span>
                   <span class="note__time">{{ item.createTime }}</span>
                 </div>

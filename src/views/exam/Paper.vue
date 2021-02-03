@@ -7,7 +7,7 @@
         <span v-if="!isSuccess" class="content">
           <span>共{{ paper.questionNum }}题，</span>
           <span v-if="paper.totalScore">总分{{ paper.totalScore }}分，</span>
-          <span>限定最高分为100分</span>
+          <span>限定最高分为{{ paper.scopeLimitValue }}分</span>
           <span v-if="paper.reckonTime">，计时{{ paper.reckonTimeValue }}分钟</span>
           <span>（答题不确定时，可用</span>
           <i class="iconimage_icon_help_normal iconfont" />
@@ -15,7 +15,7 @@
         </span>
       </div>
       <div v-if="!isSuccess" class="header-right">
-        <span class="time" :class="{ 'warning-time': isWarningTimeLine }">
+        <span v-if="paper.reckonTime" class="time" :class="{ 'warning-time': isWarningTimeLine }">
           <span>剩余时间：</span>
           <span>{{ remainingTime }}</span>
         </span>
@@ -24,7 +24,7 @@
         </el-button>
       </div>
     </div>
-    <div v-if="paper.isDecoil" class="close-book">
+    <div v-if="paper.isDecoil == 0" class="close-book">
       <el-alert
         title="本次为闭卷考试，考试期间若切换程序离开考试页面，则自动提交答卷！"
         type="warning"
@@ -336,8 +336,8 @@ export default {
     // 检测闭卷
     watchCloseBookExam() {
       const { isDecoil } = this.paper
-      // isDecoil：0是否，1为真
-      if (isDecoil === 1) {
+      // isDecoil：0是闭卷，1为开卷
+      if (isDecoil === 0) {
         // 跳转其他页面触发交卷
         window.onbeforeunload = function() {
           this.changeAutoEndExam()
@@ -714,7 +714,9 @@ export default {
     },
     // TODO: 考试时间交卷逻辑需要补充
     initRemainingTime() {
-      const { reckonTimeValue, strategy, examEndTime } = this.paper
+      const { reckonTimeValue, strategy, examEndTime, reckonTime } = this.paper
+      // 不计时不需要进行以下步骤
+      if (!reckonTime) return
       // 如果考试时长不计时，并且考试策略为true，最后5分钟需要爆红提示。计时就按照计时的算。
       const canUseUpTime = moment(new Date()).add(reckonTimeValue, 'm')
       // 考试策略strategy影响考试时长，如果为true，到了考试结束时间就必须交卷，否则可以考满设置的考试时间

@@ -162,14 +162,19 @@
         ref="apprForm"
         label-position="top"
         :model="apprForm"
-        :rules="{
-          comment: [{ required: !!isOpinion, message: '请输入审批意见', trigger: 'blur' }]
-        }"
+        :rules="formRules"
         label-width="100px"
         class="demo-ruleForm"
       >
         <el-form-item label="审批意见" prop="comment">
-          <el-input v-model="apprForm.comment" type="textarea" :rows="4" :placeholder="tip" />
+          <el-input
+            v-model="apprForm.comment"
+            type="textarea"
+            :rows="4"
+            :placeholder="tip"
+            :maxlength="200"
+            show-word-limit
+          />
         </el-form-item>
       </el-form>
       <div v-if="!isFished && !isPreview" class="cancel-btn-box">
@@ -361,7 +366,11 @@ export default {
       // return true
       return _.get(this.$route.query, 'preview', false)
     },
-
+    formRules() {
+      return {
+        comment: [{ required: !!this.isOpinion, message: '请输入审批意见', trigger: 'blur' }]
+      }
+    },
     ...mapGetters(['userId'])
   },
   activated() {
@@ -574,6 +583,7 @@ export default {
           }
           return {
             ...firstUser,
+            remark: '',
             result,
             userList: users
           }
@@ -641,7 +651,7 @@ export default {
     },
     // 处理重新发起申请
     handleReapplyClick() {
-      window.open(`${process.env.MANAG_URL}/#/course/establishCourse?courseId=${this.formId}`)
+      window.open(`${process.env.VUE_APP_MANAGE_URL}/#/course/establishCourse?id=${this.formId}`)
     },
     // 点击撤回
     handleCancelClick() {
