@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
-const TokenKey = 'saber-access-token'
-const RefreshTokenKey = 'saber-refresh-token'
+const TokenKey = 'elearning-access-token'
+const RefreshTokenKey = 'elearning-refresh-token'
 export function getToken() {
   return Cookies.get(TokenKey)
 }
