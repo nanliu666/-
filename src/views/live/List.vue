@@ -240,6 +240,17 @@ export default {
       ]
     }
   },
+  watch: {
+    liveClassification: function() {
+      this.$nextTick(function() {
+        // 判断分类是否超出1行
+        if (this.$refs.liveTypes.$el.offsetHeight > 43) {
+          this.moreLiveTypeButton = true
+          this.$refs.liveTypes.$el.style.height = '30px'
+        }
+      })
+    }
+  },
   mounted() {
     // 获取直播分类
     getcategoryTree({
@@ -260,12 +271,6 @@ export default {
         this.getLiveListData()
       }
     })
-
-    // 判断分类是否超出1行
-    if (this.$refs.liveTypes.$el.offsetHeight > 43) {
-      this.moreLiveTypeButton = true
-      this.$refs.liveTypes.$el.style.height = '30px'
-    }
   },
   methods: {
     // 获取直播列表数据
