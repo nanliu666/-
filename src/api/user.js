@@ -1,6 +1,10 @@
 import request, { get } from '@/util/axios'
 import website from '@/config/website'
 
+// 保存登录学分
+export const saveLoginCredit = (params) => {
+  return get('/api/manage/v1/login/saveLoginCredit', params)
+}
 // 邮箱和手机号可用性校验
 export const checkUserInfo = (params) => {
   return request({

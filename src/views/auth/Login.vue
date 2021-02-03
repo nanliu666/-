@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { getCaptcha, getTenantInfo } from '@/api/user'
+import { getCaptcha, getTenantInfo, saveLoginCredit } from '@/api/user'
 import PassInput from '@/components/pass-input/PassInput'
 export default {
   name: 'Home',
@@ -163,6 +163,7 @@ export default {
               // this.$store.dispatch('GetUserPrivilege', res.user_id).then((menu) => {
               //   this.$router.$avueRouter.formatRoutes(menu, true)
               // })
+              this.saveLoginCredit()
               loading.close()
             })
             .catch(() => {
@@ -171,6 +172,9 @@ export default {
             })
         }
       })
+    },
+    saveLoginCredit() {
+      saveLoginCredit()
     },
     refreshCode() {
       getCaptcha().then((res) => {
