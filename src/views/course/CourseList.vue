@@ -46,21 +46,21 @@
       </div>
       <div class="course-list__filter-divider"></div>
       <category-select :load="loadCategory" @change="handleCategoryChange"></category-select>
-      <div class="course-list__filter-type">
-        <span class="course-list__filter-label">
-          类型：
-        </span>
-        <ul>
-          <li
-            v-for="item in COURSE_TYPE_LIST"
-            :key="item.value"
-            :class="{ active: item.value === params.type }"
-            @click="handleCourseTypeChange(item.value)"
-          >
-            {{ item.label }}
-          </li>
-        </ul>
-      </div>
+      <!--<div class="course-list__filter-type">-->
+      <!--<span class="course-list__filter-label">-->
+      <!--类型：-->
+      <!--</span>-->
+      <!--<ul>-->
+      <!--<li-->
+      <!--v-for="item in COURSE_TYPE_LIST"-->
+      <!--:key="item.value"-->
+      <!--:class="{ active: item.value === params.type }"-->
+      <!--@click="handleCourseTypeChange(item.value)"-->
+      <!--&gt;-->
+      <!--{{ item.label }}-->
+      <!--</li>-->
+      <!--</ul>-->
+      <!--</div>-->
     </div>
     <div class="course-list-choice course-list__block">
       <ul>
