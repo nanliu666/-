@@ -132,10 +132,10 @@ export default {
         GetCreditOnlineLearning: '/my/record', // 学分获得通知: 在线学习时长超过15分钟获得学分
         GetCreditLearningArticles: '/my/record', // 学分获得通知: 知识库学习一篇文章/视频获得学分
         GetCreditResourceDownloaded: '/my/record', // 学分获得通知: 资源共享被下载十次获得学分
-        PassApproval: '', // 审批通过通知: 申请人审批通过
-        ApprovalNotify: '', // 审批通知: 有新的审批代办
-        ApprovalReturn: '', // 审批退回通知: 申请人审批被退回
-        ExamAchievement: '', // 考试成绩通知: 发布考试成绩
+        PassApproval: '/approvalCenter/center', // 审批通过通知: 申请人审批通过
+        ApprovalNotify: '/approvalCenter/center', // 审批通知: 有新的审批代办
+        ApprovalReturn: '/approvalCenter/center', // 审批退回通知: 申请人审批被退回
+        ExamAchievement: '/approvalCenter/center', // 考试成绩通知: 发布考试成绩
         ExamNotify: '/exam/list', // 考试通知: 考试发布
         ExamRemind: '/exam/list', // 考试提醒: 开考前N分钟
         CourseLearning: '/course/list', // 课程学习的通知: 发布课程安排
