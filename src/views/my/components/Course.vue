@@ -2,8 +2,12 @@
   <div class="course">
     <div class="search">
       <div class="search_btn">
-        <span :class="{ pitch: pitch === 1 }" style="cursor:pointer;" @click="showBtn(1)">线上课程</span>
-        <span :class="{ pitch: pitch === 3 }" style="cursor:pointer;" @click="showBtn(3)">直播课程</span>
+        <span :class="{ pitch: pitch === 1 }" style="cursor:pointer;" @click="showBtn(1)"
+          >线上课程</span
+        >
+        <span :class="{ pitch: pitch === 3 }" style="cursor:pointer;" @click="showBtn(3)"
+          >直播课程</span
+        >
       </div>
       <div class="search_bar">
         <el-input
@@ -123,7 +127,7 @@ export default {
       this.formData = res.data
       // progressData
       this.formData.map((item) => {
-        item.progressData = (item.userPeriod / item.period) * 100
+        item.progressData = (item.userPeriod / item.period) * 100 || 0
       })
       this.total = res.totalNum
     }
