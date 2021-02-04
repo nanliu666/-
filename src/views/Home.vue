@@ -422,8 +422,23 @@ export default {
   position: relative;
   z-index: 100;
 }
+/deep/ .homeMenu2 .header {
+  background: none;
+}
 .banner {
   height: 600px;
+}
+/deep/ .banner .el-carousel__arrow {
+  border-radius: 4px;
+  width: 32px;
+  height: 60px;
+  background: rgba(0, 11, 21, 0.5);
+}
+/deep/ .banner .el-carousel__arrow i {
+  font-size: 40px;
+}
+/deep/ .banner .el-icon-arrow-right:before {
+  margin-left: -2px;
 }
 .banner .b_item {
   height: 600px;
