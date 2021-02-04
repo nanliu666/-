@@ -228,6 +228,7 @@ export default {
       
     }
   img {
-        max-width: 1180px;
+        max-width: 1150px;
+        max-height: 800px;
       }
 </style>
