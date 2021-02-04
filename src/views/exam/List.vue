@@ -265,6 +265,7 @@ export default {
       this.loadTableData()
     },
     searchFun: _.debounce(function() {
+      this.queryInfo.pageNo = 1
       this.loadTableData()
     }, 500),
     handleCategoryChange(category) {

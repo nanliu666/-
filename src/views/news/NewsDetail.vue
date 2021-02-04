@@ -2,7 +2,7 @@
   <div class="newsDetails">
     <div class="breadcrumb">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/newsList' }">
+        <el-breadcrumb-item :to="{ path: '/news/list' }">
           新闻中心
         </el-breadcrumb-item>
         <el-breadcrumb-item style="color:rgba(0,11,21,0.85);">
@@ -65,8 +65,8 @@
         </div>
       </div>
 
-      <div class="content_info" >        
-        <div class="img_info" v-html="data.content"></div>
+      <div class="content_info">
+        <div class="newsImg_info info" v-html="data.content"></div>
       </div>
     </div>
   </div>
@@ -188,7 +188,7 @@ export default {
       display: flex;
       font-size: 14px;
       color: rgba(0, 11, 21, 0.45);
-      
+
       .info_box {
         margin-right: 24px;
         margin-top: 16px;
@@ -213,22 +213,13 @@ export default {
       font-size: 14px;
       color: #000b15;
       line-height: 22px;
-    
     }
   }
 }
 </style>
-<style>
-.img_info {
-      opacity: 0.65;
-      font-family: PingFangSC-Regular;
-      font-size: 14px;
-      color: #000b15;
-      line-height: 22px;
-      
-    }
-  img {
-        max-width: 1150px;
-        max-height: 800px;
-      }
+<style  >
+.newsImg_info img {
+      max-width: 1150px;
+      max-height: 800px;
+}
 </style>

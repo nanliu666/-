@@ -63,6 +63,9 @@
                   }"
                 >{{ _.get(COURSE_CHAPTER_TYPE_MAP, `${chapter.type}.text`, '') }}</span>
                 <span class="course-detail__chapters--title">{{ chapter.name }}</span>
+                <span class="course-detail__chapters--time">{{
+                  getSecondesToHours(chapter.duration)
+                }}</span>
               </div>
               <div class="course-detail__chapters--handler">
                 <el-progress
@@ -87,6 +90,7 @@
 
 <script>
 import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
+import moment from 'moment'
 import {
   getCourseDetail,
   getCommentList,
@@ -122,7 +126,14 @@ export default {
     this.loadChapters()
     this.activeName = 'first'
   },
+  mounted() {},
   methods: {
+    getSecondesToHours(times) {
+      // 秒变成时分秒
+      let timeObj = moment.duration(times * 1000, 'milliseconds')._data
+      let timeBack = `${timeObj.hours}:${timeObj.minutes}:${timeObj.seconds} `
+      return timeBack
+    },
     calcProcess(chapter) {
       return parseInt(chapter.progress) || 0
     },
@@ -268,6 +279,10 @@ export default {
       color: $primaryFontColor;
       border: 1px solid $primaryFontColor;
       margin-right: 24px;
+    }
+    &--time {
+      padding: 0 20px;
+      color: $primaryFontColor;
     }
     &--status {
       font-size: 12px;
