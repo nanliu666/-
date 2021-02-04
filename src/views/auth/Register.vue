@@ -70,15 +70,15 @@ export default {
       }
     }
     // TODO： 检查邮箱可用性，这里的接口调用不对需要登录才能用，待修改
-    // var checkEmail = (rule, value, callback) => {
-    //   checkUserInfo({ email: value })
-    //     .then(() => {
-    //       callback()
-    //     })
-    //     .catch(() => {
-    //       callback(new Error('该邮箱已存在'))
-    //     })
-    // }
+    var checkEmail = (rule, value, callback) => {
+      checkUserInfo({ email: value })
+        .then(() => {
+          callback()
+        })
+        .catch(() => {
+          callback(new Error('该邮箱已存在'))
+        })
+    }
     return {
       succeed: false,
       timeoutCount: 5,
@@ -164,8 +164,8 @@ export default {
           span: 24,
           required: true,
           rules: [
-            { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
-            // { validator: checkEmail, trigger: 'blur' }
+            { type: 'email', message: '邮箱格式不正确', trigger: 'blur' },
+            { validator: checkEmail, trigger: 'blur' }
           ],
           label: '邮箱'
         },
