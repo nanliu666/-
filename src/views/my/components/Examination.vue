@@ -6,17 +6,20 @@
           :class="{ pitch: pitch == 'CurrencyExam' }"
           style="cursor:pointer;"
           @click="showBtn('CurrencyExam')"
-        >通用考试</span>
+          >通用考试</span
+        >
         <span
           :class="{ pitch: pitch == 'CourseExam' }"
           style="cursor:pointer;"
           @click="showBtn('CourseExam')"
-        >课程考试</span>
+          >课程考试</span
+        >
         <span
           :class="{ pitch: pitch == 'TrainExam' }"
           style="cursor:pointer;"
           @click="showBtn('TrainExam')"
-        >培训班考试</span>
+          >培训班考试</span
+        >
       </div>
       <div class="search_bar">
         <el-input
@@ -88,11 +91,11 @@
           <el-button
             v-if="scope.row.status == 6 && scope.row.status == 4"
             type="text"
-            @click="toAnswer(scope.row.id)"
+            @click="toAnswer(scope.row)"
           >
             查看答卷
           </el-button>
-          <el-button v-else type="text" disabled @click="toAnswer(scope.row.id)">
+          <el-button v-else type="text" disabled @click="toAnswer(scope.row)">
             查看答卷
           </el-button>
         </template>
@@ -188,8 +191,11 @@ export default {
   },
   methods: {
     // 去答案
-    toAnswer(id) {
-      window.console.log(id)
+    toAnswer(row) {
+      this.$router.push({
+        name: 'ExamDetail',
+        query: { examId: row.id, batchId: row.examineeBatchId }
+      })
     },
     // 查询培训考试结果列表
     isExamResult() {},
@@ -200,11 +206,11 @@ export default {
     //  处理页码改变
     handleCurrentPageChange(param) {
       this.page.pageNo = param
-      this.isExamResult()
+      this.getInfo()
     },
     handlePageSizeChange(param) {
       this.page.pageSize = param
-      this.isExamResult()
+      this.getInfo()
     },
 
     // 拿数据
