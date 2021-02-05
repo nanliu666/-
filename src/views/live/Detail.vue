@@ -65,13 +65,9 @@
             >
               {{ studentButtonText }}
             </el-button>
-            <el-button
-              v-if="detailData.status !== 'end' && !isStudent"
-              type="primary"
-              size="medium"
-            >
+            <el-button v-if="!isStudent" type="primary" size="medium">
               <span v-if="detailData.status === 'live'" @click="beginLiveFn">继续直播</span>
-              <span v-if="detailData.status === 'init'" @click="beginLiveFn">开始直播</span>
+              <span v-else @click="beginLiveFn">开始直播</span>
             </el-button>
           </div>
         </div>
