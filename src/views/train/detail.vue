@@ -78,7 +78,7 @@
 
     <div class="train-main">
       <el-tabs v-model="activeComponent" class="tabs" @tab-click="handleSelect">
-        <el-tab-pane v-for="tab in data.tabs" :key="tab" :label="reference[tab]" :name="tab">
+        <el-tab-pane v-for="tab in data.tabs" :key="tab" :label="reference[tab]" :name="tab" lazy>
           <div class="train-content">
             <component :is="tab" :data="data"></component>
           </div>

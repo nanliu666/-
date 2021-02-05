@@ -66,7 +66,7 @@
       </div>
 
       <div class="content_info">
-        <div class="img_info" v-html="data.content"></div>
+        <div class="newsImg_info info" v-html="data.content"></div>
       </div>
     </div>
   </div>
@@ -217,15 +217,9 @@ export default {
   }
 }
 </style>
-<style>
-.img_info {
-  opacity: 0.65;
-  font-family: PingFangSC-Regular;
-  font-size: 14px;
-  color: #000b15;
-  line-height: 22px;
-}
-img {
-  max-width: 1180px;
+<style  >
+.newsImg_info img {
+      max-width: 1150px;
+      max-height: 800px;
 }
 </style>
