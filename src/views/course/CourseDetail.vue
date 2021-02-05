@@ -63,9 +63,7 @@
                   }"
                 >{{ _.get(COURSE_CHAPTER_TYPE_MAP, `${chapter.type}.text`, '') }}</span>
                 <span class="course-detail__chapters--title">{{ chapter.name }}</span>
-                <span class="course-detail__chapters--time">{{
-                  getSecondesToHours(chapter.duration)
-                }}</span>
+                <span class="course-detail__chapters--time">{{ getSecondesToHours(chapter) }}</span>
               </div>
               <div class="course-detail__chapters--handler">
                 <el-progress
@@ -128,9 +126,14 @@ export default {
   },
   mounted() {},
   methods: {
-    getSecondesToHours(times) {
+    getSecondesToHours(chapter) {
       // 秒变成时分秒
-      let timeObj = moment.duration(times * 1000, 'milliseconds')._data
+      const regx = /^.*\.(avi|wmv|mp4|3gp|rm|rmvb|mov)$/
+      let isVideo = regx.test(chapter.content)
+      if (!isVideo) {
+        return ''
+      }
+      let timeObj = moment.duration(chapter.duration * 1000, 'milliseconds')._data
       let timeBack = `${timeObj.hours}:${timeObj.minutes}:${timeObj.seconds} `
       return timeBack
     },
