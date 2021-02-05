@@ -99,18 +99,28 @@
                           {{ it | result }}
                         </div>
                         <div v-if="it.remark" class="remark">
-                          <span>审批意见：</span><span style="white-space: pre"> {{ it.remark }}</span>
+                          <span>审批意见：</span>
+                          <span class="approval_text">
+                            {{ it.remark }}
+                          </span>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div v-if="item.remark && !item.userList">
-                  审批意见： <span style="white-space: pre">{{ item | content }}</span>
-                </div>
-                <div v-if="!item.remark && _.get(item, 'userList[0].remark')">
+                <div v-if="item.remark && _.size(item.userList) <= 1">
                   审批意见：
-                  <span style="white-space: pre">{{ item.userList[0].remark | content }}</span>
+                  <span class="approval_text">{{ item | content }}</span>
+                </div>
+                <div
+                  v-if="
+                    !item.remark && _.size(item.userList) == 1 && _.get(item, 'userList[0].remark')
+                  "
+                >
+                  审批意见：
+                  <span class="approval_text">
+                    {{ item.userList[0].remark | content }}
+                  </span>
                 </div>
               </div>
             </div>
@@ -279,5 +289,7 @@ export default {
 }
 /deep/.el-step:last-child > .el-step__head > .el-step__line {
   display: none;
+}
+.approval_text {
 }
 </style>

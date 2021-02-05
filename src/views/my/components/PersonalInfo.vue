@@ -79,6 +79,8 @@
 </template>
 <script>
 import { getuserInfo, setuserInfo } from '@/api/my'
+// import { checkUserInfo } from '@/api/user'
+
 export default {
   name: 'PersonalInfo',
   components: {
@@ -86,6 +88,16 @@ export default {
     CommonForm: () => import('@/components/common-form/CommonForm')
   },
   data() {
+    // TODO： 检查邮箱可用性，这里的接口调用不对需要登录才能用，待修改
+    // let checkEmail = (rule, value, callback) => {
+    //   checkUserInfo({ email: value })
+    //     .then(() => {
+    //       callback()
+    //     })
+    //     .catch(() => {
+    //       callback(new Error('该邮箱已存在'))
+    //     })
+    // }
     return {
       imgdata: [],
       dialogVisible: false,
@@ -150,7 +162,12 @@ export default {
           prop: 'userEmail',
           itemType: 'input',
           label: '邮箱',
-          offset: 5
+          offset: 5,
+          required: true,
+          rules: [
+            { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
+            // { validator: checkEmail, trigger: 'blur' }
+          ]
         }
       ],
       recruitmentList: []

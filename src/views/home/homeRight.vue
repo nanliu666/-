@@ -122,7 +122,7 @@
         <!-- <router-link to="">更多</router-link> -->
       </div>
       <div v-for="(item, i) in monthlyCreditData" :key="item.id" class="rankingItem">
-        <div :class="['rankingIndex', 'rankingIndex' + i]">01</div>
+        <div :class="['rankingIndex', 'rankingIndex' + i]">{{ i + 1 }}</div>
         <div class="rankingImg">
           <img :src="item.url ? item.url : '/img/userIconBig.png'" width="40" height="40" alt="" />
         </div>
@@ -159,7 +159,7 @@
         <!-- <router-link to="">更多</router-link> -->
       </div>
       <div v-for="(item, i) in monthlyPeriodData" :key="item.id" class="rankingItem">
-        <div :class="['rankingIndex', 'rankingIndex' + i]">01</div>
+        <div :class="['rankingIndex', 'rankingIndex' + i]">{{ i + 1 }}</div>
         <div class="rankingImg">
           <img :src="item.url ? item.url : '/img/userIconBig.png'" width="40" height="40" alt="" />
         </div>

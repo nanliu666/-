@@ -88,11 +88,11 @@
           <el-button
             v-if="scope.row.status == 6 && scope.row.status == 4"
             type="text"
-            @click="toAnswer(scope.row.id)"
+            @click="toAnswer(scope.row)"
           >
             查看答卷
           </el-button>
-          <el-button v-else type="text" disabled @click="toAnswer(scope.row.id)">
+          <el-button v-else type="text" disabled @click="toAnswer(scope.row)">
             查看答卷
           </el-button>
         </template>
@@ -188,8 +188,11 @@ export default {
   },
   methods: {
     // 去答案
-    toAnswer(id) {
-      window.console.log(id)
+    toAnswer(row) {
+      this.$router.push({
+        name: 'ExamDetail',
+        query: { examId: row.id, batchId: row.examineeBatchId }
+      })
     },
     // 查询培训考试结果列表
     isExamResult() {},
@@ -200,11 +203,11 @@ export default {
     //  处理页码改变
     handleCurrentPageChange(param) {
       this.page.pageNo = param
-      this.isExamResult()
+      this.getInfo()
     },
     handlePageSizeChange(param) {
       this.page.pageSize = param
-      this.isExamResult()
+      this.getInfo()
     },
 
     // 拿数据

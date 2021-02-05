@@ -43,7 +43,8 @@
 </template>
 
 <script>
-import { userRegister, getCode } from '@/api/user'
+// eslint-disable-next-line no-unused-vars
+import { userRegister, getCode, checkUserInfo } from '@/api/user'
 export default {
   components: {
     CommonForm: () => import('@/components/common-form/CommonForm')
@@ -67,6 +68,16 @@ export default {
       } else {
         callback()
       }
+    }
+    // TODO： 检查邮箱可用性，这里的接口调用不对需要登录才能用，待修改
+    var checkEmail = (rule, value, callback) => {
+      checkUserInfo({ email: value })
+        .then(() => {
+          callback()
+        })
+        .catch(() => {
+          callback(new Error('该邮箱已存在'))
+        })
     }
     return {
       succeed: false,
@@ -152,7 +163,10 @@ export default {
           itemType: 'input',
           span: 24,
           required: true,
-          rules: [{ type: 'email', message: '邮箱格式不正确' }],
+          rules: [
+            { type: 'email', message: '邮箱格式不正确', trigger: 'blur' },
+            { validator: checkEmail, trigger: 'blur' }
+          ],
           label: '邮箱'
         },
         {

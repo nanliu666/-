@@ -123,7 +123,7 @@ export default {
       this.formData = res.data
       // progressData
       this.formData.map((item) => {
-        item.progressData = (item.userPeriod / item.period) * 100
+        item.progressData = (item.userPeriod / item.period) * 100 || 0
       })
       this.total = res.totalNum
     }

@@ -422,8 +422,23 @@ export default {
   position: relative;
   z-index: 100;
 }
+/deep/ .homeMenu2 .header {
+  background: none;
+}
 .banner {
   height: 600px;
+}
+/deep/ .banner .el-carousel__arrow {
+  border-radius: 4px;
+  width: 32px;
+  height: 60px;
+  background: rgba(0, 11, 21, 0.5);
+}
+/deep/ .banner .el-carousel__arrow i {
+  font-size: 40px;
+}
+/deep/ .banner .el-icon-arrow-right:before {
+  margin-left: -2px;
 }
 .banner .b_item {
   height: 600px;
@@ -643,6 +658,25 @@ export default {
 
 .homeRight {
   width: 285px;
-  margin-left: 20px;
+  margin-left: 35px;
+}
+</style>
+<style>
+.home .banner .el-carousel__indicators--horizontal {
+  bottom: 20px;
+}
+.home .banner .el-carousel__indicator--horizontal {
+  padding: 12px 10px;
+}
+.home .banner .el-carousel__button {
+  opacity: 0.6;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+}
+.home .banner .el-carousel__indicator.is-active button {
+  background: #01aafc;
+  opacity: 1;
 }
 </style>

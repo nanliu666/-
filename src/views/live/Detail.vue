@@ -61,13 +61,13 @@
               type="primary"
               size="medium"
               :disabled="studentButtonDisabled"
-              @click="watchLiveFun"
+              @click.native="watchLiveFun"
             >
               {{ studentButtonText }}
             </el-button>
-            <el-button v-if="!isStudent" type="primary" size="medium">
-              <span v-if="detailData.status === 'live'" @click="beginLiveFn">继续直播</span>
-              <span v-else @click="beginLiveFn">开始直播</span>
+            <el-button v-if="!isStudent" type="primary" size="medium" @click.native="beginLiveFn">
+              <span v-if="detailData.status === 'live'">继续直播</span>
+              <span v-else>开始直播</span>
             </el-button>
           </div>
         </div>

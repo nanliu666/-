@@ -129,8 +129,8 @@ export default {
     },
     async getInfo() {
       let res = await queryTrainList({ trainName: this.searchInput, ...this.page })
-      this.listData = res.trainList.records
-      this.total = res.trainList.total
+      this.listData = res.records
+      this.total = res.total
     },
     showBtn(i) {
       this.pitch = i

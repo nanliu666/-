@@ -4,8 +4,6 @@
       <ul @click="handleBack">
         <li>审批中心</li>
         <li>/</li>
-        <li>待我审批</li>
-        <li>/</li>
         <li class="text_color">审批详情</li>
       </ul>
     </div>
@@ -161,14 +159,19 @@
         ref="apprForm"
         label-position="top"
         :model="apprForm"
-        :rules="{
-          comment: [{ required: !!isOpinion, message: '请输入审批意见', trigger: 'blur' }]
-        }"
+        :rules="formRules"
         label-width="100px"
         class="demo-ruleForm"
       >
         <el-form-item label="审批意见" prop="comment">
-          <el-input v-model="apprForm.comment" type="textarea" :rows="4" :placeholder="tip" />
+          <el-input
+            v-model="apprForm.comment"
+            type="textarea"
+            :rows="4"
+            :placeholder="tip"
+            :maxlength="200"
+            show-word-limit
+          />
         </el-form-item>
       </el-form>
       <div v-if="!isFished && !isPreview" class="cancel-btn-box">
@@ -360,7 +363,11 @@ export default {
       // return true
       return _.get(this.$route.query, 'preview', false)
     },
-
+    formRules() {
+      return {
+        comment: [{ required: !!this.isOpinion, message: '请输入审批意见', trigger: 'blur' }]
+      }
+    },
     ...mapGetters(['userId'])
   },
   activated() {
@@ -573,6 +580,7 @@ export default {
           }
           return {
             ...firstUser,
+            remark: '',
             result,
             userList: users
           }

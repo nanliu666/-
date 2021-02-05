@@ -102,12 +102,22 @@
           <span v-show="row.status == 'Corvidae'">待完善</span>
           <span v-show="row.status == 'Cancel'">已撤回</span>
         </template>
-        <!-- 审核人 -->
+
+        <!-- 流程类型 现在只有课程审批，先写死 -->
+        <template slot="processName">
+          课程审批
+        </template>
+
+        <!-- 当前审批人 -->
         <template slot="approveUser" slot-scope="{ row }">
-          <span v-for="(item, index) in row.approveUser" :key="index">
-            {{ item.userName }} <span v-show="row.approveUser.length != index + 1">,</span>
+          <span v-if="row.approveUser.length == 0"> - - </span>
+          <span v-else>
+            <span v-for="(item, index) in row.approveUser" :key="index">{{ item.userName }}
+              {{ index != row.approveUser.length - 1 ? ',' : '' }}
+            </span>
           </span>
         </template>
+
         <template slot="handler" slot-scope="scope">
           <el-button type="text" @click="toDetails(scope.row)"> 查看 </el-button>
         </template>
@@ -127,7 +137,8 @@ let TABLE_COLUMNS = [
   },
   {
     label: '流程类型',
-    prop: 'processName'
+    prop: 'processName',
+    slot: true
   },
   {
     label: '申请人',
@@ -189,7 +200,7 @@ export default {
   },
 
   watch: {
-    searchInput: function () {
+    searchInput: function() {
       this.setPitch(this.pitch)
     }
   },
@@ -274,13 +285,14 @@ export default {
           this.page.total = res.totalNum
         })
       }
+      console.log(this.tableData)
     },
     toDetails(item) {
       //   window.console.log(id)
 
       this.$router.push({
         path: '/approvalCenter/details',
-        query: { id: item.formId, apprNo: item.apprNo, pitch: this.pitch }
+        query: { apprNo: item.apprNo }
       })
     },
     //  处理页码改变
