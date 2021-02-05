@@ -92,12 +92,9 @@
                     <span class="text">通过条件：</span>
                     <span v-for="(item, index) in courseData.passCondition" :key="index">
                       <span v-show="item == 'a'">教师评定 </span>
-                      <span v-show="item == 'b'"
-                        >考试通过
-                        {{ courseData.passCondition.split(',').length >= 3 ? ',' : '' }}</span
-                      >
-                      <span v-show="item == 'c'"
-                        >达到课程学时
+                      <span v-show="item == 'b'">考试通过
+                        {{ courseData.passCondition.split(',').length >= 3 ? ',' : '' }}</span>
+                      <span v-show="item == 'c'">达到课程学时
                         {{ courseData.passCondition.split(',').length >= 2 ? ',' : '' }}
                       </span>
                     </span>

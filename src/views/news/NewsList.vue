@@ -61,7 +61,6 @@
         class="pagination"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-       
       >
       </el-pagination>
     </div>
@@ -87,7 +86,6 @@ export default {
 
   watch: {
     searchInput: function() {
-      
       this.isnewsList()
     }
   },
@@ -99,12 +97,12 @@ export default {
   methods: {
     // 拿数据
     async isnewsList() {
-      if( this.searchInput !=""){
-           this.page.pageNo = 1
+      if (this.searchInput != '') {
+        this.page.pageNo = 1
       }
       let params = { ...this.page, isHot: this.pitch, search: this.searchInput }
       let res = await newsList(params)
-      
+
       this.data = res.data
       this.total = res.totalNum
     },

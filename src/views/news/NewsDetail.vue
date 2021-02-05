@@ -217,9 +217,9 @@ export default {
   }
 }
 </style>
-<style  >
+<style>
 .newsImg_info img {
-      max-width: 1150px;
-      max-height: 800px;
+  max-width: 1150px;
+  max-height: 800px;
 }
 </style>

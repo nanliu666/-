@@ -112,8 +112,7 @@
         <template slot="approveUser" slot-scope="{ row }">
           <span v-if="row.approveUser.length == 0"> - - </span>
           <span v-else>
-            <span v-for="(item, index) in row.approveUser" :key="index"
-              >{{ item.userName }}
+            <span v-for="(item, index) in row.approveUser" :key="index">{{ item.userName }}
               {{ index != row.approveUser.length - 1 ? ',' : '' }}
             </span>
           </span>

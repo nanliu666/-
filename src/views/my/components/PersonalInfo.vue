@@ -49,8 +49,7 @@
                     v-if="
                       (imgdata[imgdata.length - 1] && imgdata[imgdata.length - 1].fileUrl) !== ''
                     "
-                    >重新上传</span
-                  >
+                  >重新上传</span>
                   <span v-else>上传</span>
                 </el-button>
               </common-upload>

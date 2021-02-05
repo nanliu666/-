@@ -6,20 +6,17 @@
           :class="{ pitch: pitch == 'CurrencyExam' }"
           style="cursor:pointer;"
           @click="showBtn('CurrencyExam')"
-          >通用考试</span
-        >
+        >通用考试</span>
         <span
           :class="{ pitch: pitch == 'CourseExam' }"
           style="cursor:pointer;"
           @click="showBtn('CourseExam')"
-          >课程考试</span
-        >
+        >课程考试</span>
         <span
           :class="{ pitch: pitch == 'TrainExam' }"
           style="cursor:pointer;"
           @click="showBtn('TrainExam')"
-          >培训班考试</span
-        >
+        >培训班考试</span>
       </div>
       <div class="search_bar">
         <el-input

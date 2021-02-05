@@ -29,8 +29,7 @@
                       color: _.get(COURSE_CHAPTER_TYPE_MAP, `${chapter.type}.color`, ''),
                       'border-color': _.get(COURSE_CHAPTER_TYPE_MAP, `${chapter.type}.color`, '')
                     }"
-                    >{{ _.get(COURSE_CHAPTER_TYPE_MAP, `${chapter.type}.text`, '') }}</span
-                  >
+                  >{{ _.get(COURSE_CHAPTER_TYPE_MAP, `${chapter.type}.text`, '') }}</span>
                   <span class="chapters__title">{{ chapter.name }}</span>
                 </div>
               </li>
