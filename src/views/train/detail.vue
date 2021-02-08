@@ -164,6 +164,15 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.train-detail {
+  .el-tabs__header {
+    margin: 0;
+  }
+}
+</style>
+
 <style lang="scss" scoped>
 .train-detail {
   .breadcrumb-wrap {
