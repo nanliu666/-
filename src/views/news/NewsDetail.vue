@@ -154,7 +154,7 @@ export default {
   }
   .content {
     width: 1200px;
-    height: 1000px;
+   /* height: 1000px;*/
     margin: 0 auto;
     background-color: #fff;
     box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.1);
@@ -219,7 +219,6 @@ export default {
 </style>
 <style>
 .newsImg_info img {
-  max-width: 1150px;
-  max-height: 800px;
+  width: 100%;
 }
 </style>
