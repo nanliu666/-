@@ -165,7 +165,8 @@ export default {
       currentChapter: {},
       notes: [],
       note: '',
-      leftHidden: false
+      leftHidden: false,
+      pageIndex: -1
     }
   },
   computed: {
@@ -267,6 +268,7 @@ export default {
       return regx.test(chapter.content)
     },
     handleChapterClick(chapter) {
+      this.pageIndex -= 1
       this.currentChapter = chapter
     },
     calcProcess(chapter) {
@@ -383,7 +385,7 @@ export default {
         })
     },
     goBack() {
-      this.$router.go(-1)
+      this.$router.go(this.pageIndex)
     }
   }
 }

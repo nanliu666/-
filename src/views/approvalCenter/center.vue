@@ -171,7 +171,9 @@ const TABLE_CONFIG = {
   showHandler: true,
   showIndexColumn: false
 }
-const TABLE_PAGE_CONFIG = {}
+const TABLE_PAGE_CONFIG = {
+  currentPage: 1
+}
 export default {
   filters: {
     // 过滤不可见的列
@@ -200,9 +202,12 @@ export default {
   },
 
   watch: {
-    searchInput: function() {
-      this.setPitch(this.pitch)
-    }
+    searchInput: _.debounce(function() {
+      this.page.pageNo = 1
+      this.page.pageSize = 10
+      this.page.total = 0
+      this.getTableData()
+    }, 600)
   },
 
   activated() {
@@ -219,13 +224,12 @@ export default {
     },
     //   导航栏btn
     setPitch(i, beginApplyTime, endApplyTime) {
-      if (this.pitch != i) {
-        this.searchInput = ''
-        this.searchForm = {}
-        this.page.pageNo = 1
-        this.page.pageSize = 10
-      }
       this.pitch = i
+      this.searchInput = ''
+      this.searchForm = {}
+      this.page.pageNo = 1
+      this.page.pageSize = 10
+      this.page.total = 0
       if (i == 1) {
         TABLE_COLUMNS.splice(4, 1)
         TABLE_COLUMNS.splice(5, 1)
@@ -245,11 +249,10 @@ export default {
           slot: true
         }
       }
-
-      if (this.searchInput || this.searchForm != {}) {
-        this.page.pageNo = 1
-        this.page.pageSize = 10
-      }
+      this.getTableData(beginApplyTime, endApplyTime)
+    },
+    //切换导航栏查询数据
+    getTableData(beginApplyTime, endApplyTime) {
       let params = {
         ...this.page,
         ...this.searchForm,
@@ -259,33 +262,32 @@ export default {
         endApplyTime: endApplyTime
       }
       // 调接口
-      if (i == 1) {
+      if (this.pitch == 1) {
         // 待我审批
         waitApproveList(params).then((res) => {
           this.tableData = res.data
           this.page.total = res.totalNum
           this.totalNum = res.totalNum
         })
-      } else if (i == 2) {
+      } else if (this.pitch == 2) {
         // 我已审批
         hasApproveList(params).then((res) => {
           this.tableData = res.data
           this.page.total = res.totalNum
         })
-      } else if (i == 3) {
+      } else if (this.pitch == 3) {
         // 抄送我的
         myApproveList(params).then((res) => {
           this.tableData = res.data
           this.page.total = res.totalNum
         })
-      } else if (i == 4) {
+      } else if (this.pitch == 4) {
         // 我发起的
         ccApproveList(params).then((res) => {
           this.tableData = res.data
           this.page.total = res.totalNum
         })
       }
-      console.log(this.tableData)
     },
     toDetails(item) {
       //   window.console.log(id)
@@ -298,11 +300,11 @@ export default {
     //  处理页码改变
     handleCurrentPageChange(param) {
       this.page.pageNo = param
-      this.setPitch(this.pitch)
+      this.getTableData()
     },
     handlePageSizeChange(param) {
       this.page.pageSize = param
-      this.setPitch(this.pitch)
+      this.getTableData()
     }
   }
 }
