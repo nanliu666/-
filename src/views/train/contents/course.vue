@@ -1,6 +1,9 @@
 <template>
   <div class="course">
-    <ul v-if="data.trainWay === 3 || data.trainWay === 2" class="course-list">
+    <ul
+      v-if="(data.trainWay === 1 || data.trainWay === 3) && onlineList.length"
+      class="course-list"
+    >
       <li v-for="(course, index) in onlineList" :key="index" class="course-item">
         <div class="title">
           {{ course.name }}
@@ -46,9 +49,9 @@
       </li>
     </ul>
     <ul
-      v-if="data.trainWay === 1 || data.trainWay === 2"
+      v-if="data.trainWay === 2 || data.trainWay === 3"
       class="course-list"
-      :class="{ 'margin-top20': data.trainWay === 2 }"
+      :class="{ 'margin-top20': data.trainWay === 3 && onlineList.length }"
     >
       <li class="course-item">
         <div class="title">
@@ -165,11 +168,12 @@ export default {
           .tab {
             border: 1px solid;
             font-size: 10px;
-            width: 32px;
             height: 18px;
             line-height: 18px;
             text-align: center;
             margin-right: 8px;
+            box-sizing: border-box;
+            padding: 0 2px;
             &.video {
               color: rgba(0, 176, 97, 1);
             }

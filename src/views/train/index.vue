@@ -23,18 +23,18 @@
           >全部</span>
           <span
             class="filter-radio"
+            :class="{ selected: filterForm.trainWay === 2 }"
+            @click="filterForm.trainWay = 2"
+          >面授</span>
+          <span
+            class="filter-radio"
             :class="{ selected: filterForm.trainWay === 1 }"
             @click="filterForm.trainWay = 1"
-          >面授</span>
+          >在线</span>
           <span
             class="filter-radio"
             :class="{ selected: filterForm.trainWay === 3 }"
             @click="filterForm.trainWay = 3"
-          >在线</span>
-          <span
-            class="filter-radio"
-            :class="{ selected: filterForm.trainWay === 2 }"
-            @click="filterForm.trainWay = 2"
           >混合</span>
         </div>
         <div class="filter-item">
@@ -116,7 +116,7 @@
               <div class="desc-item">
                 培训类型：
                 <span class="text">{{
-                  item.trainWay === 1 ? '面授' : item.trainWay === 2 ? '混合' : '在线'
+                  item.trainWay === 2 ? '面授' : item.trainWay === 3 ? '混合' : '在线'
                 }}</span>
               </div>
               <div class="desc-item">
