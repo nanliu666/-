@@ -13,8 +13,19 @@
         <div class="name">
           {{ data.title }}
         </div>
-        <div class="status doing">
-          {{ data.status === 2 ? '进行中' : data.status === 1 ? '未开始' : '已办结' }}
+        <div
+          class="status"
+          :class="{ will: data.status === 1, doing: data.status === 2, done: data.status === 3 }"
+        >
+          {{
+            data.status === 2
+              ? '进行中'
+              : data.status === 1
+                ? '未开始'
+                : data.status === 3
+                  ? '已办结'
+                  : ''
+          }}
         </div>
       </div>
       <div class="intro-list">
