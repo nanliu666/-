@@ -134,6 +134,7 @@ export default {
         GetCreditResourceDownloaded: '/my/record', // 学分获得通知: 资源共享被下载十次获得学分
         PassApproval: '/approvalCenter/center', // 审批通过通知: 申请人审批通过
         ApprovalNotify: '/approvalCenter/center', // 审批通知: 有新的审批代办
+        FlowWaitApprove: '/approvalCenter/center', // 审批通知: 有新的审批代办
         ApprovalReturn: '/approvalCenter/center', // 审批退回通知: 申请人审批被退回
         ExamAchievement: '/approvalCenter/center', // 考试成绩通知: 发布考试成绩
         ExamNotify: '/exam/list', // 考试通知: 考试发布
@@ -142,7 +143,8 @@ export default {
         CourseRemind: '/course/list', // 课程学习提醒: 课程开始前N分钟
         TrainArrange: '/train/index' // 培训安排的通知: 发布培训安排
       }
-      this.$router.push({ path: TYPE_PATH_MAP[data.type] })
+
+      this.$router.push({ path: TYPE_PATH_MAP[data.type], query: JSON.parse(data.multiCondition) })
     },
     handleNoRead() {
       this.searchParams.isRead = 0
