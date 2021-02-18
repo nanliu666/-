@@ -193,7 +193,20 @@ export default {
     },
     // 观看直播
     watchLiveFun() {
-      this.$router.push({ path: '/WatchLive', query: { wId: this.detailData.channelId } })
+      let { userId, avatar, userName } = this.detailData.currentUser
+        ? this.detailData.currentUser
+        : {}
+      this.$router.push({
+        name: 'WatchLive',
+        query: {
+          wId: this.detailData.channelId,
+          userid: userId,
+          avatar: avatar,
+          userName: encodeURIComponent(userName),
+          sk: this.detailData.authSecretOrCode,
+          type: this.detailData.authType
+        }
+      })
     },
     beginLiveFn() {
       // 开播
