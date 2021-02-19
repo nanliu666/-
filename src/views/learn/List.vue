@@ -347,11 +347,11 @@ export default {
       this.expandList = this.courseList[index][type].slice(0, 3)
       this.currentExpandType = type
       if (type === 'examList') {
-        this.currentTestExpand = index
+        this.currentTestExpand = this.currentTestExpand === index ? -1 : index
         this.currentFileExpand = -1
       } else {
         this.currentTestExpand = -1
-        this.currentFileExpand = index
+        this.currentFileExpand = this.currentFileExpand === index ? -1 : index
       }
     },
     startStudy(data) {
