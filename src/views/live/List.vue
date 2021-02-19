@@ -37,7 +37,7 @@
             <!-- 如果当前选中的id等于父级id则高亮全部，或在最顶级分类无任何选中时高亮，面包屑导航数组中最后一个则为当前分类的父级分类并且存有id -->
             <span
               :class="
-                queryData.liveType_select ==
+                queryData.liveType_select ==  
                   (navigation.length > 0 ? navigation[navigation.length - 1].children.idStr : '')
                   ? 'active_type'
                   : ''
@@ -89,7 +89,7 @@
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col v-for="(item, index) in liveList" :key="index" :span="6" class="item_live">
+        <el-col v-for="(item, index) in liveList" :key="index" :span="6" type="flex"  justify="start" class="grid-content">
           <el-card :body-style="{ padding: '0px' }">
             <div class="item_live_imgBox">
               <img :src="item.coverImageUrl" class="image_live" @click="goDetail(item.liveId)" />
@@ -105,7 +105,7 @@
               <span v-show="item.status == 'live'" class="item_live_userNumber"><i class="el-icon-user"></i> {{ item.viewersNumber }}</span>
             </div>
 
-            <div style="padding: 10px 14px;">
+            <div style="padding: 10px 14px;height: 93px;">
               <h3>{{ item.channelName }}</h3>
               <p class="department">{{ item.categoryName }}</p>
               <el-tooltip
@@ -135,7 +135,12 @@
                   <span>
                     {{ item.planTime[0].split('~')[0].split(' ')[1] }} ~
                     {{ item.planTime[0].split('~')[1].split(' ')[1] }}</span>
-                </p>
+                </p>  
+                 <p v-else   class="department"   style="padding: 10px 14px;height: 93px;" >
+                   <span>
+                     &nbsp;
+                   </span>
+                 </p>
 
                 <div slot="content">
                   <div v-if="item.batchDeclare == 'plural' || item.batchDeclare == 'single'">
@@ -254,7 +259,8 @@ export default {
   mounted() {
     // 获取直播分类
     getcategoryTree({
-      source: 'live'
+      source: 'live',
+      status:0
     }).then((res) => {
       this.liveClassification = res
     })
