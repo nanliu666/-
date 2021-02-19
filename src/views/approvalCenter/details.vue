@@ -176,21 +176,23 @@
       </el-form>
       <div v-if="!isFished && !isPreview" class="cancel-btn-box">
         <el-button
-          v-if="!isFished && hasCancel && isApplyUser"
+          v-if="!isFished  && isApplyUser"
           type="primary"
           size="medium"
+          :disabled="!hasCancel?true:false"
           @click="handleCancelClick"
         >
           撤回
         </el-button>
         <el-tooltip
+          v-if="isApprover"
           effect="dark"
           content="拒绝审批后，该审批将终止"
           :enterable="false"
           placement="top"
         >
           <el-button
-            v-if="isApprover"
+
             type="primary"
             size="medium"
             @click="handelConfirm('Reject')"
@@ -199,12 +201,13 @@
           </el-button>
         </el-tooltip>
         <el-tooltip
+          v-if="isApprover"
           effect="dark"
           content="同意该审批，审批将继续向下流转"
           :enterable="false"
           placement="top"
         >
-          <el-button v-if="isApprover" type="primary" size="medium" @click="handelConfirm('Pass')">
+          <el-button  type="primary" size="medium" @click="handelConfirm('Pass')">
             同意
           </el-button>
         </el-tooltip>
@@ -645,6 +648,16 @@ export default {
         }
       })
       this.progress = _.concat(this.progress, addNodes)
+      //过滤自动审批通过的节点（一般是被冻结或被删除的账号）
+      this.progress.forEach((item,index,arr)=>{
+        if(item.type==='approver'){
+          item.userList = item.userList.filter(x=>x.userName)
+        }
+        if(item.userList.length===0&&!item.userName){
+          arr.splice(index,1)
+        }
+      })
+      console.log(this.progress,1)
     },
     // 处理重新发起申请
     handleReapplyClick() {
