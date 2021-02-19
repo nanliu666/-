@@ -289,11 +289,12 @@ export default {
     },
     JoinDisabled(row) {
       // 参加考试置灰条件：
-      // 未开考(status1)、缺考(status4)、已考试且考试成绩为未发布(isPass2)、已考试(status3)考试次数到达其上限(joinNum&&joinNumValue>=examTimes)
+      // 未开考(status1)、缺考(status4)、已考试且考试成绩为未发布(isPass2)、已考试(status3)考试次数到达其上限(joinNum&&joinNumValue>=examTimes),考试结束时间在今天之前
       const isJoinDisabled =
         row.status === 1 ||
         row.status === 4 ||
         row.isPass === 2 ||
+        moment(moment(row.examEndTime)).diff(new Date(), 'minutes') < 0 ||
         (row.status === 3 && row.joinNum && row.joinNumValue >= row.examTimes)
       return isJoinDisabled
     },
@@ -314,13 +315,9 @@ export default {
       if (row.examTimes === 0 || row.isPass === 1) {
         tips = joinTips
       }
-      // 若已通过考试，且还在考试时间和限定次数内，点击出现弹框
+      // 若已通过考试，且在限定次数内，点击出现弹框
       // 不限次数可以参加、限制了次数且参加次数在限次之内可以参加
-      if (
-        row.isPass === 3 &&
-        moment(moment(row.examEndTime)).diff(new Date(), 'minutes') > 0 &&
-        (!row.joinNum || (row.joinNum && row.joinNumValue < row.examTimes))
-      ) {
+      if (row.isPass === 3 && (!row.joinNum || (row.joinNum && row.joinNumValue > row.examTimes))) {
         tips = isPassAndJoin
       }
       //若创建考试时设置了迟到或迟到n分钟内禁止考试,并且已经开考
