@@ -128,12 +128,12 @@ import LiveStatistics from './components/LiveStatistics'
 import vueQr from 'vue-qr'
 const STATUS_MAP = {
   live: '直播中',
-  init: '未开始',
+  start: '未开始',
   end: '已结束'
 }
 const STUDENT_BUTTON_TEXT = {
   live: '观看直播',
-  init: '直播未开始',
+  start: '直播未开始',
   end: '直播已结束'
 }
 export default {
@@ -156,7 +156,7 @@ export default {
     return {
       studentButtonText: STUDENT_BUTTON_TEXT.live,
       studentButtonDisabled: false,
-      isStudent: false,
+      isStudent: true,
       statusMap: STATUS_MAP,
       activeIndex: '1',
       detailData: {}
@@ -167,10 +167,10 @@ export default {
       return `${location.origin}/#/WatchLive?wId=${this.detailData.channelId}`
     },
     id() {
-      return _.get(this.$route, 'query.id', '1353968896999862273')
+      return _.get(this.$route, 'query.id', '')
     }
   },
-  mounted() {
+  activated() {
     const params = { liveId: this.id }
     getLiveDetail(params).then((res) => {
       this.detailData = res
@@ -179,6 +179,7 @@ export default {
       this.studentButtonText = STUDENT_BUTTON_TEXT[this.detailData.status]
     })
     getUserRole(params).then((res) => {
+      //Trainee为学员 否则为讲师
       this.isStudent = res.roleName === 'Trainee'
       this.activeIndex = res.roleName === 'Trainee' ? '3' : '1'
     })
