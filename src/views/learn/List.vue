@@ -347,17 +347,15 @@ export default {
       this.expandList = this.courseList[index][type].slice(0, 3)
       this.currentExpandType = type
       if (type === 'examList') {
-        this.currentTestExpand = index
+        this.currentTestExpand = this.currentTestExpand === index ? -1 : index
         this.currentFileExpand = -1
       } else {
         this.currentTestExpand = -1
-        this.currentFileExpand = index
+        this.currentFileExpand = this.currentFileExpand === index ? -1 : index
       }
     },
     startStudy(data) {
-      if (data.status === 2) {
-        this.$router.push({ path: '/course/learn', query: { courseId: data.id } })
-      }
+      this.$router.push({ path: '/course/learn', query: { courseId: data.id } })
     },
     // 切换必修/选修
     toggleShow(type) {
@@ -383,7 +381,7 @@ export default {
     submitSearch() {
       const dateRange = _.cloneDeep(this.queryInfo.dateRange)
       this.queryInfo.dateRange = _.map(dateRange, (item) => {
-        item = moment(item).format('YYYY-MM-DD hh:mm:ss')
+        item = moment(item).format('YYYY-MM-DD HH:mm:ss')
         return item
       })
       this.loadTableData()
