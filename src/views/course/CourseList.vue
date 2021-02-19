@@ -154,9 +154,10 @@ export default {
   data() {
     return {
       params: {
+        // 查询课程列表初始化参数
         catalogId: null,
         courseName: '',
-        type: '',
+        type: 1,
         pageSize: 20,
         choice: '1'
       },
@@ -210,6 +211,7 @@ export default {
       this.refreshData()
     },
     loadCourseList() {
+      // 查询课程列表
       this.loading = true
       getCourseList({ ...this.params, ...this.extraParams, pageNo: this.pageNo })
         .then((res) => {
