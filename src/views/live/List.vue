@@ -89,24 +89,24 @@
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col v-for="(item, index) in liveList" :key="index" :span="6" type="flex"  justify="start" class="grid-content">
+        <el-col v-for="(item, index) in liveList" :key="index" :span="6" type="flex"  justify="start" class="grid-content cursorDiv">
           <el-card :body-style="{ padding: '0px' }">
-            <div class="item_live_imgBox">
+            <div class="item_live_imgBox " style="cursor: pointer;">
               <img :src="item.coverImageUrl" class="image_live" @click="goDetail(item.liveId)" />
               <span v-show="item.status == 'live'" class="item_live_status">直播中</span>
               <span v-show="item.status == 'ready'" class="item_live_status" style="color:#00B061">未开始</span>
               <span v-show="item.status == 'replay'" class="item_live_status" style="color:#FCBA00">直播回放</span>
-              <div
+              <div  @click="goDetail(item.liveId)"
                 v-show="item.status == 'live' || item.status == 'replay'"
                 class="item_live_playButton"
               >
-                <span></span>
+                <span  @click="goDetail(item.liveId)" ></span>
               </div>
               <span v-show="item.status == 'live'" class="item_live_userNumber"><i class="el-icon-user"></i> {{ item.viewersNumber }}</span>
             </div>
 
             <div style="padding: 10px 14px;height: 93px;">
-              <h3>{{ item.channelName }}</h3>
+              <h3 class="showText">{{ item.channelName }}</h3>
               <p class="department">{{ item.categoryName }}</p>
               <el-tooltip
                 class="item"
@@ -136,7 +136,7 @@
                     {{ item.planTime[0].split('~')[0].split(' ')[1] }} ~
                     {{ item.planTime[0].split('~')[1].split(' ')[1] }}</span>
                 </p>  
-                 <p v-else   class="department"   style="padding: 10px 14px;height: 93px;" >
+                 <p v-else   class="department"   style="padding: 10px 14px;height: 96px;" >
                    <span>
                      &nbsp;
                    </span>
@@ -258,11 +258,16 @@ export default {
   },
   mounted() {
     // 获取直播分类
+
     getcategoryTree({
       source: 'live',
-      status:0
     }).then((res) => {
-      this.liveClassification = res
+      res.forEach(element => {
+        if(element.status===1){
+          this.liveClassification.push(element)
+        } 
+      });
+      
     })
 
     // 默认获取我的直播任务,如果为空隐藏该tabs
@@ -469,7 +474,9 @@ export default {
         padding: 5px 8px;
         border-radius: 3px;
         color: #01aafc;
+      
       }
+      
       .item_live_playButton {
         position: absolute;
         width: 48px;
@@ -510,6 +517,15 @@ export default {
       margin: 0 0 15px 0;
       font-size: 14px;
     }
+    
+    .showText{
+      width: 250px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+     
+    }
+
     .department {
       color: #ccc;
       font-size: 12px;
