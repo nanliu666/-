@@ -174,9 +174,22 @@
               <li v-for="(fileItem, fileIndex) in expandList" :key="fileIndex" class="file-card-li">
                 <div class="file-left">
                   <div class="file-title">
-                    <span class="title ellipsis">{{
+                    <span v-if="_.size(fileItem.fileName) <= 10" class="title">{{
                       currentExpandType === 'examList' ? fileItem.examName : fileItem.fileName
                     }}</span>
+                    <el-tooltip
+                      v-else
+                      class="item"
+                      effect="dark"
+                      :content="
+                        currentExpandType === 'examList' ? fileItem.examName : fileItem.fileName
+                      "
+                      placement="top-start"
+                    >
+                      <span class="title ellipsis">{{
+                        currentExpandType === 'examList' ? fileItem.examName : fileItem.fileName
+                      }}</span>
+                    </el-tooltip>
                     <el-tag
                       v-if="currentExpandType === 'examList'"
                       :type="statusFilter(item.status).type"
