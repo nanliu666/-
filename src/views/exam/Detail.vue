@@ -92,6 +92,7 @@
                   :data="conItem"
                   type="view"
                   :is-view-results="isViewResults"
+                  :paper-data="examDetail"
                 />
                 <span v-else>
                   <span class="right-title" v-html="getHTML(conItem.content)"></span>
@@ -104,6 +105,7 @@
                       <span>{{ paperIndex + 1 }}.</span>
                       <QustionPreview
                         :data="paperItem"
+                        :paper-data="examDetail"
                         type="view"
                         :is-view-results="isViewResults"
                       />

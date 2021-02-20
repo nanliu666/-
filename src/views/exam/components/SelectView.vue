@@ -20,7 +20,7 @@
           </li>
         </ul>
       </div>
-      <div class="correct-answer-box">
+      <div v-if="paperData.publicAnswers" class="correct-answer-box">
         <span class="label">正确答案：</span>
         <span class="value is-correct">{{ getCorrect() }}</span>
       </div>
@@ -50,6 +50,10 @@ export default {
     questionView
   },
   props: {
+    paperData: {
+      type: Object,
+      default: () => ({})
+    },
     isViewResults: {
       type: Boolean,
       default: false

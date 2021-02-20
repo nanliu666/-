@@ -1,6 +1,6 @@
 <template>
   <div class="view-contain-box">
-    <div class="dot-box">
+    <div v-if="paperData.publicAnswers" class="dot-box">
       <div class="dot-content">
         <span class="dot"></span>
         <span>
@@ -14,6 +14,7 @@
         <span class="label">考生答案：</span>
         <span class="value">{{ data.answerUser ? data.answerUser : '考生未作答' }}</span>
       </div>
+      <!-- 不显示的条件是未评卷（result为-1） -->
       <div v-if="_.get(data, 'result', '-1') !== '-1'" class="blank-middle">
         <div>
           <span class="label">评分结果：</span>
@@ -40,6 +41,10 @@
 export default {
   name: 'GapAndShort',
   props: {
+    paperData: {
+      type: Object,
+      default: () => ({})
+    },
     isViewResults: {
       type: Boolean,
       default: false

@@ -80,10 +80,12 @@
         "
         :is-view-results="isViewResults"
         :data="data"
+        :paper-data="paperData"
       />
       <gap-and-short
         v-if="[QUESTION_TYPE_BLANK, QUESTION_TYPE_SHOER].includes(data.type)"
         :is-view-results="isViewResults"
+        :paper-data="paperData"
         :data="data"
       />
     </div>
@@ -126,6 +128,10 @@ export default {
       default: false
     },
     data: {
+      type: Object,
+      default: () => ({})
+    },
+    paperData: {
       type: Object,
       default: () => ({})
     },
