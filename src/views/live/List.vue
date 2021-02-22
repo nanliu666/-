@@ -94,10 +94,10 @@
             <div class="item_live_imgBox " style="cursor: pointer;">
               <img :src="item.coverImageUrl" class="image_live" @click="goDetail(item.liveId)" />
               <span v-show="item.status == 'live'" class="item_live_status">直播中</span>
-              <span v-show="item.status == 'ready'" class="item_live_status" style="color:#00B061">未开始</span>
-              <span v-show="item.status == 'replay'" class="item_live_status" style="color:#FCBA00">直播回放</span>
+              <span v-show="item.status == 'start'" class="item_live_status" style="color:#00B061">未开始</span>
+              <span v-show="item.status == 'end'" class="item_live_status" style="color:#FCBA00">已结束</span>
               <div  @click="goDetail(item.liveId)"
-                v-show="item.status == 'live' || item.status == 'replay'"
+                v-show="item.status == 'live'"
                 class="item_live_playButton"
               >
                 <span  @click="goDetail(item.liveId)" ></span>
@@ -219,10 +219,14 @@ export default {
           id: 'live',
           label: '直播中'
         },
-        {
-          id: 'replay',
-          label: '直播回放'
-        }
+         {
+          id: 'end',
+          label: '已结束'
+         }
+        // {
+        //   id: 'replay',
+        //   label: '直播回放'
+        // }
       ],
       moreLiveTypeButton: false, // 根据分类长度判断是否显示更多按钮
       liveClassification: [], // 获取所有直播分类
