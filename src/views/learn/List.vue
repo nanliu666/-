@@ -333,6 +333,7 @@ export default {
     },
     // 必修/选修切换
     menuActive(menuItem) {
+      this.queryInfo.pageNo = 1
       const type = this.currentFirstType === menuItem.type
       const isShow =
         menuItem.type === 'required' ? this.currentRequiredNav : this.currentElectiveNav
@@ -340,6 +341,7 @@ export default {
     },
     // 子课程切换
     menuLiActive(index) {
+      this.queryInfo.pageNo = 1
       const isShow =
         this.currentFirstType === 'required' ? this.currentRequiredNav : this.currentElectiveNav
       return isShow === index
