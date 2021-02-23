@@ -97,7 +97,7 @@ import {
   addCourseScope,
   saveKnowledgeOperateCredit
 } from '@/api/knowledge'
-import axios from 'axios'
+import { downLoadFile } from '@/util/util'
 export default {
   name: 'KnowledgeDetail',
   components: {
@@ -128,26 +128,7 @@ export default {
       // 保存知识库学分
       saveKnowledgeOperateCredit()
       putDownloadOperate({ knowledgeId: this.$route.query.id })
-      axios
-        .get(
-          data.url,
-          // 将responseType的默认json改为blob
-          {
-            responseType: 'blob',
-            emulateJSON: true
-          }
-        )
-        .then((res) => {
-          let objectUrl = URL.createObjectURL(res.data)
-          const a = document.createElement('a')
-          a.download = data.fileName
-          a.style.display = 'none'
-          a.href = objectUrl
-          document.body.appendChild(a)
-          a.click()
-          a.remove()
-          window.URL.revokeObjectURL(objectUrl)
-        })
+      downLoadFile(data)
     },
     initData() {
       // 保存知识库学分
