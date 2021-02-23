@@ -10,7 +10,7 @@
       <span class="ellipsis"> {{ fileName }}</span>
     </div>
     <div class="handle-box">
-      <span v-if="isDownload" @click.stop="downloadFile(url)"><i class="el-icon-download"></i></span>
+      <span v-if="isDownload" @click.stop="downloadFile($props)"><i class="el-icon-download"></i></span>
       <span @click.stop="handlePreviewImage([url])"><i class="el-icon-view" /></span>
     </div>
   </div>
