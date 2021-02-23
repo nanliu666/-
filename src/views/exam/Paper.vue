@@ -518,6 +518,9 @@ export default {
             showCancelButton: false,
             center: true
           })
+        } else {
+          // 到时可以交卷
+          this.submitFun()
         }
       } else {
         // 未做过早限制，跳转交卷逻辑
