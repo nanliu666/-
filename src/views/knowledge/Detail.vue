@@ -63,7 +63,7 @@
                   v-if="konwledgeDetail.allowDownload === 1"
                   class="el-icon-download"
                   style="margin-left: 10px; cursor: pointer"
-                  @click.stop="downloadFile(item.url)"
+                  @click.stop="downloadFile(item)"
                 ></i>
               </li>
             </ul>
@@ -97,6 +97,7 @@ import {
   addCourseScope,
   saveKnowledgeOperateCredit
 } from '@/api/knowledge'
+import axios from 'axios'
 export default {
   name: 'KnowledgeDetail',
   components: {
@@ -127,7 +128,26 @@ export default {
       // 保存知识库学分
       saveKnowledgeOperateCredit()
       putDownloadOperate({ knowledgeId: this.$route.query.id })
-      window.open(data)
+      axios
+        .get(
+          data.url,
+          // 将responseType的默认json改为blob
+          {
+            responseType: 'blob',
+            emulateJSON: true
+          }
+        )
+        .then((res) => {
+          let objectUrl = URL.createObjectURL(res.data)
+          const a = document.createElement('a')
+          a.download = data.fileName
+          a.style.display = 'none'
+          a.href = objectUrl
+          document.body.appendChild(a)
+          a.click()
+          a.remove()
+          window.URL.revokeObjectURL(objectUrl)
+        })
     },
     initData() {
       // 保存知识库学分
