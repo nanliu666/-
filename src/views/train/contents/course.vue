@@ -107,14 +107,14 @@ export default {
   },
   methods: {
     toDetail(c) {
-      let id
-      if (c.hasOwnProperty('id')) {
-        id = c.id
+      let courseId
+      if (c.hasOwnProperty('courseId')) {
+        courseId = c.courseId
       } else {
-        id = c.course
+        courseId = c.course
       }
       this.$router.push({
-        path: `/course/detail?id=${id}`
+        path: `/course/detail?id=${courseId}`
       })
     },
     getChapterType(type) {
