@@ -9,7 +9,7 @@ class ExamUtils {
       row.status === 4 ||
       row.isPass === 2 ||
       moment(moment(row.examEndTime)).diff(new Date(), 'minutes') < 0 ||
-      (row.status === 3 && row.joinNum && row.joinNumValue >= row.examTimes)
+      (row.status === 3 && row.joinNum && row.joinNumValue === row.examTimes)
     return isJoinDisabled
   }
   // 参加考试前的逻辑判断
