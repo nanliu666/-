@@ -230,6 +230,7 @@ export default {
   },
   data() {
     return {
+      submitLoading: false, // 提交不许重复
       submitTips: '',
       isLeave: false,
       examBeginTime: new Date(),
@@ -285,10 +286,10 @@ export default {
       immediate: true
     }
   },
-  activated() {
+  created() {
     this.initData()
     //阻止F5刷新
-    // this.stopF5Refresh()
+    this.stopF5Refresh()
   },
   beforeRouteLeave(from, to, next) {
     if (this.isLeave || this.isSuccess) {
@@ -465,7 +466,6 @@ export default {
         return target
       }
     },
-    // TODO：考试交卷前校验
     // 检测存疑和未作答的题目，页面滚动到相关题目
     checkSubmit() {
       let noAnswerQuestion = this.getAnswerCount('count')
@@ -518,6 +518,9 @@ export default {
             showCancelButton: false,
             center: true
           })
+        } else {
+          // 到时可以交卷
+          this.submitFun()
         }
       } else {
         // 未做过早限制，跳转交卷逻辑
@@ -552,6 +555,8 @@ export default {
     },
     // 处理交卷动作
     submitFun() {
+      if (this.submitLoading) return
+      this.submitLoading = true
       let questions = this.handleQustions()
       const params = {
         batchId: this.$route.query.batchId,
@@ -570,8 +575,10 @@ export default {
           if (hasOffLineExam) {
             localStorage.removeItem('offLineExam')
           }
+          this.submitLoading = false
         })
         .catch(() => {
+          this.submitLoading = false
           window.console.error(JSON.stringify(params))
         })
     },
@@ -689,28 +696,24 @@ export default {
     },
     //阻止F5刷新
     stopF5Refresh() {
-      document.onkeydown = (e) => {
-        var evt = window.event || e
-        var code = evt.keyCode || evt.which
-        if (code == 116) {
-          if (evt.preventDefault) {
-            evt.preventDefault()
-          } else {
-            evt.keyCode = 0
-            evt.returnValue = false
-          }
-          this.$message.error('考试页面禁止刷新')
-        }
-      }
+      window.addEventListener('keydown', this.preventDefaultFun)
     },
     // 离开重置刷新
-    // TODO: 内部逻辑待补充
     resetF5Refresh() {
-      // console.log('111')
-      // document.removeEventListener('keydown', fn)
-      // function fn(ev) {
-      //   ev.preventDefault()
-      // }
+      window.removeEventListener('keydown', this.preventDefaultFun)
+    },
+    preventDefaultFun(e) {
+      var evt = window.event || e
+      var code = evt.keyCode || evt.which
+      if (code == 116) {
+        if (evt.preventDefault) {
+          evt.preventDefault()
+        } else {
+          evt.keyCode = 0
+          evt.returnValue = false
+        }
+        this.$message.error('考试页面禁止刷新')
+      }
     },
     // TODO: 考试时间交卷逻辑需要补充
     initRemainingTime() {
