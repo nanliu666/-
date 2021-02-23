@@ -208,13 +208,24 @@
                   </div>
                 </div>
                 <el-button
+                  v-if="currentExpandType === 'examList'"
                   size="small"
                   type="primary"
                   plain
-                  :disabled="disabledButton(fileItem)"
-                  @click="downloadOrjion(fileItem)"
+                  :disabled="disabledJoinButton(fileItem)"
+                  @click="joinExam(fileItem)"
                 >
-                  {{ currentExpandType === 'examList' ? '参加' : '下载' }}
+                  参加
+                </el-button>
+                <el-button
+                  v-else
+                  size="small"
+                  type="primary"
+                  plain
+                  :disabled="moment(new Date()).isSameOrAfter(moment(fileItem.downloadDeadline))"
+                  @click="downloadFileFun(fileItem)"
+                >
+                  下载
                 </el-button>
               </li>
               <div
@@ -259,6 +270,8 @@
 import { getRequireCourse, getElectiveCourseList, getStudyCenterMenu } from '@/api/learn'
 import moment from 'moment'
 import CommonEmpty from '@/components/common-empty/Empty'
+import examUtils from '@/views/exam/examUtils'
+import { downLoadFile } from '@/util/util'
 const STATUS = {
   0: {
     text: '全部',
@@ -311,22 +324,31 @@ export default {
     this.loadTableData()
   },
   methods: {
+    moment,
     statusChange() {
       this.loadTableData()
     },
-    // 今天是在截止日期之前就能使用，返回false
-    disabledButton(data) {
-      let date = this.currentExpandType === 'examList' ? data.effectiveTime : data.downloadDeadline
-      return moment(new Date()).isSameOrAfter(moment(date))
+    disabledJoinButton(fileItem) {
+      return examUtils.JoinDisabled(fileItem)
     },
-    downloadOrjion(fileItem) {
-      if (this.currentExpandType === 'examList') {
-        // 去考试
-        this.$router.push({ path: '/exam/paper', query: { id: fileItem.examId } })
-      } else {
-        // 下载
-        window.open(fileItem.fileUrl)
-      }
+    //下载文件
+    downloadFileFun(fileItem) {
+      downLoadFile(fileItem)
+    },
+    // 参加考试
+    joinExam(row) {
+      const { tips, isReNew, isShowConfirm } = examUtils.getJoinExamTips(row)
+      this.$confirm(tips, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        showConfirmButton: isShowConfirm,
+        type: 'warning'
+      }).then(() => {
+        this.$router.push({
+          name: 'ExamPaper',
+          query: { examId: row.examId, batchId: row.batchId, isReNew: isReNew }
+        })
+      })
     },
     statusFilter(status) {
       return STATUS[status]
