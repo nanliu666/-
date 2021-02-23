@@ -16,6 +16,7 @@
             v-for="(chapter, idx) in course.content"
             :key="chapter.id || idx"
             class="chapter-item"
+            @click="toDetail(chapter)"
           >
             <div
               class="tab video"
@@ -62,9 +63,14 @@
             {{ key }}
           </div>
           <ul class="chapter-list">
-            <li v-for="(chapter, index) in val" :key="index" class="o-chapter-item">
+            <li
+              v-for="(chapter, index) in val"
+              :key="index"
+              class="o-chapter-item"
+              @click="toDetail(chapter)"
+            >
               <div class="begin">
-                {{ chapter.todoTime }}&nbsp;&nbsp;&nbsp;&nbsp;{{ chapter.course }}
+                {{ chapter.todoTime }}&nbsp;&nbsp;&nbsp;&nbsp;{{ chapter.courseName }}
               </div>
               <div class="end">
                 讲师：{{ chapter.lecturerName }}&nbsp;&nbsp;地点：{{ chapter.address }}
@@ -100,6 +106,17 @@ export default {
     this.getOfflineList()
   },
   methods: {
+    toDetail(c) {
+      let id
+      if (c.hasOwnProperty('id')) {
+        id = c.id
+      } else {
+        id = c.course
+      }
+      this.$router.push({
+        path: `/course/detail?id=${id}`
+      })
+    },
     getChapterType(type) {
       switch (type) {
         case '1':
@@ -137,6 +154,9 @@ export default {
 .course {
   .course-list {
     .course-item {
+      &:not(last-child) {
+        margin-bottom: 16px;
+      }
       .title {
         border-left: 4px solid rgba(1, 170, 252, 1);
         text-indent: 8px;
@@ -164,8 +184,9 @@ export default {
           border-bottom: 1px solid rgba(235, 236, 237, 1);
           height: 48px;
           line-height: 48px;
-          cursor: default;
+          cursor: pointer;
           .tab {
+            border-radius: 3px;
             border: 1px solid;
             font-size: 10px;
             height: 18px;
@@ -214,7 +235,7 @@ export default {
         .o-chapter-item {
           display: flex;
           align-items: center;
-          cursor: default;
+          cursor: pointer;
           padding: 13px 24px;
           background: #fff;
           font-size: 14px;

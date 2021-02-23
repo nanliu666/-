@@ -46,7 +46,7 @@
         <div class="intro-item">
           培训方式：
           <span class="text">{{
-            data.trainWay === 1 ? '面授' : data.trainWay === 2 ? '混合' : '在线'
+            data.trainWay === 1 ? '在线' : data.trainWay === 2 ? '面授' : '混合'
           }}</span>
         </div>
         <div class="intro-item">
