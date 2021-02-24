@@ -93,9 +93,6 @@
                   onerror="this.classList.add('error');"
                   :alt="item.name || '暂无数据'"
                 />
-                <span class="icon-box">
-                  <i class="el-icon-caret-right" />
-                </span>
               </div>
               <div class="li-right">
                 <div class="content-box">
@@ -113,7 +110,7 @@
                     </div>
                     <div class="content-progress">
                       <span class="progress-title">已完成：</span>
-                      <el-progress class="progress" :percentage="item.progress"></el-progress>
+                      <el-progress class="progress" :percentage="getProgress(item)"></el-progress>
                     </div>
                   </div>
                   <div class="file-button">
@@ -155,14 +152,14 @@
                 </div>
                 <div class="handle-box">
                   <el-button
-                    v-if="item.status !== 3"
+                    v-if="item.status != 3"
                     type="primary"
                     style="margin-left: 10px"
                     size="medium"
-                    :disabled="item.status === 1"
+                    :disabled="item.status == 1"
                     @click="startStudy(item)"
                   >
-                    {{ item.progress === 0 ? '开始学习' : '继续学习' }}
+                    {{ !item.userPeriod ? '开始学习' : '继续学习' }}
                   </el-button>
                 </div>
               </div>
@@ -324,6 +321,18 @@ export default {
     this.loadTableData()
   },
   methods: {
+    getProgress(item) {
+      const { userPeriod = 0, period = 0 } = item
+      if (period === 0) {
+        return 0
+      }
+      var res = userPeriod / 60 / period
+      if (res >= 1) {
+        return 100
+      } else {
+        return res.toFixed(1) * 100
+      }
+    },
     moment,
     statusChange() {
       this.loadTableData()
