@@ -291,5 +291,7 @@ export default {
   display: none;
 }
 .approval_text {
+  white-space: normal;
+  word-break: break-all;
 }
 </style>
