@@ -192,9 +192,9 @@
                     </el-tooltip>
                     <el-tag
                       v-if="currentExpandType === 'examList'"
-                      :type="statusFilter(item.status).type"
+                      :type="examStatusFilter(fileItem.status).type"
                     >
-                      {{ statusFilter(item.status).text }}
+                      {{ examStatusFilter(fileItem.status).text }}
                     </el-tag>
                   </div>
                   <div class="file-time">
@@ -272,6 +272,24 @@ import moment from 'moment'
 import CommonEmpty from '@/components/common-empty/Empty'
 import examUtils from '@/views/exam/examUtils'
 import { downLoadFile } from '@/util/util'
+const EXAM_STATUS_TYPE = {
+  1: {
+    text: '未开考',
+    type: 'success'
+  },
+  2: {
+    text: '未考试',
+    type: 'success'
+  },
+  3: {
+    text: '已考试',
+    type: 'danger'
+  },
+  4: {
+    text: '缺考',
+    type: 'info'
+  }
+}
 const STATUS = {
   0: {
     text: '全部',
@@ -349,6 +367,9 @@ export default {
           query: { examId: row.examId, batchId: row.batchId, isReNew: isReNew }
         })
       })
+    },
+    examStatusFilter(status) {
+      return EXAM_STATUS_TYPE[status]
     },
     statusFilter(status) {
       return STATUS[status]
@@ -665,7 +686,6 @@ export default {
                     margin-right: 8px;
                     max-width: 100px;
                     display: inline-block;
-                    flex: 1;
                   }
                 }
 
