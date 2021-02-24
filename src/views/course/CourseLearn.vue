@@ -268,7 +268,7 @@ export default {
       return regx.test(chapter.content)
     },
     handleChapterClick(chapter) {
-      this.pageIndex -= 1
+      // this.pageIndex -= 1
       this.currentChapter = chapter
     },
     calcProcess(chapter) {

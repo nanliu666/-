@@ -22,7 +22,7 @@ class ExamUtils {
     const lateTimeTips = `你已迟到${lateMinutesText}不得进入参加考试！`
     const isLateTips = `本考试设置了迟到限制，${lateTimeTips}`
     const abnormalYips = '检测到你上次考试退出异常，系统已保留上次退出考试前的信息,可继续进行考试。'
-    let tips = ''
+    let tips = joinTips
     // 第一次参加考试(examTimes=0)或未通过考试(isPass=1)时
     if (row.examTimes === 0 || row.isPass === 1) {
       tips = joinTips
