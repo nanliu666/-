@@ -171,8 +171,8 @@
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col :span="6" :offset="14">
-          <el-pagination
+        <el-col :span="6" :offset="14" v-if="liveList.lenght>0">
+          <el-pagination 
             layout="total,prev,pager,next,sizes,jumper"
             :total="queryData.totalNum"
             :page-size.sync="queryData.pageSize"
@@ -183,6 +183,10 @@
             <span class="pageSizeInput"> <el-input class="pageSizeBorder"></el-input>条/页</span>
           </el-pagination>
         </el-col>
+       <div v-if="liveList.lenght==0 || _.isEmpty(liveList)" style="text-align: center;">
+        <img src="../../assets/images/nodata.png" />
+        <div>暂无数据</div>
+      </div>
       </el-row>
     </div>
   </div>
@@ -557,5 +561,7 @@ export default {
       }
     }
   }
+
+  
 }
 </style>
