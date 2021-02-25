@@ -120,8 +120,12 @@ export default {
     },
     viewDetails(data) {
       // TODO: 待补充类型与跳转路径
+      const livePath = `/live/Detail?id=${_.get(JSON.parse(data.multiCondition), 'liveId')}`
       const TYPE_PATH_MAP = {
-        LiveBroadcastBegin: `/live/Detail?id=${data.bizId}`, // 直播开始通知
+        LiveBroadcastBegin: livePath, // 直播开始通知
+        LiveBroadcastPlanGust: livePath, // 直播计划安排通知: 讲师通知
+        LiveBroadcastPlan: livePath, // 直播计划安排通知: 指定学员观看
+        LiveBroadcastEveryOne: livePath, // 直播计划安排通知: 所有人或通过验证码观看
         LearnCompulsoryNotify: '/learn/list', // 学习必修安排通知
         LearnCompulsoryRemind: '/learn/list', // 学习必修安排提醒
         GrantCertificate: '/my/record', // 证书发放通知
@@ -144,7 +148,7 @@ export default {
         TrainArrange: '/train/index' // 培训安排的通知: 发布培训安排
       }
 
-      this.$router.push({ path: TYPE_PATH_MAP[data.type], query: JSON.parse(data.multiCondition) })
+      this.$router.push({ path: TYPE_PATH_MAP[data.type] })
     },
     handleNoRead() {
       this.searchParams.isRead = 0
