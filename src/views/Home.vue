@@ -25,7 +25,7 @@
         </div>
         <h3 class="LMTitle">
           <span class="span1">最新直播</span>
-          <router-link to="">
+          <router-link :to="{ path: '/live/list' }">
             更多
           </router-link>
         </h3>
