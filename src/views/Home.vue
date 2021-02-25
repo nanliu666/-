@@ -391,7 +391,7 @@ export default {
     },
     async getHotCourse() {
       // 热门课程
-      let res = await queryCourseList({ pageSize: 5, pageNo: 1 })
+      let res = await queryCourseList({ pageSize: 5, pageNo: 1, type: 1 })
       this.hotCourseData = res.data
     },
     async getTrainList() {
