@@ -34,6 +34,9 @@
             </div>
           </el-dropdown-item> -->
               <el-dropdown-item @click.native="toRouter('/my/info')"> 个人信息 </el-dropdown-item>
+              <el-dropdown-item @click.native="toRouter('', 'backstage')">
+                后台管理
+              </el-dropdown-item>
               <el-dropdown-item @click.native="toRouter('/my/info', 1)">
                 修改密码
               </el-dropdown-item>
@@ -91,6 +94,10 @@ export default {
   methods: {
     // 个人中心跳转
     toRouter(data, i) {
+      if (i === 'backstage') {
+        // 跳转到后台管理
+        window.location.href = 'http://139.159.141.248:8081/'
+      }
       this.$router.push({
         path: data,
         query: {
