@@ -138,6 +138,7 @@ export default {
         GetCreditResourceDownloaded: '/my/record', // 学分获得通知: 资源共享被下载十次获得学分
         PassApproval: '/approvalCenter/center', // 审批通过通知: 申请人审批通过
         FlowPass: '/approvalCenter/center', // 审批通过通知: 申请人审批通过
+        FlowReject: '/approvalCenter/center', // 审批通知
         ApprovalNotify: '/approvalCenter/center', // 审批通知: 有新的审批代办
         FlowWaitApprove: '/approvalCenter/center', // 审批通知: 有新的审批代办
         ApprovalReturn: '/approvalCenter/center', // 审批退回通知: 申请人审批被退回
