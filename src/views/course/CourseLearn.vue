@@ -205,6 +205,7 @@ export default {
     this.loadCourseDetail()
     this.loadChapters()
     this.loadNoteList()
+    this.isFirst = true
     this.setTimer()
   },
   beforeRouteLeave(from, to, next) {
@@ -312,7 +313,12 @@ export default {
       })
     },
     submitLearnRecords() {
-      let params = { period: 5, courseId: this.courseId }
+      let period = 5
+      if (this.isFirst) {
+        period = 0
+        this.isFirst = false
+      }
+      let params = { period, courseId: this.courseId }
       params.contentRecords = _.map(
         this.chapters,
         (chapter) => `${chapter.contentId}:${chapter.progress}`
