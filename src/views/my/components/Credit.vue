@@ -232,6 +232,9 @@ export default {
   watch: {
     searchInput: function() {
       this.getInfo()
+    },
+    sysRuleSource: function() {
+      this.getInfo()
     }
   },
   created() {
