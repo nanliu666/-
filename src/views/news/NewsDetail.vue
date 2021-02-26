@@ -208,7 +208,7 @@ export default {
       }
     }
     .info {
-      opacity: 0.65;
+      //opacity: 0.65;
       font-family: PingFangSC-Regular;
       font-size: 14px;
       color: #000b15;
