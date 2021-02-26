@@ -37,7 +37,7 @@
             <!-- 如果当前选中的id等于父级id则高亮全部，或在最顶级分类无任何选中时高亮，面包屑导航数组中最后一个则为当前分类的父级分类并且存有id -->
             <span
               :class="
-                queryData.liveType_select ==  
+                queryData.liveType_select ==
                   (navigation.length > 0 ? navigation[navigation.length - 1].children.idStr : '')
                   ? 'active_type'
                   : ''
@@ -89,18 +89,26 @@
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col v-for="(item, index) in liveList" :key="index" :span="6" type="flex"  justify="start" class="grid-content cursorDiv">
+        <el-col
+          v-for="(item, index) in liveList"
+          :key="index"
+          :span="6"
+          type="flex"
+          justify="start"
+          class="grid-content cursorDiv"
+        >
           <el-card :body-style="{ padding: '0px' }">
             <div class="item_live_imgBox " style="cursor: pointer;">
               <img :src="item.coverImageUrl" class="image_live" @click="goDetail(item.liveId)" />
               <span v-show="item.status == 'live'" class="item_live_status">直播中</span>
               <span v-show="item.status == 'start'" class="item_live_status" style="color:#00B061">未开始</span>
               <span v-show="item.status == 'end'" class="item_live_status" style="color:#FCBA00">已结束</span>
-              <div  @click="goDetail(item.liveId)"
+              <div
                 v-show="item.status == 'live'"
                 class="item_live_playButton"
+                @click="goDetail(item.liveId)"
               >
-                <span  @click="goDetail(item.liveId)" ></span>
+                <span @click="goDetail(item.liveId)"></span>
               </div>
               <span v-show="item.status == 'live'" class="item_live_userNumber"><i class="el-icon-user"></i> {{ item.viewersNumber }}</span>
             </div>
@@ -135,12 +143,12 @@
                   <span>
                     {{ item.planTime[0].split('~')[0].split(' ')[1] }} ~
                     {{ item.planTime[0].split('~')[1].split(' ')[1] }}</span>
-                </p>  
-                 <p v-else   class="department"   style="padding: 10px 14px;height: 96px;" >
-                   <span>
-                     &nbsp;
-                   </span>
-                 </p>
+                </p>
+                <p v-else class="department" style="padding: 10px 14px;height: 96px;">
+                  <span>
+                    &nbsp;
+                  </span>
+                </p>
 
                 <div slot="content">
                   <div v-if="item.batchDeclare == 'plural' || item.batchDeclare == 'single'">
@@ -171,8 +179,8 @@
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col :span="6" :offset="14" v-if="liveList.lenght>0">
-          <el-pagination 
+        <el-col v-if="liveList.lenght > 0" :span="6" :offset="14">
+          <el-pagination
             layout="total,prev,pager,next,sizes,jumper"
             :total="queryData.totalNum"
             :page-size.sync="queryData.pageSize"
@@ -183,10 +191,10 @@
             <span class="pageSizeInput"> <el-input class="pageSizeBorder"></el-input>条/页</span>
           </el-pagination>
         </el-col>
-       <div v-if="liveList.lenght==0 || _.isEmpty(liveList)" style="text-align: center;">
-        <img src="../../assets/images/nodata.png" />
-        <div>暂无数据</div>
-      </div>
+        <div v-if="liveList.lenght == 0 || _.isEmpty(liveList)" style="text-align: center;">
+          <img src="../../assets/images/nodata.png" />
+          <div>暂无数据</div>
+        </div>
       </el-row>
     </div>
   </div>
@@ -223,10 +231,10 @@ export default {
           id: 'live',
           label: '直播中'
         },
-         {
+        {
           id: 'end',
           label: '已结束'
-         }
+        }
         // {
         //   id: 'replay',
         //   label: '直播回放'
@@ -268,14 +276,13 @@ export default {
     // 获取直播分类
 
     getcategoryTree({
-      source: 'live',
+      source: 'live'
     }).then((res) => {
-      res.forEach(element => {
-        if(element.status===1){
+      res.forEach((element) => {
+        if (element.status === 1) {
           this.liveClassification.push(element)
-        } 
-      });
-      
+        }
+      })
     })
 
     // 默认获取我的直播任务,如果为空隐藏该tabs
@@ -482,9 +489,8 @@ export default {
         padding: 5px 8px;
         border-radius: 3px;
         color: #01aafc;
-      
       }
-      
+
       .item_live_playButton {
         position: absolute;
         width: 48px;
@@ -525,13 +531,12 @@ export default {
       margin: 0 0 15px 0;
       font-size: 14px;
     }
-    
-    .showText{
+
+    .showText {
       width: 250px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-     
     }
 
     .department {
@@ -561,7 +566,5 @@ export default {
       }
     }
   }
-
-  
 }
 </style>
