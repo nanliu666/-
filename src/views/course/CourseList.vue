@@ -20,7 +20,7 @@
               讲师
             </div>
             <lazy-select
-              v-model="extraParams.tearchId"
+              v-model="extraParams.teacherId"
               :load="loadTeacher"
               style="width: 100%"
               placeholder="请选择"
@@ -162,7 +162,7 @@ export default {
         choice: '1'
       },
       extraParams: {
-        tearchId: null
+        teacherId: null
       },
       pageNo: 1,
       totalNum: 0,
@@ -206,7 +206,7 @@ export default {
     }, 300),
     resetExtraParams() {
       this.extraParams = {
-        tearchId: null
+        teacherId: null
       }
       this.refreshData()
     },
