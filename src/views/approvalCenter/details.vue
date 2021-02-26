@@ -495,9 +495,10 @@ export default {
       target.prevId = origin.prevId
       target.properties = origin.properties
       // 或签不copy userlist
-      if (target.nodeType !== 'or') {
-        target.userList = origin.userList
-      }
+      // 或签显示userList(2021.2.25  与测试确认)
+      // if (target.nodeType !== 'or') {
+      target.userList = origin.userList
+      // }
       target.pos = pos
     },
     tagNode(record, nodeList) {
