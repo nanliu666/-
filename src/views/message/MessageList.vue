@@ -23,8 +23,8 @@
           <li
             v-for="item in listData"
             :key="item.id"
-            class="flex flex-flow flex-items"
-            @click="handleAllRead({ id: item.id })"
+            class="flex flex-flow flex-items list__li"
+            @click="viewDetails(item)"
           >
             <div class="image">
               <i class="el-icon-s-comment icon"></i>
@@ -37,12 +37,7 @@
               <div>
                 <div class="text">
                   {{ item.content }}
-                  <el-button
-                    v-if="hasView(item.type)"
-                    size="mini"
-                    type="text"
-                    @click="viewDetails(item)"
-                  >
+                  <el-button v-if="hasView(item.type)" size="mini" type="text">
                     查看详情
                   </el-button>
                 </div>
@@ -119,36 +114,40 @@ export default {
       }
     },
     viewDetails(data) {
-      // TODO: 待补充类型与跳转路径
-      const livePath = `/live/Detail?id=${_.get(JSON.parse(data.multiCondition), 'liveId')}`
-      const TYPE_PATH_MAP = {
-        LiveBroadcastBegin: livePath, // 直播开始通知
-        LiveBroadcastPlanGust: livePath, // 直播计划安排通知: 讲师通知
-        LiveBroadcastPlan: livePath, // 直播计划安排通知: 指定学员观看
-        LiveBroadcastEveryOne: livePath, // 直播计划安排通知: 所有人或通过验证码观看
-        LearnCompulsoryNotify: '/learn/list', // 学习必修安排通知
-        LearnCompulsoryRemind: '/learn/list', // 学习必修安排提醒
-        GrantCertificate: '/my/record', // 证书发放通知
-        GetCreditCompleteCourse: '/my/record', // 学分获得通知: 完成课程获得学分
-        GetCreditCompleteExam: '/my/record', // 学分获得通知: 完成考试获得学分
-        GetCreditCompleteTrain: '/my/record', // 学分获得通知: 完成培训获得学分
-        GetCreditEverydaySignIn: '/my/record', // 学分获得通知: 完成每日登录获得学分
-        GetCreditOnlineLearning: '/my/record', // 学分获得通知: 在线学习时长超过15分钟获得学分
-        GetCreditLearningArticles: '/my/record', // 学分获得通知: 知识库学习一篇文章/视频获得学分
-        GetCreditResourceDownloaded: '/my/record', // 学分获得通知: 资源共享被下载十次获得学分
-        PassApproval: '/approvalCenter/center', // 审批通过通知: 申请人审批通过
-        ApprovalNotify: '/approvalCenter/center', // 审批通知: 有新的审批代办
-        FlowWaitApprove: '/approvalCenter/center', // 审批通知: 有新的审批代办
-        ApprovalReturn: '/approvalCenter/center', // 审批退回通知: 申请人审批被退回
-        ExamAchievement: '/approvalCenter/center', // 考试成绩通知: 发布考试成绩
-        ExamNotify: '/exam/list', // 考试通知: 考试发布
-        ExamRemind: '/exam/list', // 考试提醒: 开考前N分钟
-        CourseLearning: '/course/list', // 课程学习的通知: 发布课程安排
-        CourseRemind: '/course/list', // 课程学习提醒: 课程开始前N分钟
-        TrainArrange: '/train/index' // 培训安排的通知: 发布培训安排
+      // 先已读
+      this.handleAllRead({ id: data.id })
+      //TODO: 为什么要判断？因为第一版的点击只做了已读操作。怀疑有的消息是单纯通知，无对应页面跳转。
+      if (data.type) {
+        // TODO: 待补充类型与跳转路径
+        const livePath = `/live/Detail?id=${_.get(JSON.parse(data.multiCondition), 'liveId')}`
+        const TYPE_PATH_MAP = {
+          LiveBroadcastBegin: livePath, // 直播开始通知
+          LiveBroadcastPlanGust: livePath, // 直播计划安排通知: 讲师通知
+          LiveBroadcastPlan: livePath, // 直播计划安排通知: 指定学员观看
+          LiveBroadcastEveryOne: livePath, // 直播计划安排通知: 所有人或通过验证码观看
+          LearnCompulsoryNotify: '/learn/list', // 学习必修安排通知
+          LearnCompulsoryRemind: '/learn/list', // 学习必修安排提醒
+          GrantCertificate: '/my/record', // 证书发放通知
+          GetCreditCompleteCourse: '/my/record', // 学分获得通知: 完成课程获得学分
+          GetCreditCompleteExam: '/my/record', // 学分获得通知: 完成考试获得学分
+          GetCreditCompleteTrain: '/my/record', // 学分获得通知: 完成培训获得学分
+          GetCreditEverydaySignIn: '/my/record', // 学分获得通知: 完成每日登录获得学分
+          GetCreditOnlineLearning: '/my/record', // 学分获得通知: 在线学习时长超过15分钟获得学分
+          GetCreditLearningArticles: '/my/record', // 学分获得通知: 知识库学习一篇文章/视频获得学分
+          GetCreditResourceDownloaded: '/my/record', // 学分获得通知: 资源共享被下载十次获得学分
+          PassApproval: '/approvalCenter/center', // 审批通过通知: 申请人审批通过
+          ApprovalNotify: '/approvalCenter/center', // 审批通知: 有新的审批代办
+          FlowWaitApprove: '/approvalCenter/center', // 审批通知: 有新的审批代办
+          ApprovalReturn: '/approvalCenter/center', // 审批退回通知: 申请人审批被退回
+          ExamAchievement: '/approvalCenter/center', // 考试成绩通知: 发布考试成绩
+          ExamNotify: '/exam/list', // 考试通知: 考试发布
+          ExamRemind: '/exam/list', // 考试提醒: 开考前N分钟
+          CourseLearning: '/course/list', // 课程学习的通知: 发布课程安排
+          CourseRemind: '/course/list', // 课程学习提醒: 课程开始前N分钟
+          TrainArrange: '/train/index' // 培训安排的通知: 发布培训安排
+        }
+        this.$router.push({ path: TYPE_PATH_MAP[data.type] })
       }
-
-      this.$router.push({ path: TYPE_PATH_MAP[data.type] })
     },
     handleNoRead() {
       this.searchParams.isRead = 0
@@ -232,6 +231,9 @@ export default {
   padding-top: 0px;
   .content {
     margin-left: 8px;
+  }
+  .list__li {
+    cursor: pointer;
   }
   li {
     border-top: 1px solid #ebeced;
