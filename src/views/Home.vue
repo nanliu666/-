@@ -32,7 +32,7 @@
         <div class="LModule">
           <div class="LModule2">
             <div v-for="item in myLiveData" :key="item.liveId" class="homeCourse">
-              <router-link :to="{ path: '/live/Detail', query: { id: id } }">
+              <router-link :to="{ path: '/live/Detail', query: { id: liveId } }">
                 <div class="homeCourseImg">
                   <img
                     :src="item.coverImageUrl ? item.coverImageUrl : '/img/autoL.png'"
