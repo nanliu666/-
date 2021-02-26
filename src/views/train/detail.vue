@@ -46,7 +46,7 @@
         <div class="intro-item">
           培训方式：
           <span class="text">{{
-            data.trainWay === 1 ? '面授' : data.trainWay === 2 ? '混合' : '在线'
+            data.trainWay === 1 ? '在线' : data.trainWay === 2 ? '面授' : '混合'
           }}</span>
         </div>
         <div class="intro-item">
@@ -145,6 +145,10 @@ export default {
       if (!Object.keys(params).length) {
         this.data = JSON.parse(localStorage.getItem(trainDataKey))
         this.activeComponent = this.data.activeComponent
+
+        if (this.data.status !== 2) {
+          this.data.tabs.splice(this.data.tabs.indexOf('Rate'), 1)
+        }
       } else {
         const { trainId, userType } = params
         const tabs =
@@ -157,6 +161,9 @@ export default {
           this.data = Object.assign(this.data, res)
           this.data.userType = userType
           localStorage.setItem(trainDataKey, JSON.stringify(this.data))
+          if (this.data.status !== 2) {
+            this.data.tabs.splice(this.data.tabs.indexOf('Rate'), 1)
+          }
           this.$forceUpdate()
         })
       }

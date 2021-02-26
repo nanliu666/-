@@ -138,6 +138,8 @@ export default {
           PassApproval: '/approvalCenter/center', // 审批通过通知: 申请人审批通过
           ApprovalNotify: '/approvalCenter/center', // 审批通知: 有新的审批代办
           FlowWaitApprove: '/approvalCenter/center', // 审批通知: 有新的审批代办
+          FlowPass: '/approvalCenter/center', // 审批通过通知: 申请人审批通过
+          FlowReject: '/approvalCenter/center', // 审批通知
           ApprovalReturn: '/approvalCenter/center', // 审批退回通知: 申请人审批被退回
           ExamAchievement: '/approvalCenter/center', // 考试成绩通知: 发布考试成绩
           ExamNotify: '/exam/list', // 考试通知: 考试发布

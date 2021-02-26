@@ -7,7 +7,7 @@
       </div>
     </div>
     <div class="banner">
-      <el-carousel :interval="5000" height="600px" arrow="always">
+      <el-carousel :interval="5000" height="536px" arrow="always">
         <el-carousel-item v-for="item in banner" :key="item.id">
           <div class="b_item" :style="item.css"></div>
         </el-carousel-item>
@@ -25,7 +25,7 @@
         </div>
         <h3 class="LMTitle">
           <span class="span1">最新直播</span>
-          <router-link to="">
+          <router-link :to="{ path: '/live/list' }">
             更多
           </router-link>
         </h3>
@@ -391,7 +391,7 @@ export default {
     },
     async getHotCourse() {
       // 热门课程
-      let res = await queryCourseList({ pageSize: 5, pageNo: 1 })
+      let res = await queryCourseList({ pageSize: 5, pageNo: 1, type: 1 })
       this.hotCourseData = res.data
     },
     async getTrainList() {
@@ -414,19 +414,19 @@ export default {
   color: #000b15;
   background: rgb(251, 250, 250);
 }
-.homeMenu {
-  position: absolute;
-  width: 100%;
-}
-.homeMenu2 {
-  position: relative;
-  z-index: 100;
-}
-/deep/ .homeMenu2 .header {
-  background: none;
-}
+// .homeMenu {
+//   position: absolute;
+//   width: 100%;
+// }
+// .homeMenu2 {
+//   position: relative;
+//   z-index: 100;
+// }
+// /deep/ .homeMenu2 .header {
+//   background: none;
+// }
 .banner {
-  height: 600px;
+  height: 536px;
 }
 /deep/ .banner .el-carousel__arrow {
   border-radius: 4px;
@@ -441,7 +441,7 @@ export default {
   margin-left: -2px;
 }
 .banner .b_item {
-  height: 600px;
+  height: 536px;
   background-position: center 0;
 }
 .homeMain {
