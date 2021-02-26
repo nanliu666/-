@@ -176,10 +176,10 @@
       </el-form>
       <div v-if="!isFished && !isPreview" class="cancel-btn-box">
         <el-button
-          v-if="!isFished  && isApplyUser"
+          v-if="!isFished && isApplyUser"
           type="primary"
           size="medium"
-          :disabled="!hasCancel?true:false"
+          :disabled="!hasCancel ? true : false"
           @click="handleCancelClick"
         >
           撤回
@@ -191,12 +191,7 @@
           :enterable="false"
           placement="top"
         >
-          <el-button
-
-            type="primary"
-            size="medium"
-            @click="handelConfirm('Reject')"
-          >
+          <el-button type="primary" size="medium" @click="handelConfirm('Reject')">
             拒绝
           </el-button>
         </el-tooltip>
@@ -207,7 +202,7 @@
           :enterable="false"
           placement="top"
         >
-          <el-button  type="primary" size="medium" @click="handelConfirm('Pass')">
+          <el-button type="primary" size="medium" @click="handelConfirm('Pass')">
             同意
           </el-button>
         </el-tooltip>
