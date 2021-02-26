@@ -98,8 +98,6 @@ export default {
     //       callback(new Error('该邮箱已存在'))
     //     })
     // }
-
-    'aa.bb@qq.com'
     return {
       imgdata: [],
       dialogVisible: false,
