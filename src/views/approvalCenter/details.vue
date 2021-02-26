@@ -67,11 +67,11 @@
                 </div>
                 <ul>
                   <li>
-                    <span class="text">讲师：</span> <span> {{ courseData.teacherId }} </span>
+                    <span class="text">讲师：</span> <span> {{ courseData.teacherName }} </span>
                   </li>
                   <li>
                     <span class="text">所在分类：</span>
-                    <span> {{ courseData.catalogId }} </span>
+                    <span> {{ courseData.catalogName }} </span>
                   </li>
                   <li>
                     <span class="text">课程类型：</span>
@@ -102,9 +102,9 @@
                   <li>
                     <span class="text">选修类型：</span>
                     <span>
-                      <span v-show="courseData.electiveType == 1">在线课程</span>
-                      <span v-show="courseData.electiveType == 2">面授课程</span>
-                      <span v-show="courseData.electiveType == 3">直播课程</span>
+                      <span v-show="courseData.electiveType == 1">开放选修</span>
+                      <span v-show="courseData.electiveType == 2">通过审批</span>
+                      <span v-show="courseData.electiveType == 3">禁止选修</span>
                     </span>
                   </li>
                 </ul>
@@ -243,7 +243,7 @@ import {
 } from '@/api/approvalCenter'
 import moment from 'moment'
 import 'moment/locale/zh-cn'
-import { getCourseDetail, getTeacherList } from '@/api/course'
+import { getCourseDetail } from '@/api/course'
 moment.locale('zh-cn')
 
 // 审批状态
@@ -386,11 +386,11 @@ export default {
       res.thinkContent = _.unescape(res.thinkContent)
       this.courseData = res
       // 讲师
-      getTeacherList({ currentPage: 1, size: 9999 }).then((teacherRes) => {
-        teacherRes.teacherInfos.map((item) => {
-          if (this.courseData.teacherId == item.user_id_str) this.courseData.teacherId = item.name
-        })
-      })
+      // getTeacherList({ currentPage: 1, size: 9999 }).then((teacherRes) => {
+      //   teacherRes.teacherInfos.map((item) => {
+      //     if (this.courseData.teacherId == item.user_id_str) this.courseData.teacherId = item.name
+      //   })
+      // })
     },
     //递归实现
     //@leafId  查找的id，

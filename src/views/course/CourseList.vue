@@ -129,7 +129,7 @@
 </template>
 
 <script>
-import { getCategories, getCourseList, getTeacherList } from '@/api/course'
+import { getCategories, getCourseList, listForegroundTeacherComboBox } from '@/api/course'
 import CategorySelect from './components/CategorySelect'
 import LazySelect from '@/components/lazy-select/LazySelect.vue'
 import { COURSE_TYPE_MAP } from './config'
@@ -225,15 +225,15 @@ export default {
     loadCategory({ id }) {
       return getCategories({ id })
     },
-    loadTeacher(params) {
+    loadTeacher() {
       return new Promise((resolve, reject) => {
-        getTeacherList({
-          currentPage: params.pageNo,
-          size: params.pageSize,
-          likeQuery: params.search
+        listForegroundTeacherComboBox({
+          // currentPage: params.pageNo,
+          // size: params.pageSize,
+          // likeQuery: params.search
         })
           .then((res) => {
-            resolve({ data: res.teacherInfos })
+            resolve({ data: res })
           })
           .catch(reject)
       })

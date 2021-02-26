@@ -94,3 +94,8 @@ export const addViewLog = (params) => post('/manage/v1/study/plan/course/addLog'
  * 热门课程
  */
 export const queryCourseList = (params) => get('/manage/v1/web/index/queryCourseList', params)
+/**
+ * 前台课程中心讲师列表下拉框
+ */
+export const listForegroundTeacherComboBox = (params) =>
+  get('/manage/v1/web/course/listForegroundTeacherComboBox', params)
