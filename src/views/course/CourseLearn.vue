@@ -91,7 +91,7 @@
           <i v-else class="iconimage_icon_Doublerightarrow iconfont"></i>
         </div>
         <div
-          style="font-size: 24px;font-weight: 700;padding-left:40px;padding-top:20px"
+         class="detailTitel"
           v-html="_.unescape(_.unescape(currentChapter.localName))"
         ></div>
         <!-- 文章类型 -->
@@ -600,6 +600,13 @@ export default {
           height: 100%;
         }
       }
+
+       .detailTitel{
+         font-size: 20px;
+         font-weight: 700;
+         padding-left:40px;
+         padding-top:20px
+       }
     }
   }
 }
