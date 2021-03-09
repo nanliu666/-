@@ -8,9 +8,9 @@
   >
     <div>
       <div class="flex flex-justify-between">
-        <span class="noreading"> 未读消息（{{ count || 0 }}） </span>
+        <span class="noreading"> 未读消息（{{ unreadCount || 0 }}） </span>
         <span class="reading">
-          <el-button size="mini" :disabled="!count" @click="handleAllRead">全部已读</el-button>
+          <el-button size="mini" :disabled="!unreadCount" @click="handleAllRead">全部已读</el-button>
         </span>
       </div>
       <div class="content">
@@ -32,7 +32,7 @@
         查看更多消息
       </div>
     </div>
-    <el-badge slot="reference" :hidden="!count" :value="count" class="notify-icon">
+    <el-badge slot="reference" :hidden="!unreadCount" :value="unreadCount" class="notify-icon">
       <div class="iconimage_icon_notice iconfont message"></div>
     </el-badge>
   </el-popover>
@@ -44,10 +44,10 @@ import { postMsgNotify, postMsgNotifyCount, getMsgNotify } from '@/api/messgeCen
 export default {
   name: 'Notification',
   data() {
-    return { notifyList: [], count: 0, timer: null }
+    return { notifyList: [], timer: null }
   },
   computed: {
-    ...mapGetters(['userId'])
+    ...mapGetters(['unreadCount', 'userId'])
   },
   mounted() {
     this.update()
@@ -91,7 +91,7 @@ export default {
       postMsgNotifyCount({
         userId: this.userId
       }).then((data) => {
-        this.count = data.unreadCount
+        this.$store.commit('SET_UN_READ_COUNT', data.unreadCount)
       })
     },
     getNotifyList() {

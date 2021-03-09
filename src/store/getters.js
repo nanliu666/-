@@ -1,5 +1,6 @@
 const getters = {
   userInfo: (state) => state.user.userInfo,
+  unreadCount: (state) => state.user.unreadCount,
   userId: (state) => state.user.userInfo.user_id,
   companyId: (state) => state.user.userInfo.company_id,
   token: (state) => state.user.token,
