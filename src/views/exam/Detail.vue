@@ -191,7 +191,7 @@ export default {
     QUESTION_TYPE_MAP: () => QUESTION_TYPE_MAP,
     QUESTION_TYPE_GROUP: () => QUESTION_TYPE_GROUP
   },
-  created() {
+  activated() {
     this.initData()
   },
   methods: {
