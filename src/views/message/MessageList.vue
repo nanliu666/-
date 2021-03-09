@@ -119,12 +119,11 @@ export default {
       //TODO: 为什么要判断？因为第一版的点击只做了已读操作。怀疑有的消息是单纯通知，无对应页面跳转。
       if (data.type) {
         // TODO: 待补充类型与跳转路径
-        const livePath = `/live/Detail?id=${_.get(JSON.parse(data.multiCondition), 'liveId')}`
         const TYPE_PATH_MAP = {
-          LiveBroadcastBegin: livePath, // 直播开始通知
-          LiveBroadcastPlanGust: livePath, // 直播计划安排通知: 讲师通知
-          LiveBroadcastPlan: livePath, // 直播计划安排通知: 指定学员观看
-          LiveBroadcastEveryOne: livePath, // 直播计划安排通知: 所有人或通过验证码观看
+          LiveBroadcastBegin: '/live/list', // 直播开始通知
+          LiveBroadcastPlanGust: '/live/list', // 直播计划安排通知: 讲师通知
+          LiveBroadcastPlan: '/live/list', // 直播计划安排通知: 指定学员观看
+          LiveBroadcastEveryOne: '/live/list', // 直播计划安排通知: 所有人或通过验证码观看
           LearnCompulsoryNotify: '/learn/list', // 学习必修安排通知
           LearnCompulsoryRemind: '/learn/list', // 学习必修安排提醒
           GrantCertificate: '/my/record', // 证书发放通知
