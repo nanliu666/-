@@ -63,7 +63,7 @@
               :disabled="studentButtonDisabled"
               @click.native="watchLiveFun"
             >
-              {{ studentButtonText }}
+              观看直播
             </el-button>
             <el-button v-if="!isStudent" type="primary" size="medium" @click.native="beginLiveFn">
               <span v-if="detailData.status === 'live'">继续直播</span>
@@ -131,11 +131,6 @@ const STATUS_MAP = {
   start: '未开始',
   end: '已结束'
 }
-const STUDENT_BUTTON_TEXT = {
-  live: '观看直播',
-  start: '直播未开始',
-  end: '直播已结束'
-}
 export default {
   provide() {
     return {
@@ -154,8 +149,6 @@ export default {
   },
   data() {
     return {
-      studentButtonText: STUDENT_BUTTON_TEXT.live,
-      studentButtonDisabled: false,
       isStudent: true,
       statusMap: STATUS_MAP,
       activeIndex: '1',
@@ -174,9 +167,6 @@ export default {
     const params = { liveId: this.id }
     getLiveDetail(params).then((res) => {
       this.detailData = res
-      // 获取学生的按钮文字以及置灰
-      this.studentButtonDisabled = this.detailData.status !== 'live'
-      this.studentButtonText = STUDENT_BUTTON_TEXT[this.detailData.status]
     })
     getUserRole(params).then((res) => {
       //Trainee为学员 否则为讲师
