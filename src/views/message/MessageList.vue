@@ -76,12 +76,11 @@
 
 <script>
 import { getMsgNotify, postMsgNotify, postMsgNotifyCount } from '@/api/messgeCenter'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'MessageCenter',
   data() {
     return {
-      unreadCount: 0,
       page: {
         currentPage: 1,
         pageSize: 10,
@@ -94,6 +93,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['unreadCount']),
     ...mapState({
       newsCount: (state) => state.user.newsCount
     })
@@ -185,7 +185,7 @@ export default {
       postMsgNotifyCount({
         userId: this.$store.getters.userId
       }).then((data) => {
-        this.unreadCount = data.unreadCount
+        this.$store.commit('SET_UN_READ_COUNT', data.unreadCount)
       })
     },
     handleSizeChange(data) {

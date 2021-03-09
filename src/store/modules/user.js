@@ -8,6 +8,7 @@ import md5 from 'js-md5'
 const user = {
   state: {
     tenantId: getStore({ name: 'tenantId' }) || '',
+    unreadCount: '',
     tenantContent: getStore({ name: 'tenantContent' }) || '',
     userInfo: getStore({ name: 'userInfo' }) || {},
     privileges: getStore({ name: 'privileges' }) || [],
@@ -161,6 +162,9 @@ const user = {
       setToken(token)
       state.token = token
       setStore({ name: 'token', content: state.token })
+    },
+    SET_UN_READ_COUNT: (state, unreadCount) => {
+      state.unreadCount = unreadCount
     },
     SET_REFRESH_TOKEN: (state, refreshToken) => {
       setRefreshToken(refreshToken)
