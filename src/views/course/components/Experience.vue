@@ -32,7 +32,7 @@
           <el-button type="text" @click="delItem(scope.$index)">
             删除
           </el-button>
-          <a :href="scope.row.fileUrl" download style="color:#01aafc;"> 下载 </a>
+          <a style="color:#01aafc;" @click="downLoadImg(scope.row)"> 下载 </a>
         </template>
       </el-table-column>
     </el-table>
@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import { downLoadFile } from '@/util/util'
 // import { courseFeelListByUserId } from '@/api/course/course'
 export default {
   components: {
@@ -61,6 +62,10 @@ export default {
   //     this.getInfo()
   //   },
   methods: {
+    downLoadImg(data) {
+      // 下载
+      downLoadFile(data)
+    },
     delItem(i) {
       this.tableData.splice(i, 1)
     },
