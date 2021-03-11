@@ -75,13 +75,26 @@ export default {
             console.error('upload err:', err)
           }
         },
+        // 格式化时间
+        formatData() {
+          let date = new Date()
+          let year = date.getFullYear() //获取当前年份
+          let mon = date.getMonth() + 1 //获取当前月份
+          let da = date.getDate() //获取当前日
+          let h = date.getHours() //获取小时
+          let m = date.getMinutes() //获取分钟
+          let s = date.getSeconds() //获取秒
+          return year + '/' + mon + '/' + da + ' ' + h + ':' + m + ':' + s
+        },
         complete({ url, fileName }) {
           that.uploading = false
           let newFile = {
             fileUrl: url,
             url: url, // 新增url字段，为与移动端上传回显一致
             fileName,
-            localName: file.file.name
+            localName: file.file.name,
+            fileSize: (file.file.size / 1024).toFixed(1), //文件大小，保留小数点后一位，KB单位
+            updateTime: this.formatData() //上传时间
           }
           let newValue = [...that.value, newFile]
           that.$emit('input', newValue)

@@ -44,6 +44,9 @@
     </div>
     <div class="course-detail--card course-detail__detail">
       <el-tabs v-model="activeName">
+        <!-- <el-tab-pane :name="activeName" :label="ref[activeName]" lazy>
+          <component :is="activeName"></component>
+        </el-tab-pane> -->
         <el-tab-pane label="课程信息" name="first">
           <div v-show="courseData.introduction" v-html="_.unescape(courseData.introduction)" />
         </el-tab-pane>
@@ -78,6 +81,9 @@
             </li>
           </ul>
         </el-tab-pane>
+        <el-tab-pane label="学习心得" name="experience">
+          <experience :course-name="courseData.name" />
+        </el-tab-pane>
         <el-tab-pane label="课程评价" name="third">
           <Comment :load="loadCommentList" :submit="submitComment" name="课程" />
         </el-tab-pane>
@@ -99,9 +105,10 @@ import {
 import Comment from '@/components/common-comment/Comment'
 import { COURSE_CHAPTER_TYPE_MAP, COURSE_TYPE_MAP } from './config'
 import { mapGetters } from 'vuex'
+import Experience from './components/Experience'
 export default {
   name: 'CourseDetail',
-  components: { CommonBreadcrumb, Comment },
+  components: { CommonBreadcrumb, Comment, Experience },
   data() {
     return {
       activeName: 'first',

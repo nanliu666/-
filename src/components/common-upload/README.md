@@ -34,7 +34,9 @@ js
           {
             fileUrl:"",//文件url
             fileName:"",// 文件名
-            localName:"" // 原始文件名
+            localName:"", // 原始文件名
+            fileSize:"" //文件大小
+            updateTime：""//上传时间
           }
         ]
       }
