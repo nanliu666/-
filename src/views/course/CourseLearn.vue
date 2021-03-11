@@ -91,7 +91,8 @@
           <i v-else class="iconimage_icon_Doublerightarrow iconfont"></i>
         </div>
         <div
-         class="detailTitel"
+          v-if="currentChapter.type != '4'"
+          class="detailTitel"
           v-html="_.unescape(_.unescape(currentChapter.localName))"
         ></div>
         <!-- 文章类型 -->
@@ -135,9 +136,7 @@
         </div>
         <!--考试-->
         <div v-if="currentChapter.type == '4'" class="content--test">
-          <el-button type="primary" size="medium">
-            前往考试
-          </el-button>
+          <Task :task-data="currentChapter" />
         </div>
       </div>
     </div>
@@ -154,10 +153,12 @@ import {
   updateLearnRecord
 } from '@/api/course'
 import { COURSE_CHAPTER_TYPE_MAP } from './config'
+import Task from './components/Task'
 const axios = require('axios/index')
 
 export default {
   name: 'CourseLearn',
+  components: { Task },
   data() {
     return {
       timer: null,
@@ -395,7 +396,7 @@ export default {
         })
     },
     goBack() {
-      this.$router.go(this.pageIndex)
+      this.$router.go(-1)
     }
   }
 }
@@ -601,12 +602,12 @@ export default {
         }
       }
 
-       .detailTitel{
-         font-size: 20px;
-         font-weight: 700;
-         padding-left:40px;
-         padding-top:20px
-       }
+      .detailTitel {
+        font-size: 20px;
+        font-weight: 700;
+        padding-left: 40px;
+        padding-top: 20px;
+      }
     }
   }
 }
