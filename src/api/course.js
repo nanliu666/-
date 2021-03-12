@@ -99,3 +99,9 @@ export const queryCourseList = (params) => get('/manage/v1/web/index/queryCourse
  */
 export const listForegroundTeacherComboBox = (params) =>
   get('/manage/v1/web/course/listForegroundTeacherComboBox', params)
+/**
+ * 查询课程作业
+ * @param {String} params.courseId 课程ID
+ * @param {String} params.userId 学员ID
+ */
+export const taskInfo = (params) => get('/manage/v1/web/coursecenter/coursework/info', params)
