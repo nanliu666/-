@@ -138,6 +138,13 @@
         <div v-if="currentChapter.type == '4'" class="content--test">
           <Task :task-data="currentChapter" />
         </div>
+
+        <!-- 课前思考 -->
+        <div
+          v-if="currentChapter.type == '5'"
+          class="content--richtext"
+          v-html="_.unescape(_.unescape(currentChapter.content))"
+        ></div>
       </div>
     </div>
   </div>
@@ -227,8 +234,8 @@ export default {
       if (!this.isChapterVideo(chapter) || !chapter.duration) {
         return
       }
-      let progress = Number(((this.$refs.video.currentTime / chapter.duration) * 100).toFixed())
-      chapter.progress = progress > chapter.progress ? progress : chapter.progress
+      // let progress = Number(((this.$refs.video.currentTime / chapter.duration) * 100).toFixed())
+      // chapter.progress = progress > chapter.progress ? progress : chapter.progress
     },
     getFileImageUrl(url = '') {
       const fileDict = {
@@ -397,6 +404,7 @@ export default {
     },
     goBack() {
       this.$router.go(-1)
+      // this.$router.push({ path: '/course/detail' })
     }
   }
 }

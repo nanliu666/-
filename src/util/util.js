@@ -6,7 +6,7 @@ import axios from 'axios'
  * @param {string} html
  */
 export const downLoadFile = (data) => {
-  const url = data.url || data.fileUrl
+  const url = data.url || data.fileUrl || data.filePath
   axios
     .get(
       url,
