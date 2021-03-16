@@ -4,7 +4,7 @@
     width="336"
     trigger="hover"
     popper-class="notification-pop"
-    @show="getNotifyList()"
+    @show="update()"
   >
     <div>
       <div class="flex flex-justify-between">
@@ -96,11 +96,9 @@ export default {
     },
     getNotifyList() {
       const params = { userId: this.userId, isRead: 0, pageSize: 5, pageNo: 1 }
-      getMsgNotify(params)
-        .then((res) => {
-          this.notifyList = res.data
-        })
-        .catch()
+      getMsgNotify(params).then((res) => {
+        this.notifyList = res.data
+      })
     }
   }
 }
