@@ -37,13 +37,6 @@
     <el-card class="bottom-card" style="min-height:50vh">
       <el-tabs v-model="activeIndex" @tab-click="handleSelect">
         <el-tab-pane label="资源介绍" name="1">
-          <div
-            v-show="konwledgeDetail.introduction"
-            v-html="_.unescape(konwledgeDetail.introduction)"
-          />
-          <common-empty v-show="!konwledgeDetail.introduction" />
-        </el-tab-pane>
-        <el-tab-pane label="附件" name="2">
           <div v-if="!_.isEmpty(fileGroup)">
             <div class="image-ul">
               <div v-for="(item, index) in fileGroup.true" :key="index">
@@ -68,7 +61,32 @@
               </li>
             </ul>
           </div>
-          <common-empty v-if="_.isEmpty(fileGroup)" />
+          <div style="margin-bottom: 20px">
+            <li class="detail-li">
+              <span class="li-label">资源地址：</span>
+              <span class="li-value">
+                <span>{{ konwledgeDetail.resUrl }}</span>
+                <el-button
+                  v-clipboard:copy="konwledgeDetail.resUrl"
+                  v-clipboard:success="onCopy"
+                  style="margin-left: 10px"
+                  type="primary"
+                  size="small"
+                >
+                  复制链接
+                </el-button>
+              </span>
+            </li>
+          </div>
+          <div
+            v-show="konwledgeDetail.introduction"
+            v-html="_.unescape(konwledgeDetail.introduction)"
+          />
+          <common-empty
+            v-show="
+              !konwledgeDetail.introduction && !konwledgeDetail.resUrl && _.isEmpty(fileGroup)
+            "
+          />
         </el-tab-pane>
         <el-tab-pane label="评论" name="3">
           <Comment
@@ -123,6 +141,10 @@ export default {
     this.initData()
   },
   methods: {
+    // 复制链接
+    onCopy() {
+      this.$message.success('您已成功复制二维码链接')
+    },
     // 下载
     downloadFile(data) {
       // 保存知识库学分
@@ -178,6 +200,20 @@ export default {
   display: flex;
   align-items: center;
 }
+.detail-li {
+  font-family: PingFangSC-Regular;
+  margin-right: 40px;
+  display: flex;
+  align-items: center;
+  .li-label {
+    font-size: 14px;
+    color: rgba(0, 11, 21, 0.45);
+  }
+  .li-value {
+    font-size: 14px;
+    color: rgba(0, 11, 21, 0.85);
+  }
+}
 .middle-card {
   .card-title {
     font-family: PingFangSC-Medium;
@@ -189,20 +225,6 @@ export default {
     display: flex;
     justify-content: flex-start;
     margin-bottom: 18px;
-    .detail-li {
-      font-family: PingFangSC-Regular;
-      margin-right: 40px;
-      display: flex;
-      align-items: center;
-      .li-label {
-        font-size: 14px;
-        color: rgba(0, 11, 21, 0.45);
-      }
-      .li-value {
-        font-size: 14px;
-        color: rgba(0, 11, 21, 0.85);
-      }
-    }
   }
 
   .person {

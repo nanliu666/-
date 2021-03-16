@@ -98,7 +98,15 @@ export default {
       newsCount: (state) => state.user.newsCount
     })
   },
-  mounted() {
+  watch: {
+    unreadCount: {
+      handler() {
+        this.getData()
+      },
+      deep: true
+    }
+  },
+  activated() {
     if (this.$route.query.id) {
       this.handleAllRead({ id: this.$route.query.id })
     } else {
