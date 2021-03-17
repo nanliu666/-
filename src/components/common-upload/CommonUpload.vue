@@ -84,7 +84,7 @@ export default {
           let h = date.getHours() //获取小时
           let m = date.getMinutes() //获取分钟
           let s = date.getSeconds() //获取秒
-          return year + '/' + mon + '/' + da + ' ' + h + ':' + m + ':' + s
+          return year + '-' + mon + '-' + da + ' ' + h + ':' + m + ':' + s
         },
         complete({ url, fileName }) {
           that.uploading = false
