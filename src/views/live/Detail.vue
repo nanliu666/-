@@ -160,6 +160,54 @@ export default {
   activated() {
     const params = { liveId: this.id }
     getLiveDetail(params).then((res) => {
+      // 重组数据，将数据组合成低保需要的格式
+      const sortRules = {
+        '': 3,
+        Lecturer: 0, //主讲师
+        Assistant: 1, // 助教
+        Guest: 2 // 嘉宾
+      }
+      const { loginInfo } = res
+      let temp = []
+      _.chain(loginInfo)
+        .groupBy('roleName')
+        .forIn((value, key) => {
+          _.each(value, (item, index) => {
+            switch (key) {
+              case 'Lecturer':
+                _.set(item, 'showUserName', '主讲师')
+                break
+              case 'Assistant':
+                _.set(
+                  item,
+                  'showUserName',
+                  `${item.userName}（助教${_.size(value) > 1 ? `${index + 1}` : ''}）`
+                )
+                break
+              case 'Guest':
+                _.set(
+                  item,
+                  'showUserName',
+                  `${item.userName}（嘉宾${_.size(value) > 1 ? `${index + 1}` : ''}）`
+                )
+                break
+              default:
+                _.set(
+                  item,
+                  'showUserName',
+                  `${item.userName}（身份缺失${_.size(value) > 1 ? `${index + 1}` : ''}）`
+                )
+                break
+            }
+          })
+          temp.push(value)
+        })
+        .value()
+      const tempArray = _.flatten(temp)
+      tempArray.sort(function(a, b) {
+        return sortRules[a.roleName] - sortRules[b.roleName]
+      })
+      res.loginInfo = tempArray
       this.detailData = res
     })
     getUserRole(params).then((res) => {
