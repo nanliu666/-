@@ -81,7 +81,7 @@
             </li>
           </ul>
         </el-tab-pane>
-        <el-tab-pane label="学习心得" name="experience">
+        <el-tab-pane key="experience" label="学习心得" name="experience">
           <experience :course-name="courseData.name" />
         </el-tab-pane>
         <el-tab-pane label="课程评价" name="third">
