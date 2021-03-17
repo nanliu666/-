@@ -102,7 +102,7 @@
               <img :src="item.coverImageUrl" class="image_live" @click="goDetail(item.liveId)" />
               <span v-show="item.status == 'live'" class="item_live_status">直播中</span>
               <!-- <span v-show="item.status == 'start'" class="item_live_status" style="color:#00B061">未开始</span> -->
-              <span v-show="item.status == 'end'" class="item_live_status" style="color:#FCBA00">已结束</span>
+              <span v-show="item.status == 'end'" class="item_live_status" style="color:#FCBA00">未开始</span>
               <div
                 v-show="item.status == 'live'"
                 class="item_live_playButton"
@@ -233,7 +233,7 @@ export default {
         },
         {
           id: 'end',
-          label: '已结束'
+          label: '未开始'
         }
         // {
         //   id: 'replay',

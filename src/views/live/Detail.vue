@@ -123,7 +123,7 @@ import vueQr from 'vue-qr'
 const STATUS_MAP = {
   live: '直播中',
   // start: '未开始',
-  end: '已结束'
+  end: '未开始'
 }
 export default {
   provide() {
