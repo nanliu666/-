@@ -56,13 +56,7 @@
                 </div>
               </div>
             </div>
-            <el-button
-              v-if="isStudent"
-              type="primary"
-              size="medium"
-              :disabled="studentButtonDisabled"
-              @click.native="watchLiveFun"
-            >
+            <el-button v-if="isStudent" type="primary" size="medium" @click.native="watchLiveFun">
               观看直播
             </el-button>
             <el-button v-if="!isStudent" type="primary" size="medium" @click.native="beginLiveFn">
@@ -128,8 +122,8 @@ import LiveStatistics from './components/LiveStatistics'
 import vueQr from 'vue-qr'
 const STATUS_MAP = {
   live: '直播中',
-  start: '未开始',
-  end: '已结束'
+  // start: '未开始',
+  end: '未开始'
 }
 export default {
   provide() {
