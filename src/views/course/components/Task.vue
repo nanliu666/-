@@ -36,7 +36,12 @@
             {{ infoData[2] ? infoData[2].fileName : '未上传' }}
           </div>
         </div>
-        <el-button class="task_content_title" type="primary" @click="downLoadImg(infoData[2])">立即下载</el-button>
+        <el-button
+          class="task_content_title"
+          type="primary"
+          :disabled="!infoData[2]"
+          @click="downLoadImg(infoData[2])"
+        >立即下载</el-button>
       </div>
     </div>
   </div>
