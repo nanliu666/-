@@ -50,7 +50,7 @@
                     </ul>
                   </span>
                 </div>
-                <div v-if="(isLecturer || isAssistant) && detailData.liveDate" class="content">
+                <div v-if="!isTrainee && detailData.liveDate" class="content">
                   <span class="label">直播日期：</span>
                   <span class="value">{{ detailData.liveDate }}</span>
                 </div>
@@ -59,12 +59,7 @@
             <el-button v-if="isTrainee" type="primary" size="medium" @click.native="watchLiveFun">
               观看直播
             </el-button>
-            <el-button
-              v-if="isLecturer || isAssistant"
-              type="primary"
-              size="medium"
-              @click.native="beginLiveFn"
-            >
+            <el-button v-if="!isTrainee" type="primary" size="medium" @click.native="beginLiveFn">
               <span v-if="detailData.status === 'live'">继续直播</span>
               <span v-else>开始直播</span>
             </el-button>
@@ -152,15 +147,6 @@ export default {
   computed: {
     isTrainee() {
       return this.roleName === 'Trainee'
-    },
-    isLecturer() {
-      return this.roleName === 'Lecturer'
-    },
-    isAssistant() {
-      return this.roleName === 'Assistant'
-    },
-    isGuest() {
-      return this.roleName === 'Guest'
     },
     watchLiveLink() {
       return `${location.origin}/#/WatchLive?wId=${this.detailData.channelId}`
