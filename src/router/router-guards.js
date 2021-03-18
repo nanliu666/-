@@ -3,6 +3,9 @@ import { getToken } from '@/util/auth'
 
 export default function(router) {
   router.beforeEach((to, from, next) => {
+    if (to.query.tid) {
+      isToken(to.query.tid, next)
+    }
     const meta = to.meta || {}
     if (getToken()) {
       if (to.path === '/login') {
@@ -30,5 +33,12 @@ export default function(router) {
   router.afterEach((route) => {
     //动态设置浏览器标题
     document.title = _.get(route, 'meta.title', '')
+  })
+}
+function isToken(tid, next) {
+  store.dispatch('tokeLogin', tid).then((res) => {
+    if (res.account) {
+      next({ path: '/' })
+    }
   })
 }

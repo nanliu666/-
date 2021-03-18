@@ -2,7 +2,14 @@ import { setToken, setRefreshToken, removeToken, removeRefreshToken } from '@/ut
 import { Message } from 'element-ui'
 import { setStore, getStore } from '@/util/store'
 import { filterTree, flatTree, sortTree } from '@/util/util'
-import { loginByUsername, getUserInfo, logout, refreshToken, getUserPrivilege } from '@/api/user'
+import {
+  loginByUsername,
+  getUserInfo,
+  logout,
+  refreshToken,
+  getUserPrivilege,
+  userDetailByToken
+} from '@/api/user'
 import md5 from 'js-md5'
 
 const user = {
@@ -47,6 +54,24 @@ const user = {
               commit('DEL_ALL_TAG')
               commit('CLEAR_LOCK')
             }
+            resolve(res)
+          })
+          .catch((error) => {
+            reject(error)
+          })
+      })
+    },
+    // token登录
+    tokeLogin({ commit }, token) {
+      return new Promise((resolve, reject) => {
+        userDetailByToken({ accessToken: token })
+          .then((res) => {
+            commit('SET_TOKEN', token)
+            // commit('SET_REFRESH_TOKEN', res.refresh_token)
+            commit('SET_TENANT_ID', res.tenant_id)
+            commit('SET_USER_INFO', res)
+            commit('DEL_ALL_TAG')
+            commit('CLEAR_LOCK')
             resolve(res)
           })
           .catch((error) => {
