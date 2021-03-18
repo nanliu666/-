@@ -50,16 +50,21 @@
                     </ul>
                   </span>
                 </div>
-                <div v-if="!isStudent && detailData.liveDate" class="content">
+                <div v-if="(isLecturer || isAssistant) && detailData.liveDate" class="content">
                   <span class="label">直播日期：</span>
                   <span class="value">{{ detailData.liveDate }}</span>
                 </div>
               </div>
             </div>
-            <el-button v-if="isStudent" type="primary" size="medium" @click.native="watchLiveFun">
+            <el-button v-if="isTrainee" type="primary" size="medium" @click.native="watchLiveFun">
               观看直播
             </el-button>
-            <el-button v-if="!isStudent" type="primary" size="medium" @click.native="beginLiveFn">
+            <el-button
+              v-if="isLecturer || isAssistant"
+              type="primary"
+              size="medium"
+              @click.native="beginLiveFn"
+            >
               <span v-if="detailData.status === 'live'">继续直播</span>
               <span v-else>开始直播</span>
             </el-button>
@@ -86,10 +91,10 @@
     </el-card>
     <el-card class="live__main">
       <el-tabs v-model="activeIndex" @tab-click="handleSelect">
-        <el-tab-pane v-if="!isStudent" label="直播信息" name="1">
+        <el-tab-pane v-if="!isTrainee" label="直播信息" name="1">
           <live-info :data="detailData" />
         </el-tab-pane>
-        <el-tab-pane v-if="!isStudent" label="数据统计" name="2">
+        <el-tab-pane v-if="!isTrainee" label="数据统计" name="2">
           <live-statistics :live-plan-id="detailData.livePlanId + ''" />
         </el-tab-pane>
         <el-tab-pane label="直播详情" name="3">
@@ -101,7 +106,7 @@
         <el-tab-pane label="直播评论" name="5">
           <Comment
             :load="loadCommentList"
-            :has-handle="isStudent"
+            :has-handle="isTrainee"
             :submit="submitComment"
             name="直播"
           />
@@ -126,11 +131,6 @@ const STATUS_MAP = {
   end: '未开始'
 }
 export default {
-  provide() {
-    return {
-      isStudent: this.isStudent
-    }
-  },
   name: 'LiveDetail',
   components: {
     Comment,
@@ -143,13 +143,25 @@ export default {
   },
   data() {
     return {
-      isStudent: true,
+      roleName: '',
       statusMap: STATUS_MAP,
       activeIndex: '1',
       detailData: {}
     }
   },
   computed: {
+    isTrainee() {
+      return this.roleName === 'Trainee'
+    },
+    isLecturer() {
+      return this.roleName === 'Lecturer'
+    },
+    isAssistant() {
+      return this.roleName === 'Assistant'
+    },
+    isGuest() {
+      return this.roleName === 'Guest'
+    },
     watchLiveLink() {
       return `${location.origin}/#/WatchLive?wId=${this.detailData.channelId}`
     },
@@ -211,14 +223,14 @@ export default {
       this.detailData = res
     })
     getUserRole(params).then((res) => {
-      //Trainee为学员 否则为讲师
-      this.isStudent = res.roleName === 'Trainee'
+      const { roleName } = res
+      this.roleName = roleName
       this.activeIndex = res.roleName === 'Trainee' ? '3' : '1'
     })
   },
   methods: {
     playFun() {
-      if (this.isStudent) {
+      if (this.isTrainee) {
         this.watchLiveFun()
       } else {
         this.beginLiveFn()
@@ -245,7 +257,7 @@ export default {
       // 开播
       this.$router.push({
         path: '/beginLive',
-        query: { beginId: this.detailData.channelId }
+        query: { beginId: this.detailData.channelId, roleName: this.roleName }
       })
     },
     onCopy() {

@@ -50,7 +50,6 @@
 
 <script>
 export default {
-  inject: ['isStudent'],
   name: 'LiveParticulars',
   props: {
     data: {
