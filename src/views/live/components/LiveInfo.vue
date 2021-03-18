@@ -7,7 +7,7 @@
       <ul class="content__box">
         <li v-for="item in data.loginInfo" :key="item.id" class="box__li">
           <div class="content__title">
-            {{ item.roleName === 'Lecturer' ? '主讲师' : item.userName }}
+            {{ item.showUserName }}
           </div>
           <ul class="content__list">
             <li class="content__li">
