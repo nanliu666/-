@@ -83,6 +83,7 @@
         </el-tab-pane>
         <el-tab-pane label="学习心得" name="experience">
           <experience :course-name="courseData.name" />
+          <!-- 引入下载模块 -->
         </el-tab-pane>
         <el-tab-pane label="课程评价" name="third">
           <Comment :load="loadCommentList" :submit="submitComment" name="课程" />
