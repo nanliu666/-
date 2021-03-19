@@ -75,13 +75,13 @@ export default {
       let params = {
         userId: this.userId, // 默认值    学员ID
         courseId: this.$route.query.id, // 默认值    课程id
-        fileSize: newVal[0].fileSize, // 默认值    文件大小
-        fileName: newVal[0].localName, // 默认值    文件名称，包括扩展名
-        filePath: newVal[0].fileUrl, // 默认值    文件所在路径
+        fileSize: newVal[newVal.length - 1].fileSize, // 默认值    文件大小
+        fileName: newVal[newVal.length - 1].localName, // 默认值    文件名称，包括扩展名
+        filePath: newVal[newVal.length - 1].fileUrl, // 默认值    文件所在路径
         creatorId: this.$route.query.id, // 默认值    创建人id
-        createTime: newVal[0].updateTime, // 默认值    创建时间
+        createTime: newVal[newVal.length - 1].updateTime, // 默认值    创建时间
         updateId: this.$route.query.id, // 默认值    最后修改人
-        updateTime: newVal[0].updateTime // 默认值    最后修改时间
+        updateTime: newVal[newVal.length - 1].updateTime // 默认值    最后修改时间
       }
       saveExperience(params).then(() => {
         this.getInfo()
