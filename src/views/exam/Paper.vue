@@ -185,7 +185,7 @@
     >
       <span>{{ submitTips }}</span>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="automaticSubmit">{{ confirmTips }}</el-button>
+        <el-button type="primary" :disabled="true">{{ confirmTips }}</el-button>
       </span>
     </el-dialog>
   </div>
@@ -230,6 +230,7 @@ export default {
   },
   data() {
     return {
+      isAutoEnd: false,
       submitLoading: false, // 提交不许重复
       submitTips: '',
       isLeave: false,
@@ -345,13 +346,16 @@ export default {
         }
         // 切屏触发自动交卷
         document.addEventListener('visibilitychange', () => {
-          this.changeAutoEndExam()
+          if (document.visibilityState === 'visible') {
+            this.changeAutoEndExam()
+          }
         })
       }
     },
     changeAutoEndExam() {
-      if (!this.isSuccess) {
+      if (!this.isSuccess && !this.isAutoEnd) {
         this.submitTips = '系统检测到您切换屏幕，系统将自动提交答卷'
+        this.isAutoEnd = true
         this.autoEndExam()
       }
     },
@@ -584,7 +588,7 @@ export default {
     },
     // 考试到时，自动交卷(自动交卷跳过校验逻辑)
     automaticSubmit() {
-      this.centerDialogVisible = false
+      this.isAutoEnd = false
       this.submitTips = '考试时间已结束，系统将自动提交答卷'
       this.submitFun()
     },
@@ -756,10 +760,10 @@ export default {
     // 考试到时结束考试
     autoEndExam() {
       let timeTips = 4
-      const timeId = setInterval(async () => {
+      const autoEndExamTimeId = setInterval(async () => {
         timeTips -= 1
         if (timeTips === 0) {
-          clearInterval(timeId)
+          clearInterval(autoEndExamTimeId)
           await this.automaticSubmit()
           this.centerDialogVisible = false
         } else {

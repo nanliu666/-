@@ -157,7 +157,7 @@
                     style="margin-left: 10px"
                     size="medium"
                     :disabled="item.status == 1"
-                    @click="startStudy(item)"
+                    @click="startStudyPlay(item)"
                   >
                     {{ !item.userPeriod ? '开始学习' : '继续学习' }}
                   </el-button>
@@ -420,6 +420,9 @@ export default {
       }
     },
     startStudy(data) {
+      this.$router.push({ path: '/course/detail', query: { id: data.id } })
+    },
+    startStudyPlay(data) {
       this.$router.push({ path: '/course/learn', query: { courseId: data.id } })
     },
     // 切换必修/选修

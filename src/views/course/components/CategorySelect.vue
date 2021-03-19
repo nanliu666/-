@@ -26,6 +26,7 @@
         分类：
       </span>
       <ul>
+        <li @click="handleCategoryClick({ name: '全部', id: '' })">全部</li>
         <li v-for="item in categoryList" :key="item[valueKey]" @click="handleCategoryClick(item)">
           {{ item[labelKey] }}
         </li>

@@ -1,10 +1,10 @@
 <template>
   <div class="courseTask">
     <el-table :data="tableData" style="width: 100%">
-      <el-table-column :label="`${courseName}学习心得`" prop="name" width="480px">
+      <el-table-column :label="`${titleName || ''}学习心得`" prop="name" width="480px">
         <template slot-scope="scope">
           <div>
-            <span> {{ scope.row.localName }} </span>
+            <span> {{ scope.row.fileName }} </span>
           </div>
         </template>
       </el-table-column>
@@ -17,22 +17,32 @@
       </el-table-column>
       <el-table-column label="" prop="updateTime"> </el-table-column>
       <el-table-column align="right">
-        <template slot="header">
-          <!-- <el-button type="text">
-            上传心得
-          </el-button> -->
-
-          <common-upload v-model="uploadData" :before-upload="beforeUpload" :multiple="false">
-            <el-button type="text">
-              上传心得
-            </el-button>
-          </common-upload>
+        <template #header>
+          <div>
+            <div v-if="btnShow" :key="'length5'">
+              <common-upload v-model="uploadData" :before-upload="beforeUpload" :multiple="false">
+                <el-button type="text">
+                  上传心得
+                </el-button>
+              </common-upload>
+            </div>
+            <div v-else :key="'length4'">
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="上传的学习心得不可超过5份!"
+                placement="top"
+              >
+                <span style="cursor:not-allowed;"> 上传心得</span>
+              </el-tooltip>
+            </div>
+          </div>
         </template>
         <template slot-scope="scope">
-          <el-button type="text" @click="delItem(scope.$index)">
+          <el-button type="text" @click="delItem(scope.row.id)">
             删除
           </el-button>
-          <a style="color:#01aafc;" @click="downLoadImg(scope.row)"> 下载 </a>
+          <a style="color:#01aafc; cursor:pointer;" @click="downLoadInfo(scope.row)"> 下载 </a>
         </template>
       </el-table-column>
     </el-table>
@@ -41,8 +51,12 @@
 
 <script>
 import { downLoadFile } from '@/util/util'
-// import { courseFeelListByUserId } from '@/api/course/course'
+import { queryExperience, saveExperience, removeExperience } from '@/api/course'
+import { mapGetters } from 'vuex'
 export default {
+  computed: {
+    ...mapGetters(['userId'])
+  },
   components: {
     CommonUpload: () => import('@/components/common-upload/CommonUpload')
   },
@@ -50,24 +64,53 @@ export default {
   data() {
     return {
       tableData: [],
-      uploadData: [{}]
+      uploadData: [],
+      btnShow: true,
+      titleName: this.courseName
     }
   },
   watch: {
     uploadData(newVal) {
-      this.tableData.push(newVal[1])
+      //   this.tableData.push(newVal[0])
+      let params = {
+        userId: this.userId, // 默认值    学员ID
+        courseId: this.$route.query.id, // 默认值    课程id
+        fileSize: newVal[newVal.length - 1].fileSize, // 默认值    文件大小
+        fileName: newVal[newVal.length - 1].localName, // 默认值    文件名称，包括扩展名
+        filePath: newVal[newVal.length - 1].fileUrl, // 默认值    文件所在路径
+        creatorId: this.$route.query.id, // 默认值    创建人id
+        createTime: newVal[newVal.length - 1].updateTime, // 默认值    创建时间
+        updateId: this.$route.query.id, // 默认值    最后修改人
+        updateTime: newVal[newVal.length - 1].updateTime // 默认值    最后修改时间
+      }
+      saveExperience(params).then(() => {
+        this.getInfo()
+      })
+    },
+    tableData(val) {
+      if (!val) return
+      if (val.length >= 5) {
+        this.btnShow = false
+      } else {
+        this.btnShow = true
+      }
+    },
+    courseName(val) {
+      this.titleName = val
     }
   },
-  //   activated() {
-  //     this.getInfo()
-  //   },
+  created() {
+    this.getInfo()
+  },
   methods: {
-    downLoadImg(data) {
+    downLoadInfo(data) {
       // 下载
       downLoadFile(data)
     },
     delItem(i) {
-      this.tableData.splice(i, 1)
+      removeExperience({ id: i }).then(() => {
+        this.getInfo()
+      })
     },
     beforeUpload(file) {
       const isLt20M = file.size / 1024 / 1024 < 20
@@ -78,9 +121,9 @@ export default {
       return true
     },
     async getInfo() {
-      //   let params = { courseId: this.$route.query.courseId, stuId: this.$route.query.row.stuId }
-      //   let res = await courseFeelListByUserId(params)
-      //   this.tableData = res
+      let params = { courseId: this.$route.query.id, userId: this.userId }
+      let res = await queryExperience(params)
+      this.tableData = res.courseFeelUserFileVOS
     }
   }
 }

@@ -14,6 +14,7 @@
           width="412"
           trigger="click"
           popper-class="course-list-filter-pop"
+          @hide="delExtraParams"
         >
           <div class="course-list-filter-pop__wrap">
             <div class="course-list-filter-pop__label">
@@ -204,6 +205,11 @@ export default {
       this.pageNo = 1
       this.loadCourseList()
     }, 300),
+    delExtraParams() {
+      this.extraParams = {
+        teacherId: null
+      }
+    },
     resetExtraParams() {
       this.extraParams = {
         teacherId: null
