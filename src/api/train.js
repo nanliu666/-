@@ -140,3 +140,11 @@ export function saveFile(data) {
     data
   })
 }
+// 删除培训上报材料
+export function deleteSubmitFile(params) {
+  return request({
+    url: 'api/manage/v1/trainsubmitfile/deleteSubmitFile',
+    method: 'get',
+    params
+  })
+}
