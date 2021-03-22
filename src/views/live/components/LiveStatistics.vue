@@ -190,7 +190,8 @@ export default {
     }
   },
   watch: {
-    livePlanId() {
+    livePlanId(val) {
+      this.getData2params.livePlanId = val
       this.getData()
     },
     getData2Date(val) {
@@ -226,9 +227,8 @@ export default {
       getAudience(this.getData2params)
         .then((res) => {
           this.tableData = res.data
-          this.tableLoading = false
         })
-        .catch(() => {
+        .finally(() => {
           this.tableLoading = false
         })
     },

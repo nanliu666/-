@@ -85,6 +85,15 @@
           <span class="text"></span>
         </div>
       </div>
+      <el-row v-if="data.applyJoin" class="state_info">
+        <el-button
+          v-if="data.applyJoinStatus === 'NotRegistered' && isApplyJoin"
+          type="primary"
+          @click="handleSign"
+        >立即报名</el-button>
+        <el-button v-if="data.applyJoinStatus === 'SignedUp'" type="success">已报名</el-button>
+        <el-button v-if="data.applyJoinStatus === 'UnderReview'" type="info">审核中</el-button>
+      </el-row>
     </div>
 
     <div class="train-main">
@@ -100,33 +109,42 @@
 </template>
 
 <script>
-import { Course, Exam, Rate, Intro, Schedule, Trainee } from './contents'
-import { getDetail } from 'src/api/train'
+// import { Course, Exam, Rate, Intro, Schedule, Trainee, Arrangement, MaterialsUpload } from './contents'
+import { Exam, Rate, Intro, Schedule, Trainee, Arrangement, MaterialsUpload } from './contents'
+import { getDetail, signUp, getTrainState } from 'src/api/train'
 import globalKey from 'src/config/website'
+import moment from 'moment'
 export default {
   name: 'TrainDetail',
   components: {
-    Course,
     Exam,
     Rate,
     Intro,
     Schedule,
-    Trainee
+    Trainee,
+    Arrangement,
+    MaterialsUpload
   },
   data() {
     return {
       reference: {
-        Course: '培训目录',
         Exam: '培训考试',
         Intro: '培训详情',
         Rate: '培训评分',
         Trainee: '学员概况',
-        Schedule: '培训安排'
+        Schedule: '培训安排',
+        Arrangement: '培训安排',
+        MaterialsUpload: '培训上报材料'
       },
       data: {},
-      activeComponent: ''
+      registrationStatus: '',
+      activeComponent: '',
+      isApplyJoin: false
     }
   },
+  // created() {
+  //   this.getData()
+  // },
   activated() {
     this.getData()
   },
@@ -139,7 +157,7 @@ export default {
       this.data.activeComponent = tab.name
       localStorage.setItem(globalKey.trainDataKey, JSON.stringify(this.data))
     },
-    getData() {
+    async getData() {
       const params = this.$route.params
       const trainDataKey = globalKey.trainDataKey
       if (!Object.keys(params).length) {
@@ -151,13 +169,25 @@ export default {
         }
       } else {
         const { trainId, userType } = params
-        const tabs =
-          userType === 0
-            ? ['Course', 'Exam', 'Intro', 'Rate']
-            : ['Trainee', 'Schedule', 'Intro', 'Rate']
+        await this.getTrainState(trainId)
+        let tabs = []
+        if (userType === 0) {
+          // if (this.registrationStatus == 'NotRegistered') {
+          //   tabs = ['Intro']
+          // } else {
+          //   tabs = ['Arrangement', 'Exam', 'Intro', 'Rate', 'MaterialsUpload']
+          // }
+          tabs = ['Arrangement', 'Exam', 'Intro', 'Rate', 'MaterialsUpload']
+        } else {
+          tabs = ['Trainee', 'Schedule', 'Intro', 'Rate']
+        }
+        // const tabs =
+        //   userType === 0
+        //     ? ['Course', 'Exam', 'Intro', 'Rate']
+        //     : ['Trainee', 'Schedule', 'Intro', 'Rate']
         this.activeComponent = tabs[0]
         this.data = { tabs, activeComponent: this.activeComponent, ...params }
-        getDetail({ trainId }).then((res) => {
+        await getDetail({ trainId }).then((res) => {
           this.data = Object.assign(this.data, res)
           this.data.userType = userType
           localStorage.setItem(trainDataKey, JSON.stringify(this.data))
@@ -165,8 +195,27 @@ export default {
             this.data.tabs.splice(this.data.tabs.indexOf('Rate'), 1)
           }
           this.$forceUpdate()
+          if (this.data.applyJoinStatus == 'NotRegistered' && userType === 0) {
+          }
+          if (new Date(moment().format('yyyy-MM-DD')) >= new Date(this.data.applyJoinEndDate)) {
+            this.isApplyJoin = true
+          }
         })
       }
+    },
+    handleSign() {
+      // 处理立即报名
+      const trainId = this.data.id
+      signUp({ trainId }).then((res) => {
+        if (res) {
+          this.data.applyJoinStatus = 'UnderReview'
+        }
+      })
+    },
+    async getTrainState(trainId) {
+      await getTrainState({ trainId }).then((res) => {
+        this.registrationStatus = res.status
+      })
     }
   }
 }
@@ -182,6 +231,11 @@ export default {
 
 <style lang="scss" scoped>
 .train-detail {
+  .state_info {
+    .el-button {
+      padding: 8px 18px;
+    }
+  }
   .breadcrumb-wrap {
     margin: 24px 0 16px;
   }
