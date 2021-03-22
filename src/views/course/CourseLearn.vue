@@ -111,6 +111,7 @@
             :src="currentChapter.content"
             :height="contentHeight"
             :width="contentWidth"
+            style="width:100%;"
           ></video>
           <iframe
             v-else
@@ -140,11 +141,12 @@
         </div>
 
         <!-- 课前思考 -->
-        <div
-          v-if="currentChapter.type == '5'"
-          class="content--richtext"
-          v-html="_.unescape(_.unescape(currentChapter.content))"
-        ></div>
+        <div v-if="currentChapter.type == '5'" class="content--richtext">
+          <div
+            style="overflow-y:auto;"
+            v-html="_.unescape(_.unescape(currentChapter.content))"
+          ></div>
+        </div>
       </div>
     </div>
   </div>
@@ -589,6 +591,8 @@ export default {
       .content {
         &--richtext {
           padding: 40px;
+          overflow-y: auto;
+          height: 100%;
         }
         &--test {
           margin: 40px;

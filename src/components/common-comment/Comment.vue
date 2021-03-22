@@ -147,11 +147,15 @@ export default {
       this.hasPublish = false
     },
     publish() {
-      this.submit(this.scopeParams).then(() => {
-        this.hasPublish = true
-        this.scopeParams.remark = ''
-        this.loadList()
-      })
+      if (this.scopeParams.remark.trim()) {
+        this.submit(this.scopeParams).then(() => {
+          this.hasPublish = true
+          this.scopeParams.remark = ''
+          this.loadList()
+        })
+      } else {
+        this.$message.error('发布内容不能为空！！！')
+      }
     }
   }
 }
