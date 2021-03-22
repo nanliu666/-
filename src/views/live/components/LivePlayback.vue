@@ -22,10 +22,11 @@
           <span>直播时间：{{ item.startTime }}</span>
         </div>
         <div class="operation">
-          <span
+          <!-- <span
             v-if="item.lecturerDeleted == '1' && rePlayData.identityType == '1'"
             @click.stop="repRecover(item)"
-          >恢复</span>
+            >恢复</span
+          > -->
           <span
             v-if="item.shelfStatus == '1' && rePlayData.identityType == '1'"
             @click.stop="repRelease(item)"
@@ -35,7 +36,10 @@
             @click.stop="repOffShelf(item)"
           >下架</span>
           <span @click.stop="repDownload(item)">下载</span>
-          <!-- <span @click="repDelete(item)">删除</span> -->
+          <span
+            v-if="item.lecturerDeleted == '0' && rePlayData.identityType == '1'"
+            @click="repDelete(item)"
+          >删除</span>
         </div>
       </div>
     </div>
@@ -126,25 +130,26 @@ export default {
         })
       }
     },
-    // repDelete(item) {
-    //   // 删除
-    //   let sendPar = { videoId: item.id.toString(), isDeleted: '1' }
-    //   this.$confirm('是否删除该视频?', '提示', {
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'
-    //   })
-    //     .then(() => {
-    //       setReplayStatus(sendPar).then(() => {
-    //         this.initPlayBackData()
-    //         this.$message({
-    //           message: '操作成功',
-    //           type: 'success'
-    //         })
-    //       })
-    //     })
-    //     .catch(() => {})
-    // },
+    repDelete(item) {
+      // 删除,上下架状态：0-上架，1-下架
+      let sendPar = { videoId: item.id.toString(), isDeleted: '1' }
+      let tip = ''
+      if (item.shelfStatus) tip = '您确定要删除该直播回放吗？'
+      else tip = '该直播回放已发布，删除后学员将不可见，您确定要删除该直播回放吗'
+      this.$confirm(tip, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        setReplayStatus(sendPar).then(() => {
+          this.initPlayBackData()
+          this.$message({
+            message: '操作成功',
+            type: 'success'
+          })
+        })
+      })
+    },
     repOffShelf(item) {
       // 下架
       let sendPar = { videoId: item.id.toString(), shelfStatus: '1' }
