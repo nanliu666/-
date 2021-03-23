@@ -85,9 +85,9 @@
           <span class="text"></span>
         </div>
       </div>
-      <el-row v-if="data.applyJoin && !data.isTrainObject" class="state_info">
+      <el-row v-if="data.applyJoin" class="state_info">
         <el-button
-          v-if="data.applyJoinStatus === 'NotRegistered' && isApplyJoin"
+          v-if="data.applyJoinStatus === 'NotRegistered' && isApplyJoin && !data.isTrainObject"
           type="primary"
           @click="handleSign"
         >立即报名</el-button>
@@ -127,7 +127,7 @@ export default {
   data() {
     return {
       reference: {
-        Intro: '培训详情',
+        Intro: '培训介绍',
         Rate: '培训评分',
         Trainee: '学员概况',
         Schedule: '培训安排',
@@ -171,12 +171,7 @@ export default {
         let tabs = []
         // userType 0 代表学员 1代表老师
         if (userType === 0) {
-          // if (this.registrationStatus == 'NotRegistered') {
-          //   tabs = ['Intro']
-          // } else {
-          //   tabs = ['Arrangement', 'Exam', 'Intro', 'Rate', 'MaterialsUpload']
-          // }
-          tabs = ['Arrangement', 'Intro', 'MaterialsUpload']
+          tabs = ['Intro']
         } else {
           tabs = ['Trainee', 'Schedule', 'Intro', 'Rate']
         }
@@ -191,9 +186,16 @@ export default {
           this.data.userType = userType
           
           // this.data.status // 1 表示未开始 2表示进行中 3表示已结办
-          if (this.data.status == 1) {
-            this.data.tabs.splice(this.data.tabs.indexOf('MaterialsUpload'), 1)
+          // this.data.isTrainObject true 是否培训人员
+          if (this.data.isTrainObject || (this.data.applyJoin && this.data.applyJoinStatus == 'SignedUp')) {
+            if (this.data.status != 1) {
+              this.data.tabs = ['Arrangement', 'Intro', 'MaterialsUpload']
+            } else {
+              this.data.tabs = ['Arrangement', 'Intro']
+            }
+            this.activeComponent = this.data.tabs[0]
           }
+          
           this.$forceUpdate()
           let applyJoinEndDate = this.data.applyJoinEndDate || this.data.trainEndTime
           if (new Date(moment().format('yyyy-MM-DD')) <= new Date(applyJoinEndDate)) {
