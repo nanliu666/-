@@ -31,7 +31,7 @@
               <span>分钟</span>
             </span>
           </li>
-          <li v-if="isViewResults" class="header-li">
+          <li class="header-li">
             <span class="li-label">试卷总分：</span>
             <span class="li-value">
               <span>{{ examDetail.totalScore }}分</span>
@@ -40,7 +40,7 @@
               </span>
             </span>
           </li>
-          <li class="header-li">
+          <li v-if="isViewResults" class="header-li">
             <span class="li-label">考试得分：</span>
             <span class="li-value">
               <span>{{ examDetail.score }}分</span>
