@@ -195,20 +195,22 @@ export default {
             this.data.tabs.splice(this.data.tabs.indexOf('Rate'), 1)
           }
           this.$forceUpdate()
-          if (this.data.applyJoinStatus == 'NotRegistered' && userType === 0) {
-          }
-          if (new Date(moment().format('yyyy-MM-DD')) >= new Date(this.data.applyJoinEndDate)) {
+          // if (this.data.applyJoinStatus == 'NotRegistered' && userType === 0) {
+          // }
+          let applyJoinEndDate = this.data.applyJoinEndDate || this.data.trainEndTime
+          if (new Date(moment().format('yyyy-MM-DD')) <= new Date(applyJoinEndDate)) {
             this.isApplyJoin = true
           }
         })
       }
     },
-    handleSign() {
+    async handleSign() {
       // 处理立即报名
       const trainId = this.data.id
-      signUp({ trainId }).then((res) => {
+      await signUp({ trainId }).then((res) => {
         if (res) {
-          this.data.applyJoinStatus = 'UnderReview'
+          this.getData()
+          // this.data.applyJoinStatus = 'UnderReview'
         }
       })
     },
