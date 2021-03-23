@@ -471,6 +471,18 @@ export default {
             item.userPeriod = item.userPeriod === '' ? 0 : item.userPeriod
             item.progress = item.period === 0 ? 0 : Math.round(item.userPeriod / (item.period * 60))
           })
+          // 处理文件名错误
+          if (data.length) {
+            for (let itemF of data) {
+              if (itemF.attachList && itemF.attachList.length) {
+                for (let itemC of itemF.attachList) {
+                  if (itemC.fileName.indexOf("|") != -1) {
+                    itemC.fileName = itemC.fileName.split("|")[0]
+                  }
+                }
+              }
+            }
+          }
           this.courseList = data
           this.totalNum = totalNum
         })
