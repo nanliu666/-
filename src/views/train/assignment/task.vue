@@ -46,7 +46,7 @@
           <img src="./done.png" />
         </div>
         <el-row class="action">
-          <el-button type="primary" @click="handleGoLearn">去考试</el-button>
+          <el-button type="primary" :disabled="isGoExam" @click="handleGoDetails">去考试</el-button>
         </el-row>
         <div class="handle" @click="changeHidden">
           <i v-show="isHidden" class="el-icon-arrow-down"></i>
@@ -108,7 +108,7 @@
           <img src="./done.png" />
         </div>
         <el-row class="action">
-          <el-button type="primary" @click="handleGoLearn">去学习</el-button>
+          <el-button type="primary" :disabled="isGoLearn"  @click="handleGoDetails">去学习</el-button>
         </el-row>
         <div class="handle" @click="changeHidden">
           <i v-show="isHidden" class="el-icon-arrow-down"></i>
@@ -187,7 +187,9 @@ export default {
         status: '',
         content: [],
         complete: true //
-      }
+      },
+      isGoLearn: true, // 是否可去学习
+      isGoExam: true // 是否可去考试
     }
   },
   created() {
@@ -199,6 +201,9 @@ export default {
     getData() {},
     getList() {},
     goDetails(v) {
+      if (this.isGoLearn) {
+        return
+      }
       let params = {
         courseId: v.courseId,
         chapterId: v.chapterId
@@ -211,18 +216,32 @@ export default {
         this.data.endDateTime = moment(this.dataInfo.endTime).format('YYYY年MM月DD日 HH:mm')
         this.data.startTime = moment(this.dataInfo.startTime).format('HH:mm')
         this.data.endTime = moment(this.dataInfo.endTime).format('HH:mm')
+        // 判断在考试时间才显示按钮去考试
+        if (new Date().getTime() >= new Date(this.dataInfo.startTime).getTime() && new Date().getTime() <= new Date(this.dataInfo.endTime).getTime() && this.dataInfo.status != 3){
+          // (今天时间 》= 开始时间) && (今天时间 《= 结束时间) && （!=已结办）
+          this.isGoExam = false
+        }
       }
       if (this.dataInfo.type === 3) {
         this.data.startTime = moment(this.dataInfo.startTime).format('YYYY年MM月DD日')
         this.data.endTime = moment(this.dataInfo.endTime).format('YYYY年MM月DD日')
+        // 判断在学习时间才显示按钮去学习
+        let today = new Date(moment().format('YYYY-MM-DD'))
+        let startDate = new Date(moment(this.dataInfo.startTime).format('YYYY-MM-DD'))
+        let endDate = new Date(moment(this.dataInfo.endTime).format('YYYY-MM-DD'))
+        if (today >= startDate && today <= endDate && this.dataInfo.status != 3){
+          // (今天日期 》= 开始日期) && (今天日期 《= 结束日期) && （!=已结办）
+          this.isGoLearn = false
+          console.log('this.isGoLearn', this.isGoLearn)
+        }
       }
-      console.log('this.dataInfo', this.dataInfo)
+      // console.log('this.dataInfo', this.dataInfo)
       if (this.dataInfo.status === 1) {
         this.data.status = '未开始'
       } else if (this.dataInfo.status === 2) {
         this.data.status = '进行中'
       } else if (this.dataInfo.status === 3) {
-        this.data.status = '已结束'
+        this.data.status = '已结束' // 表示已结办
       } else {
         this.data.status = '没数据'
       }
@@ -252,7 +271,7 @@ export default {
         }
       }
     },
-    handleGoLearn() {
+    handleGoDetails() {
       this.$router.push({ path: '/course/detail', query: { id: this.dataInfo.id } })
     },
     changeHidden() {

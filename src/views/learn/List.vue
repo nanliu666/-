@@ -360,6 +360,9 @@ export default {
     },
     //下载文件
     downloadFileFun(fileItem) {
+      if (fileItem.fileName.indexOf("|") != -1) {
+        fileItem.fileName = fileItem.fileName.split("|")[0]
+      }
       downLoadFile(fileItem)
     },
     // 参加考试
