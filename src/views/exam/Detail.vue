@@ -176,7 +176,7 @@ export default {
           title: '考试'
         },
         {
-          path: this.$route.path,
+          path: '',
           title: _.get(this.$route.meta, 'title', ' ')
         }
       ],
@@ -188,6 +188,12 @@ export default {
     }
   },
   computed: {
+    id() {
+      const id = _.get(this.$route, 'query.id', null)
+      const route = `${id ? `${this.$route.path}?id=${id}` : `${this.$route.path}`}`
+      _.set(this.routeList, '[1].path', route)
+      return id
+    },
     QUESTION_TYPE_MAP: () => QUESTION_TYPE_MAP,
     QUESTION_TYPE_GROUP: () => QUESTION_TYPE_GROUP
   },

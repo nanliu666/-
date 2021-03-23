@@ -1,7 +1,7 @@
 # common-breadcrumb
 
 基于 elementUI breadcrumb组件 封装的面包屑 
-- 默认支持2级面包屑，如果多级需要自定义routeList
+- 必须传入自定义routeList，传入完整的路径，示例参照直播详情（live/detail）入参
 - 如果是默认2级的请注意router/index.js内的一级面包屑需要加title，二级面包屑需要加 meta: {title: '知识库'}
 - F5刷新页面，面包屑不丢失
 - 二级title需要自定义的话需要如下操作

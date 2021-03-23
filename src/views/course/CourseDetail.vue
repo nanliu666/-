@@ -1,6 +1,6 @@
 <template>
   <div class="course-detail">
-    <common-breadcrumb ref="breadcrumb" />
+    <common-breadcrumb ref="breadcrumb" :route-list="routeList" />
     <div class="course-detail--card course-detail__info">
       <div class="course-detail__info__img">
         <el-image :src="courseData.url">
@@ -111,6 +111,16 @@ export default {
   components: { CommonBreadcrumb, Comment, Experience },
   data() {
     return {
+      routeList: [
+        {
+          path: '/course',
+          title: '课程'
+        },
+        {
+          path: '',
+          title: _.get(this.$route.meta, 'title', ' ')
+        }
+      ],
       activeName: 'first',
       chapters: [],
       courseData: {
@@ -120,7 +130,10 @@ export default {
   },
   computed: {
     id() {
-      return this.$route.query.id
+      const id = _.get(this.$route, 'query.id', null)
+      const route = `${id ? `${this.$route.path}?id=${id}` : `${this.$route.path}`}`
+      _.set(this.routeList, '[1].path', route)
+      return id
     },
     COURSE_TYPE_MAP: () => COURSE_TYPE_MAP,
     COURSE_CHAPTER_TYPE_MAP: () => COURSE_CHAPTER_TYPE_MAP,

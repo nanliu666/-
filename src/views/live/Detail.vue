@@ -1,7 +1,7 @@
 <template>
   <!-- CSS起名规则按照BEM -->
   <div class="live">
-    <common-breadcrumb ref="breadcrumb" />
+    <common-breadcrumb ref="breadcrumb" :route-list="routeList" />
     <el-card>
       <div class="live__header">
         <div class="header__left">
@@ -138,6 +138,16 @@ export default {
   },
   data() {
     return {
+      routeList: [
+        {
+          path: '/live',
+          title: '直播'
+        },
+        {
+          path: '',
+          title: _.get(this.$route.meta, 'title', ' ')
+        }
+      ],
       roleName: '',
       statusMap: STATUS_MAP,
       activeIndex: '1',
@@ -152,7 +162,10 @@ export default {
       return `${location.origin}/#/WatchLive?wId=${this.detailData.channelId}`
     },
     id() {
-      return _.get(this.$route, 'query.id', '')
+      const id = _.get(this.$route, 'query.id', null)
+      const route = `${id ? `${this.$route.path}?id=${id}` : `${this.$route.path}`}`
+      _.set(this.routeList, '[1].path', route)
+      return id
     }
   },
   activated() {
