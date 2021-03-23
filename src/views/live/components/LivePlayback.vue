@@ -33,7 +33,10 @@
             @click.stop="repOffShelf(item)"
           >下架</span>
           <span @click.stop="repDownload(item)">下载</span>
-          <span v-if="item.lecturerDeleted == '0' && identityType == '1'" @click="repDelete(item)">删除</span>
+          <span
+            v-if="item.lecturerDeleted == '0' && identityType == '1'"
+            @click.stop="repDelete(item)"
+          >删除</span>
         </div>
       </div>
     </div>
@@ -127,7 +130,7 @@ export default {
     },
     repDelete(item) {
       // 删除,上下架状态：0-上架，1-下架
-      let sendPar = { videoId: item.id.toString(), isDeleted: '1' }
+      let sendPar = { videoId: item.id.toString(), lecturerDeleted: '1' }
       let tip = ''
       if (item.shelfStatus) tip = '您确定要删除该直播回放吗？'
       else tip = '该直播回放已发布，删除后学员将不可见，您确定要删除该直播回放吗'
