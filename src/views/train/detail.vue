@@ -85,7 +85,7 @@
           <span class="text"></span>
         </div>
       </div>
-      <el-row v-if="data.applyJoin" class="state_info">
+      <el-row v-if="data.applyJoin && !data.isTrainObject" class="state_info">
         <el-button
           v-if="data.applyJoinStatus === 'NotRegistered' && isApplyJoin"
           type="primary"
@@ -95,7 +95,6 @@
         <el-button v-if="data.applyJoinStatus === 'UnderReview'" type="info">审核中</el-button>
       </el-row>
     </div>
-
     <div class="train-main">
       <el-tabs v-model="activeComponent" class="tabs" @tab-click="handleSelect">
         <el-tab-pane v-for="tab in data.tabs" :key="tab" :label="reference[tab]" :name="tab" lazy>
@@ -117,7 +116,7 @@ import moment from 'moment'
 export default {
   name: 'TrainDetail',
   components: {
-    Exam,
+    // Exam, 移到培训安排
     Rate,
     Intro,
     Schedule,
@@ -128,7 +127,6 @@ export default {
   data() {
     return {
       reference: {
-        Exam: '培训考试',
         Intro: '培训详情',
         Rate: '培训评分',
         Trainee: '学员概况',
@@ -171,13 +169,14 @@ export default {
         const { trainId, userType } = params
         await this.getTrainState(trainId)
         let tabs = []
+        // userType 0 代表学员 1代表老师
         if (userType === 0) {
           // if (this.registrationStatus == 'NotRegistered') {
           //   tabs = ['Intro']
           // } else {
           //   tabs = ['Arrangement', 'Exam', 'Intro', 'Rate', 'MaterialsUpload']
           // }
-          tabs = ['Arrangement', 'Exam', 'Intro', 'Rate', 'MaterialsUpload']
+          tabs = ['Arrangement', 'Intro', 'MaterialsUpload']
         } else {
           tabs = ['Trainee', 'Schedule', 'Intro', 'Rate']
         }
@@ -190,17 +189,17 @@ export default {
         await getDetail({ trainId }).then((res) => {
           this.data = Object.assign(this.data, res)
           this.data.userType = userType
-          localStorage.setItem(trainDataKey, JSON.stringify(this.data))
-          if (this.data.status !== 2) {
-            this.data.tabs.splice(this.data.tabs.indexOf('Rate'), 1)
+          
+          // this.data.status // 1 表示未开始 2表示进行中 3表示已结办
+          if (this.data.status == 1) {
+            this.data.tabs.splice(this.data.tabs.indexOf('MaterialsUpload'), 1)
           }
           this.$forceUpdate()
-          // if (this.data.applyJoinStatus == 'NotRegistered' && userType === 0) {
-          // }
           let applyJoinEndDate = this.data.applyJoinEndDate || this.data.trainEndTime
           if (new Date(moment().format('yyyy-MM-DD')) <= new Date(applyJoinEndDate)) {
             this.isApplyJoin = true
           }
+          localStorage.setItem(trainDataKey, JSON.stringify(this.data))
         })
       }
     },
