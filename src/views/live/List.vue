@@ -354,7 +354,7 @@ export default {
     toggle_type(obj, item) {
       this.queryData.liveType_select = item.idStr
       if (item.children) {
-        this.liveClassification = item.children
+        this.liveClassification = item.children.filter((i) => i.status === 1) // 只显示不被禁用的分类
         this.navigation.push({
           sameLevel: obj,
           children: item
