@@ -197,16 +197,14 @@ export default {
     },
     // 查询培训安排日期
     async getTrainDate(v) {
-      console.log('getTrainDate--', this.data)
       let dateTime = v || new Date()
       this.schedule = []
       let params = {
         id: this.data.trainId,
-        dateTime: moment(dateTime).format('YYYY-MM-DD HH:mm:ss')
+        dateTime: `${moment(dateTime).format('YYYY-MM-DD')} 00:00:00`
       }
       await getTrainDate(params).then((res) => {
         this.schedule = res
-        console.log('res--getTrainDate', res)
       })
     }
   }
