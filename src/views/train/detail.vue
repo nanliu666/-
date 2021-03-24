@@ -109,6 +109,7 @@
 
 <script>
 // import { Course, Exam, Rate, Intro, Schedule, Trainee, Arrangement, MaterialsUpload } from './contents'
+// eslint-disable-next-line no-unused-vars
 import { Exam, Rate, Intro, Schedule, Trainee, Arrangement, MaterialsUpload } from './contents'
 import { getDetail, signUp, getTrainState } from 'src/api/train'
 import globalKey from 'src/config/website'
@@ -184,10 +185,13 @@ export default {
         await getDetail({ trainId }).then((res) => {
           this.data = Object.assign(this.data, res)
           this.data.userType = userType
-          
+
           // this.data.status // 1 表示未开始 2表示进行中 3表示已结办
           // this.data.isTrainObject true 是否培训人员
-          if (this.data.isTrainObject || (this.data.applyJoin && this.data.applyJoinStatus == 'SignedUp')) {
+          if (
+            this.data.isTrainObject ||
+            (this.data.applyJoin && this.data.applyJoinStatus == 'SignedUp')
+          ) {
             if (this.data.status != 1) {
               this.data.tabs = ['Arrangement', 'Intro', 'MaterialsUpload']
             } else {
@@ -195,7 +199,7 @@ export default {
             }
             this.activeComponent = this.data.tabs[0]
           }
-          
+
           this.$forceUpdate()
           let applyJoinEndDate = this.data.applyJoinEndDate || this.data.trainEndTime
           if (new Date(moment().format('yyyy-MM-DD')) <= new Date(applyJoinEndDate)) {

@@ -108,7 +108,7 @@
           <img src="./done.png" />
         </div>
         <el-row class="action">
-          <el-button type="primary" :disabled="isGoLearn"  @click="handleGoDetails">去学习</el-button>
+          <el-button type="primary" :disabled="isGoLearn" @click="handleGoDetails">去学习</el-button>
         </el-row>
         <div class="handle" @click="changeHidden">
           <i v-show="isHidden" class="el-icon-arrow-down"></i>
@@ -217,7 +217,11 @@ export default {
         this.data.startTime = moment(this.dataInfo.startTime).format('HH:mm')
         this.data.endTime = moment(this.dataInfo.endTime).format('HH:mm')
         // 判断在考试时间才显示按钮去考试
-        if (new Date().getTime() >= new Date(this.dataInfo.startTime).getTime() && new Date().getTime() <= new Date(this.dataInfo.endTime).getTime() && this.dataInfo.status != 3){
+        if (
+          new Date().getTime() >= new Date(this.dataInfo.startTime).getTime() &&
+          new Date().getTime() <= new Date(this.dataInfo.endTime).getTime() &&
+          this.dataInfo.status != 3
+        ) {
           // (今天时间 》= 开始时间) && (今天时间 《= 结束时间) && （!=已结办）
           this.isGoExam = false
         }
@@ -229,7 +233,7 @@ export default {
         let today = new Date(moment().format('YYYY-MM-DD'))
         let startDate = new Date(moment(this.dataInfo.startTime).format('YYYY-MM-DD'))
         let endDate = new Date(moment(this.dataInfo.endTime).format('YYYY-MM-DD'))
-        if (today >= startDate && today <= endDate && this.dataInfo.status != 3){
+        if (today >= startDate && today <= endDate && this.dataInfo.status != 3) {
           // (今天日期 》= 开始日期) && (今天日期 《= 结束日期) && （!=已结办）
           this.isGoLearn = false
           console.log('this.isGoLearn', this.isGoLearn)

@@ -25,7 +25,7 @@ export default {
   },
   watch: {
     data: {
-      handler(val, oldVal) {
+      handler(val) {
         let tem = val.introduction.replace(/&lt;/g, '<')
         tem = tem.replace(/&gt;/g, '>')
         this.innerText = tem

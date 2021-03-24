@@ -360,8 +360,8 @@ export default {
     },
     //下载文件
     downloadFileFun(fileItem) {
-      if (fileItem.fileName.indexOf("|") != -1) {
-        fileItem.fileName = fileItem.fileName.split("|")[0]
+      if (fileItem.fileName.indexOf('|') != -1) {
+        fileItem.fileName = fileItem.fileName.split('|')[0]
       }
       downLoadFile(fileItem)
     },
@@ -476,8 +476,8 @@ export default {
             for (let itemF of data) {
               if (itemF.attachList && itemF.attachList.length) {
                 for (let itemC of itemF.attachList) {
-                  if (itemC.fileName.indexOf("|") != -1) {
-                    itemC.fileName = itemC.fileName.split("|")[0]
+                  if (itemC.fileName.indexOf('|') != -1) {
+                    itemC.fileName = itemC.fileName.split('|')[0]
                   }
                 }
               }

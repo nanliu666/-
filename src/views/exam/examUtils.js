@@ -8,7 +8,7 @@ class ExamUtils {
       row.status === 1 ||
       row.status === 4 ||
       row.isPass === 2 ||
-      moment(moment(row.examEndTime)).diff(new Date(), 'minutes') < 0 ||
+      moment(moment(row.examEndTime)).diff(new Date(), 'seconds') < 0 ||
       (row.status === 3 && row.joinNum && row.joinNumValue === row.examTimes)
     return isJoinDisabled
   }
