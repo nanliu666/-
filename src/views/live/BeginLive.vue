@@ -1,7 +1,15 @@
 <template>
   <div class="watchLiveCla">
     <iframe
+      v-if="role !== 'Assistant'"
       :src="`https://live.polyv.net/web-start/classroom?channelId=${id}`"
+      frameborder="0"
+      allow="microphone; camera"
+      allowfullscreen="true"
+    ></iframe>
+    <iframe
+      v-else
+      src="https://live.polyv.net/teacher.html"
       frameborder="0"
       allow="microphone; camera"
       allowfullscreen="true"
@@ -13,7 +21,8 @@ export default {
   name: 'WatchLive',
   data() {
     return {
-      id: this.$route.query.beginId
+      id: this.$route.query.beginId,
+      role: this.$route.query.roleName
     }
   }
 }
