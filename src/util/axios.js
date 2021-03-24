@@ -115,7 +115,7 @@ instance.interceptors.response.use(
         //   type: 'error',
         //   showClose: true
         // })
-      } else if (getToken()) {
+      } else if (getToken() || status === 400) {
         Message({
           message,
           type: 'error',
