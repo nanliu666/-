@@ -62,7 +62,7 @@
 
                   <span v-else class="start">
                     <span v-if="item.result === 'Cancel'" class="Cancel">审批已撤回</span>
-                    <span v-else>发起</span>
+                    <span v-if="index === 0">发起 </span>
                   </span>
                 </span>
               </div>

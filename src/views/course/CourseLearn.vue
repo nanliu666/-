@@ -104,8 +104,8 @@
         <!-- 课件 -->
         <div v-if="currentChapter.type == '2'" class="content--iframe">
           <video
-            v-if="isVideo"
-            ref="video"
+            ref="videoRef"
+            autoplay
             preload
             controls
             :src="currentChapter.content"
@@ -113,13 +113,13 @@
             :width="contentWidth"
             style="width:100%;"
           ></video>
-          <iframe
-            v-else
+          <!-- <iframe
+            v-if="!isVideo"
             :src="getContentUrl(currentChapter)"
             width="100%"
             height="100%"
             frameborder="0"
-          ></iframe>
+          ></iframe> -->
         </div>
         <!--资料-->
         <div v-if="currentChapter.type == '3'" class="content--download">
@@ -198,7 +198,7 @@ export default {
     },
     isVideo() {
       const regx = /^.*\.(avi|wmv|mp4|3gp|rm|rmvb|mov)$/
-      return regx.test(this.currentChapter.content)
+      return regx.test(this.currentChapter.content) && this.currentChapter.type === 2
     },
     COURSE_CHAPTER_TYPE_MAP: () => COURSE_CHAPTER_TYPE_MAP,
     ...mapGetters(['userInfo'])
@@ -232,12 +232,19 @@ export default {
     /**
      * 更新视频播放进度
      */
-    updateVideoProgress(chapter) {
-      if (!this.isChapterVideo(chapter) || !chapter.duration) {
-        return
-      }
-      // let progress = Number(((this.$refs.video.currentTime / chapter.duration) * 100).toFixed())
-      // chapter.progress = progress > chapter.progress ? progress : chapter.progress
+    updateVideoProgress() {
+      // if (!this.isChapterVideo(chapter) || !chapter.duration) {
+      //   return
+      // }
+      let progress = Number(
+        ((this.$refs.videoRef.currentTime / this.currentChapter.duration) * 100).toFixed()
+      )
+      this.chapters.forEach((val) => {
+        if (val.contentId === this.currentChapter.contentId) {
+          val.progress = progress > val.progress ? progress : val.progress
+        }
+      })
+      //chapter.progress = progress > chapter.progress ? progress : chapter.progress
     },
     getFileImageUrl(url = '') {
       const fileDict = {
@@ -262,7 +269,9 @@ export default {
     },
     setTimer() {
       this.timer = setInterval(() => {
+        this.updateVideoProgress()
         this.submitLearnRecords()
+        // }, 5000)
       }, 5 * 60 * 1000)
     },
     reset() {
@@ -326,6 +335,7 @@ export default {
         this.course = res
       })
     },
+    //更新学员学习课程记录
     submitLearnRecords() {
       let period = 5
       if (this.isFirst) {
@@ -470,6 +480,13 @@ export default {
       }
 
       .chapters {
+        &__title {
+          display: inline-block;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          width: 11vw;
+        }
         height: 100%;
         ul {
           height: 100%;
@@ -499,7 +516,7 @@ export default {
         }
         &__wrap {
           line-height: 16px;
-          // display: flex;
+          display: flex;
           // align-items: center;
         }
         &__tag {
@@ -510,6 +527,7 @@ export default {
           color: $primaryFontColor;
           border: 1px solid $primaryFontColor;
           margin-right: 8px;
+          margin-top: -2px;
         }
         &__status {
           font-size: 12px;
