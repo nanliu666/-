@@ -23,22 +23,19 @@
         </div>
         <div class="operation">
           <!-- <span
-            v-if="item.lecturerDeleted == '1' && rePlayData.identityType == '1'"
+            v-if="item.lecturerDeleted == '1' && identityType == '1'"
             @click.stop="repRecover(item)"
             >恢复</span
           > -->
+          <span v-if="item.shelfStatus == '1' && identityType == '1'" @click.stop="repRelease(item)">发布</span>
           <span
-            v-if="item.shelfStatus == '1' && rePlayData.identityType == '1'"
-            @click.stop="repRelease(item)"
-          >发布</span>
-          <span
-            v-if="item.shelfStatus == '0' && rePlayData.identityType == '1'"
+            v-if="item.shelfStatus == '0' && identityType == '1'"
             @click.stop="repOffShelf(item)"
           >下架</span>
           <span @click.stop="repDownload(item)">下载</span>
           <span
-            v-if="item.lecturerDeleted == '0' && rePlayData.identityType == '1'"
-            @click="repDelete(item)"
+            v-if="item.lecturerDeleted == '0' && identityType == '1'"
+            @click.stop="repDelete(item)"
           >删除</span>
         </div>
       </div>
@@ -81,7 +78,8 @@ export default {
         pageSizes: [5, 10],
         currentPage: 0,
         totalNum: 0
-      }
+      },
+      identityType: ''
     }
   },
   activated() {
@@ -132,7 +130,7 @@ export default {
     },
     repDelete(item) {
       // 删除,上下架状态：0-上架，1-下架
-      let sendPar = { videoId: item.id.toString(), isDeleted: '1' }
+      let sendPar = { videoId: item.id.toString(), lecturerDeleted: '1' }
       let tip = ''
       if (item.shelfStatus) tip = '您确定要删除该直播回放吗？'
       else tip = '该直播回放已发布，删除后学员将不可见，您确定要删除该直播回放吗'
@@ -165,9 +163,11 @@ export default {
       // 初始化直播回放列表
       liveReplayList(this.PBLParmas).then((res) => {
         let { data, totalNum, totalPage } = (this.rePlayData = res.result)
+        this.identityType = res.identityType
         this.playBackListData = data
         this.PBLPageObj.totalNum = totalNum
         this.PBLPageObj.totalPage = totalPage
+        console.log(this.rePlayData)
       })
     },
     handleSizeChange(val) {
