@@ -191,11 +191,12 @@ export default {
             this.data.isTrainObject ||
             (this.data.applyJoin && this.data.applyJoinStatus == 'SignedUp')
           ) {
-            if (this.data.status != 1) {
-              this.data.tabs = ['Arrangement', 'Intro', 'MaterialsUpload']
-            } else {
-              this.data.tabs = ['Arrangement', 'Intro']
-            }
+            // if (this.data.status != 1) {
+            //   this.data.tabs = ['Arrangement', 'Intro', 'Rate','MaterialsUpload']
+            // } else {
+            //   this.data.tabs = ['Arrangement', 'Intro', 'Rate']
+            // }
+            this.data.tabs = ['Arrangement', 'Intro', 'Rate','MaterialsUpload']
             this.activeComponent = this.data.tabs[0]
           }
 

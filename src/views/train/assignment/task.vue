@@ -38,7 +38,7 @@
               <li>剩余有效答题次数：{{ dataInfo.surplusParticipatNumber }}</li>
               <li>试卷总分：{{ dataInfo.totalScore }}</li>
               <li>评分规则：取最高得分最为最终成绩</li>
-              <li>成绩:{{ dataInfo.score }}</li>
+              <li>成绩:{{ dataInfo.score? dataInfo.score: '-' }}</li>
             </ul>
           </div>
         </div>
