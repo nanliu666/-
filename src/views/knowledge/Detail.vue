@@ -1,6 +1,6 @@
 <template>
   <div>
-    <common-breadcrumb ref="breadcrumb" />
+    <common-breadcrumb ref="breadcrumb" :route-list="routeList" />
     <el-card class="middle-card">
       <div class="card-title">
         {{ konwledgeDetail.resName }}
@@ -8,7 +8,9 @@
       <ul class="detail-ul">
         <li class="detail-li">
           <span class="li-label">提供人：</span>
-          <span class="li-value">{{ konwledgeDetail.providerName }}</span>
+          <span class="li-value">{{
+            konwledgeDetail.providerName ? konwledgeDetail.providerName : '--'
+          }}</span>
         </li>
         <li class="detail-li">
           <span class="li-label">所在目录：</span>
@@ -126,6 +128,16 @@ export default {
   },
   data() {
     return {
+      routeList: [
+        {
+          path: '/knowledge',
+          title: '知识库'
+        },
+        {
+          path: '',
+          title: _.get(this.$route.meta, 'title', ' ')
+        }
+      ],
       previewSrcList: [],
       fileGroup: {},
       activeIndex: '1',
@@ -134,7 +146,10 @@ export default {
   },
   computed: {
     id() {
-      return this.$route.query.id
+      const id = _.get(this.$route, 'query.id', null)
+      const route = `${id ? `${this.$route.path}?id=${id}` : `${this.$route.path}`}`
+      _.set(this.routeList, '[1].path', route)
+      return id
     }
   },
   mounted() {

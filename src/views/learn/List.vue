@@ -340,16 +340,8 @@ export default {
   },
   methods: {
     getProgress(item) {
-      const { userPeriod = 0, period = 0 } = item
-      if (period === 0) {
-        return 0
-      }
-      var res = userPeriod / 60 / period
-      if (res >= 1) {
-        return 100
-      } else {
-        return res.toFixed(1) * 100
-      }
+      const { totalPrecent } = item
+      return totalPrecent ? totalPrecent : 0
     },
     moment,
     statusChange() {
@@ -360,8 +352,8 @@ export default {
     },
     //下载文件
     downloadFileFun(fileItem) {
-      if (fileItem.fileName.indexOf("|") != -1) {
-        fileItem.fileName = fileItem.fileName.split("|")[0]
+      if (fileItem.fileName.indexOf('|') != -1) {
+        fileItem.fileName = fileItem.fileName.split('|')[0]
       }
       downLoadFile(fileItem)
     },
@@ -476,8 +468,8 @@ export default {
             for (let itemF of data) {
               if (itemF.attachList && itemF.attachList.length) {
                 for (let itemC of itemF.attachList) {
-                  if (itemC.fileName.indexOf("|") != -1) {
-                    itemC.fileName = itemC.fileName.split("|")[0]
+                  if (itemC.fileName.indexOf('|') != -1) {
+                    itemC.fileName = itemC.fileName.split('|')[0]
                   }
                 }
               }

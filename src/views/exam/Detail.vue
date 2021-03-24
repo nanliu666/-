@@ -31,7 +31,7 @@
               <span>分钟</span>
             </span>
           </li>
-          <li v-if="isViewResults" class="header-li">
+          <li class="header-li">
             <span class="li-label">试卷总分：</span>
             <span class="li-value">
               <span>{{ examDetail.totalScore }}分</span>
@@ -40,7 +40,7 @@
               </span>
             </span>
           </li>
-          <li class="header-li">
+          <li v-if="isViewResults" class="header-li">
             <span class="li-label">考试得分：</span>
             <span class="li-value">
               <span>{{ examDetail.score }}分</span>
@@ -176,7 +176,7 @@ export default {
           title: '考试'
         },
         {
-          path: this.$route.path,
+          path: '',
           title: _.get(this.$route.meta, 'title', ' ')
         }
       ],
@@ -188,6 +188,12 @@ export default {
     }
   },
   computed: {
+    id() {
+      const id = _.get(this.$route, 'query.id', null)
+      const route = `${id ? `${this.$route.path}?id=${id}` : `${this.$route.path}`}`
+      _.set(this.routeList, '[1].path', route)
+      return id
+    },
     QUESTION_TYPE_MAP: () => QUESTION_TYPE_MAP,
     QUESTION_TYPE_GROUP: () => QUESTION_TYPE_GROUP
   },

@@ -513,7 +513,7 @@ export default {
       const { answerBanExam, answerBanExamValue } = this.paper
       if (answerBanExam) {
         // 做了过早限制，并且当前已考时间小于限制时长
-        const usedTime = moment(new Date()).diff(moment(this.examBeginTime), 's')
+        const usedTime = moment(new Date()).diff(moment(this.examBeginTime), 'seconds')
         const limitTime = answerBanExamValue * 60
         if (usedTime < limitTime) {
           this.$confirm(`考试开始${answerBanExamValue}分钟内禁止交卷`, '提示', {
@@ -729,7 +729,7 @@ export default {
       // 考试策略strategy影响考试时长，如果为true，到了考试结束时间就必须交卷，否则可以考满设置的考试时间
       const dealline = strategy ? moment(examEndTime) : canUseUpTime
       this.dealTimeId = setInterval(() => {
-        const diffTime = moment(dealline).diff(new Date())
+        const diffTime = moment(dealline).diff(new Date(), 'seconds')
         // 5分钟为时间警戒线，经过测试兑换的值为301995
         const WARNING_LINE = 301995
         if (diffTime <= WARNING_LINE) {
