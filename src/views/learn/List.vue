@@ -340,16 +340,8 @@ export default {
   },
   methods: {
     getProgress(item) {
-      const { userPeriod = 0, period = 0 } = item
-      if (period === 0) {
-        return 0
-      }
-      var res = userPeriod / 60 / period
-      if (res >= 1) {
-        return 100
-      } else {
-        return res.toFixed(1) * 100
-      }
+      const { totalPrecent } = item
+      return totalPrecent ? totalPrecent : 0
     },
     moment,
     statusChange() {
