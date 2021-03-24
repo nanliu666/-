@@ -26,6 +26,9 @@
         分类：
       </span>
       <ul>
+        <li v-show="!selected.length" @click="handleCategoryClick({ name: '全部', id: '' })">
+          全部
+        </li>
         <li v-for="item in categoryList" :key="item[valueKey]" @click="handleCategoryClick(item)">
           {{ item[labelKey] }}
         </li>
@@ -71,6 +74,9 @@ export default {
       })
     },
     handleCategoryClick(category) {
+      if (category.name == '全部') {
+        this.selected = []
+      }
       this.selected.push(category)
       this.active = category
       this.$emit('change', category)

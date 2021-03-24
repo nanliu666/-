@@ -81,8 +81,9 @@
             </li>
           </ul>
         </el-tab-pane>
-        <el-tab-pane label="学习心得" name="experience">
+        <el-tab-pane key="experience" label="学习心得" name="experience">
           <experience :course-name="courseData.name" />
+          <!-- 引入下载模块 -->
         </el-tab-pane>
         <el-tab-pane label="课程评价" name="third">
           <Comment :load="loadCommentList" :submit="submitComment" name="课程" />
@@ -93,7 +94,7 @@
 </template>
 
 <script>
-import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
+// import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
 import moment from 'moment'
 import {
   getCourseDetail,
@@ -108,7 +109,7 @@ import { mapGetters } from 'vuex'
 import Experience from './components/Experience'
 export default {
   name: 'CourseDetail',
-  components: { CommonBreadcrumb, Comment, Experience },
+  components: { Comment, Experience },
   data() {
     return {
       routeList: [
@@ -175,9 +176,10 @@ export default {
       }
       getCourseDetail({ courseId: this.id }).then((res) => {
         this.courseData = res
-        this.$nextTick(() => {
-          this.$refs.breadcrumb.setBreadcrumbTitle(res.name)
-        })
+        // this.$nextTick(() => {
+        //   this.$refs.breadcrumb.setBreadcrumbTitle(res.name)
+        //   console.log(res.name, 'res.name')
+        // })
       })
     },
     loadChapters() {

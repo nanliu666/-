@@ -30,9 +30,7 @@
           </el-col>
         </el-row>
         <el-row ref="liveTypes" class="filter-item">
-          <el-col :span="1">
-            分类：
-          </el-col>
+          <el-col :span="1"> 分类： </el-col>
           <el-col :span="20">
             <!-- 如果当前选中的id等于父级id则高亮全部，或在最顶级分类无任何选中时高亮，面包屑导航数组中最后一个则为当前分类的父级分类并且存有id -->
             <span
@@ -98,11 +96,11 @@
           class="grid-content cursorDiv"
         >
           <el-card :body-style="{ padding: '0px' }">
-            <div class="item_live_imgBox " style="cursor: pointer;">
+            <div class="item_live_imgBox" style="cursor: pointer">
               <img :src="item.coverImageUrl" class="image_live" @click="goDetail(item.liveId)" />
               <span v-show="item.status == 'live'" class="item_live_status">直播中</span>
               <!-- <span v-show="item.status == 'start'" class="item_live_status" style="color:#00B061">未开始</span> -->
-              <span v-show="item.status == 'end'" class="item_live_status" style="color:#FCBA00">未开始</span>
+              <span v-show="item.status == 'end'" class="item_live_status" style="color: #fcba00">未开始</span>
               <div
                 v-show="item.status == 'live'"
                 class="item_live_playButton"
@@ -113,7 +111,7 @@
               <span v-show="item.status == 'live'" class="item_live_userNumber"><i class="el-icon-user"></i> {{ item.viewersNumber }}</span>
             </div>
 
-            <div style="padding: 10px 14px;height: 93px;">
+            <div style="padding: 10px 14px; height: 93px">
               <h3 class="showText">{{ item.channelName }}</h3>
               <p class="department">{{ item.categoryName }}</p>
               <el-tooltip
@@ -144,10 +142,8 @@
                     {{ item.planTime[0].split('~')[0].split(' ')[1] }} ~
                     {{ item.planTime[0].split('~')[1].split(' ')[1] }}</span>
                 </p>
-                <p v-else class="department" style="padding: 10px 14px;height: 96px;">
-                  <span>
-                    &nbsp;
-                  </span>
+                <p v-else class="department" style="padding: 10px 14px; height: 96px">
+                  <span> &nbsp; </span>
                 </p>
 
                 <div slot="content">
@@ -179,7 +175,7 @@
         </el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col v-if="liveList.lenght > 0" :span="6" :offset="14">
+        <el-col v-if="liveList.length" :span="6" :offset="14">
           <el-pagination
             layout="total,prev,pager,next,sizes,jumper"
             :total="queryData.totalNum"
@@ -191,7 +187,7 @@
             <span class="pageSizeInput"> <el-input class="pageSizeBorder"></el-input>条/页</span>
           </el-pagination>
         </el-col>
-        <div v-if="liveList.lenght == 0 || _.isEmpty(liveList)" style="text-align: center;">
+        <div v-else style="text-align: center">
           <img src="../../assets/images/nodata.png" />
           <div>暂无数据</div>
         </div>
@@ -358,7 +354,7 @@ export default {
     toggle_type(obj, item) {
       this.queryData.liveType_select = item.idStr
       if (item.children) {
-        this.liveClassification = item.children
+        this.liveClassification = item.children.filter((i) => i.status === 1) // 只显示不被禁用的分类
         this.navigation.push({
           sameLevel: obj,
           children: item

@@ -90,7 +90,7 @@
           <live-info :data="detailData" />
         </el-tab-pane>
         <el-tab-pane v-if="!isTrainee" label="数据统计" name="2">
-          <live-statistics :live-plan-id="detailData.livePlanId + ''" />
+          <live-statistics :live-plan-id="detailData.liveId + ''" />
         </el-tab-pane>
         <el-tab-pane label="直播详情" name="3">
           <live-particulars :data="detailData" />

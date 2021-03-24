@@ -5,6 +5,10 @@ import website from '@/config/website'
 export const saveLoginCredit = (params) => {
   return get('/api/manage/v1/login/saveLoginCredit', params)
 }
+// 通过token获取用户信息
+export const userDetailByToken = (params) => {
+  return get('/blade-auth/oauth/userdetail/taken', params)
+}
 // 邮箱和手机号可用性校验
 export const checkUserInfo = (params) => {
   return request({

@@ -1,4 +1,4 @@
-import { get, post } from '@/util/axios'
+import { get, post, del } from '@/util/axios'
 
 /**
  * 根据课程分类查询下一级分类
@@ -105,3 +105,47 @@ export const listForegroundTeacherComboBox = (params) =>
  * @param {String} params.userId 学员ID
  */
 export const taskInfo = (params) => get('/manage/v1/web/coursecenter/coursework/info', params)
+
+/**
+ * 课程作业上传
+ * @param {string}params.id              主键ID
+ * @param {string}params.userId          学员id
+ * @param {string}params.courseId        课程id
+ * @param {string}params.jobId           作业id
+ * @param {string}params.fileCategory    文件归类：用户提交的附件user、还是讲师评改的附件teacher
+ * @param {string}params.fileSize        文件大小
+ * @param {string}params.fileName         文件名称，包括扩展名
+ * @param {string}params.filePath         文件所在路径
+ * @param {string}params.creatorId        创建人id
+ * @param {string}params.createTime       创建时间
+ * @param {string}params.updateId         最后修改人
+ * @param {string}params.updateTime       最后修改时间
+ */
+export const upSave = (params) => post('/manage/v1/web/coursecenter/coursework/save', params)
+/**
+ * 查询学员学习心得
+ * @param {String} params.courseId 课程ID
+ */
+export const queryExperience = (params) =>
+  get('/manage/v1/web/coursecenter/experience/query', params)
+/**
+ * 学习心得上传
+ * @param {string} params.id  默认值    请输入描述
+ * @param {string} params.userId  默认值    学员ID
+ * @param {string} params.courseId  默认值    课程id
+ * @param {string} params.fileSize  默认值    文件大小
+ * @param {string} params.fileName  默认值    文件名称，包括扩展名
+ * @param {string} params.filePath  默认值    文件所在路径
+ * @param {string} params.creatorId  默认值    创建人id
+ * @param {string} params.createTime  默认值    创建时间
+ * @param {string} params.updateId  默认值    最后修改人
+ * @param {string} params.updateTime  默认值    最后修改时间
+ */
+export const saveExperience = (params) =>
+  post('/manage/v1/web/coursecenter/experience/save', params)
+/**
+ * 学习心得删除
+ * @param {String} params.id 主键ID
+ */
+export const removeExperience = (params) =>
+  del('/manage/v1/web/coursecenter/experience/remove', params)

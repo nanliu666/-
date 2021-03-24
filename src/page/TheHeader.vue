@@ -70,6 +70,8 @@ const menu = [
 ]
 import Notification from './Notification'
 import { mapGetters } from 'vuex'
+import { backBaseUrl } from '@/config/env'
+import { getStore } from '@/util/store'
 export default {
   name: 'Header',
   components: {
@@ -96,7 +98,8 @@ export default {
     toRouter(data, i) {
       if (i === 'backstage') {
         // 跳转到后台管理
-        window.location.href = 'http://139.159.141.248:8081/'
+        let tid = getStore({ name: 'token' })
+        window.location.href = `${backBaseUrl}/#/wel?tid=${tid}`
       }
       this.$router.push({
         path: data,
