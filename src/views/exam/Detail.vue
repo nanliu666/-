@@ -54,7 +54,7 @@
       </div>
       <div class="card-bottom">
         <span class="bottom-title">查看试题范围</span>
-        <el-radio-group v-model="queryInfo.type" @change="radioChange">
+        <el-radio-group v-model="queryInfo.type">
           <el-radio :label="0">
             全部试题
           </el-radio>
@@ -85,7 +85,7 @@
           </div>
           <div class="content-box">
             <ul class="content-ul">
-              <li v-for="(conItem, conIndex) in item" :key="conItem.id" class="content-li">
+              <li v-for="(conItem, conIndex) in item" :key="conIndex" class="content-li">
                 <span>{{ conIndex + 1 }}.</span>
                 <QustionPreview
                   v-if="QUESTION_TYPE_GROUP !== conItem.type"
@@ -197,15 +197,21 @@ export default {
     QUESTION_TYPE_MAP: () => QUESTION_TYPE_MAP,
     QUESTION_TYPE_GROUP: () => QUESTION_TYPE_GROUP
   },
-  activated() {
-    this.initData()
+  watch: {
+    'queryInfo.type': {
+      handler() {
+        this.loadData()
+      },
+      deep: true,
+      immediate: true
+    }
   },
   methods: {
     getHTML(content) {
       return addLine(content)
     },
     moment,
-    async initData() {
+    async loadData() {
       this.examDetail = await getViewAnswer(_.assign(this.queryInfo, this.$route.query))
       // 若创建考试时，允许考生查看答卷且查看天数不为0，且超过规定天数, 起始时间为评卷结束时间。则不能查看答卷，按钮置灰
       const { openResults, openResultsValue, publishTime } = this.examDetail
@@ -233,9 +239,6 @@ export default {
           return _.sortBy(item, 'sort')
         })
         .value()
-    },
-    radioChange() {
-      this.initData()
     },
     getStatus(status) {
       return STATUS[status]
