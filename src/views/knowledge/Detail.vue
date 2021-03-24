@@ -8,7 +8,9 @@
       <ul class="detail-ul">
         <li class="detail-li">
           <span class="li-label">提供人：</span>
-          <span class="li-value">{{ konwledgeDetail.providerName }}</span>
+          <span class="li-value">{{
+            konwledgeDetail.providerName ? konwledgeDetail.providerName : '--'
+          }}</span>
         </li>
         <li class="detail-li">
           <span class="li-label">所在目录：</span>
