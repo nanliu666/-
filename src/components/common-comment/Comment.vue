@@ -18,7 +18,7 @@
         >
         </el-input>
         <el-button
-          :disabled="hasPublish"
+          :disabled="!scopeParams.scope && !scopeParams.remark.trim()"
           class="button-box"
           type="primary"
           size="medium"
@@ -102,7 +102,10 @@ export default {
       circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
       hasPublish: true,
       totalNum: 100,
-      scopeParams: {},
+      scopeParams: {
+        remark: '',
+        scope: ''
+      },
       listParams: {
         pageNo: 1,
         pageSize: 10
@@ -110,17 +113,17 @@ export default {
       commentList: []
     }
   },
-  watch: {
-    'scopeParams.scope': {
-      handler(val) {
-        if (val > 0) {
-          this.hasPublish = false
-          val = Number(val)
-        }
-      },
-      deep: true
-    }
-  },
+  // watch: {
+  //   'scopeParams.scope': {
+  //     handler(val) {
+  //       if (val > 0) {
+  //         this.hasPublish = false
+  //         val = Number(val)
+  //       }
+  //     },
+  //     deep: true
+  //   }
+  // },
   created() {
     this.loadList()
   },
@@ -147,10 +150,11 @@ export default {
       this.hasPublish = false
     },
     publish() {
-      if (this.scopeParams.remark.trim()) {
+      if (this.scopeParams.remark.trim() || this.scopeParams.scope) {
         this.submit(this.scopeParams).then(() => {
           this.hasPublish = true
           this.scopeParams.remark = ''
+          this.scopeParams.scope = ''
           this.loadList()
         })
       } else {

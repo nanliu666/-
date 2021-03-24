@@ -1,6 +1,12 @@
 <template>
   <div class="course-detail">
-    <common-breadcrumb ref="breadcrumb" />
+    <!-- <common-breadcrumb ref="breadcrumb" /> -->
+
+    <el-breadcrumb style="margin-top:24px; margin-bottom: 16px;">
+      <el-breadcrumb-item :to="{ path: '/course' }">课程</el-breadcrumb-item>
+      <el-breadcrumb-item> {{ courseData.name }} </el-breadcrumb-item>
+    </el-breadcrumb>
+
     <div class="course-detail--card course-detail__info">
       <div class="course-detail__info__img">
         <el-image :src="courseData.url">
@@ -94,7 +100,7 @@
 </template>
 
 <script>
-import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
+// import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
 import moment from 'moment'
 import {
   getCourseDetail,
@@ -109,7 +115,7 @@ import { mapGetters } from 'vuex'
 import Experience from './components/Experience'
 export default {
   name: 'CourseDetail',
-  components: { CommonBreadcrumb, Comment, Experience },
+  components: { Comment, Experience },
   data() {
     return {
       activeName: 'first',
@@ -163,9 +169,10 @@ export default {
       }
       getCourseDetail({ courseId: this.id }).then((res) => {
         this.courseData = res
-        this.$nextTick(() => {
-          this.$refs.breadcrumb.setBreadcrumbTitle(res.name)
-        })
+        // this.$nextTick(() => {
+        //   this.$refs.breadcrumb.setBreadcrumbTitle(res.name)
+        //   console.log(res.name, 'res.name')
+        // })
       })
     },
     loadChapters() {
