@@ -232,7 +232,7 @@ export default {
         if (today >= startDate && today <= endDate && this.dataInfo.status != 3) {
           // (今天日期 》= 开始日期) && (今天日期 《= 结束日期) && （!=已结办）
           this.isGoLearn = false
-          console.log('this.isGoLearn', this.isGoLearn)
+          // console.log('this.isGoLearn', this.isGoLearn)
         }
       }
       // console.log('this.dataInfo', this.dataInfo)

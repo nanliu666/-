@@ -108,7 +108,6 @@
 </template>
 
 <script>
-// import { Course, Exam, Rate, Intro, Schedule, Trainee, Arrangement, MaterialsUpload } from './contents'
 // eslint-disable-next-line no-unused-vars
 import { Exam, Rate, Intro, Schedule, Trainee, Arrangement, MaterialsUpload } from './contents'
 import { getDetail, signUp, getTrainState } from 'src/api/train'
@@ -157,21 +156,21 @@ export default {
       localStorage.setItem(globalKey.trainDataKey, JSON.stringify(this.data))
     },
     async getData() {
-      const params = this.$route.params
+      const params = this.$route.query
       const trainDataKey = globalKey.trainDataKey
       if (!Object.keys(params).length) {
         this.data = JSON.parse(localStorage.getItem(trainDataKey))
         this.activeComponent = this.data.activeComponent
 
-        if (this.data.status !== 2) {
-          this.data.tabs.splice(this.data.tabs.indexOf('Rate'), 1)
-        }
+        // if (this.data.status !== 2) {
+        //   this.data.tabs.splice(this.data.tabs.indexOf('Rate'), 1)
+        // }
       } else {
         const { trainId, userType } = params
         await this.getTrainState(trainId)
         let tabs = []
         // userType 0 代表学员 1代表老师
-        if (userType === 0) {
+        if (userType == 0) {
           tabs = ['Intro']
         } else {
           tabs = ['Trainee', 'Schedule', 'Intro', 'Rate']
@@ -215,7 +214,6 @@ export default {
       await signUp({ trainId }).then((res) => {
         if (res) {
           this.getData()
-          // this.data.applyJoinStatus = 'UnderReview'
         }
       })
     },
