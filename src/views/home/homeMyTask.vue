@@ -3,7 +3,11 @@
   <div v-if="myMissions && myMissions.length > 0" class="homeMyTask">
     <swiper ref="mySwiper" :options="swiperOptions">
       <swiper-slide v-for="item in myMissions" :key="item.id">
-        <div class="homeMyTaskItem" @click="myTaskToDetaill(item)">
+        <div
+          :class="['homeMyTaskItem', item.type == 1 ? 'myTaskItemTrain' : 'myTaskItemExam']"
+          class="homeMyTaskItem"
+          @click="myTaskToDetaill(item)"
+        >
           <h3 class="homeMyTaskItemTitle">
             <span class="homeMyTaskItemTitle2">{{ item.name }}</span>
             <span class="homeMyTaskType">{{ myMissionsType[item.type] }}</span>
@@ -199,6 +203,11 @@ export default {
   box-shadow: 0 2px 12px 0 rgba(0, 88, 121, 0.08);
   border-radius: 4px;
   float: left;
+}
+.myTaskItemExam {
+  border-bottom: #7feab7 4px solid;
+}
+.myTaskItemTrain {
   border-bottom: #80d4fd 4px solid;
 }
 .homeMyTaskItem .homeMyTaskItemTitle {
@@ -220,13 +229,18 @@ export default {
   margin: 17px 0 0 0;
 }
 .homeMyTaskItem .homeMyTaskType {
-  background: #01aafc;
   padding: 1px 5px;
   float: right;
   font-size: 12px;
   margin: 17px 0 0 0;
   color: #fff;
   border-radius: 4px;
+}
+.myTaskItemExam .homeMyTaskType {
+  background: #00d66f;
+}
+.myTaskItemTrain .homeMyTaskType {
+  background: #01aafc;
 }
 .homeMyTaskItem .homeMyTaskItemTextItem {
   color: #73797f;

@@ -158,7 +158,7 @@ export default {
   methods: {
     // 复制链接
     onCopy() {
-      this.$message.success('您已成功复制二维码链接')
+      this.$message.success('复制链接成功！')
     },
     // 下载
     downloadFile(data) {
