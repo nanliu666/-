@@ -99,7 +99,7 @@
                   will: item.status === 1
                 }"
               >
-                {{ item.status === 2 ? '进行中' : item.status === 3 ? '已办结' : '未开始' }}
+                {{ item.status === 2 ? '进行中' : item.status === 3 ? '已结办' : '未开始' }}
               </div>
             </div>
             <el-button
