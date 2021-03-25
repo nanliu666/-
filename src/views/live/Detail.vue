@@ -38,7 +38,7 @@
                 </div>
                 <div class="content live__time">
                   <span class="label">直播时间：</span>
-                  <span class="value ">
+                  <span class="value">
                     <ul v-if="!_.isEmpty(detailData.liveTime)">
                       <li
                         v-for="(item, index) in detailData.liveTime"
@@ -65,7 +65,7 @@
             </el-button>
           </div>
         </div>
-        <div class="header__right">
+        <div v-if="false" class="header__right">
           <div class="qrcode__img">
             <vue-qr
               v-if="watchLiveLink"
