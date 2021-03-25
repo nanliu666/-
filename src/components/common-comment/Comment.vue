@@ -104,7 +104,7 @@ export default {
       totalNum: 100,
       scopeParams: {
         remark: '',
-        scope: ''
+        scope: 0
       },
       listParams: {
         pageNo: 1,
@@ -154,7 +154,7 @@ export default {
         this.submit(this.scopeParams).then(() => {
           this.hasPublish = true
           this.scopeParams.remark = ''
-          this.scopeParams.scope = ''
+          this.scopeParams.scope = 0
           this.loadList()
         })
       } else {

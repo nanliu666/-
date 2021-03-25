@@ -94,7 +94,7 @@
 </template>
 
 <script>
-// import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
+import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
 import moment from 'moment'
 import {
   getCourseDetail,
@@ -109,7 +109,7 @@ import { mapGetters } from 'vuex'
 import Experience from './components/Experience'
 export default {
   name: 'CourseDetail',
-  components: { Comment, Experience },
+  components: { Comment, Experience, CommonBreadcrumb },
   data() {
     return {
       routeList: [
@@ -176,10 +176,9 @@ export default {
       }
       getCourseDetail({ courseId: this.id }).then((res) => {
         this.courseData = res
-        // this.$nextTick(() => {
-        //   this.$refs.breadcrumb.setBreadcrumbTitle(res.name)
-        //   console.log(res.name, 'res.name')
-        // })
+        this.$nextTick(() => {
+          this.$refs.breadcrumb.setBreadcrumbTitle(res.name)
+        })
       })
     },
     loadChapters() {
