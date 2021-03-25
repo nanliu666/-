@@ -31,7 +31,8 @@
       <div class="intro-list">
         <div class="intro-item">
           分类：
-          <span class="text">{{ data.categoryName? data.categoryName: '--' }}</span>
+          <!-- <span class="text">{{ data.categoryName? data.categoryName: '--' }}</span> -->
+          <span class="text">{{ data.categoryName == '/--'? '--': data.categoryName }}</span>
         </div>
         <div class="intro-item">
           培训时间：
