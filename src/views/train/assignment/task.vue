@@ -38,7 +38,7 @@
               <li>剩余有效答题次数：{{ dataInfo.surplusParticipatNumber }}</li>
               <li>试卷总分：{{ dataInfo.totalScore }}</li>
               <li>评分规则：取最高得分最为最终成绩</li>
-              <li>成绩:{{ dataInfo.score }}</li>
+              <li>成绩:{{ dataInfo.score? dataInfo.score: '-' }}</li>
             </ul>
           </div>
         </div>
@@ -232,7 +232,7 @@ export default {
         if (today >= startDate && today <= endDate && this.dataInfo.status != 3) {
           // (今天日期 》= 开始日期) && (今天日期 《= 结束日期) && （!=已结办）
           this.isGoLearn = false
-          console.log('this.isGoLearn', this.isGoLearn)
+          // console.log('this.isGoLearn', this.isGoLearn)
         }
       }
       // console.log('this.dataInfo', this.dataInfo)

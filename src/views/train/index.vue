@@ -229,15 +229,15 @@ export default {
     },
     toDetail(item) {
       const { id: trainId, trainName: title, trainWay, userType } = item
-      // type 0:学员,1:讲师
-      this.$router.push({
-        name: 'trainDetail',
-        params: {
+      // userType 0:学员,1:讲师
+      this.$router.push({ 
+        path: '/train/detail', 
+        query: { 
           title,
           trainId,
           trainWay,
           userType
-        }
+          } 
       })
     },
     sortList(list = []) {

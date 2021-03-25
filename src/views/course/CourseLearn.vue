@@ -104,6 +104,7 @@
         <!-- 课件 -->
         <div v-if="currentChapter.type == '2'" class="content--iframe">
           <video
+            v-if="isVideo"
             ref="videoRef"
             autoplay
             preload
@@ -113,13 +114,13 @@
             :width="contentWidth"
             style="width:100%;"
           ></video>
-          <!-- <iframe
+          <iframe
             v-if="!isVideo"
             :src="getContentUrl(currentChapter)"
             width="100%"
             height="100%"
             frameborder="0"
-          ></iframe> -->
+          ></iframe>
         </div>
         <!--资料-->
         <div v-if="currentChapter.type == '3'" class="content--download">
@@ -198,7 +199,7 @@ export default {
     },
     isVideo() {
       const regx = /^.*\.(avi|wmv|mp4|3gp|rm|rmvb|mov)$/
-      return regx.test(this.currentChapter.content) && this.currentChapter.type === 2
+      return regx.test(this.currentChapter.content)
     },
     COURSE_CHAPTER_TYPE_MAP: () => COURSE_CHAPTER_TYPE_MAP,
     ...mapGetters(['userInfo'])
