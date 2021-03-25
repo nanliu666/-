@@ -285,6 +285,11 @@ export default {
       },
       deep: true,
       immediate: true
+    },
+    currentQuestion: {
+      handler() {
+        this.commonCreateCountdown()
+      }
     }
   },
   created() {
@@ -310,11 +315,9 @@ export default {
     },
     prevQuestion() {
       this.currentQuestion -= 1
-      this.commonCreateCountdown()
     },
     nextQuestion() {
       this.currentQuestion += 1
-      this.commonCreateCountdown()
     },
     commonCreateCountdown() {
       if (this.currentCountDown !== RETURN_ZERO) {
@@ -394,6 +397,7 @@ export default {
     // 当前题目是否被做
     currentItemIsInSelected(data) {
       const getAnswerValue = (value) => {
+        // 是否是试题组
         const isGroup = value.type === QUESTION_TYPE_GROUP
         const groupPass = _.every(value.subQuestions, (item) => {
           return item.answer
@@ -409,7 +413,7 @@ export default {
       const isSelected = this.paper.answerMode === 1 ? byTotal : byOne
       return isSelected
     },
-    // 当前对象是否存在于存疑数据
+    // 当前对象是否存在于存疑数据数组
     currentItemIsInImpeach(data) {
       return _.some(this.impeachList, (item) => {
         return item.key === data.id
@@ -594,16 +598,19 @@ export default {
     },
     async initData() {
       this.paper = await getTakeExam(_.omit(this.$route.query, ['isReNew']))
-      // 监听联网断网
-      this.initWatchNetworks()
       // 初始化题目数据处理
       this.initQuestionList()
       // 逐题模式
       this.initAnswerByOne()
       // 初始考试倒计时
       this.initRemainingTime()
-      // 闭卷监听
-      this.watchCloseBookExam()
+      // 开发环境先关闭
+      if (process.env.NODE_ENV === 'production') {
+        // 闭卷监听
+        this.watchCloseBookExam()
+        // 监听联网断网
+        this.initWatchNetworks()
+      }
     },
     initWatchNetworks() {
       const EventUtil = {
