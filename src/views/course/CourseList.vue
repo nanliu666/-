@@ -144,7 +144,7 @@ const COURSE_TYPE_LIST = [
 const COURSE_CHOICE_LIST = [
   { label: '精选推荐', value: '1' },
   { label: '最新课程', value: '2' },
-  { label: '热门课程', value: '3' }
+  { label: '全部课程', value: '3' }
 ]
 export default {
   name: 'CourseList',

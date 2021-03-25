@@ -232,12 +232,15 @@ export default {
   methods: {
     // 上传完作业回调
     uploadTask(contentId) {
-      this.chapters.forEach((item, index) => {
-        if (item.contentId == contentId) {
-          this.chapters[index].progress = 100
-          this.submitLearnRecords()
-          this.loadChapters()
-        }
+      this.$nextTick(() => {
+        this.chapters.forEach((item, index) => {
+          if (item.contentId == contentId) {
+            this.chapters[index].progress = 100
+            // console.log(contentId)
+            // console.log(this.chapters)
+            this.submitLearnRecords()
+          }
+        })
       })
     },
     /**
@@ -368,6 +371,7 @@ export default {
       if (!params.contentRecords) {
         return
       }
+      // console.log(params)
       updateLearnRecord(params)
         .then()
         .catch()
@@ -393,6 +397,7 @@ export default {
           if (chapter.contentId == this.chapterId) {
             this.currentChapter = chapter
           }
+          // console.log(this.chapters)
         })
       })
     },
