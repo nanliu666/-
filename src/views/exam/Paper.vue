@@ -249,7 +249,8 @@ export default {
       tempQuestionList: [],
       currentQuestion: 0,
       limitTimeList: [],
-      byOneTimeId: {}
+      byOneTimeId: {},
+      nowTimeMs: ''
     }
   },
   computed: {
@@ -291,6 +292,7 @@ export default {
     this.initData()
     //阻止F5刷新
     this.stopF5Refresh()
+    this.nowTimeMs = new Date().getTime()
   },
   beforeRouteLeave(from, to, next) {
     if (this.isLeave || this.isSuccess) {
@@ -356,7 +358,8 @@ export default {
       if (!this.isSuccess && !this.isAutoEnd) {
         this.submitTips = '系统检测到您切换屏幕，系统将自动提交答卷'
         this.isAutoEnd = true
-        this.autoEndExam()
+        this.autoEndExam(this.submitTips)
+        clearInterval(this.dealTimeId)
       }
     },
     goBack() {
@@ -722,24 +725,40 @@ export default {
     // TODO: 考试时间交卷逻辑需要补充
     initRemainingTime() {
       const { reckonTimeValue, strategy, examEndTime, reckonTime } = this.paper
+
       // 不计时不需要进行以下步骤
       if (!reckonTime) return
       // 如果考试时长不计时，并且考试策略为true，最后5分钟需要爆红提示。计时就按照计时的算。
       const canUseUpTime = moment(new Date()).add(reckonTimeValue, 'm')
+      var examEndTimeMs = moment(examEndTime, 'YYYY-MM-DD HH:mm:ss').valueOf()
+      // 考试结束时间与进入时间差
+      var timeDeffMs = examEndTimeMs - this.nowTimeMs
+      // 默认设置时间
+      var reckonTimeValueTimeMs = reckonTimeValue * 60 * 1000
+      let momentTime = ''
+      if (reckonTimeValueTimeMs > timeDeffMs) {
+        momentTime = moment(examEndTime)
+      } else {
+        momentTime = canUseUpTime
+      }
+      const dealline = strategy ? momentTime : canUseUpTime
+
       // 考试策略strategy影响考试时长，如果为true，到了考试结束时间就必须交卷，否则可以考满设置的考试时间
-      const dealline = strategy ? moment(examEndTime) : canUseUpTime
+      let diffTime = moment(dealline).diff(new Date(), 'seconds')
+      this.remainingTime = this.createCountdown(diffTime)
       this.dealTimeId = setInterval(() => {
-        const diffTime = moment(dealline).diff(new Date(), 'seconds')
+        diffTime = moment(dealline).diff(new Date(), 'seconds')
         // 5分钟为时间警戒线，经过测试兑换的值为301995
-        const WARNING_LINE = 301995
+        const WARNING_LINE = 300
         if (diffTime <= WARNING_LINE) {
           this.isWarningTimeLine = true
         }
         this.remainingTime = this.createCountdown(diffTime)
-        if (this.remainingTime !== RETURN_ZERO) return
+        if (this.remainingTime !== '00:00:01') return
         clearInterval(this.dealTimeId)
         // 结束考试
-        this.autoEndExam()
+        this.submitTips = '考试时间已结束，系统将自动提交答卷'
+        this.autoEndExam(this.submitTips)
       }, 1000)
     },
     /**
@@ -748,17 +767,33 @@ export default {
      * 作用：创建一个倒计时
      */
     createCountdown(diffTime) {
-      const hoursTime = moment.duration(diffTime).hours()
-      const minutesTime = moment.duration(diffTime).minutes()
-      const secondsTime = moment.duration(diffTime).seconds()
-      const formatHours = `${hoursTime < 10 ? `0${hoursTime}` : hoursTime}`
-      const formatMinutes = `${minutesTime < 10 ? `0${minutesTime}` : minutesTime}`
-      const formatSeconds = `${secondsTime < 10 ? `0${secondsTime}` : secondsTime}`
-      const targetTime = `${formatHours} : ${formatMinutes} : ${formatSeconds}`
+      // const hoursTime = moment.duration(diffTime).hours()
+      // console.log('hoursTime:',hoursTime)
+      // const minutesTime = moment(diffTime).minutes()
+      //   console.log('minutesTime:',minutesTime)
+      // const secondsTime = moment(diffTime).seconds()
+      //  console.log('secondsTime:',secondsTime)
+      // const formatHours = `${hoursTime < 10 ? `0${hoursTime}` : hoursTime}`
+      // const formatMinutes = `${minutesTime < 10 ? `0${minutesTime}` : minutesTime}`
+      // const formatSeconds = `${secondsTime < 10 ? `0${secondsTime}` : secondsTime}`
+      // const targetTime = `${formatHours} : ${formatMinutes} : ${formatSeconds}`
+
+      if (!diffTime) {
+        return '-'
+      }
+      let targetTime = ''
+      var hour = Math.floor(diffTime / 3600) //时
+      var min = Math.floor((diffTime % 3600) / 60) //分
+      var second = diffTime % 60 //秒
+      if (hour >= 0) {
+        targetTime += (hour > 9 ? hour.toString() : '0' + hour.toString()) + ':'
+      }
+      targetTime += (min > 9 ? min.toString() : '0' + min.toString()) + ':'
+      targetTime += second > 9 ? second.toString() : '0' + second.toString()
       return targetTime
     },
     // 考试到时结束考试
-    autoEndExam() {
+    autoEndExam(submitTips) {
       let timeTips = 4
       const autoEndExamTimeId = setInterval(async () => {
         timeTips -= 1
@@ -769,6 +804,7 @@ export default {
         } else {
           this.centerDialogVisible = true
         }
+        this.submitTips = submitTips
         this.confirmTips = `知道了（${timeTips}s）`
       }, 1000)
     }
@@ -1002,5 +1038,8 @@ $selctColor: #fcba00;
       font-weight: 550;
     }
   }
+}
+/deep/ .el-dialog--center .el-dialog__body {
+  text-align: center !important;
 }
 </style>
