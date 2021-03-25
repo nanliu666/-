@@ -88,7 +88,7 @@
             </div> -->
           </div>
         </div>
-        <h3 class="LMTitle">
+        <h3 class="LMTitle" style="padding-top:46px">
           <span class="span1">热门课程</span>
           <router-link :to="'/course/list'">
             更多
@@ -133,6 +133,7 @@
                     width="590"
                     height="276"
                     alt=""
+                    style="border-radius: 4px;"
                   />
                   <div class="recommendCourseTextP">
                     <div class="recommendCourseText">
@@ -186,7 +187,7 @@
             </template>
           </div>
         </div>
-        <h3 class="LMTitle">
+        <h3 class="LMTitle" style="padding-top:46px">
           <span class="span1">培训中心</span>
           <router-link to="/train/index">
             更多
@@ -251,7 +252,7 @@
             </div> -->
           </div>
         </div>
-        <h3 class="LMTitle">
+        <h3 class="LMTitle" style="padding-top:46px">
           <span class="span1">新闻中心</span>
           <router-link to="/news/list">
             更多
@@ -412,7 +413,11 @@ export default {
 .home {
   text-align: center;
   color: #000b15;
+  font-family: 'Arial', 'Microsoft YaHei', '黑体', '宋体', sans-serif;
   background: rgb(251, 250, 250);
+}
+.home a {
+  font-family: 'Arial', 'Microsoft YaHei', '黑体', '宋体', sans-serif;
 }
 // .homeMenu {
 //   position: absolute;
@@ -454,13 +459,14 @@ export default {
 }
 .LMTitle {
   float: left;
-  padding: 55px 0 0 0;
+  padding: 66px 0 37px 0;
   clear: both;
   width: 100%;
+  margin: 0;
 }
 .LMTitle .span1 {
   font-size: 30px;
-  font-family: '微软雅黑';
+  font-family: 'Arial', 'Microsoft YaHei', '黑体', '宋体', sans-serif;
   color: #000b15;
   font-weight: normal;
   padding-right: 10px;
@@ -468,16 +474,16 @@ export default {
 }
 .LMTitle .span2 {
   font-size: 18px;
-  font-family: '微软雅黑';
+  font-family: 'Arial', 'Microsoft YaHei', '黑体', '宋体', sans-serif;
   color: #000b15;
   font-weight: normal;
   opacity: 0.45;
   float: left;
-  padding-top: 8px;
+  padding: 8px 0 0 8px;
 }
 .LMTitle a {
   font-size: 18px;
-  font-family: '微软雅黑';
+  font-family: 'Arial', 'Microsoft YaHei', '黑体', '宋体', sans-serif;
   color: #000b15;
   font-weight: normal;
   opacity: 0.45;
@@ -566,6 +572,7 @@ export default {
   position: absolute;
 }
 .recommendCourse .recommendCourseText {
+  border-radius: 0 0 4px 4px;
   position: relative;
   z-index: 10;
   bottom: 64px;
