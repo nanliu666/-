@@ -441,9 +441,8 @@ export default {
         })
     },
     goBack() {
-      // this.$router.push({ path: '/course/detail' })
-      this.$router.go(-1)
-      // this.$router.push({ path: '/course/detail' })
+      this.$router.push({ path: '/course/detail', query: { id: this.courseId } })
+      // this.$router.go(-1)
     }
   }
 }
