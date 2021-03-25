@@ -29,7 +29,7 @@ export default {
   },
   methods: {
     setBreadcrumbTitle(title, index = 1) {
-      this.configs[index].title = title
+      this.routeList[index].title = title
     }
   }
 }
