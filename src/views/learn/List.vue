@@ -318,8 +318,8 @@ export default {
       currentTestExpand: -1,
       currentFileExpand: -1,
       currentFirstType: 'required',
-      currentRequiredNav: -1,
-      currentElectiveNav: -1,
+      currentRequiredNav: -1, //必修初始状态
+      currentElectiveNav: -1, //选修初始状态
       menuList: [],
       totalNum: 0,
       queryInfo: {
@@ -422,6 +422,12 @@ export default {
     },
     // 切换必修/选修
     toggleShow(type) {
+      if (type == 'required') {
+        this.currentRequiredNav = -1
+      }
+      if (type == 'elective') {
+        this.currentElectiveNav = -1
+      }
       this.queryInfo.pageNo = 1
       this.currentFirstType = type
       // 去除必修选修内部id，重新加载
