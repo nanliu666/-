@@ -24,7 +24,7 @@
             :multiple="false"
             @input="onSuccess"
           >
-            <el-button type="text" icon="el-icon-upload2">上传材料</el-button>
+            <el-button type="text" icon="el-icon-upload2" :disabled="isHandle">上传材料</el-button>
           </common-upload>
         </template>
         <template slot-scope="scope">
@@ -42,6 +42,7 @@
 import { downLoadFile } from '@/util/util'
 import CommonUpload from '@/components/common-upload/CommonUpload'
 import { getFileLists, saveFile, deleteSubmitFile } from 'src/api/train'
+import moment from 'moment'
 export default {
   components: {
     CommonUpload
@@ -57,7 +58,8 @@ export default {
   data() {
     return {
       tableData: [],
-      uploadData: [{}]
+      uploadData: [{}],
+      isHandle: true
     }
   },
   watch: {
@@ -66,13 +68,22 @@ export default {
     }
   },
   created() {
-    // 临时数据
+    this.processState()
     this.handleGetFileLists()
   },
   activated() {
     // this.getInfo()
   },
   methods: {
+    processState() {
+      let today = new Date(moment().format('YYYY-MM-DD'))
+      let startDate = new Date(moment(this.data.trainBeginTime).format('YYYY-MM-DD'))
+      let endDate = new Date(moment(this.data.trainEndTime).format('YYYY-MM-DD'))
+      if (today >= startDate && today <= endDate && this.data.status != 3) {
+        // (今天日期 》= 开始日期) && (今天日期 《= 结束日期) && （!=已结办）
+        this.isHandle = false
+      }
+    },
     downLoadMaterial(data) {
       downLoadFile(data)
     },

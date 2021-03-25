@@ -52,7 +52,7 @@
         />
         <div class="courseText">
           <h3 class="courseTitle">{{ item.name }}</h3>
-          <span class="courseTime">时长 00:34:12</span>
+          <span class="courseTime">时长 {{ item.duration }}</span>
           <!--  时长 -->
           <span class="coursePercent">{{ item.totalPrecent }}%</span>
           <el-progress :percentage="item.totalPrecent" :format="format"></el-progress>

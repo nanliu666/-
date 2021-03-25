@@ -5,7 +5,7 @@
         <el-breadcrumb-item :to="{ path: '/train' }">
           培训中心
         </el-breadcrumb-item>
-        <el-breadcrumb-item>{{ data.title }}</el-breadcrumb-item>
+        <el-breadcrumb-item>{{ data.title? data.title: '--' }}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="train-intro">
@@ -23,7 +23,7 @@
               : data.status === 1
                 ? '未开始'
                 : data.status === 3
-                  ? '已办结'
+                  ? '已结办'
                   : ''
           }}
         </div>
@@ -31,15 +31,16 @@
       <div class="intro-list">
         <div class="intro-item">
           分类：
-          <span class="text">{{ data.categoryName }}</span>
+          <!-- <span class="text">{{ data.categoryName? data.categoryName: '--' }}</span> -->
+          <span class="text">{{ data.categoryName == '/--'? '--': data.categoryName }}</span>
         </div>
         <div class="intro-item">
           培训时间：
-          <span class="text">{{ data.trainBeginTime }} ~ {{ data.trainEndTime }}</span>
+          <span class="text">{{ data.trainBeginTime? data.trainBeginTime: '--' }} ~ {{ data.trainEndTime? data.trainEndTime: '' }}</span>
         </div>
         <div class="intro-item">
           计划人数：
-          <span class="text">{{ data.people }}</span>
+          <span class="text">{{ data.people? data.people: '--' }}</span>
         </div>
       </div>
       <div class="intro-list">
@@ -51,35 +52,35 @@
         </div>
         <div class="intro-item">
           培训地点：
-          <span class="text">{{ data.address }}</span>
+          <span class="text">{{ data.address? data.address: '--' }}</span>
         </div>
         <div class="intro-item">
           联系人：
-          <span class="text">{{ data.contactName }}</span>
+          <span class="text">{{ data.contactName? data.contactName: '--' }}</span>
         </div>
       </div>
       <div class="intro-list">
         <div class="intro-item">
           联系电话：
-          <span class="text">{{ data.contactPhone }}</span>
+          <span class="text">{{ data.contactPhone? data.contactPhone: '' }}</span>
         </div>
         <div class="intro-item">
           主办单位：
-          <span class="text">{{ data.sponsor }}</span>
+          <span class="text">{{ data.sponsor? data.sponsor: '--' }}</span>
         </div>
         <div class="intro-item">
           承办单位：
-          <span class="text">{{ data.organizer }}</span>
+          <span class="text">{{ data.organizer? data.organizer: '--' }}</span>
         </div>
       </div>
       <div class="intro-list">
         <div class="intro-item">
           班主任：
-          <span class="text">{{ data.headTeacher }}</span>
+          <span class="text">{{ data.headTeacher? data.headTeacher: '--' }}</span>
         </div>
         <div class="intro-item">
           助教：
-          <span class="text">{{ data.teachAssistant }}</span>
+          <span class="text">{{ data.teachAssistant? data.teachAssistant: '--' }}</span>
         </div>
         <div class="intro-item">
           <span class="text"></span>
@@ -108,7 +109,6 @@
 </template>
 
 <script>
-// import { Course, Exam, Rate, Intro, Schedule, Trainee, Arrangement, MaterialsUpload } from './contents'
 // eslint-disable-next-line no-unused-vars
 import { Exam, Rate, Intro, Schedule, Trainee, Arrangement, MaterialsUpload } from './contents'
 import { getDetail, signUp, getTrainState } from 'src/api/train'
@@ -157,21 +157,21 @@ export default {
       localStorage.setItem(globalKey.trainDataKey, JSON.stringify(this.data))
     },
     async getData() {
-      const params = this.$route.params
+      const params = this.$route.query
       const trainDataKey = globalKey.trainDataKey
       if (!Object.keys(params).length) {
         this.data = JSON.parse(localStorage.getItem(trainDataKey))
         this.activeComponent = this.data.activeComponent
 
-        if (this.data.status !== 2) {
-          this.data.tabs.splice(this.data.tabs.indexOf('Rate'), 1)
-        }
+        // if (this.data.status !== 2) {
+        //   this.data.tabs.splice(this.data.tabs.indexOf('Rate'), 1)
+        // }
       } else {
         const { trainId, userType } = params
         await this.getTrainState(trainId)
         let tabs = []
         // userType 0 代表学员 1代表老师
-        if (userType === 0) {
+        if (userType == 0) {
           tabs = ['Intro']
         } else {
           tabs = ['Trainee', 'Schedule', 'Intro', 'Rate']
@@ -192,17 +192,18 @@ export default {
             this.data.isTrainObject ||
             (this.data.applyJoin && this.data.applyJoinStatus == 'SignedUp')
           ) {
-            if (this.data.status != 1) {
-              this.data.tabs = ['Arrangement', 'Intro', 'MaterialsUpload']
-            } else {
-              this.data.tabs = ['Arrangement', 'Intro']
-            }
+            // if (this.data.status != 1) {
+            //   this.data.tabs = ['Arrangement', 'Intro', 'Rate','MaterialsUpload']
+            // } else {
+            //   this.data.tabs = ['Arrangement', 'Intro', 'Rate']
+            // }
+            this.data.tabs = ['Arrangement', 'Intro', 'Rate','MaterialsUpload']
             this.activeComponent = this.data.tabs[0]
           }
 
           this.$forceUpdate()
           let applyJoinEndDate = this.data.applyJoinEndDate || this.data.trainEndTime
-          if (new Date(moment().format('yyyy-MM-DD')) <= new Date(applyJoinEndDate)) {
+          if ((new Date(moment().format('yyyy-MM-DD')) <= new Date(applyJoinEndDate)) && this.data.status != 3) {
             this.isApplyJoin = true
           }
           localStorage.setItem(trainDataKey, JSON.stringify(this.data))
@@ -215,7 +216,6 @@ export default {
       await signUp({ trainId }).then((res) => {
         if (res) {
           this.getData()
-          // this.data.applyJoinStatus = 'UnderReview'
         }
       })
     },
