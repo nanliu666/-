@@ -285,8 +285,8 @@ export default {
       this.timer = setInterval(() => {
         this.updateVideoProgress()
         this.submitLearnRecords()
-      }, 10000)
-      // }, 5 * 60 * 1000)
+        // }, 10000)
+      }, 1 * 60 * 1000)
     },
     //  初始化
     reset() {
