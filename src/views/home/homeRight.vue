@@ -55,7 +55,13 @@
           <span class="courseTime">时长 {{ item.duration }}</span>
           <!--  时长 -->
           <span class="coursePercent">{{ item.totalPrecent }}%</span>
-          <el-progress :percentage="item.totalPrecent" :format="format"></el-progress>
+          <div style="clear: both;"></div>
+          <el-progress
+            :percentage="item.totalPrecent"
+            :stroke-width="4"
+            style="padding-top: 5px;"
+            :format="format"
+          ></el-progress>
         </div>
       </div>
       <!-- <div class="learningCourseItem">
@@ -122,7 +128,7 @@
         <!-- <router-link to="">更多</router-link> -->
       </div>
       <div v-for="(item, i) in monthlyCreditData" :key="item.id" class="rankingItem">
-        <div :class="['rankingIndex', 'rankingIndex' + i]">{{ i + 1 }}</div>
+        <div :class="['rankingIndex', 'rankingIndex' + i]">0{{ i + 1 }}</div>
         <div class="rankingImg">
           <img :src="item.url ? item.url : '/img/userIconBig.png'" width="40" height="40" alt="" />
         </div>
@@ -159,7 +165,7 @@
         <!-- <router-link to="">更多</router-link> -->
       </div>
       <div v-for="(item, i) in monthlyPeriodData" :key="item.id" class="rankingItem">
-        <div :class="['rankingIndex', 'rankingIndex' + i]">{{ i + 1 }}</div>
+        <div :class="['rankingIndex', 'rankingIndex' + i]">0{{ i + 1 }}</div>
         <div class="rankingImg">
           <img :src="item.url ? item.url : '/img/userIconBig.png'" width="40" height="40" alt="" />
         </div>
@@ -228,7 +234,7 @@ export default {
   background: #fff url('../../assets/images/icon.png') no-repeat 0 168px;
   box-shadow: 0 2px 12px 0 rgba(0, 88, 121, 0.08);
   border-radius: 4px;
-  margin-top: 128px;
+  margin-top: 143px;
   text-align: center;
 }
 .homeRightP .homePrivateInfoImg {
@@ -243,8 +249,8 @@ export default {
   color: #000b15;
   opacity: 0.85;
   width: 180px;
-  height: 32px;
-  margin: 20px auto 0 auto;
+  height: 30px;
+  margin: 13px auto 0 auto;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -254,18 +260,18 @@ export default {
   color: #01aafc;
   width: 180px;
   background: #eaf8ff;
-  padding: 2px 10px;
-  border-radius: 4px;
+  padding: 2px 15px;
+  border-radius: 10px;
 }
 .homeRightP .privateInfoCredit {
-  margin: 40px auto 0 auto;
+  margin: 47px auto 0 auto;
   width: 200px;
   overflow: hidden;
 }
 .homeRightP .CreditItem {
   float: left;
   width: 100px;
-  padding: 0 10px 20px 10px;
+  padding: 0 10px 22px 10px;
 }
 .homeRightP .CreditItem .credit {
   display: block;
@@ -303,7 +309,7 @@ export default {
   border-radius: 4px;
   overflow: hidden;
   padding: 10px 20px;
-  margin-top: 18px;
+  margin-top: 20px;
 }
 
 .homeRightP .learningCourseItem {
@@ -312,6 +318,7 @@ export default {
   margin-bottom: 18px;
 }
 .homeRightP .learningCourseItem img {
+  border-radius: 4px;
   width: 102px;
 }
 .homeRightP .learningCourse .courseText {
@@ -322,7 +329,7 @@ export default {
 }
 .homeRightP .courseTitle {
   font-size: 14px;
-  margin: 0 0 10px 0;
+  margin: 0 0 5px 0;
   color: #000b15;
   height: 20px;
   line-height: 20px;
@@ -354,7 +361,7 @@ export default {
   border-radius: 4px;
   overflow: hidden;
   padding: 10px 20px;
-  margin-top: 18px;
+  margin-top: 20px;
 }
 .homeRightP .rankingItem {
   display: flex;
@@ -383,6 +390,9 @@ export default {
 .homeRightP .rankingImg {
   width: 40px;
   margin: 0 10px 0 0;
+}
+.homeRightP .rankingImg img {
+  border-radius: 50%;
 }
 .homeRightP .rankingInfo {
   flex: 1;
