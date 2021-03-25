@@ -197,7 +197,7 @@ import examSuccess from './components/Success'
 import TheFooter from '@/page/TheFooter'
 import AnswerByQuestion from './components/AnswerByQuestion'
 const nzhcn = require('nzh/cn')
-const RETURN_ZERO = '00 : 00 : 00'
+const RETURN_ZERO = '00:00:00'
 import {
   QUESTION_TYPE_MAP,
   QUESTION_TYPE_MULTIPLE,
@@ -392,6 +392,8 @@ export default {
         this.currentQuestion = _.findIndex(this.tempQuestionList, (item) => {
           return item.id === data.id
         })
+        clearInterval(this.byOneTimeId)
+        this.createByOneCountdown()
       }
     },
     // 当前题目是否被做
@@ -673,31 +675,47 @@ export default {
       this.tempQuestionList = topicList
       this.initByOneTime()
     },
-    initByOneTime() {
-      _.each(this.tempQuestionList, (item, index) => {
-        if (item.timeLimit) {
-          let temp = {
-            index: index,
-            key: item.id,
-            limit: item.timeLimit,
-            timeLeft: moment.duration(item.timeLimit, 'seconds'),
-            countDown: null
-          }
-          this.limitTimeList.push(temp)
+    async initByOneTime() {
+      // this.tempQuestionList.forEach((item,index) => {
+      //    if (item.timeLimit) {
+      //     let temp = {
+      //       index: index,
+      //       key: item.id,
+      //       limit: item.timeLimit,
+      //       // timeLeft: moment.duration(item.timeLimit, 'seconds'),
+      //       timeLeft: item.timeLimit,
+      //       countDown: null
+      //     }
+      //     this.limitTimeList.push(temp)
+      //   }
+      // })
+      this.limitTimeList = this.tempQuestionList.map((item, index) => {
+        let temp = {
+          index: index,
+          key: item.id,
+          limit: item.timeLimit,
+          timeLeft: item.timeLimit,
+          countDown: null
         }
+        return temp
       })
       this.createByOneCountdown()
     },
     createByOneCountdown() {
-      _.each(this.limitTimeList, (item) => {
-        if (item.index === this.currentQuestion) {
-          this.byOneTimeId = setInterval(() => {
-            item.timeLeft = item.timeLeft.subtract(1, 's')
-            item.countDown = this.createCountdown(item.timeLeft)
-            if (item.countDown === RETURN_ZERO) {
-              clearInterval(this.byOneTimeId)
-            }
-          }, 1000)
+      _.each(this.limitTimeList, (item, index) => {
+        if (item.timeLeft) {
+          if (this.currentQuestion === index) {
+            this.byOneTimeId = setInterval(() => {
+              item.timeLeft--
+              item.countDown = this.createCountdown(item.timeLeft)
+              item.countDown = item.countDown == '-' ? '00:00:00' : item.countDown
+              if (item.countDown === '00:00:00') {
+                clearInterval(this.byOneTimeId)
+              }
+            }, 1000)
+          } else {
+            this.limitTimeList.timeLeft = item.timeLeft
+          }
         }
       })
     },
@@ -754,7 +772,8 @@ export default {
           this.isWarningTimeLine = true
         }
         this.remainingTime = this.createCountdown(diffTime)
-        if (this.remainingTime !== '00:00:01') return
+        this.remainingTime = this.remainingTime == '-' ? '00:00:00' : this.remainingTime
+        if (this.remainingTime !== RETURN_ZERO) return
         clearInterval(this.dealTimeId)
         // 结束考试
         this.submitTips = '考试时间已结束，系统将自动提交答卷'
