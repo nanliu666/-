@@ -138,7 +138,7 @@
         </div>
         <!--考试-->
         <div v-if="currentChapter.type == '4'" class="content--test">
-          <Task :task-data="currentChapter" />
+          <Task :task-data="currentChapter" @uploadTask="uploadTask" />
         </div>
 
         <!-- 课前思考 -->
@@ -209,7 +209,7 @@ export default {
       if (this.isChapterVideo(oldVal) && oldVal.duration) {
         this.updateVideoProgress(oldVal)
       }
-      if (!this.isChapterVideo(newVal)) {
+      if (!this.isChapterVideo(newVal) && newVal.type != 4) {
         newVal.progress = 100
       }
       this.submitLearnRecords()
@@ -230,13 +230,23 @@ export default {
     next()
   },
   methods: {
+    // 上传完作业回调
+    uploadTask(contentId) {
+      this.chapters.forEach((item, index) => {
+        if (item.contentId == contentId) {
+          this.chapters[index].progress = 100
+          this.submitLearnRecords()
+          this.loadChapters()
+        }
+      })
+    },
     /**
      * 更新视频播放进度
      */
     updateVideoProgress() {
-      // if (!this.isChapterVideo(chapter) || !chapter.duration) {
-      //   return
-      // }
+      if (!this.$refs.videoRef) {
+        return
+      }
       let progress = Number(
         ((this.$refs.videoRef.currentTime / this.currentChapter.duration) * 100).toFixed()
       )
@@ -247,6 +257,7 @@ export default {
       })
       //chapter.progress = progress > chapter.progress ? progress : chapter.progress
     },
+    // 下载资料
     getFileImageUrl(url = '') {
       const fileDict = {
         doc: 'word',
@@ -261,6 +272,7 @@ export default {
       let ext = url.match(/\..+/)[0]
       return `/img/file/image_icon_${fileDict[ext] || 'other'}.png`
     },
+    // 非视频课件
     getContentUrl(chapter) {
       const office = /.*\.(doc|xls|xlsx|ppt|pptx)$/
       if (office.test(chapter.content)) {
@@ -268,13 +280,15 @@ export default {
       }
       return chapter.content
     },
+    // 每五分钟收集一下进度
     setTimer() {
       this.timer = setInterval(() => {
         this.updateVideoProgress()
         this.submitLearnRecords()
-        // }, 5000)
-      }, 5 * 60 * 1000)
+      }, 10000)
+      // }, 5 * 60 * 1000)
     },
+    //  初始化
     reset() {
       this.leftHidden = false
       this.activeIndex = '1'
@@ -296,6 +310,7 @@ export default {
       // this.pageIndex -= 1
       this.currentChapter = chapter
     },
+    // 进度
     calcProcess(chapter) {
       if (!this.isChapterVideo(chapter)) {
         // 兼容旧数据，现在视频以外的类型进度都是100，之前是1
@@ -308,6 +323,7 @@ export default {
         return parseInt(chapter.progress)
       }
     },
+    // 进度状态
     getChapterStatus(chapter) {
       if (this.isActive(chapter)) {
         return '正在学'
@@ -328,6 +344,7 @@ export default {
         }
       }
     },
+    // 获取课程信息
     loadCourseDetail() {
       if (!this.courseId) {
         return
@@ -355,6 +372,7 @@ export default {
         .then()
         .catch()
     },
+    // 查询学员学习课程记录
     loadChapters() {
       if (!this.courseId) {
         return
@@ -393,6 +411,7 @@ export default {
           })
       })
     },
+    // 查询课程笔记
     loadNoteList() {
       if (!this.courseId) {
         return
@@ -401,6 +420,7 @@ export default {
         this.notes = res
       })
     },
+    // 添加课程笔记
     submitNote() {
       if (!this.note) {
         return
@@ -416,6 +436,7 @@ export default {
         })
     },
     goBack() {
+      // this.$router.push({ path: '/course/detail' })
       this.$router.go(-1)
       // this.$router.push({ path: '/course/detail' })
     }
