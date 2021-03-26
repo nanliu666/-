@@ -36,7 +36,7 @@
         </div>
         <div class="intro-item">
           培训时间：
-          <span class="text">{{ data.trainBeginTime? data.trainBeginTime: '--' }} ~ {{ data.trainEndTime? data.trainEndTime: '' }}</span>
+          <span class="text">{{ data.trainBeginDate? data.trainBeginDate: '--' }} ~ {{ data.trainEndDate? data.trainEndDate: '' }}</span>
         </div>
         <div class="intro-item">
           计划人数：
@@ -200,7 +200,8 @@ export default {
             this.data.tabs = ['Arrangement', 'Intro', 'Rate','MaterialsUpload']
             this.activeComponent = this.data.tabs[0]
           }
-
+          this.data.trainBeginDate = moment(this.data.trainBeginTime).format('yyyy-MM-DD') || ''
+          this.data.trainEndDate = moment(this.data.trainEndTime).format('yyyy-MM-DD') || ''
           this.$forceUpdate()
           let applyJoinEndDate = this.data.applyJoinEndDate || this.data.trainEndTime
           if ((new Date(moment().format('yyyy-MM-DD')) <= new Date(applyJoinEndDate)) && this.data.status != 3) {
