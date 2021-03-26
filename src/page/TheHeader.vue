@@ -80,9 +80,23 @@ export default {
   data() {
     return {
       menu,
-      activePath: '/home'
+      activePath: '/home',
+      routerTo: ''
     }
   },
+
+  watch: {
+    //监听路由变化
+    $route(to) {
+      console.log()
+      this.$nextTick(() => {
+        this.activePath = this.getCaption(to.path, 0)
+      })
+      // to , from 分别表示从哪跳转到哪，都是一个对象
+      // to.path  ( 表示的是要跳转到的路由的地址 eg: /home );
+    }
+  },
+
   computed: {
     isFullscreen() {
       return this.$route.meta.fullscreen
@@ -112,9 +126,21 @@ export default {
       if (this.$route.path === item.path) {
         return
       }
-      this.activePath = item.path
+      // this.activePath = item.path
+      // this.activePath = this.routerTo
       this.$router.push(item.path)
     },
+
+    getCaption(obj, state) {
+      let index = obj.lastIndexOf('/')
+      if (state == 0) {
+        obj = obj.substring(0, index)
+      } else {
+        obj = obj.substring(index + 1, obj.length)
+      }
+      return obj
+    },
+
     logout() {
       this.$confirm('退出系统, 是否继续?', '提示', {
         confirmButtonText: '确定',
