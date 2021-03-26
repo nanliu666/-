@@ -34,7 +34,10 @@
             </div>
           </el-dropdown-item> -->
               <el-dropdown-item @click.native="toRouter('/my/info')"> 个人信息 </el-dropdown-item>
-              <el-dropdown-item @click.native="toRouter('', 'backstage')">
+              <el-dropdown-item
+                v-if="userInfo.role_id && userInfo.role_id.length > 0"
+                @click.native="toRouter('', 'backstage')"
+              >
                 后台管理
               </el-dropdown-item>
               <el-dropdown-item @click.native="toRouter('/my/info', 1)">
