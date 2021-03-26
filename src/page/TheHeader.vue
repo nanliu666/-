@@ -60,10 +60,10 @@
 <script>
 const menu = [
   { label: '首页', path: '/home' },
-  { label: '学习', path: '/learn' },
+  { label: '我的任务', path: '/learn' },
   { label: '企业知识', path: '/course' },
   { label: '知识分享', path: '/knowledge' },
-  { label: '考试', path: '/exam' },
+  { label: '考试中心', path: '/exam' },
   { label: '新闻公告', path: '/news' },
   { label: '培训中心', path: '/train' },
   { label: '直播中心', path: '/live' }

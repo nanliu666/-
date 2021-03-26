@@ -124,7 +124,7 @@
     </div>
     <div class="ranking">
       <div class="homeRightTitle">
-        <span>月度学分排行榜</span>
+        <span>月度积分排行榜</span>
         <!-- <router-link to="">更多</router-link> -->
       </div>
       <div v-for="(item, i) in monthlyCreditData" :key="item.id" class="rankingItem">
