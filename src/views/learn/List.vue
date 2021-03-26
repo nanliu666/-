@@ -432,7 +432,8 @@ export default {
       }
     },
     startStudy(data) {
-      if (data.status != 3 || (new Date(moment().format('yyyy-MM-DD')) <= new Date(moment(data.endTime).format('yyyy-MM-DD')))) {
+      // if (data.status != 3 || (new Date(moment().format('YYYY-MM-DD HH:mm:ss')) <= new Date(moment(data.endTime).format('YYYY-MM-DD HH:mm:ss')))) {
+      if (data.status != 3) {
         // 判断已结束不能去学习
         this.$router.push({ path: '/course/detail', query: { id: data.id } })
       }
