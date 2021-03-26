@@ -86,7 +86,7 @@ export default {
   },
   data() {
     return {
-      courseDate: new Date(),
+      courseDate: '',
       courseDateArr: [], //日期数据
       schedule: [], //日程表
       dataInfo: [],
@@ -95,11 +95,29 @@ export default {
     }
   },
   created() {
-    this.getData()
-    this.getList()
-    this.changeCourseDate()
+    // this.getData()
+    this.handleDefault()
+    // this.getList()
+    // this.changeCourseDate()
   },
   methods: {
+    // 处理默认展示培训安排
+    handleDefault() {
+      // status 1未开始 2进行中 3已结束
+      if(this.data.status == 1) {
+        // 未开始展示
+        this.courseDate = this.data.bizTime
+      } else if(this.data.status == 2) {
+        // 进行中展示当天
+        this.courseDate = new Date()
+      } else {
+        // 已结束默认展示最后一天
+        this.courseDate = this.data.trainEndTime
+      }
+      this.courseDate = this.courseDate || new Date()
+      this.getData(this.courseDate)
+      this.changeCourseDate(this.courseDate)
+    },
     // 获取培训安排内容
     getData(date) {
       let dateTime = moment(date).format('yyyy-MM-DD') || moment(new Date()).format('yyyy-MM-DD')
@@ -111,8 +129,8 @@ export default {
         this.dataInfo = res
       })
     },
-    getList() {},
-    // 更改日期
+    // getList() {},
+    // 点击页面图表更改日期
     changeTableDate(v) {
       this.present = moment(v).format('yyyy-MM-DD')
       this.yesterday = moment(v)
@@ -120,7 +138,7 @@ export default {
         .format('yyyy-MM-DD')
       this.getData(v)
     },
-    // 日历牌控件更改日期
+    // 点击日历牌控件更改日期
     async changeCourseDate(v) {
       await this.getTrainDate(v)
       this.handleCourseDate(v)

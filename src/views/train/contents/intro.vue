@@ -28,6 +28,7 @@ export default {
       handler(val) {
         let tem = val.introduction.replace(/&lt;/g, '<')
         tem = tem.replace(/&gt;/g, '>')
+        tem = tem.replace(/&quot;/g, '')
         this.innerText = tem
       },
       deep: true

@@ -108,6 +108,8 @@ export default {
       }
       upSave(params).then(() => {
         this.getInfo()
+        // 上传完作业更新学习进度
+        this.$emit('uploadTask', this.taskData.contentId)
       })
     },
     async getInfo() {

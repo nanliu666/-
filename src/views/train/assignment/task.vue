@@ -15,7 +15,8 @@
       </div>
       <section class="content content_detail">
         <div class="course_time f_s_14 course_time_c">
-          <p>{{ data.startTime }}~{{ data.endTime }}</p>
+          <!-- <p>{{ data.startTime }}~{{ data.endTime }}</p> -->
+          <p>{{ data.startTime }}</p>
           <p>{{ data.status }}</p>
         </div>
         <div class="course_details">
