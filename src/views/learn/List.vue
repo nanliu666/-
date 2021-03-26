@@ -432,7 +432,11 @@ export default {
       }
     },
     startStudy(data) {
-      this.$router.push({ path: '/course/detail', query: { id: data.id } })
+      if (data.status != 3 || (new Date(moment().format('yyyy-MM-DD')) <= new Date(moment(data.endTime).format('yyyy-MM-DD')))) {
+        // 判断已结束不能去学习
+        this.$router.push({ path: '/course/detail', query: { id: data.id } })
+      }
+      // this.$router.push({ path: '/course/detail', query: { id: data.id } })
     },
     startStudyPlay(data) {
       this.$router.push({ path: '/course/learn', query: { courseId: data.id } })
