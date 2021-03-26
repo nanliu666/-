@@ -61,12 +61,12 @@
 const menu = [
   { label: '首页', path: '/home' },
   { label: '学习', path: '/learn' },
-  { label: '课程', path: '/course' },
-  { label: '知识库', path: '/knowledge' },
+  { label: '企业知识', path: '/course' },
+  { label: '知识分享', path: '/knowledge' },
   { label: '考试', path: '/exam' },
-  { label: '新闻', path: '/news' },
-  { label: '培训', path: '/train' },
-  { label: '直播', path: '/live' }
+  { label: '新闻公告', path: '/news' },
+  { label: '培训中心', path: '/train' },
+  { label: '直播中心', path: '/live' }
 ]
 import Notification from './Notification'
 import { mapGetters } from 'vuex'
