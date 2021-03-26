@@ -15,14 +15,23 @@
             <span>我的{{ menuIndex === 0 ? '必修' : '选修' }}</span>
             <span>（{{ menuItem.num }}）</span>
           </span>
-          <i
+          <!-- <i
             :class="[
               currentFirstType === menuItem.type ? 'el-icon-arrow-up' : 'el-icon-arrow-down'
             ]"
+          /> -->
+          <i
+            :class="[
+              menuItem.isUnfold ? 'el-icon-arrow-up' : 'el-icon-arrow-down'
+            ]"
           />
         </div>
-        <ul
+        <!-- <ul
           v-if="currentFirstType === menuItem.type && !_.isEmpty(menuItem.courseList)"
+          class="course-ul"
+        > -->
+        <ul
+          v-if="menuItem.isUnfold && !_.isEmpty(menuItem.courseList)"
           class="course-ul"
         >
           <li
@@ -317,7 +326,7 @@ export default {
       currentExpandType: '',
       currentTestExpand: -1,
       currentFileExpand: -1,
-      currentFirstType: 'required',
+      currentFirstType: 'required', //左边大类， 必修'required' 、选修'elective'
       currentRequiredNav: -1, //必修初始状态
       currentElectiveNav: -1, //选修初始状态
       menuList: [],
@@ -397,6 +406,14 @@ export default {
       _.each(soruce, (item, index) => {
         item.type = index === 0 ? 'required' : 'elective'
       })
+      // 添加左边大类展开收起字段控制
+      soruce.forEach(element => {
+        element.isUnfold = false
+        if(element.type == 'required') {
+          // 默认必修展开
+          element.isUnfold = true
+        }
+      });
       this.menuList = soruce
     },
     // 展开课程
@@ -422,6 +439,14 @@ export default {
     },
     // 切换必修/选修
     toggleShow(type) {
+      // 处理左边大类展开收起问题
+      this.menuList.forEach(element => {
+        if (element.type == type) {
+          element.isUnfold = !element.isUnfold
+        } else {
+          element.isUnfold = false
+        }
+      });
       if (type == 'required') {
         this.currentRequiredNav = -1
       }
