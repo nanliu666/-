@@ -386,8 +386,8 @@ export default [
                 }
               },
               {
-                path: 'myTrainList',
-                name: 'myTrainList',
+                path: 'myElectiveList',
+                name: 'myElectiveList',
                 component: () =>
                   import(/* webpackChunkName: "page" */ '@/views/myTask/myElectiveList.vue'),
                 meta: {
@@ -395,8 +395,8 @@ export default [
                 }
               },
               {
-                path: 'myTrainList',
-                name: 'myTrainList',
+                path: 'myLiveList',
+                name: 'myLiveList',
                 component: () =>
                   import(/* webpackChunkName: "page" */ '@/views/myTask/myLiveList.vue'),
                 meta: {
