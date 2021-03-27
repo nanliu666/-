@@ -12,7 +12,7 @@
           <ul class="content__list">
             <li class="content__li">
               <span class="label">频道号：</span>
-              <span class="value">{{ data.channelId }}</span>
+              <span class="value">{{ item.account }}</span>
             </li>
             <li class="content__li">
               <span class="label">密码：</span>
