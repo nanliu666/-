@@ -1,6 +1,8 @@
 import demoRoutes from './demo'
 import Layout from '@/page/Layout'
 import EmptyLayout from '@/page/EmptyLayout'
+import myTaskLayout from '@/views/myTask/myTask'
+import myLearnLayout from '@/views/myTask/myLearn'
 /**
  * 路由定义规范
  * 路由整体分八大模块，每个模块写一个路由对象，对象属性包括
@@ -348,6 +350,67 @@ export default [
               import(/* webpackChunkName: "page" */ '@/views/approvalCenter/chapter.vue'),
             meta: {
               title: '章节详情'
+            }
+          }
+        ]
+      },
+      {
+        path: '/myTask',
+        redirect: '/myTask/myLearn',
+        component: myTaskLayout,
+        title: '我的任务',
+        children: [
+          {
+            name: 'myLearn',
+            path: '/myTask/myLearn',
+            redirect: '/myTask/myLearn/myRequiredList',
+            component: myLearnLayout,
+            title: '学习',
+            children: [
+              {
+                path: 'myRequiredList',
+                name: 'myRequiredList',
+                component: () =>
+                  import(/* webpackChunkName: "page"*/ '@/views/myTask/myRequiredList.vue'),
+                meta: {
+                  title: '必修课'
+                }
+              },
+              {
+                path: 'myTrainList',
+                name: 'myTrainList',
+                component: () =>
+                  import(/* webpackChunkName: "page" */ '@/views/myTask/myTrainList.vue'),
+                meta: {
+                  title: '培训'
+                }
+              },
+              {
+                path: 'myTrainList',
+                name: 'myTrainList',
+                component: () =>
+                  import(/* webpackChunkName: "page" */ '@/views/myTask/myElectiveList.vue'),
+                meta: {
+                  title: '选修课'
+                }
+              },
+              {
+                path: 'myTrainList',
+                name: 'myTrainList',
+                component: () =>
+                  import(/* webpackChunkName: "page" */ '@/views/myTask/myLiveList.vue'),
+                meta: {
+                  title: '直播'
+                }
+              }
+            ]
+          },
+          {
+            path: 'myExamList',
+            name: 'myExamList',
+            component: () => import('@/views/myTask/myExamList.vue'),
+            meta: {
+              title: '考试'
             }
           }
         ]

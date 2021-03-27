@@ -29,6 +29,7 @@
     </div>
     <div v-else class="success-page">
       <svg class="icon success-icon" aria-hidden="true">
+        89898
         <use xlink:href="#iconimage_icon_Correctprompt"></use>
       </svg>
       <div class="text">
