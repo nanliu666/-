@@ -135,7 +135,8 @@
               </div>
             </div>
           </div>
-          <div v-if="item.status === 3" class="done-tips">
+          <!-- <div v-if="item.status === 3" class="done-tips"> -->
+          <div v-if="item.isPass" class="done-tips">
             <img src="./done.png" />
           </div>
         </li>
