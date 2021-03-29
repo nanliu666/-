@@ -65,7 +65,7 @@
             </el-button>
           </div>
         </div>
-        <div v-if="false" class="header__right">
+        <div v-if="watchLiveLink" class="header__right">
           <div class="qrcode__img">
             <vue-qr
               v-if="watchLiveLink"
@@ -162,7 +162,18 @@ export default {
       return this.roleName === 'Trainee'
     },
     watchLiveLink() {
-      return `${location.origin}/#/WatchLive?wId=${_.get(this.currentUserInfo, 'account')}`
+      let { userId, avatar, userName } = this.detailData.currentUser
+        ? this.detailData.currentUser
+        : {}
+      let QRURL = ''
+      if (this.roleName === 'Trainee') {
+        QRURL = `${location.origin}/#/WatchLive?wId=${this.detailData.channelId}&userid=${userId}&avatar=${avatar}&sk=${this.detailData.authSecretOrCode}&type=${this.detailData.authType}`
+      } else if (this.roleName === 'Lecturer') {
+        QRURL = `${location.origin}/#/beginLive?beginId=${this.detailData.channelId}&roleName=${this.roleName}`
+      }
+      return QRURL
+      // return `${location.origin}/#/WatchLive?wId=${this.detailData.channelId}`
+      // return `${location.origin}/#/WatchLive?wId=${_.get(this.currentUserInfo, 'account')}`
     },
     id() {
       const id = _.get(this.$route, 'query.id', null)
