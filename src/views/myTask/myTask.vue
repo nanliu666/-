@@ -12,9 +12,6 @@
         <div :class="{ tab_bottom: clickData == item.path }"></div>
       </li>
     </ul>
-
-    <!-- <router-view></router-view> -->
-
     <component :is="clickData"></component>
   </div>
 </template>
@@ -60,16 +57,6 @@ export default {
       this.clickData = path
     }
   }
-  // watch: {
-  //   $route: {
-  //     handler(val) {
-  //       this.$nextTick(() => {
-  //         this.clickData = val.path
-  //       })
-  //     },
-  //     deep: true
-  //   }
-  // }
 }
 </script>
 
