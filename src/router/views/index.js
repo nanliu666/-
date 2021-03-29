@@ -406,7 +406,7 @@ export default [
             ]
           },
           {
-            path: 'myExamList',
+            path: '/myTask/myExamList',
             name: 'myExamList',
             component: () => import('@/views/myTask/myExamList.vue'),
             meta: {

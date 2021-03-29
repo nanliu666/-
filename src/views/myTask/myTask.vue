@@ -1,51 +1,75 @@
 <template>
   <div>
     <ul class="tabs">
-      <li v-for="item in tabsData" :key="item.id" class="tab" @click="clickTab(item.id)">
+      <li v-for="item in tabsData" :key="item.id" class="tab" @click="clickTab(item.path)">
         <div class="tab_box">
-          <span class="tab_icon"></span>
-          <span class="tab_title" :class="{ clickClass: clickData == item.id }">{{
-            item.name
-          }}</span>
-          <span class="tab_num" :class="{ clickClass: clickData == item.id }">(11)</span>
+          <span class="tab_icon"> <img :src="item.icon" alt="" /> </span>
+          <span class="tab_title" :class="{ clickClass: clickData == item.path }">
+            {{ item.name }}
+          </span>
+          <span class="tab_num" :class="{ clickClass: clickData == item.path }">(11)</span>
         </div>
-        <div :class="{ tab_bottom: clickData == item.id }"></div>
+        <div :class="{ tab_bottom: clickData == item.path }"></div>
       </li>
     </ul>
 
-    <router-view></router-view>
+    <!-- <router-view></router-view> -->
+
+    <component :is="clickData"></component>
   </div>
 </template>
 <script>
+import myLearn from './myLearn'
+import myExamList from './myExamList'
 export default {
+  components: { myLearn, myExamList },
   data() {
     return {
       tabsData: [
         {
           name: '学习',
-          id: 'study'
+          id: 'study',
+          path: 'myLearn',
+          icon: require('../../../public/img/学习.png')
         },
         {
           name: '作业',
-          id: 'task'
+          id: 'task',
+          path: '',
+          icon: require('../../../public/img/作业.png')
         },
         {
           name: '考试',
-          id: 'examination'
+          id: 'examination',
+          path: 'myExamList',
+
+          icon: require('../../../public/img/考试.png')
         },
         {
           name: '问卷',
-          id: 'questionnaire'
+          id: 'questionnaire',
+          path: '',
+          icon: require('../../../public/img/问卷.png')
         }
       ],
-      clickData: 'study'
+      clickData: 'myLearn'
     }
   },
   methods: {
-    clickTab(id) {
-      this.clickData = id
+    clickTab(path) {
+      this.clickData = path
     }
   }
+  // watch: {
+  //   $route: {
+  //     handler(val) {
+  //       this.$nextTick(() => {
+  //         this.clickData = val.path
+  //       })
+  //     },
+  //     deep: true
+  //   }
+  // }
 }
 </script>
 
@@ -80,7 +104,10 @@ export default {
       border-radius: 50%;
       display: inline-block;
       line-height: 40px;
-      background-color: pink;
+      img {
+        width: 100%;
+        height: 100%;
+      }
     }
     &_title {
       font-family: PingFangSC-Medium;
@@ -90,6 +117,7 @@ export default {
       line-height: 32px;
       margin: 0 8px;
       font-weight: bold;
+      padding-top: 4px;
     }
     &_num {
       font-family: PingFangSC-Medium;
@@ -97,6 +125,7 @@ export default {
       color: #5e656c;
       letter-spacing: 0;
       line-height: 32px;
+      padding-top: 4px;
     }
     &_bottom {
       margin-top: 12px;

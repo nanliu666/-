@@ -29,7 +29,7 @@
         </div>
 
         <div class="item_complete">
-          <img :src="imgUrl" alt="" />
+          <img src="@/assets/images/my_seal.png" alt="" />
         </div>
       </li>
     </ul>
@@ -90,8 +90,12 @@ export default {
       margin-right: 20px;
       margin-top: 20px;
       position: relative;
+      cursor: pointer;
       &:nth-child(4n) {
         margin-right: 0;
+      }
+      &:hover {
+        opacity: 0.7;
       }
       &_img {
         width: 100%;
@@ -171,13 +175,12 @@ export default {
       }
       &_complete {
         position: absolute;
-        bottom: 9px;
+        bottom: 5px;
         right: 9px;
         overflow: hidden;
         width: 62px;
         height: 62px;
         border-radius: 50%;
-        background-color: pink;
         img {
           width: 100%;
           height: 100%;
