@@ -56,15 +56,15 @@ export default {
           itemType: 'passInput',
           label: '原始密码',
           required: true,
-          offset: 5,
+          offset: 5
 
-          rules: [
-            {
-              pattern: /(?!^\d+$)(?!^[A-Za-z]+$)(?!^[^A-Za-z0-9]+$)(?!^.*[\u4E00-\u9FA5].*$)^\S{6,16}$/,
-              message: '密码包含字母、符号或数字中至少两项且长度6～12字符的密码',
-              trigger: 'blur'
-            }
-          ]
+          // rules: [
+          //   {
+          //     pattern: /(?!^\d+$)(?!^[A-Za-z]+$)(?!^[^A-Za-z0-9]+$)(?!^.*[\u4E00-\u9FA5].*$)^\S{6,16}$/,
+          //     message: '密码包含字母、符号或数字中至少两项且长度6～12字符的密码',
+          //     trigger: 'blur'
+          //   }
+          // ]
         },
         {
           prop: 'newPassword',
