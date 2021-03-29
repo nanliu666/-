@@ -2,7 +2,8 @@
   <div :class="['header', { isFullscreenHead: isFullscreen }]">
     <div class="header-inner">
       <div class="logo">
-        <img src="../assets/images/logo.png" />
+        <img v-if="orgId === '5263'" src="../assets/images/logoE.png" />
+        <img v-else src="../assets/images/logo.png" />
       </div>
       <template v-if="userId">
         <ul class="header-menu">
@@ -87,24 +88,25 @@ export default {
       routerTo: ''
     }
   },
-
+  computed: {
+    orgId() {
+      let userInfo = getStore({ name: 'userInfo' })
+      return userInfo.org_id
+    },
+    isFullscreen() {
+      return this.$route.meta.fullscreen
+    },
+    ...mapGetters(['userId', 'userInfo'])
+  },
   watch: {
     //监听路由变化
     $route(to) {
-      console.log()
       this.$nextTick(() => {
         this.activePath = this.getCaption(to.path, 0)
       })
       // to , from 分别表示从哪跳转到哪，都是一个对象
       // to.path  ( 表示的是要跳转到的路由的地址 eg: /home );
     }
-  },
-
-  computed: {
-    isFullscreen() {
-      return this.$route.meta.fullscreen
-    },
-    ...mapGetters(['userId', 'userInfo'])
   },
   beforeMount() {
     // 初始化时设置激活中的菜单
