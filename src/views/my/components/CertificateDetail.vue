@@ -12,7 +12,7 @@
     <div class="title">{{ sondata.templateName }}（{{ sondata.certificateNo }}）</div>
 
     <div class="info">
-      <span>颁发机构：{{ currentstr }}</span>
+      <span>颁发机构：{{ CertificateNumberInitials }}</span>
       <span>发放时间：{{ sondata.grantTime }}</span>
     </div>
 
@@ -35,7 +35,7 @@
         </div>
         <div class="serial">
           <div>证书编号:</div>
-          <div>{{ currentstr }}-{{ serialNumber }}</div>
+          <div>{{ CertificateNumberInitials }}-{{ serialNumber }}</div>
           <div>{{ sondata.grantTime }}</div>
         </div>
       </div>
@@ -47,7 +47,12 @@
 import { pinyin } from 'pinyin-pro'
 export default {
   name: 'CertificateDetail',
-  props: ['sondata'],
+  props: {
+    sondata: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data() {
     return {
       CertificateNumberInitials: '',
