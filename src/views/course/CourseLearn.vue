@@ -181,7 +181,8 @@ export default {
       notes: [],
       note: '',
       leftHidden: false,
-      pageIndex: -1
+      pageIndex: -1,
+      chapterTime: 0 //章节停留时间
     }
   },
   computed: {
@@ -225,7 +226,7 @@ export default {
     this.loadChapters()
     this.loadNoteList()
     this.isFirst = true
-    this.setTimer()
+    // this.setTimer()
   },
   beforeRouteLeave(from, to, next) {
     this.updateVideoProgress(this.currentChapter)
@@ -330,7 +331,18 @@ export default {
     },
     handleChapterClick(chapter) {
       // this.pageIndex -= 1
+      //如果是不同章节  计算此章节的停留时间
+      if (this.currentChapter.contentId !== chapter.contentId) {
+        this.chapterTime = 0
+        clearInterval(this.timer)
+        this.timer = setInterval(() => {
+          this.chapterTime += 1
+        }, 60 * 1000)
+        this.updateVideoProgress()
+        this.submitLearnRecords()
+      }
       this.currentChapter = chapter
+      //
     },
     // 进度
     calcProcess(chapter) {
@@ -377,12 +389,12 @@ export default {
     },
     //更新学员学习课程记录
     submitLearnRecords() {
-      let period = 5
-      if (this.isFirst) {
-        period = 0
-        this.isFirst = false
-      }
-      let params = { period, courseId: this.courseId }
+      // let period = 5
+      // if (this.isFirst) {
+      //   period = 0
+      //   this.isFirst = false
+      // }
+      let params = { period: this.chapterTime, courseId: this.courseId }
       params.contentRecords = _.map(
         this.chapters,
         (chapter) => `${chapter.contentId}:${chapter.progress}`

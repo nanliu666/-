@@ -146,8 +146,11 @@ export default {
           left: 5px;
         }
         .ellipsis {
+          -webkit-line-clamp: 1; /*要显示的行数*/
+          -webkit-box-orient: vertical;
+          width: 80%;
           display: inline-block;
-          white-space: nowrap;
+          // white-space: nowrap;
           text-overflow: ellipsis;
           overflow: hidden;
           word-break: break-all;
