@@ -61,7 +61,7 @@
       <ul v-if="[QUESTION_TYPE_BLANK].includes(data.type)" class="blank-ul">
         <li v-for="(item, index) in blankList" :key="index">
           <el-input
-            v-if="item === ''"
+            v-if="item == 'inputFlag'"
             v-model="data[`answerModel${index}`]"
             :disabled="disabled"
             style="display: inline;"
@@ -185,7 +185,17 @@ export default {
     },
     handleBlankValue(value) {
       const content = deleteHTMLTag(_.unescape(value.content))
-      this.blankList = content.split('___')
+      // 手动将___转换成数组以填充物inputFlag来分隔
+      const cloneTemp = _.cloneDeep(_.words(content, /[^___]+/g))
+      let targetList = []
+      _.each(cloneTemp, (item, index) => {
+        targetList.push(item)
+        if (index !== _.size(cloneTemp) - 1) {
+          targetList.push('inputFlag')
+        }
+      })
+      this.blankList = targetList
+      // console.log('blankList==', this.blankList)
       let tempValue = []
       _.forIn(value, (forValue, key) => {
         if (key.includes('answerModel')) {

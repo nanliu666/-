@@ -120,6 +120,7 @@ import LiveParticulars from './components/LiveParticulars'
 import LivePlayback from './components/LivePlayback'
 import LiveStatistics from './components/LiveStatistics'
 import vueQr from 'vue-qr'
+import { mapGetters } from 'vuex'
 const STATUS_MAP = {
   live: '直播中',
   // start: '未开始',
@@ -138,6 +139,7 @@ export default {
   },
   data() {
     return {
+      currentUserInfo: {},
       routeList: [
         {
           path: '/live',
@@ -155,11 +157,12 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['userId']),
     isTrainee() {
       return this.roleName === 'Trainee'
     },
     watchLiveLink() {
-      return `${location.origin}/#/WatchLive?wId=${this.detailData.channelId}`
+      return `${location.origin}/#/WatchLive?wId=${_.get(this.currentUserInfo, 'account')}`
     },
     id() {
       const id = _.get(this.$route, 'query.id', null)
@@ -179,6 +182,7 @@ export default {
         Guest: 2 // 嘉宾
       }
       const { loginInfo } = res
+      this.currentUserInfo = _.find(loginInfo, (item) => item.userId === this.userId)
       let temp = []
       _.chain(loginInfo)
         .groupBy('roleName')
@@ -256,7 +260,7 @@ export default {
       // 开播
       this.$router.push({
         path: '/beginLive',
-        query: { beginId: this.detailData.channelId, roleName: this.roleName }
+        query: { beginId: _.get(this.currentUserInfo, 'account'), roleName: this.roleName }
       })
     },
     onCopy() {
