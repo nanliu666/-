@@ -12,7 +12,7 @@
     <div class="title">{{ sondata.templateName }}（{{ sondata.certificateNo }}）</div>
 
     <div class="info">
-      <span>颁发机构：{{ sondata.awardAgency }}</span>
+      <span>颁发机构：{{ CertificateNumberInitials }}</span>
       <span>发放时间：{{ sondata.grantTime }}</span>
     </div>
 
@@ -35,7 +35,7 @@
         </div>
         <div class="serial">
           <div>证书编号:</div>
-          <div>{{ sondata.certificateNo }}</div>
+          <div>{{ CertificateNumberInitials }}-{{ serialNumber }}</div>
           <div>{{ sondata.grantTime }}</div>
         </div>
       </div>
@@ -44,11 +44,31 @@
 </template>
 
 <script>
+import { pinyin } from 'pinyin-pro'
 export default {
   name: 'CertificateDetail',
-  props: ['sondata'],
+  props: {
+    sondata: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data() {
-    return {}
+    return {
+      CertificateNumberInitials: '',
+      serialNumber: ''
+    }
+  },
+  watch: {
+    sondata(newVal) {
+      let currentstr = pinyin(newVal.awardAgency, { pattern: 'initial', type: 'array' })
+        .splice(0, 2)
+        .join('')
+        .toUpperCase()
+      this.CertificateNumberInitials = currentstr ? currentstr : 'YB'
+      let currentArr = this.sondata.certificateNo.split('-')
+      this.serialNumber = `${currentArr[1]}-${currentArr[2]}`
+    }
   },
   methods: {
     toCertificate() {
