@@ -315,7 +315,7 @@
     </div>
     <div class="foot">
       <div class="foot2">
-        <span>v2.0.0_20210330_Release 备案号 ：苏ICP备19010525号-2</span>
+        <span>v2.0.0_20210330_Release &nbsp; &nbsp; &nbsp; 备案号 ：苏ICP备19010525号-2</span>
       </div>
     </div>
   </div>
@@ -523,7 +523,7 @@ export default {
   margin: 0;
 }
 .LMTitle .span1 {
-  font-size: 24px;
+  font-size: 22px;
   // font-family: 'Arial', 'Microsoft YaHei', '黑体', '宋体', sans-serif;
   color: #000b15;
   font-weight: normal;
