@@ -6,7 +6,6 @@
       <el-tab-pane label="选修课" name="myElectiveList"></el-tab-pane>
       <el-tab-pane label="直播" name="myLiveList"></el-tab-pane>
     </el-tabs>
-    <!-- <router-view></router-view> -->
     <component :is="activeName"></component>
   </div>
 </template>

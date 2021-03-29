@@ -127,7 +127,7 @@ export default {
           disabled: true
         },
         {
-          prop: 'orgName',
+          prop: 'orgLinkName',
           itemType: 'input',
           label: '组织',
           offset: 5,
