@@ -1,24 +1,25 @@
 <template>
   <div class="tabs_box">
-    <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="必修课" name="required">必修课</el-tab-pane>
-      <el-tab-pane label="培训" name="train">培训</el-tab-pane>
-      <el-tab-pane label="选修课" name="elective ">选修课</el-tab-pane>
-      <el-tab-pane label="直播" name="live ">直播</el-tab-pane>
+    <el-tabs v-model="activeName">
+      <el-tab-pane label="必修课" name="myRequiredList"> </el-tab-pane>
+      <el-tab-pane label="培训" name="myTrainList"></el-tab-pane>
+      <el-tab-pane label="选修课" name="myElectiveList"></el-tab-pane>
+      <el-tab-pane label="直播" name="myLiveList"></el-tab-pane>
     </el-tabs>
-    <router-view></router-view>
+    <!-- <router-view></router-view> -->
+    <component :is="activeName"></component>
   </div>
 </template>
 <script>
+import myRequiredList from './myRequiredList'
+import myTrainList from './myTrainList'
+import myElectiveList from './myElectiveList'
+import myLiveList from './myLiveList'
 export default {
+  components: { myRequiredList, myTrainList, myElectiveList, myLiveList },
   data() {
     return {
-      activeName: 'required'
-    }
-  },
-  methods: {
-    handleClick(tab, event) {
-      console.log(tab, event)
+      activeName: 'myRequiredList'
     }
   }
 }
