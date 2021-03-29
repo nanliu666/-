@@ -169,7 +169,7 @@ export default {
   },
   data() {
     return {
-      isViewResults: false,
+      isViewResults: false, // 是否有权限查看得分
       routeList: [
         {
           path: '/exam',
@@ -213,10 +213,20 @@ export default {
     moment,
     async loadData() {
       this.examDetail = await getViewAnswer(_.assign(this.queryInfo, this.$route.query))
-      // 若创建考试时，允许考生查看答卷且查看天数不为0，且超过规定天数, 起始时间为评卷结束时间。则不能查看答卷，按钮置灰
+      // 若创建考试时，允许考生查看答卷且查看天数大于等于0，且超过规定天数, 起始时间为评卷结束时间。则不能查看得分
       const { openResults, openResultsValue, publishTime } = this.examDetail
-      this.isViewResults =
-        openResults && moment(new Date()).diff(moment(publishTime)) < openResultsValue
+      // 设置了可查看分数
+      if (!openResults) {
+        // 查看分数设置为可查看，并且值为0，代表可以无限查看
+        if (openResultsValue == 0) {
+          this.isViewResults = true
+        }
+        // 成绩的发布天数在规定时间内。可以查看
+        if (moment(new Date()).diff(moment(publishTime), 'seconds') <= openResultsValue) {
+          this.isViewResults = true
+        }
+      }
+      // console.log('this.isViewResults==', this.isViewResults)
       this.initQuestionList()
     },
     addScore(args) {
