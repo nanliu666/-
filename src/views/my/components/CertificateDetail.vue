@@ -4,7 +4,7 @@
       <el-button @click="toCertificate">
         返回上一级
       </el-button>
-      <el-button type="primary">
+      <el-button type="primary" @click="downLoadInfo">
         下载证书
       </el-button>
     </div>
@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import { downLoadFile } from '@/util/util'
 import { pinyin } from 'pinyin-pro'
 export default {
   name: 'CertificateDetail',
@@ -73,6 +74,14 @@ export default {
   methods: {
     toCertificate() {
       this.$emit('ChangeBtn', true)
+    },
+    // 下载
+    downLoadInfo() {
+      let data = {
+        url: this.sondata.backUrl,
+        fileName: this.sondata.templateName
+      }
+      downLoadFile(data)
     }
   }
 }
