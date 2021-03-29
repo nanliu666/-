@@ -73,21 +73,23 @@ export default {
     },
     // 获取正确答案
     getCorrect() {
-      let target = []
-      _.each(this.data.options, (item) => {
-        if (_.includes(this.data.answerQuestion, item.id)) {
-          target.push(item.content)
-        }
-      })
-      return target.join(',')
+      const target = _.chain(this.data.options)
+        .filter((item) => {
+          return _.includes(this.data.answerQuestion, item.id)
+        })
+        .map('content')
+        .join(',')
+        .value()
+      return target
     },
     // 获取考生答案
     getAnswerValue() {
       const target = _.chain(this.data.options)
-        .find((item) => {
-          return item.id === this.data.answerUser
+        .filter((item) => {
+          return _.includes(this.data.answerUser, item.id)
         })
-        .get('content', '考生未作答')
+        .map('content', '考生未作答')
+        .join(',')
         .value()
       return target
     }
