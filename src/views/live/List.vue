@@ -60,8 +60,8 @@
         </el-row>
 
         <el-row class="filter-item">
+          <el-col :span="1"> 状态： </el-col>
           <el-col :span="23">
-            状态：
             <span
               v-for="(item, index) in liveStatus"
               :key="index"
