@@ -2,7 +2,7 @@
   <div class="paper-container">
     <div class="paper-header">
       <div class="header-left">
-        <i class="iconimage_icon_leftarrow iconfont" @click="goBack" />
+        <i v-if="hasBack" class="iconimage_icon_leftarrow iconfont" @click="goBack" />
         <span class="title">{{ paper.name }}</span>
         <span v-if="!isSuccess" class="content">
           <span>共{{ paper.questionNum }}题，</span>
@@ -230,6 +230,7 @@ export default {
   },
   data() {
     return {
+      hasBack: true,
       isAutoEnd: false,
       submitLoading: false, // 提交不许重复
       submitTips: '',
@@ -303,6 +304,7 @@ export default {
     if (this.isLeave || this.isSuccess) {
       this.clearIntervalAll()
       this.resetF5Refresh()
+      this.clearWatchClose()
       this.isSuccess = false
       next(true)
     } else {
@@ -603,12 +605,15 @@ export default {
     },
     async initData() {
       this.paper = await getTakeExam(_.omit(this.$route.query, ['isReNew']))
+      this.initBackAuth()
       // 初始化题目数据处理
       this.initQuestionList()
       // 逐题模式
       this.initAnswerByOne()
       // 初始考试倒计时
       this.initRemainingTime()
+      // 开启监听关闭标签页
+      this.initWatchClose()
       // 开发环境先关闭
       if (process.env.NODE_ENV === 'production') {
         // 闭卷监听
@@ -616,6 +621,30 @@ export default {
         // 监听联网断网
         this.initWatchNetworks()
       }
+    },
+    /**
+     * 只有开卷，且不限制次数或者还存在剩余参加次数才显示返回按钮
+     * isDecoil 1为开卷
+     * joinNum false为不限制次数
+     * examTimes 最后一次进来应该会返回1
+     */
+    initBackAuth() {
+      const { isDecoil, joinNum, joinNumValue, examTimes } = this.paper
+      this.hasBack = isDecoil === 1 && (!joinNum || (joinNum && joinNumValue - examTimes > 1))
+    },
+    initWatchClose() {
+      window.addEventListener('beforeunload', this.watchCloseChrome)
+    },
+    clearWatchClose() {
+      window.removeEventListener('beforeunload', this.watchCloseChrome)
+    },
+    watchCloseChrome(e) {
+      // 兼容IE8和Firefox 4之前的版本
+      if (e) {
+        e.returnValue = '关闭提示'
+      }
+      // Chrome, Safari, Firefox 4+, Opera 12+ , IE 9+
+      return '关闭提示'
     },
     initWatchNetworks() {
       const EventUtil = {
