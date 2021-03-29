@@ -35,7 +35,7 @@
     </div>
     <div class="learningCourse">
       <div class="homeRightTitle">
-        <span>学习中的课程</span>
+        <span>在学课程</span>
         <!-- <router-link to="">更多</router-link> -->
       </div>
       <div
