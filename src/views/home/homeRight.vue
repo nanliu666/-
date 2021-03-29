@@ -35,7 +35,7 @@
     </div>
     <div class="learningCourse">
       <div class="homeRightTitle">
-        <span>学习中的课程</span>
+        <span>在学课程</span>
         <!-- <router-link to="">更多</router-link> -->
       </div>
       <div
@@ -234,7 +234,7 @@ export default {
   background: #fff url('../../assets/images/icon.png') no-repeat 0 168px;
   box-shadow: 0 2px 12px 0 rgba(0, 88, 121, 0.08);
   border-radius: 4px;
-  margin-top: 143px;
+  margin-top: 50px;
   text-align: center;
 }
 .homeRightP .homePrivateInfoImg {
@@ -404,6 +404,7 @@ export default {
 .homeRightP .rankingInfo1 {
   display: block;
   height: 20px;
+  font-size: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -412,6 +413,7 @@ export default {
 }
 .homeRightP .rankingInfo2 {
   display: block;
+  font-size: 12px;
   opacity: 0.35;
 }
 .homeRightP .score {

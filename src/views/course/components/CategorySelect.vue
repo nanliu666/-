@@ -19,7 +19,8 @@
     </div>
     <div v-show="!_.isEmpty(categoryList)" class="category__list" style="display: flex">
       <span class="category__label">分类：</span>
-      <ul style="flex: 1">
+
+      <ul>
         <li
           v-show="!selected.length"
           style="color: #01aafc"
@@ -27,8 +28,11 @@
         >
           全部
         </li>
+      </ul>
+
+      <ul style="flex: 1">
         <li v-for="item in categoryList" :key="item[valueKey]" @click="handleCategoryClick(item)">
-          {{ item[labelKey] }}
+          <span style="color:#ccc">| &nbsp;</span> {{ item[labelKey] }}
         </li>
       </ul>
     </div>

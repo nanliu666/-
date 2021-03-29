@@ -1,72 +1,70 @@
 <template>
   <!-- 首页我的任务 -->
   <div v-if="myMissions && myMissions.length > 0" class="homeMyTask">
-    <swiper ref="mySwiper" :options="swiperOptions">
-      <swiper-slide v-for="item in myMissions" :key="item.id">
-        <div
-          :class="['homeMyTaskItem', item.type == 1 ? 'myTaskItemTrain' : 'myTaskItemExam']"
-          class="homeMyTaskItem"
-          @click="myTaskToDetaill(item)"
-        >
-          <h3 class="homeMyTaskItemTitle">
-            <span class="homeMyTaskItemTitle2">{{ item.name }}</span>
-            <span class="homeMyTaskType">{{ myMissionsType[item.type] }}</span>
-          </h3>
-          <div class="homeMyTaskItemText">
-            <div v-if="item.type == 1" class="homeMyTaskItemTextItem">
-              <span class="homeMyTaskItemTextItem2 iconimage_icon_address iconfont">{{
-                item.address
-              }}</span>
-            </div>
-            <div class="homeMyTaskItemTextItem">
-              <span class="homeMyTaskItemTextItem2 iconimage_icon_time iconfont">{{
-                item.time
-              }}</span>
-            </div>
-            <div v-if="item.type == 1" class="homeMyTaskItemTextItem">
-              <span class="homeMyTaskItemTextItem2 iconimage_icon_user iconfont">{{
-                item.lecturer
-              }}</span>
-            </div>
-          </div>
-        </div>
-      </swiper-slide>
-      <!-- <swiper-slide>
-        <div class="homeMyTaskItem">
-          <router-link to="">
+    <div style="width:900px">
+      <swiper ref="mySwiper" :options="swiperOptions">
+        <swiper-slide v-for="item in myMissions" :key="item.id">
+          <div
+            :class="['homeMyTaskItem', item.type == 1 ? 'myTaskItemTrain' : 'myTaskItemExam']"
+            @click="myTaskToDetaill(item)"
+          >
             <h3 class="homeMyTaskItemTitle">
               <span
-                class="homeMyTaskItemTitle2"
-              >1职场礼仪职场礼仪职场礼仪职场礼仪职场礼仪职场礼仪</span>
-              <span class="homeMyTaskType">培训</span>
+                :class="['homeMyTaskItemTitleIcon', item.type == 1 ? 'trainIcon' : 'examIcon']"
+              ></span>
+              <span class="homeMyTaskItemTitle2" :title="item.name">{{ item.name }}</span>
+              <!-- <span class="homeMyTaskType">{{ myMissionsType[item.type] }}</span> -->
             </h3>
             <div class="homeMyTaskItemText">
               <div class="homeMyTaskItemTextItem">
-                <span
-                  class="homeMyTaskItemTextItem2 iconimage_icon_address iconfont"
-                >环普产业园G1座</span>
+                <span class="homeMyTaskItemTextItem2">时间：{{ item.time }}</span>
               </div>
-              <div class="homeMyTaskItemTextItem">
-                <span
-                  class="homeMyTaskItemTextItem2 iconimage_icon_time iconfont"
-                >2020-09-12 14:30</span>
+              <div v-if="item.type == 1" class="homeMyTaskItemTextItem">
+                <span class="homeMyTaskItemTextItem2" :title="item.address">地址：{{ item.address }}</span>
               </div>
-              <div class="homeMyTaskItemTextItem">
-                <span class="homeMyTaskItemTextItem2 iconimage_icon_user iconfont">老周</span>
+              <div v-if="item.type == 1" class="homeMyTaskItemTextItem">
+                <span class="homeMyTaskItemTextItem2">讲师：{{ item.lecturer }}</span>
               </div>
             </div>
-          </router-link>
-        </div>
-      </swiper-slide>       -->
-      <div
-        v-show="swiperFistPrevBt"
-        slot="button-prev"
-        class="swiper-button-prev"
-        @click="prev"
-      ></div>
-      <div slot="button-next" class="swiper-button-next homeMyTaskItemNext" @click="next"></div>
-      <!-- <div class="swiper-pagination" slot="pagination"></div>       -->
-    </swiper>
+          </div>
+        </swiper-slide>
+        <!-- <swiper-slide>
+          <div class="homeMyTaskItem">
+            <router-link to="">
+              <h3 class="homeMyTaskItemTitle">
+                <span
+                  class="homeMyTaskItemTitle2"
+                >1职场礼仪职场礼仪职场礼仪职场礼仪职场礼仪职场礼仪</span>
+                <span class="homeMyTaskType">培训</span>
+              </h3>
+              <div class="homeMyTaskItemText">
+                <div class="homeMyTaskItemTextItem">
+                  <span
+                    class="homeMyTaskItemTextItem2 iconimage_icon_address iconfont"
+                  >环普产业园G1座</span>
+                </div>
+                <div class="homeMyTaskItemTextItem">
+                  <span
+                    class="homeMyTaskItemTextItem2 iconimage_icon_time iconfont"
+                  >2020-09-12 14:30</span>
+                </div>
+                <div class="homeMyTaskItemTextItem">
+                  <span class="homeMyTaskItemTextItem2 iconimage_icon_user iconfont">老周</span>
+                </div>
+              </div>
+            </router-link>
+          </div>
+        </swiper-slide>       -->
+        <!-- <div
+          v-show="swiperFistPrevBt"
+          slot="button-prev"
+          class="swiper-button-prev"
+          @click="prev"
+        ></div>
+        <div slot="button-next" class="swiper-button-next homeMyTaskItemNext" @click="next"></div> -->
+        <!-- <div class="swiper-pagination" slot="pagination"></div>       -->
+      </swiper>
+    </div>
   </div>
 </template>
 <script>
@@ -193,40 +191,61 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-//.homeMyTask{width: 837px;}
+.homeMyTask {
+  border-radius: 4px;
+  width: 897px;
+  overflow-x: hidden;
+  box-shadow: 0 2px 12px 0 rgba(0, 88, 121, 0.08);
+  background: url('/img/bgicon.png') repeat-x 0px 0px #fff;
+}
 .homeMyTaskItem {
   cursor: pointer;
-  width: 265px;
-  height: 153px;
+  width: 298px;
+  height: 172px;
   text-align: left;
-  background: #fff;
-  box-shadow: 0 2px 12px 0 rgba(0, 88, 121, 0.08);
-  border-radius: 4px;
+  border-right: 1px solid #f5f5f5;
+  // border-radius: 4px;
   float: left;
 }
+.homeMyTaskItem:hover {
+  border-bottom: #00aeff 4px solid;
+}
 .myTaskItemExam {
-  border-bottom: #7feab7 4px solid;
+  //border-bottom: #7feab7 4px solid;
 }
 .myTaskItemTrain {
-  border-bottom: #80d4fd 4px solid;
+  // border-bottom: #80d4fd 4px solid;
 }
 .homeMyTaskItem .homeMyTaskItemTitle {
   height: 55px;
   font-size: 14px;
   font-weight: normal;
-  margin: 0 15px 5px 15px;
-  border-bottom: #f1f8fb solid 1px;
+  margin: 0 15px 5px 14px;
+}
+.homeMyTaskItem .homeMyTaskItemTitleIcon {
+  float: left;
+  display: block;
+  width: 30px;
+  height: 30px;
+  margin: 29px 15px 0 0;
+}
+.homeMyTaskItem .trainIcon {
+  background: url('/img/bgicon.png') repeat-x 0px -178px #fff;
+}
+.homeMyTaskItem .examIcon {
+  background: url('/img/bgicon.png') repeat-x -30px -178px #fff;
 }
 .homeMyTaskItem .homeMyTaskItemTitle2 {
   color: #000b15;
   display: block;
-  font-size: 14px;
+  font-size: 15px;
   width: 185px;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-weight: bold;
   white-space: nowrap;
   float: left;
-  margin: 17px 0 0 0;
+  margin: 29px 0 0 0;
 }
 .homeMyTaskItem .homeMyTaskType {
   padding: 1px 5px;
@@ -246,7 +265,7 @@ export default {
   color: #73797f;
   display: block;
   overflow: hidden;
-  padding: 10px 15px 0 15px;
+  padding: 10px 15px 0 60px;
 }
 .homeMyTaskItem .homeMyTaskItemTextItem img {
   border-radius: 50%;
@@ -258,6 +277,10 @@ export default {
 .homeMyTaskItem .homeMyTaskItemTextItem2 {
   float: left;
   font-size: 12px;
+  width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .homeMyTaskItem .homeMyTaskItemTextItem2::before {
   font-size: 12px;

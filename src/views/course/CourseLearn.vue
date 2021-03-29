@@ -208,6 +208,10 @@ export default {
     currentChapter(newVal, oldVal) {
       if (this.isChapterVideo(oldVal) && oldVal.duration) {
         this.updateVideoProgress(oldVal)
+        this.setDuration()
+        this.$nextTick(() => {
+          this.videoTimerFn()
+        })
       }
       if (!this.isChapterVideo(newVal) && newVal.type != 4) {
         newVal.progress = 100
@@ -283,13 +287,28 @@ export default {
       }
       return chapter.content
     },
-    // 每五分钟收集一下进度
+    // 每1分钟收集一下进度
     setTimer() {
       this.timer = setInterval(() => {
         this.updateVideoProgress()
         this.submitLearnRecords()
         // }, 10000)
       }, 1 * 60 * 1000)
+    },
+    // 视频看完更新一下
+    videoTimerFn() {
+      if (this.currentChapter.duration) {
+        this.timer = setInterval(() => {
+          this.chapters.map((val) => {
+            if (val.contentId === this.currentChapter.contentId) {
+              val.progress = 100
+            }
+          })
+
+          this.updateVideoProgress()
+          this.submitLearnRecords()
+        }, this.currentChapter.duration * 1000)
+      }
     },
     //  初始化
     reset() {
@@ -443,7 +462,7 @@ export default {
     goBack() {
       this.$router.go(-1)
       // 当go(-1)不执行，就执行下面路由跳转
-      this.$router.push({ path: '/course/detail', query: { id: this.courseId } })
+      // this.$router.push({ path: '/course/detail', query: { id: this.courseId } })
     }
   }
 }
