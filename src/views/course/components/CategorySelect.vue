@@ -1,13 +1,9 @@
 <template>
   <div class="category">
     <div v-if="_.size(selected) > 0" class="category__selected">
-      <span class="category__label">
-        已选条件：
-      </span>
+      <span class="category__label"> 已选条件： </span>
       <div class="category__selected--wrap">
-        <span class="category__selected--title">
-          分类：
-        </span>
+        <span class="category__selected--title"> 分类： </span>
         <ul>
           <li v-for="(item, index) in selected" :key="item[valueKey]">
             <span class="category__selected--label">
@@ -21,12 +17,14 @@
       <i v-if="$scopedSlots.selected" class="el-icon-arrow-right arrow"></i>
       <slot name="selected"></slot>
     </div>
-    <div v-show="!_.isEmpty(categoryList)" class="category__list">
-      <span class="category__label">
-        分类：
-      </span>
-      <ul>
-        <li v-show="!selected.length" @click="handleCategoryClick({ name: '全部', id: '' })">
+    <div v-show="!_.isEmpty(categoryList)" class="category__list" style="display: flex">
+      <span class="category__label">分类：</span>
+      <ul style="flex: 1">
+        <li
+          v-show="!selected.length"
+          style="color: #01aafc"
+          @click="handleCategoryClick({ name: '全部', id: '' })"
+        >
           全部
         </li>
         <li v-for="item in categoryList" :key="item[valueKey]" @click="handleCategoryClick(item)">
