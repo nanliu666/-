@@ -17,9 +17,7 @@
       >
         <ul class="course-list-filter-pop__wrap">
           <li class="course-list-filter-pop__li">
-            <div class="course-list-filter-pop__label">
-              考试时间
-            </div>
+            <div class="course-list-filter-pop__label">考试时间</div>
             <el-date-picker
               v-model="queryInfo.examTime"
               type="daterange"
@@ -29,9 +27,7 @@
             />
           </li>
           <li class="course-list-filter-pop__li">
-            <div class="course-list-filter-pop__label">
-              是否通过
-            </div>
+            <div class="course-list-filter-pop__label">是否通过</div>
             <el-select
               v-model="queryInfo.isPass"
               class="course-list-filter-pop__value"
@@ -47,9 +43,7 @@
             </el-select>
           </li>
           <li class="course-list-filter-pop__li">
-            <div class="course-list-filter-pop__label">
-              状态
-            </div>
+            <div class="course-list-filter-pop__label">状态</div>
             <el-select
               v-model="queryInfo.status"
               class="course-list-filter-pop__value"
@@ -65,17 +59,11 @@
             </el-select>
           </li>
           <div class="course-list-filter-pop__footer">
-            <el-button type="primary" size="medium" @click="filterFun">
-              确定
-            </el-button>
-            <el-button size="medium" @click="restSearch">
-              重置
-            </el-button>
+            <el-button type="primary" size="medium" @click="filterFun"> 确定 </el-button>
+            <el-button size="medium" @click="restSearch"> 重置 </el-button>
           </div>
         </ul>
-        <el-button slot="reference" size="medium">
-          高级检索
-        </el-button>
+        <el-button slot="reference" size="medium"> 高级检索 </el-button>
       </el-popover>
     </el-card>
     <el-card class="table-style">
@@ -91,17 +79,17 @@
         @current-page-change="handleCurrentPageChange"
         @page-size-change="handlePageSizeChange"
       >
-        <template #examTime="{row}"> {{ row.examBeginTime }} - {{ row.examEndTime }} </template>
-        <template #isPass="{row}">
+        <template #examTime="{ row }"> {{ row.examBeginTime }} - {{ row.examEndTime }} </template>
+        <template #isPass="{ row }">
           {{ getPass(row) }}
         </template>
-        <template #status="{row}">
+        <template #status="{ row }">
           {{ row.status | statusFilter }}
         </template>
-        <template #score="{row}">
+        <template #score="{ row }">
           {{ row.score ? row.score : '--' }}
         </template>
-        <template #handler="{row}">
+        <template #handler="{ row }">
           <el-button type="text" :disabled="JoinDisabled(row)" @click="joinExam(row)">
             参加考试
           </el-button>
@@ -125,34 +113,35 @@ const TABLE_COLUMNS = [
     label: '考试时间',
     prop: 'examTime',
     slot: true,
-    minWidth: 120
+    align: 'center',
+    minWidth: 240
   },
   {
     label: '参加次数',
     prop: 'examTimes',
     align: 'center',
-    minWidth: 120
+    minWidth: 100
   },
   {
     label: '考试成绩',
     slot: true,
     align: 'center',
     prop: 'score',
-    minWidth: 120
+    minWidth: 100
   },
   {
     label: '是否通过',
     prop: 'isPass',
     align: 'center',
     slot: true,
-    minWidth: 120
+    minWidth: 100
   },
   {
     label: '状态',
     prop: 'status',
     align: 'center',
     slot: true,
-    minWidth: 120
+    minWidth: 100
   }
 ]
 const TABLE_CONFIG = {
