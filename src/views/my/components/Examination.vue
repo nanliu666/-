@@ -65,7 +65,9 @@
       >
         <!-- 考试次数 -->
         <template slot="joinNumValue" slot-scope="{ row }">
-          <span> {{ row.examTimes }}/{{ row.joinNumValue }} </span>
+          <span>
+            {{ row.examTimes }}/{{ `${row.joinNum == 0 ? '不限制' : row.joinNumValue}` }}
+          </span>
         </template>
 
         <!-- 是否通过: 0-否 1-是 -->
@@ -86,13 +88,14 @@
 
         <template slot="handler" slot-scope="scope">
           <el-button
-            v-if="scope.row.status == 6 && scope.row.status == 4"
+            v-if="scope.row.status == 6 || scope.row.status == 4"
             type="text"
+            disabled
             @click="toAnswer(scope.row)"
           >
             查看答卷
           </el-button>
-          <el-button v-else type="text" disabled @click="toAnswer(scope.row)">
+          <el-button v-else type="text" @click="toAnswer(scope.row)">
             查看答卷
           </el-button>
         </template>
