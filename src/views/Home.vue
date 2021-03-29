@@ -8,7 +8,10 @@
     </div>
     <div class="banner">
       <el-carousel :interval="5000" height="536px" arrow="always">
-        <el-carousel-item v-for="item in banner" :key="item.id">
+        <el-carousel-item
+          v-for="item in orgId === '5263' ? bannerExcavator : banner"
+          :key="item.id"
+        >
           <div class="b_item" :style="item.css"></div>
         </el-carousel-item>
       </el-carousel>
@@ -312,6 +315,7 @@ import HomeMyTask from '@/views/home/homeMyTask'
 import HomeRight from '@/views/home/homeRight'
 import { queryCourseList } from '@/api/course'
 import { homeQueryTrainList, homeNewsList, homeMyLiveList } from '@/api/home'
+import { getStore } from '@/util/store'
 
 export default {
   name: 'Home',
@@ -345,25 +349,60 @@ export default {
         {
           css: {
             backgroundImage: 'url(' + require('../assets/images/banner2.jpg') + ')',
-            backgroundRepeat: 'no-repeat'
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover'
           },
           id: '11'
         },
         {
           css: {
             backgroundImage: 'url(' + require('../assets/images/banner3.jpg') + ')',
-            backgroundRepeat: 'no-repeat'
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover'
           },
           id: '22'
         },
         {
           css: {
             backgroundImage: 'url(' + require('../assets/images/banner4.jpg') + ')',
-            backgroundRepeat: 'no-repeat'
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover'
+          },
+          id: '33'
+        }
+      ],
+      bannerExcavator: [
+        {
+          css: {
+            backgroundImage: 'url(' + require('../assets/images/bannerE1.jpg') + ')',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover'
+          },
+          id: '11'
+        },
+        {
+          css: {
+            backgroundImage: 'url(' + require('../assets/images/bannerE2.jpg') + ')',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover'
+          },
+          id: '22'
+        },
+        {
+          css: {
+            backgroundImage: 'url(' + require('../assets/images/bannerE3.jpg') + ')',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover'
           },
           id: '33'
         }
       ]
+    }
+  },
+  computed: {
+    orgId() {
+      let userInfo = getStore({ name: 'userInfo' })
+      return userInfo.org_id
     }
   },
   mounted() {
