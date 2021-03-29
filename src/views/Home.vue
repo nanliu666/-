@@ -8,6 +8,7 @@
     </div>
     <div class="banner">
       <el-carousel :interval="5000" height="536px" arrow="always">
+        <!-- 临时添加徐工挖掘机组织自定义banner,先通过组织id判断 -->
         <el-carousel-item
           v-for="item in orgId === '5263' ? bannerExcavator : banner"
           :key="item.id"
