@@ -1,34 +1,37 @@
 <template>
   <div class="myRequiredList">
     <ul class="items">
-      <li v-for="(item, index) in 30" :key="index" class="item">
+      <li
+        v-for="(item, index) in listData"
+        :key="index"
+        class="item"
+        :class="{ complete: item.totalPrecent == 100 }"
+      >
         <div class="item_img">
-          <img :src="imgUrl" alt="" />
-          <span class="span1">进行中</span>
-          <span class="span2">未开始</span>
-          <span class="span3">已结束</span>
+          <img :src="item.coverUrl" alt="" />
+          <span v-if="item.status == 1" class="span1">进行中</span>
+          <span v-if="item.status == 2" class="span2">未开始</span>
+          <span v-if="item.status == 3" class="span3">已结束</span>
         </div>
 
         <div class="item_title">
-          标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题
+          {{ item.name }}
         </div>
 
-        <div class="item_time">
-          2020/20/20~2020/20/20
-        </div>
+        <div class="item_time">{{ item.startTime }} ~ {{ item.endTime }}</div>
 
         <div class="item_Rate">
-          <el-rate
+          <!-- <el-rate
             v-model="valueRate"
             disabled
             show-score
             text-color="#ff9900"
             score-template="{value}"
           >
-          </el-rate>
+          </el-rate> -->
         </div>
 
-        <div class="item_complete">
+        <div v-if="item.totalPrecent == 100" class="item_complete">
           <img src="@/assets/images/my_seal.png" alt="" />
         </div>
       </li>
@@ -48,29 +51,39 @@
   </div>
 </template>
 <script>
+import { myElectiveCourse } from '@/api/myTask'
 export default {
   data() {
     return {
-      imgUrl:
-        'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201805%2F11%2F20180511062955_xjlcy.thumb.700_0.jpg&refer=http%3A%2F%2Fb-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1619432803&t=7d17d1f82ba55745d0522f3cb2a9412c',
       valueRate: 4.5,
       page: {
         pageNo: 1, //请求页码
         pageSize: 10, //每页条数
         total: 100
-      }
+      },
+      listData: []
     }
   },
-  created() {},
-  activated() {},
+  created() {
+    this.myElectiveCourse()
+  },
+  activated() {
+    this.myElectiveCourse()
+  },
   methods: {
+    async myElectiveCourse() {
+      let res = await myElectiveCourse(this.page)
+      this.listData = res.data
+      this.page.total = res.totalNum
+    },
     handleSizeChange(val) {
+      this.page.pageNo = 1
       this.page.pageSize = val
-      this.getInfo()
+      this.myElectiveCourse()
     },
     handleCurrentChange(val) {
       this.page.pageNo = val
-      this.getInfo()
+      this.myElectiveCourse()
     }
   }
 }
@@ -166,7 +179,7 @@ export default {
         font-family: PingFangSC-Regular;
         font-size: 12px;
         color: #000b15;
-        border-bottom: 1px solid #ebeced;
+        // border-bottom: 1px solid #ebeced;
         margin-top: -10px;
         line-height: 28px;
       }
@@ -196,6 +209,9 @@ export default {
       right: 24px;
       bottom: 0px;
     }
+  }
+  .complete {
+    opacity: 0.8;
   }
 }
 </style>
