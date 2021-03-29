@@ -68,6 +68,9 @@
             </router-link>
           </div>
         </el-form>
+        <div class="hint">
+          推荐使用谷歌浏览器
+        </div>
       </div>
     </div>
   </div>
@@ -217,10 +220,18 @@ export default {
       text-align: center;
       padding: 0 72px;
       box-sizing: border-box;
+      position: relative;
       .layout_label {
         font-size: 22px;
         color: rgba(0, 11, 21, 0.85);
         margin: 114px 0 48px 0;
+      }
+      .hint{
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        color: #a0a8ae;
+        font-size: 14px;
       }
       .el-input {
         // margin-bottom: 16px;
