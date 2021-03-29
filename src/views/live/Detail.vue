@@ -120,6 +120,7 @@ import LiveParticulars from './components/LiveParticulars'
 import LivePlayback from './components/LivePlayback'
 import LiveStatistics from './components/LiveStatistics'
 import vueQr from 'vue-qr'
+import { frontBaseUrl } from '@/config/env'
 import { mapGetters } from 'vuex'
 const STATUS_MAP = {
   live: '直播中',
@@ -162,14 +163,12 @@ export default {
       return this.roleName === 'Trainee'
     },
     watchLiveLink() {
-      let { userId, avatar, userName } = this.detailData.currentUser
-        ? this.detailData.currentUser
-        : {}
+      let { userId, avatar } = this.detailData.currentUser ? this.detailData.currentUser : {}
       let QRURL = ''
       if (this.roleName === 'Trainee') {
-        QRURL = `${location.origin}/#/WatchLive?wId=${this.detailData.channelId}&userid=${userId}&avatar=${avatar}&sk=${this.detailData.authSecretOrCode}&type=${this.detailData.authType}`
+        QRURL = `${frontBaseUrl}/#/WatchLive?wId=${this.detailData.channelId}&userid=${userId}&avatar=${avatar}&sk=${this.detailData.authSecretOrCode}&type=${this.detailData.authType}`
       } else if (this.roleName === 'Lecturer') {
-        QRURL = `${location.origin}/#/beginLive?beginId=${this.detailData.channelId}&roleName=${this.roleName}`
+        QRURL = `${frontBaseUrl}/#/beginLive?beginId=${this.detailData.channelId}&roleName=${this.roleName}`
       }
       return QRURL
       // return `${location.origin}/#/WatchLive?wId=${this.detailData.channelId}`
