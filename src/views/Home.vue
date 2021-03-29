@@ -22,12 +22,16 @@
         <h3 class="LMTitle">
           <span class="span1">我的任务</span>
           <span class="span2">待完成任务{{ myTaskInfo.nub }}项</span>
+          <div class="myTaskChange">
+            <span class="myTaskPrev" @click="myTaskPrevFn"></span>
+            <span class="myTaskNext" @click="myTaskNextFn"></span>
+          </div>
         </h3>
         <!-- 我的任务 -->
         <div style="clear: both; ">
-          <home-my-task :my-task-info="myTaskInfo" />
+          <home-my-task ref="myTaskRef" :my-task-info="myTaskInfo" />
         </div>
-        <h3 class="LMTitle">
+        <h3 class="LMTitle" style="padding-top:52px">
           <span class="span1">最新直播</span>
           <router-link :to="{ path: '/live/list' }">
             更多
@@ -47,7 +51,9 @@
                 </div>
                 <div class="homeCourseText">
                   <span class="homeCourseTitle">{{ item.channelName }}</span>
-                  <span class="homeCourseTime">{{ item.startTime }}</span>
+                  <span class="homeCourseTime" :title="item.planTime[0]">{{
+                    item.planTime[0]
+                  }}</span>
                   <div class="livePerInfo">
                     <img
                       :src="item.avatarUrl ? item.avatarUrl : '/img/userIconBig.png'"
@@ -125,7 +131,7 @@
                     </div>
                     <div class="livePerInfo">
                       <span class="iconimage_icon_user iconfont userIcon"></span>
-                      <span>{{ item.people }}人学习</span>
+                      <span style="font-size: 12px">{{ item.people }}人学习</span>
                     </div>
                   </div>
                 </router-link>
@@ -135,7 +141,7 @@
                   <img
                     :src="item.coverUrl ? item.coverUrl : '/img/autoB.png'"
                     width="590"
-                    height="276"
+                    height="305"
                     alt=""
                     style="border-radius: 4px;"
                   />
@@ -154,7 +160,7 @@
                       </div>
                       <div class="learnNub">
                         <span class="iconimage_icon_user iconfont userIcon"></span>
-                        <span>{{ item.people }}人学习</span>
+                        <span style="font-size: 12px">{{ item.people }}人学习</span>
                       </div>
                     </div>
                   </div>
@@ -206,28 +212,28 @@
               @click="toTrainDetaill(item)"
             >
               <h3 class="homeTrainTitle">
-                {{ item.trainName }}
+                <span>{{ item.trainName }}</span>
               </h3>
               <div class="homeTrainText">
                 <div class="homeTrainTextItem">
-                  <span class="iconimage_icon_address iconfont traingIcon"></span>
-                  <span class="homeTrainTextItem2">{{ item.address }}</span>
+                  <!-- <span class="iconimage_icon_time iconfont traingIcon"></span> -->
+                  <span class="homeTrainTextItem2">时间：{{ item.startTime }}</span>
                 </div>
                 <div class="homeTrainTextItem">
-                  <span class="iconimage_icon_time iconfont traingIcon"></span>
-                  <span class="homeTrainTextItem2">{{ item.startTime }}</span>
+                  <!-- <span class="iconimage_icon_address iconfont traingIcon"></span> -->
+                  <span class="homeTrainTextItem2">地址：{{ item.address }}</span>
                 </div>
                 <div class="homeTrainTextItem">
-                  <img
+                  <!-- <img
                     :src="item.avatarUrl ? item.avatarUrl : '/img/userIconBig.png'"
                     width="24"
                     height="24"
                     alt=""
-                  />
-                  <span class="homeTrainTextItem2">{{ item.lecturerName }}</span>
-                  <span
+                  /> -->
+                  <span class="homeTrainTextItem2">讲师：{{ item.lecturerName }}</span>
+                  <!-- <span
                     :class="[item.status ? trainStatus[item.status].class : '', homeTraining]"
-                  >{{ trainStatus[item.status].text }}</span>
+                  >{{ trainStatus[item.status].text }}</span> -->
                 </div>
               </div>
             </div>
@@ -276,7 +282,7 @@
                 </div>
                 <div class="homeCourseText">
                   <span class="homeCourseTitle">{{ item.title }}</span>
-                  <span class="homeCourseTime iconeyeopen-outlined iconfont">{{ item.hits }}</span>
+                  <span class="hCWatchNumber iconeyeopen-outlined iconfont">{{ item.hits }}</span>
                   <div class="livePerInfo">
                     <span>{{ item.createTime }}</span>
                   </div>
@@ -305,6 +311,11 @@
       </div>
       <div class="homeRight">
         <home-right />
+      </div>
+    </div>
+    <div class="foot">
+      <div class="foot2">
+        <span>v2.0.0_20210330_Release 备案号 ：苏ICP备19010525号-2</span>
       </div>
     </div>
   </div>
@@ -413,7 +424,14 @@ export default {
     this.getHomeMyLive()
   },
   methods: {
+    myTaskPrevFn() {
+      this.$refs.myTaskRef.prev()
+    },
+    myTaskNextFn() {
+      this.$refs.myTaskRef.next()
+    },
     toTrainDetaill(item) {
+      // 调转到培训详情
       const { id: trainId, trainName: title, trainWay, userType } = item
       this.$router.push({
         name: 'trainDetail',
@@ -499,31 +517,52 @@ export default {
 }
 .LMTitle {
   float: left;
-  padding: 66px 0 37px 0;
+  padding: 46px 0 21px 0;
   clear: both;
   width: 100%;
   margin: 0;
 }
 .LMTitle .span1 {
-  font-size: 30px;
-  font-family: 'Arial', 'Microsoft YaHei', '黑体', '宋体', sans-serif;
+  font-size: 24px;
+  // font-family: 'Arial', 'Microsoft YaHei', '黑体', '宋体', sans-serif;
   color: #000b15;
   font-weight: normal;
-  padding-right: 10px;
+  padding-right: 8px;
   float: left;
 }
 .LMTitle .span2 {
-  font-size: 18px;
-  font-family: 'Arial', 'Microsoft YaHei', '黑体', '宋体', sans-serif;
+  font-size: 14px;
+  // font-family: 'Arial', 'Microsoft YaHei', '黑体', '宋体', sans-serif;
   color: #000b15;
   font-weight: normal;
   opacity: 0.45;
   float: left;
   padding: 8px 0 0 8px;
 }
+.LMTitle .myTaskChange {
+  float: right;
+  padding-top: 7px;
+}
+.LMTitle .myTaskPrev {
+  width: 20px;
+  height: 20px;
+  display: block;
+  float: left;
+  background: url('/img/bgicon.png') repeat-x -60px -172px;
+  cursor: pointer;
+  margin: 0 22px 0 0;
+}
+.LMTitle .myTaskNext {
+  width: 20px;
+  height: 20px;
+  display: block;
+  float: left;
+  background: url('/img/bgicon.png') repeat-x -85px -172px;
+  cursor: pointer;
+}
 .LMTitle a {
-  font-size: 18px;
-  font-family: 'Arial', 'Microsoft YaHei', '黑体', '宋体', sans-serif;
+  font-size: 14px;
+  // font-family: 'Arial', 'Microsoft YaHei', '黑体', '宋体', sans-serif;
   color: #000b15;
   font-weight: normal;
   opacity: 0.45;
@@ -541,7 +580,7 @@ export default {
 .homeCourse {
   float: left;
   width: 285px;
-  height: 283px;
+  height: 306px;
   overflow: hidden;
   background: #fff;
   box-shadow: 0 2px 12px 0 rgba(0, 88, 121, 0.08);
@@ -552,7 +591,7 @@ export default {
   text-align: left;
   font-size: 14px;
   height: 55px;
-  margin: 10px 0 10px 0;
+  margin: 23px 0 10px 0;
   line-height: 180%;
   color: #000b15;
   display: -webkit-box;
@@ -562,12 +601,25 @@ export default {
   -webkit-line-clamp: 2;
   font-weight: bold;
 }
-
+.homeCourseImg {
+  height: 168px;
+}
 .homeCourseText {
   padding: 0 15px;
   overflow: hidden;
 }
+.homeCourse .hCWatchNumber {
+  float: left;
+  font-size: 12px;
+  color: #000b15;
+  opacity: 0.65;
+}
 .homeCourse .homeCourseTime {
+  padding-top: 5px;
+  width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   float: left;
   font-size: 12px;
   color: #000b15;
@@ -586,6 +638,7 @@ export default {
 }
 .homeCourse .livePerInfo img {
   border-radius: 50%;
+  margin-right: 4px;
   float: left;
 }
 .homeCourse .livePerInfo span {
@@ -615,7 +668,7 @@ export default {
   border-radius: 0 0 4px 4px;
   position: relative;
   z-index: 10;
-  bottom: 64px;
+  bottom: 67px;
   left: 0;
   width: 590px;
   height: 64px;
@@ -654,26 +707,35 @@ export default {
   margin: 0 20px 20px 0;
   border-radius: 4px;
   float: left;
+  background: url('/img/bgicon.png') repeat-x 0px 0px #fff;
 }
 .homeTrain .homeTrainTitle {
   width: 285px;
-  height: 54px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: normal;
-  line-height: 54px;
   padding: 0 15px;
-  margin: 0 0 8px 0;
+  margin: 30px 0 2px 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  background: url('../assets/images/icon.png') no-repeat 0 -206px;
-  color: #fff;
+  // background: url('../assets/images/icon.png') no-repeat 0 -206px;
+  color: #000b15;
+}
+.homeTrain .homeTrainTitle::before {
+  float: left;
+  content: '';
+  display: block;
+  width: 30px;
+  height: 30px;
+  margin: 1px 15px 0 0;
+  background: url('/img/bgicon.png') repeat-x 0px -178px #fff;
 }
 .homeTrain .homeTrainTextItem {
   color: #73797f;
   display: block;
   overflow: hidden;
-  padding: 10px 15px 0 15px;
+  padding: 10px 15px 0 62px;
+  font-size: 12px;
 }
 .homeTrain .homeTrainTextItem img {
   border-radius: 50%;
@@ -701,6 +763,11 @@ export default {
 }
 .homeTrain .homeTrainTextItem2 {
   float: left;
+  overflow: hidden;
+  display: block;
+  width: 200px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .homeRight {
@@ -725,5 +792,24 @@ export default {
 .home .banner .el-carousel__indicator.is-active button {
   background: #01aafc;
   opacity: 1;
+}
+.foot {
+  height: 124px;
+  background: #475461;
+  text-align: center;
+  margin-top: 27px;
+}
+.foot2 {
+  width: 1200px;
+  margin: auto;
+  color: #fff;
+  opacity: 0.35;
+  font-size: 12px;
+  display: inline-table;
+  text-align: left;
+}
+.foot2 span {
+  margin-top: 50px;
+  display: block;
 }
 </style>
