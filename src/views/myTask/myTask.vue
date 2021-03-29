@@ -1,13 +1,17 @@
 <template>
   <div>
     <ul class="tabs">
-      <li v-for="item in tabsData" :key="item.id" class="tab" @click="clickTab(item.path)">
+      <li v-for="(item, index) in tabsData" :key="item.id" class="tab" @click="clickTab(item.path)">
         <div class="tab_box">
           <span class="tab_icon"> <img :src="item.icon" alt="" /> </span>
           <span class="tab_title" :class="{ clickClass: clickData == item.path }">
             {{ item.name }}
           </span>
-          <span class="tab_num" :class="{ clickClass: clickData == item.path }">(11)</span>
+          <span class="tab_num" :class="{ clickClass: clickData == item.path }">(
+            <span v-if="index == 0"> {{ studyNum }} </span>
+            <span v-else-if="index == 2"> {{ examinationNum }} </span>
+            <span v-else>0</span>
+            )</span>
         </div>
         <div :class="{ tab_bottom: clickData == item.path }"></div>
       </li>
@@ -18,6 +22,7 @@
 <script>
 import myLearn from './myLearn'
 import myExamList from './myExamList'
+import { studyTodoNum, examTodoNum } from '@/api/myTask'
 export default {
   components: { myLearn, myExamList },
   data() {
@@ -29,32 +34,46 @@ export default {
           path: 'myLearn',
           icon: require('../../../public/img/学习.png')
         },
-        {
-          name: '作业',
-          id: 'task',
-          path: '',
-          icon: require('../../../public/img/作业.png')
-        },
+        // {
+        //   name: '作业',
+        //   id: 'task',
+        //   path: '',
+        //   icon: require('../../../public/img/作业.png')
+        // },
         {
           name: '考试',
           id: 'examination',
           path: 'myExamList',
 
           icon: require('../../../public/img/考试.png')
-        },
-        {
-          name: '问卷',
-          id: 'questionnaire',
-          path: '',
-          icon: require('../../../public/img/问卷.png')
         }
+        // {
+        //   name: '问卷',
+        //   id: 'questionnaire',
+        //   path: '',
+        //   icon: require('../../../public/img/问卷.png')
+        // }
       ],
-      clickData: 'myLearn'
+      clickData: 'myLearn',
+      studyNum: '',
+      examinationNum: ''
     }
+  },
+  created() {
+    this.getInfo()
+  },
+  activated() {
+    this.getInfo()
   },
   methods: {
     clickTab(path) {
       this.clickData = path
+    },
+    async getInfo() {
+      // 学习待办条数
+      this.studyNum = await studyTodoNum()
+      // 考试待办条数
+      this.examinationNum = await examTodoNum()
     }
   }
 }
@@ -70,7 +89,7 @@ export default {
   display: flex;
 
   .tab {
-    width: 25%;
+    width: 50%;
     height: 64px;
     padding: 12px 0;
 
@@ -116,7 +135,7 @@ export default {
     }
     &_bottom {
       margin-top: 12px;
-      margin-left: 4vw;
+      margin-left: 11.5vw;
       width: 8vw;
       height: 2px;
       background: #01aafc;

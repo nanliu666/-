@@ -1,6 +1,6 @@
 <template>
   <div class="footer">
-    版权所有© 2020 上海易宝软件有限公司 苏ICP备09013856号-1
+    v2.0.0_20210330_Release &nbsp;备案号：苏ICP备19010525号-2
   </div>
 </template>
 
