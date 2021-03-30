@@ -155,6 +155,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { toPercent } from '@/util/util'
 import {
   getCourseDetail,
   getLearnRecord,
@@ -207,17 +208,35 @@ export default {
   },
   watch: {
     currentChapter(newVal, oldVal) {
+      // if (this.isChapterVideo(oldVal) && oldVal.duration) {
+      //   this.updateVideoProgress(oldVal)
+      //   this.setDuration()
+      //   this.$nextTick(() => {
+      //     this.videoTimerFn()
+      //   })
+      // }
+      // if (!this.isChapterVideo(newVal) && newVal.type != 4) {
+      //   newVal.progress = 100
+      // }
+      // this.submitLearnRecords()
       if (this.isChapterVideo(oldVal) && oldVal.duration) {
-        this.updateVideoProgress(oldVal)
-        this.setDuration()
-        this.$nextTick(() => {
-          this.videoTimerFn()
-        })
+        let videoDom = document.querySelector('video')
+        videoDom.onended = () => {
+          this.updateVideoProgress()
+          this.submitLearnRecords()
+        }
       }
       if (!this.isChapterVideo(newVal) && newVal.type != 4) {
         newVal.progress = 100
       }
-      this.submitLearnRecords()
+      if (newVal !== oldVal) {
+        clearInterval(this.timer)
+        this.chapterTime = 0
+        this.timer = setInterval(() => {
+          this.chapterTime += 0.5
+          this.updateVideoProgress()
+        }, 30 * 1000)
+      }
     }
   },
   activated() {
@@ -255,11 +274,16 @@ export default {
       if (!this.$refs.videoRef) {
         return
       }
-      let progress = Number(
-        ((this.$refs.videoRef.currentTime / this.currentChapter.duration) * 100).toFixed()
-      )
+      // let progress = Number(
+      //   ((this.$refs.videoRef.currentTime / this.currentChapter.duration) * 100).toFixed()
+      // )  偶现  Infinity
+
       this.chapters.forEach((val) => {
         if (val.contentId === this.currentChapter.contentId) {
+          let progress = 0
+          if (this.isChapterVideo(this.currentChapter)) {
+            progress = toPercent(this.$refs.videoRef.currentTime, this.currentChapter.duration)
+          }
           val.progress = progress > val.progress ? progress : val.progress
         }
       })
@@ -289,28 +313,28 @@ export default {
       return chapter.content
     },
     // 每1分钟收集一下进度
-    setTimer() {
-      this.timer = setInterval(() => {
-        this.updateVideoProgress()
-        this.submitLearnRecords()
-        // }, 10000)
-      }, 1 * 60 * 1000)
-    },
+    // setTimer() {
+    //   this.timer = setInterval(() => {
+    //     this.updateVideoProgress()
+    //     this.submitLearnRecords()
+    //     // }, 10000)
+    //   }, 1 * 60 * 1000)
+    // },
     // 视频看完更新一下
-    videoTimerFn() {
-      if (this.currentChapter.duration) {
-        this.timer = setInterval(() => {
-          this.chapters.map((val) => {
-            if (val.contentId === this.currentChapter.contentId) {
-              val.progress = 100
-            }
-          })
+    // videoTimerFn() {
+    //   if (this.currentChapter.duration) {
+    //     this.timer = setInterval(() => {
+    //       this.chapters.map((val) => {
+    //         if (val.contentId === this.currentChapter.contentId) {
+    //           val.progress = 100
+    //         }
+    //       })
 
-          this.updateVideoProgress()
-          this.submitLearnRecords()
-        }, this.currentChapter.duration * 1000)
-      }
-    },
+    //       this.updateVideoProgress()
+    //       this.submitLearnRecords()
+    //     }, this.currentChapter.duration * 1000)
+    //   }
+    // },
     //  初始化
     reset() {
       this.leftHidden = false
@@ -329,20 +353,11 @@ export default {
       const regx = /^.*\.(avi|wmv|mp4|3gp|rm|rmvb|mov)$/
       return regx.test(chapter.content)
     },
-    handleChapterClick(chapter) {
+    async handleChapterClick(chapter) {
       // this.pageIndex -= 1
-      //如果是不同章节  计算此章节的停留时间
-      if (this.currentChapter.contentId !== chapter.contentId) {
-        this.chapterTime = 0
-        clearInterval(this.timer)
-        this.timer = setInterval(() => {
-          this.chapterTime += 1
-        }, 60 * 1000)
-        this.updateVideoProgress()
-        this.submitLearnRecords()
-      }
+      await this.updateVideoProgress()
+      await this.submitLearnRecords()
       this.currentChapter = chapter
-      //
     },
     // 进度
     calcProcess(chapter) {
