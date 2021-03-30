@@ -14,25 +14,19 @@
           {{ courseData.name }}
         </div>
         <div class="course-detail__info__column">
-          <span class="course-detail__info__label">
-            讲师：
-          </span>
+          <span class="course-detail__info__label"> 讲师： </span>
           <span class="course-detail__info__value">
             {{ courseData.teacherName }}
           </span>
         </div>
         <div v-if="courseData.credit" class="course-detail__info__column">
-          <span class="course-detail__info__label">
-            学分：
-          </span>
+          <span class="course-detail__info__label"> 积分： </span>
           <span class="course-detail__info__value">
             {{ courseData.credit }}
           </span>
         </div>
         <div v-if="courseData.period" class="course-detail__info__column">
-          <span class="course-detail__info__label">
-            学时：
-          </span>
+          <span class="course-detail__info__label"> 学时： </span>
           <span class="course-detail__info__value">
             {{ courseData.period + 'h' }}
           </span>

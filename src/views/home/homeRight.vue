@@ -17,7 +17,7 @@
       <div class="privateInfoCredit">
         <div class="CreditItem">
           <span class="credit">{{ homePInfoData.totalScore }}</span>
-          <span class="creditType">累计学分</span>
+          <span class="creditType">累计积分</span>
         </div>
         <div class="CreditItem">
           <span class="credit">{{ homePInfoData.totalPeriod }}</span>
@@ -25,7 +25,7 @@
         </div>
         <div class="CreditItem">
           <span class="credit">{{ homePInfoData.monthlyScore }}</span>
-          <span class="creditType">本月学分</span>
+          <span class="creditType">本月积分</span>
         </div>
         <div class="CreditItem">
           <span class="credit">{{ homePInfoData.monthlyPeriod }}</span>
@@ -55,11 +55,11 @@
           <span class="courseTime">时长 {{ item.duration }}</span>
           <!--  时长 -->
           <span class="coursePercent">{{ item.totalPrecent }}%</span>
-          <div style="clear: both;"></div>
+          <div style="clear: both"></div>
           <el-progress
             :percentage="item.totalPrecent"
             :stroke-width="4"
-            style="padding-top: 5px;"
+            style="padding-top: 5px"
             :format="format"
           ></el-progress>
         </div>
