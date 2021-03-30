@@ -69,7 +69,7 @@
       <div class="content_box">
         <img src="@/assets/images/my_noData.png" alt="" />
         <div class="text">
-          暂无新闻
+          暂无数据
         </div>
       </div>
     </div>
