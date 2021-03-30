@@ -20,31 +20,35 @@
       {{ sondata.templateName }}
     </div>
 
-    <div class="preview_right_in">
-      <div class="preview_right_box">
-        <img :src="sondata.backUrl" alt="" class="bgimg" />
-        <div class="name">
-          {{ sondata.templateName }}
-        </div>
-        <div class="text">
-          {{ sondata.text }}
-        </div>
-        <img :src="sondata.logoUrl" alt="" class="logo" />
-        <div class="studentName">
-          {{ sondata.stuName }}
-        </div>
-        <div class="serial">
-          <div>证书编号:</div>
-          <div>{{ CertificateNumberInitials }}-{{ serialNumber }}</div>
-          <div>{{ sondata.grantTime }}</div>
+    <div ref="capture">
+      <div class="preview_right_in">
+        <div class="preview_right_box">
+          <img :src="sondata.backUrl" alt="" class="bgimg" />
+          <div class="name">
+            {{ sondata.templateName }}
+          </div>
+          <div class="text">
+            {{ sondata.text }}
+          </div>
+          <img :src="sondata.logoUrl" alt="" class="logo" />
+          <div class="studentName">
+            {{ sondata.stuName }}
+          </div>
+          <div class="serial">
+            <div>证书编号:</div>
+            <div>{{ CertificateNumberInitials }}-{{ serialNumber }}</div>
+            <div>{{ sondata.grantTime }}</div>
+          </div>
         </div>
       </div>
     </div>
+
+    <a href=""></a>
   </div>
 </template>
 
 <script>
-import { downLoadFile } from '@/util/util'
+import html2canvas from 'html2canvas'
 import { pinyin } from 'pinyin-pro'
 export default {
   name: 'CertificateDetail',
@@ -57,7 +61,8 @@ export default {
   data() {
     return {
       CertificateNumberInitials: '',
-      serialNumber: ''
+      serialNumber: '',
+      image: ''
     }
   },
   watch: {
@@ -72,17 +77,31 @@ export default {
     }
   },
   methods: {
+    //点击生成图片
+    downLoadInfo() {
+      html2canvas(this.$refs.capture, { useCORS: true, logging: true }).then((canvas) => {
+        // this.$refs.addImage.append(canvas);//在下面添加canvas节点
+        let link = document.createElement('a')
+        link.href = canvas.toDataURL() //下载链接
+        link.setAttribute('download', `${this.sondata.templateName + '.png'}`)
+        link.style.display = 'none' //a标签隐藏
+        document.body.appendChild(link)
+        link.click()
+      })
+    },
+
     toCertificate() {
       this.$emit('ChangeBtn', true)
-    },
-    // 下载
-    downLoadInfo() {
-      let data = {
-        url: this.sondata.backUrl,
-        fileName: this.sondata.templateName
-      }
-      downLoadFile(data)
     }
+    // 下载
+    // downLoadInfo() {
+    //   this.drawPhoto()
+    //   let data = {
+    //     url: this.sondata.backUrl,
+    //     fileName: this.sondata.templateName
+    //   }
+    //   downLoadFile(data)
+    // }
   }
 }
 </script>
