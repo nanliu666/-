@@ -2,7 +2,8 @@
   <div :class="['header', { isFullscreenHead: isFullscreen }]">
     <div class="header-inner">
       <div class="logo">
-        <img v-if="orgId === '5263'" src="../assets/images/logoE.png" />
+        <img v-if="envVar === 'zehui' && orgId === '5263'" src="../assets/images/logoE.png" />
+        <img v-else-if="envVar === 'zehui'" src="../assets/images/logoZeHui.png" />
         <img v-else src="../assets/images/logo.png" />
       </div>
       <template v-if="userId">
@@ -89,6 +90,10 @@ export default {
     }
   },
   computed: {
+    envVar() {
+      let envC = process.env
+      return envC.VUE_APP_ENV
+    },
     orgId() {
       let userInfo = getStore({ name: 'userInfo' })
       return userInfo.org_id
