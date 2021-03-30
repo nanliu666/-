@@ -216,7 +216,7 @@ export default {
       // 若创建考试时，允许考生查看答卷且查看天数大于等于0，且超过规定天数, 起始时间为评卷结束时间。则不能查看得分
       const { openResults, openResultsValue, publishTime } = this.examDetail
       // 设置了可查看分数
-      if (!openResults) {
+      if (openResults) {
         // 查看分数设置为可查看，并且值为0，代表可以无限查看
         if (openResultsValue == 0) {
           this.isViewResults = true
