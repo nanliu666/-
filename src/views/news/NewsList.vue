@@ -53,7 +53,7 @@
       </div>
     </div>
 
-    <div class="page">
+    <div class="page" v-show="data.length">
       <el-pagination
         :page-sizes="[10, 20, 30, 50, 100]"
         layout="total, sizes, prev, pager, next, jumper"
@@ -63,6 +63,15 @@
         @current-change="handleCurrentChange"
       >
       </el-pagination>
+    </div>
+    <!-- 无数据 -->
+    <div v-show="!data.length" class="content">
+      <div class="content_box">
+        <img src="@/assets/images/my_noData.png" alt="" />
+        <div class="text">
+          暂无新闻
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -75,7 +84,7 @@ export default {
     return {
       searchInput: '',
       pitch: 0,
-      total: 10,
+      total: 0,
       page: {
         pageNo: 1, //请求页码
         pageSize: 10 //每页条数
@@ -90,7 +99,6 @@ export default {
     }
   },
   created() {
-    // console.log(11111111)
     this.isnewsList()
   },
 
@@ -145,7 +153,7 @@ export default {
   .title {
     width: 1200px;
     height: 145px;
-    margin: 20px auto;
+    margin: 20px auto 0;
     padding: 24px 24px 0;
     background: #ffffff;
     box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.1);
@@ -181,7 +189,7 @@ export default {
     width: 1200px;
     height: 134px;
     padding: 24px;
-    margin-bottom: 20px;
+    margin-top: 20px;
     display: flex;
     position: relative;
     .list_box_l {
@@ -228,12 +236,39 @@ export default {
     }
   }
   .page {
+    margin-top: 20px;
     height: 50px;
     position: relative;
     .pagination {
       position: absolute;
       top: 0;
       right: 0;
+    }
+  }
+  .content {
+    box-shadow: 0 2px 12px 0 rgba(0,61,112,0.08);
+    background: #ffffff;
+    border-radius: 4px;
+    width: 1200px;
+    height: 627px;
+    display: flex;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .content_box {
+      width: 338px;
+      height: 290px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+      .text {
+        text-align: center;
+        margin-top: 16px;
+        font-size: 14px;
+        color: rgba(0, 11, 21, 0.65);
+        letter-spacing: 0;
+      }
     }
   }
 }
