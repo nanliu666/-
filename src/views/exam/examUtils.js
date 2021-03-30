@@ -17,8 +17,11 @@ class ExamUtils {
     let isShowConfirm = true // 默认显示确认按钮
     const joinTips = '您确定现在参加考试吗？'
     const isPassAndJoin = '你已通过考试，重复考试将取成绩最好一次为最终结果。您确定现在参加考试吗？'
-    const lateMinutes = moment(new Date()).diff(moment(row.examBeginTime), 'minutes')
-    const lateMinutesText = `${lateMinutes}分钟`
+    // 通过精确到秒来比较迟到
+    const lateSeconds = moment(new Date()).diff(moment(row.examBeginTime), 'seconds')
+    const lateMinutes = lateSeconds / 60
+    // console.log('迟到分钟==', lateMinutes)
+    const lateMinutesText = `${Math.floor(lateMinutes)}分钟`
     const lateTimeTips = `你已迟到${lateMinutesText}不得进入参加考试！`
     const isLateTips = `本考试设置了迟到限制，${lateTimeTips}`
     const abnormalYips = '检测到你上次考试退出异常，系统已保留上次退出考试前的信息,可继续进行考试。'
