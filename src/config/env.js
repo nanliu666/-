@@ -1,5 +1,5 @@
 // 配置编译环境和线上环境之间的切换
-let systemName = '泽学院管理后台' // 系统名称
+let systemName = '泽学院学习平台' // 系统名称
 
 let frontBaseUrl = '' // 用户前台地址
 let backBaseUrl = '' //（后台管理）
