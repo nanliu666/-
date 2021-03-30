@@ -1,4 +1,5 @@
 // 配置编译环境和线上环境之间的切换
+let systemName = '泽学院管理后台' // 系统名称
 
 let frontBaseUrl = '' // 用户前台地址
 let backBaseUrl = '' //（后台管理）
@@ -7,6 +8,9 @@ let iconfontUrl = '//at.alicdn.com/t/font_$key.css'
 let codeUrl = `${frontBaseUrl}/code`
 const env = process.env
 console.log('process.env', process.env)
+if (env.VUE_APP_ENV == 'xugong') {
+  systemName = '徐工管理后台'
+}
 if (location.host.indexOf('localhost') !== -1) {
   frontBaseUrl = 'http://localhost:1888' // 本地开发环境地址（用户前台）
 } else if (env.VUE_APP_ENV == 'dev') {
@@ -36,8 +40,8 @@ if (location.host.indexOf('localhost') !== -1) {
 } else if (env.VUE_APP_ENV == 'pro') {
   backBaseUrl = 'http://admin.epro-edu.com' //生产环境地址(后台管理)
 } else if (env.VUE_APP_ENV == 'zehui') {
-  backBaseUrl = 'https://admin.zexueyuan.com.cn' //泽汇生产环境地址（后台管理）
+  backBaseUrl = 'http://admin.zexueyuan.com.cn' //泽汇生产环境地址（后台管理）
 } else if (env.VUE_APP_ENV == 'xugong') {
-  backBaseUrl = 'https://admin.zexueyuan.com.cn' //徐工环境地址（后台管理）
+  backBaseUrl = 'http://admin.zexueyuan.com.cn' //徐工环境地址（后台管理）
 }
-export { frontBaseUrl, backBaseUrl, iconfontUrl, iconfontVersion, codeUrl, env }
+export { frontBaseUrl, backBaseUrl, iconfontUrl, iconfontVersion, codeUrl, env, systemName }

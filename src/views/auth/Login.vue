@@ -3,7 +3,7 @@
     <div class="login_container">
       <div class="layout_left">
         <img class="hellWelcom" src="../../assets/images/HelloWelcome.svg" alt="" />
-        <span>欢迎登录ePRO Learning易宝人才培育系统软件</span>
+        <span>欢迎登录{{ systemNameC }}</span>
       </div>
       <div class="layout_right">
         <div class="layout_label">
@@ -79,6 +79,7 @@
 <script>
 import { getCaptcha, getTenantInfo, saveLoginCredit } from '@/api/user'
 import PassInput from '@/components/pass-input/PassInput'
+import { systemName } from '@/config/env'
 export default {
   name: 'Home',
   components: { PassInput },
@@ -113,6 +114,11 @@ export default {
         ],
         code: [{ required: true, message: '请输入验证码', trigger: 'blur' }]
       }
+    }
+  },
+  computed: {
+    systemNameC() {
+      return systemName
     }
   },
   created() {
@@ -226,7 +232,7 @@ export default {
         color: rgba(0, 11, 21, 0.85);
         margin: 114px 0 48px 0;
       }
-      .hint{
+      .hint {
         position: absolute;
         top: 20px;
         right: 20px;
