@@ -105,14 +105,15 @@
                 </div>
                 <ul class="content-box">
                   <li
-                    v-for="(conItem, conIndex) in item"
+                    v-for="conItem in item"
                     :id="`id${conItem.id}`"
                     :key="conItem.id"
                     class="content-li"
                   >
                     <answer-by-question
                       :con-item="conItem"
-                      :con-index="conIndex"
+                      :con-index="conNum"
+                      :is-show-scope="isShowScope"
                       @setImpeach="setImpeach"
                     />
                   </li>
@@ -137,7 +138,7 @@
                       <answer-by-question
                         :disabled="disabledByQuestion"
                         :con-item="item"
-                        :con-index="index"
+                        :con-index="conNum"
                         @setImpeach="setImpeach"
                       />
                     </li>
@@ -251,7 +252,9 @@ export default {
       currentQuestion: 0,
       limitTimeList: [],
       byOneTimeId: {},
-      nowTimeMs: ''
+      nowTimeMs: '',
+      isShowScope: 0,
+      conNum: 0
     }
   },
   computed: {
@@ -394,6 +397,7 @@ export default {
         })
       } else {
         // 逐题移动
+        this.conNum = parentIndex
         this.currentQuestion = _.findIndex(this.tempQuestionList, (item) => {
           return item.id === data.id
         })
@@ -629,7 +633,8 @@ export default {
      * examTimes 最后一次进来应该会返回1
      */
     initBackAuth() {
-      const { isDecoil, joinNum, joinNumValue, examTimes } = this.paper
+      const { isDecoil, joinNum, joinNumValue, examTimes, isShowScope } = this.paper
+      this.isShowScope = isShowScope
       this.hasBack = isDecoil === 1 && (!joinNum || (joinNum && joinNumValue - examTimes > 1))
     },
     initWatchClose() {

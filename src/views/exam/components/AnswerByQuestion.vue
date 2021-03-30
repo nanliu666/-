@@ -9,7 +9,7 @@
     </div>
     <div class="li-main-right">
       <span>{{ conIndex + 1 }}.</span>
-      <span>（{{ conItem.score }}分）</span>
+      <span v-show="isShowScope === 1">（{{ conItem.score }}分）</span>
       <QustionPreview
         v-if="QUESTION_TYPE_GROUP !== conItem.type"
         :data="conItem"
@@ -56,6 +56,10 @@ export default {
       default: () => ({})
     },
     conIndex: {
+      type: Number,
+      default: 0
+    },
+    isShowScope: {
       type: Number,
       default: 0
     }

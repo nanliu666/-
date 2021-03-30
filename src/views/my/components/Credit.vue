@@ -2,31 +2,23 @@
   <div class="credit">
     <div class="date_bar">
       <div class="bar_l">
-        <div class="title">
-          学分合计：
-        </div>
+        <div class="title">积分合计：</div>
         <div class="text">
           {{ resDate.totalScore }}
         </div>
       </div>
       <div class="bar_r">
-        <div class="title">
-          昨日学时：
-        </div>
+        <div class="title">昨日学时：</div>
         <div class="text">
           {{ resDate.yesterdayPeriod }}
         </div>
         <span></span>
-        <div class="title">
-          当月学时：
-        </div>
+        <div class="title">当月学时：</div>
         <div class="text">
           {{ resDate.monthPeriod }}
         </div>
         <span></span>
-        <div class="title">
-          学时合计：
-        </div>
+        <div class="title">学时合计：</div>
         <div class="text">
           {{ resDate.totalPeriod }}
         </div>
@@ -35,24 +27,20 @@
     <div class="table_box">
       <div class="sehrch_bar">
         <div class="bar">
-          <div :class="{ btn: sehrchBtn === 0 }" @click="showBtn(0)">
-            系统学分
-          </div>
-          <div :class="{ btn: sehrchBtn === 1 }" @click="showBtn(1)">
-            考评学分
-          </div>
+          <div :class="{ btn: sehrchBtn === 0 }" @click="showBtn(0)">系统积分</div>
+          <div :class="{ btn: sehrchBtn === 1 }" @click="showBtn(1)">考评积分</div>
         </div>
         <div class="sehrch">
           <div class="sehrch_input">
             <el-input
               v-show="sehrchBtn === 0"
               v-model="searchInput"
-              placeholder="查询我的系统学分"
+              placeholder="查询我的系统积分"
             ></el-input>
             <el-input
               v-show="sehrchBtn === 1"
               v-model="searchInput"
-              placeholder="查询我的考评学分"
+              placeholder="查询我的考评积分"
             ></el-input>
           </div>
           <div class="sehrch_btn">
@@ -67,40 +55,40 @@
         <span :class="{ typeBtn: sysRuleSource === '' }" @click="sysRuleSource = ''">全部</span>
         <span
           v-show="sehrchBtn === 0"
-          :class="{ typeBtn: sysRuleSource === '登录学分' }"
-          @click="sysRuleSource = '登录学分'"
-        >登录学分</span>
+          :class="{ typeBtn: sysRuleSource === '登录积分' }"
+          @click="sysRuleSource = '登录积分'"
+        >登录积分</span>
         <span
           v-show="sehrchBtn === 0"
-          :class="{ typeBtn: sysRuleSource === '在线学习学分' }"
-          @click="sysRuleSource = '在线学习学分'"
-        >在线学习学分</span>
+          :class="{ typeBtn: sysRuleSource === '在线学习积分' }"
+          @click="sysRuleSource = '在线学习积分'"
+        >在线学习积分</span>
         <span
           v-show="sehrchBtn === 0"
-          :class="{ typeBtn: sysRuleSource === '知识库学分' }"
-          @click="sysRuleSource = '知识库学分'"
-        >知识库学分</span>
+          :class="{ typeBtn: sysRuleSource === '知识库积分' }"
+          @click="sysRuleSource = '知识库积分'"
+        >知识库积分</span>
         <span
           v-show="sehrchBtn === 0"
-          :class="{ typeBtn: sysRuleSource === '资源共享学分' }"
-          @click="sysRuleSource = '资源共享学分'"
-        >资源共享学分</span>
+          :class="{ typeBtn: sysRuleSource === '资源共享积分' }"
+          @click="sysRuleSource = '资源共享积分'"
+        >资源共享积分</span>
 
         <span
           v-show="sehrchBtn === 1"
-          :class="{ typeBtn: sysRuleSource === '课程学分' }"
-          @click="sysRuleSource = '课程学分'"
-        >课程学分</span>
+          :class="{ typeBtn: sysRuleSource === '课程积分' }"
+          @click="sysRuleSource = '课程积分'"
+        >课程积分</span>
         <span
           v-show="sehrchBtn === 1"
-          :class="{ typeBtn: sysRuleSource === '考试学分' }"
-          @click="sysRuleSource = '考试学分'"
-        >考试学分</span>
+          :class="{ typeBtn: sysRuleSource === '考试积分' }"
+          @click="sysRuleSource = '考试积分'"
+        >考试积分</span>
         <span
           v-show="sehrchBtn === 1"
-          :class="{ typeBtn: sysRuleSource === '培训学分' }"
-          @click="sysRuleSource = '培训学分'"
-        >培训学分</span>
+          :class="{ typeBtn: sysRuleSource === '培训积分' }"
+          @click="sysRuleSource = '培训积分'"
+        >培训积分</span>
       </div>
       <div class="select_date">
         <span>日期: &nbsp; &nbsp;</span>
@@ -114,9 +102,7 @@
         >
         </el-date-picker>
         &nbsp; &nbsp;&nbsp; &nbsp;
-        <el-button type="primary" size="medium" @click="getInfo">
-          查询
-        </el-button>
+        <el-button type="primary" size="medium" @click="getInfo"> 查询 </el-button>
       </div>
 
       <div v-show="tableData.length" class="table">
@@ -151,9 +137,7 @@
       <div v-show="!tableData.length" class="content">
         <div class="content_box">
           <img src="@/assets/images/my_noData.png" alt="" />
-          <div class="text">
-            还没有累计的学分
-          </div>
+          <div class="text">还没有累计的积分</div>
         </div>
       </div>
     </div>
@@ -165,12 +149,12 @@ import { summary, scoreList } from '@/api/my'
 // 表格属性
 const TABLE_COLUMNS = [
   {
-    label: '学分来源',
+    label: '积分来源',
     prop: 'stuName',
     minWidth: 180
   },
   {
-    label: '学分类型',
+    label: '积分类型',
     prop: 'sysRuleSource',
     minWidth: 150
   },
