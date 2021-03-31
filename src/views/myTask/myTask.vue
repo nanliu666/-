@@ -9,8 +9,8 @@
           </span>
           <span class="tab_num" :class="{ clickClass: clickData == item.path }">(
             <span v-if="index == 0"> {{ studyNum }} </span>
-            <span v-else-if="index == 2"> {{ examinationNum }} </span>
-            <span v-else>0</span>
+            <span v-if="index == 1"> {{ examinationNum }} </span>
+            <!-- <span v-else>0</span> -->
             )</span>
         </div>
         <div :class="{ tab_bottom: clickData == item.path }"></div>

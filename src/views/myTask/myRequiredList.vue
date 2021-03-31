@@ -51,7 +51,7 @@
   </div>
 </template>
 <script>
-import { myElectiveCourse } from '@/api/myTask'
+import { myElectiveCourse, myCourseCatalog } from '@/api/myTask'
 export default {
   data() {
     return {
@@ -66,9 +66,11 @@ export default {
   },
   created() {
     this.myElectiveCourse()
+    this.getmyCourseCatalog()
   },
   activated() {
     this.myElectiveCourse()
+    this.getmyCourseCatalog()
   },
   methods: {
     async myElectiveCourse() {
@@ -76,6 +78,17 @@ export default {
       this.listData = res.data
       this.page.total = res.totalNum
     },
+
+    async getmyCourseCatalog() {
+      let params = {
+        studyType: 0,
+        ...this.page
+      }
+
+      let res = await myCourseCatalog(params)
+      console.log(res)
+    },
+
     handleSizeChange(val) {
       this.page.pageNo = 1
       this.page.pageSize = val
