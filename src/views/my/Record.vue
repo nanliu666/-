@@ -28,17 +28,15 @@
       </div>
 
       <div class="userInfo_btn">
-        <el-button type="primary" @click="toPersonal">
-          编辑信息
-        </el-button>
+        <el-button type="primary" @click="toPersonal"> 编辑信息 </el-button>
       </div>
 
       <div class="userInfo_bar">
-        <span :class="{ pitch: pitch === 0 }" style="cursor:pointer;" @click="showBtn(0)">课程</span>
-        <span :class="{ pitch: pitch === 1 }" style="cursor:pointer;" @click="showBtn(1)">培训</span>
-        <span :class="{ pitch: pitch === 2 }" style="cursor:pointer;" @click="showBtn(2)">考试</span>
-        <span :class="{ pitch: pitch === 3 }" style="cursor:pointer;" @click="showBtn(3)">学分</span>
-        <span :class="{ pitch: pitch === 4 }" style="cursor:pointer;" @click="showBtn(4)">证书</span>
+        <span :class="{ pitch: pitch === 0 }" style="cursor: pointer" @click="showBtn(0)">课程</span>
+        <span :class="{ pitch: pitch === 1 }" style="cursor: pointer" @click="showBtn(1)">培训</span>
+        <span :class="{ pitch: pitch === 2 }" style="cursor: pointer" @click="showBtn(2)">考试</span>
+        <span :class="{ pitch: pitch === 3 }" style="cursor: pointer" @click="showBtn(3)">积分</span>
+        <span :class="{ pitch: pitch === 4 }" style="cursor: pointer" @click="showBtn(4)">证书</span>
       </div>
     </div>
     <course v-show="pitch === 0"></course>
