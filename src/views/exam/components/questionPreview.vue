@@ -184,9 +184,9 @@ export default {
       value.answer = _.compact(target).join(',')
     },
     handleBlankValue(value) {
-      // 手动将___转换成数组以填充物 $ 来分隔，通$前后的空格来进行切分，通过$定位input，精髓在$的前后空格上
-      const content = deleteHTMLTag(_.unescape(value.content)).replace(/[_]{3}/g, ' $ ')
-      this.blankList = _.filter(_.split(content, ' '))
+      // 手动将___转换成数组以_$_来分隔，通过$定位input，精髓在通过$前后的下划线来进行切分
+      const content = deleteHTMLTag(_.unescape(value.content)).replace(/[_]{3}/g, '_$_')
+      this.blankList = _.filter(_.split(content, '_'))
       let tempValue = []
       _.forIn(value, (forValue, key) => {
         if (key.includes('answerModel')) {
