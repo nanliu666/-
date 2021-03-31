@@ -28,7 +28,14 @@
     <div class="answer-box common-box">
       <div class="answer">
         <span class="label">考生答案：</span>
-        <span class="value">{{ getAnswerValue() }}</span>
+        <!-- 有作答并且答案与标准答案一致 -->
+        <span
+          class="value"
+          :class="{
+            'is-correct': data.answerUser && data.answerUser === data.answerQuestion,
+            'is-fault': data.answerUser && data.answerUser !== data.answerQuestion
+          }"
+        >{{ getAnswerValue() }}</span>
       </div>
       <div v-if="isViewResults" class="answer">
         <span class="label">得分：</span>
