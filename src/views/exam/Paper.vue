@@ -105,13 +105,14 @@
                 </div>
                 <ul class="content-box">
                   <li
-                    v-for="conItem in item"
+                    v-for="(conItem, topicIndex) in item"
                     :id="`id${conItem.id}`"
                     :key="conItem.id"
                     class="content-li"
                   >
                     <answer-by-question
                       :con-item="conItem"
+                      :topic-index="topicIndex"
                       :con-index="conNum"
                       :is-show-scope="isShowScope"
                       @setImpeach="setImpeach"
@@ -295,6 +296,15 @@ export default {
       handler() {
         this.commonCreateCountdown()
       }
+    },
+    questionList: {
+      handler() {
+        this.$nextTick(() => {
+          this.$forceUpdate()
+        })
+      },
+      deep: true,
+      immediate: true
     }
   },
   created() {
@@ -386,6 +396,7 @@ export default {
     },
     // 点击滚动到对应的题目
     navTo(data, sonIndex, parentIndex, ref = 'paperScroll') {
+      console.log('parentIndex:', parentIndex)
       if (this.paper.answerMode === 1) {
         // 整卷移动
         const isFirst = sonIndex === 0 && parentIndex === 0
@@ -417,11 +428,13 @@ export default {
         return isSelected
       }
       const byTotal = getAnswerValue(data)
+
       const byOneIndex = _.findIndex(this.tempQuestionList, (item) => {
         return item.id === data.id && getAnswerValue(item)
       })
       const byOne = byOneIndex > -1
       const isSelected = this.paper.answerMode === 1 ? byTotal : byOne
+
       return isSelected
     },
     // 当前对象是否存在于存疑数据数组

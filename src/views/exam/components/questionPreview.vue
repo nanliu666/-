@@ -61,7 +61,7 @@
       <ul v-if="[QUESTION_TYPE_BLANK].includes(data.type)" class="blank-ul">
         <li v-for="(item, index) in blankList" :key="index">
           <el-input
-            v-if="item == 'inputFlag'"
+            v-if="item == '$'"
             v-model="data[`answerModel${index}`]"
             :disabled="disabled"
             style="display: inline;"
@@ -184,18 +184,22 @@ export default {
       value.answer = _.compact(target).join(',')
     },
     handleBlankValue(value) {
-      const content = deleteHTMLTag(_.unescape(value.content))
+      const content = deleteHTMLTag(_.unescape(value.content)).replace(/[_]{3,}/g, ' $ ')
       // 手动将___转换成数组以填充物inputFlag来分隔
-      const cloneTemp = _.cloneDeep(_.words(content, /[^___]+/g))
-      let targetList = []
-      _.each(cloneTemp, (item, index) => {
-        targetList.push(item)
-        if (index !== _.size(cloneTemp) - 1) {
-          targetList.push('inputFlag')
-        }
-      })
+      // const cloneTemp = _.cloneDeep(_.words(content, /[^_]{3,}/g))
+      let targetList = content.split(' ').filter((item) => item)
+      // _.each(cloneTemp, (item, index) => {
+      //   targetList.push(item)
+      //   if (_.size(cloneTemp) === 1) {
+      //     targetList.push('inputFlag')
+      //   } else {
+      //     if (index !== _.size(cloneTemp) - 1) {
+      //       targetList.push('inputFlag')
+      //     }
+      //   }
+      // })
       this.blankList = targetList
-      // console.log('blankList==', this.blankList)
+
       let tempValue = []
       _.forIn(value, (forValue, key) => {
         if (key.includes('answerModel')) {

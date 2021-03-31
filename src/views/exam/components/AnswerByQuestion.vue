@@ -6,12 +6,13 @@
         :class="`icon${isInImpeach ? 'image_icon_help_press' : 'image_icon_help_normal'}`"
         @click="setImpeach(conItem)"
       />
+      <span style="margin-left:5px;">{{ topicIndex + 1 }}.</span>
+      <span v-show="isShowScope === 1">（{{ conItem.score }}分）</span>
     </div>
     <div class="li-main-right">
-      <span>{{ conIndex + 1 }}.</span>
-      <span v-show="isShowScope === 1">（{{ conItem.score }}分）</span>
       <QustionPreview
         v-if="QUESTION_TYPE_GROUP !== conItem.type"
+        class="ques"
         :data="conItem"
         :disabled="disabled"
       />
@@ -56,6 +57,10 @@ export default {
       default: () => ({})
     },
     conIndex: {
+      type: Number,
+      default: 0
+    },
+    topicIndex: {
       type: Number,
       default: 0
     },

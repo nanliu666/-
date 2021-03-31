@@ -717,3 +717,10 @@ export function parseTime(time, cFormat) {
   })
   return time_str
 }
+//计算两数的百分比  并保留小数
+export const toPercent = (point = 0, total = 0, decimal = 0) => {
+  let num = Number(point).toFixed(2),
+    sum = Number(total).toFixed(2)
+  let str = ((Number(num * 100) / Number(sum * 100)) * 100).toFixed(decimal)
+  return Number(str)
+}
