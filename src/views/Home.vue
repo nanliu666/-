@@ -360,7 +360,7 @@ export default {
       banner: [
         {
           css: {
-            backgroundImage: 'url(' + require('../assets/images/banner2.jpg') + ')',
+            backgroundImage: 'url(' + require('../assets/images/banner.jpg') + ')',
             backgroundRepeat: 'no-repeat',
             backgroundSize: 'cover'
           },
