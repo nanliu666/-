@@ -13,7 +13,7 @@
             v-for="(option, index) in data.options"
             :key="index"
             class="select-li"
-            :class="{ 'is-correct': option.isCorrect, 'is-fault': getFault(option) }"
+            :class="{ 'is-correct': getCorrectClass(option), 'is-fault': getFault(option) }"
           >
             <span>{{ _.unescape(option.content) }}</span>
             <question-view v-if="option.url" :url="option.url" />
@@ -71,6 +71,10 @@ export default {
     getFault(item) {
       return this.data.answerUser.includes(item.id) && !item.isCorrect
     },
+    // 当前选项被选且正确
+    getCorrectClass(item) {
+      return this.data.answerUser.includes(item.id) && item.isCorrect == 1
+    },
     // 获取正确答案
     getCorrect() {
       const target = _.chain(this.data.options)
@@ -80,7 +84,7 @@ export default {
         .map('content')
         .join(',')
         .value()
-      return target
+      return target ? target : '暂无正确答案'
     },
     // 获取考生答案
     getAnswerValue() {
@@ -88,10 +92,10 @@ export default {
         .filter((item) => {
           return _.includes(this.data.answerUser, item.id)
         })
-        .map('content', '考生未作答')
+        .map('content')
         .join(',')
         .value()
-      return target
+      return target ? target : '考生未作答'
     }
   }
 }
