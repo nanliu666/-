@@ -107,8 +107,6 @@ $selctColor: #fcba00;
   display: flex;
   justify-content: flex-start;
   .li-main-left {
-    margin-top: 2px;
-    margin-right: 8.8px;
     .iconfont {
       &:hover {
         color: $activeColor;
