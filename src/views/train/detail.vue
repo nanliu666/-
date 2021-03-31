@@ -40,7 +40,7 @@
         </div>
         <div class="intro-item">
           计划人数：
-          <span class="text">{{ data.people? data.people: '--' }}</span>
+          <span class="text">{{ data.people? data.people: '无限制' }}</span>
         </div>
       </div>
       <div class="intro-list">
