@@ -296,6 +296,15 @@ export default {
       handler() {
         this.commonCreateCountdown()
       }
+    },
+    questionList: {
+      handler() {
+        this.$nextTick(() => {
+          this.$forceUpdate()
+        })
+      },
+      deep: true,
+      immediate: true
     }
   },
   created() {
@@ -419,11 +428,13 @@ export default {
         return isSelected
       }
       const byTotal = getAnswerValue(data)
+
       const byOneIndex = _.findIndex(this.tempQuestionList, (item) => {
         return item.id === data.id && getAnswerValue(item)
       })
       const byOne = byOneIndex > -1
       const isSelected = this.paper.answerMode === 1 ? byTotal : byOne
+
       return isSelected
     },
     // 当前对象是否存在于存疑数据数组
