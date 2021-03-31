@@ -1,6 +1,6 @@
 <template>
   <div class="li-main">
-    <div class="li-main-left">
+    <div class="li-main-left" :class="{ blankidx: conItem.type === 'blank' }">
       <i
         class="iconfont"
         :class="`icon${isInImpeach ? 'image_icon_help_press' : 'image_icon_help_normal'}`"
@@ -106,8 +106,11 @@ $selctColor: #fcba00;
 .li-main {
   display: flex;
   justify-content: flex-start;
+  .blankidx {
+    margin-top: 8px;
+  }
   .li-main-left {
-    margin-top: 2px;
+    // margin-top: 2px;
     margin-right: 8.8px;
     .iconfont {
       &:hover {
