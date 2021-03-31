@@ -13,7 +13,7 @@
             v-for="(option, index) in data.options"
             :key="index"
             class="select-li"
-            :class="{ 'is-correct': option.isCorrect, 'is-fault': getFault(option) }"
+            :class="{ 'is-correct': getCorrectClass(option), 'is-fault': getFault(option) }"
           >
             <span>{{ _.unescape(option.content) }}</span>
             <question-view v-if="option.url" :url="option.url" />
@@ -28,7 +28,14 @@
     <div class="answer-box common-box">
       <div class="answer">
         <span class="label">考生答案：</span>
-        <span class="value">{{ getAnswerValue() }}</span>
+        <!-- 有作答并且答案与标准答案一致 -->
+        <span
+          class="value"
+          :class="{
+            'is-correct': data.answerUser && data.answerUser === data.answerQuestion,
+            'is-fault': data.answerUser && data.answerUser !== data.answerQuestion
+          }"
+        >{{ getAnswerValue() }}</span>
       </div>
       <div v-if="isViewResults" class="answer">
         <span class="label">得分：</span>
@@ -71,6 +78,10 @@ export default {
     getFault(item) {
       return this.data.answerUser.includes(item.id) && !item.isCorrect
     },
+    // 当前选项被选且正确
+    getCorrectClass(item) {
+      return this.data.answerUser.includes(item.id) && item.isCorrect == 1
+    },
     // 获取正确答案
     getCorrect() {
       const target = _.chain(this.data.options)
@@ -80,7 +91,7 @@ export default {
         .map('content')
         .join(',')
         .value()
-      return target
+      return target ? target : '暂无正确答案'
     },
     // 获取考生答案
     getAnswerValue() {
@@ -88,10 +99,10 @@ export default {
         .filter((item) => {
           return _.includes(this.data.answerUser, item.id)
         })
-        .map('content', '考生未作答')
+        .map('content')
         .join(',')
         .value()
-      return target
+      return target ? target : '考生未作答'
     }
   }
 }

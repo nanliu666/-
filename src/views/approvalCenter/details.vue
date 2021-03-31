@@ -284,7 +284,7 @@ export default {
         Reject: '已拒绝',
         Cancel: '已撤回'
       },
-      show: true,
+      show: false,
       // 审批进度
       activeStep: 0,
       // 是否已撤销
