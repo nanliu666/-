@@ -110,8 +110,6 @@ $selctColor: #fcba00;
     margin-top: 8px;
   }
   .li-main-left {
-    // margin-top: 2px;
-    margin-right: 8.8px;
     .iconfont {
       &:hover {
         color: $activeColor;

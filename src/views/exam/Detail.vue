@@ -26,7 +26,13 @@
             <span class="li-label">考试用时：</span>
             <span class="li-value">
               <span>{{
-                moment(examDetail.answerEndTime).diff(moment(examDetail.answerBeginTime), 'minutes')
+                Math.ceil(
+                  moment(examDetail.answerEndTime).diff(
+                    moment(examDetail.answerBeginTime),
+                    'minutes',
+                    true
+                  )
+                )
               }}</span>
               <span>分钟</span>
             </span>

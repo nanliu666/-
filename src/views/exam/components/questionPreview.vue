@@ -224,13 +224,12 @@ export default {
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
-  align-items: center;
   li {
-    // display: inline-block
     /deep/ .el-input__inner {
       border-color: transparent;
       border-bottom-color: #303133;
       border-radius: 0;
+      margin-top: -18px;
       &:hover {
         border-color: transparent;
         border-bottom-color: #303133;
