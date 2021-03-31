@@ -16,3 +16,9 @@ export const studyTodoNum = (params) => get('/manage/v1/study/studyTodoNum', par
  * 查询考试待办条数
  */
 export const examTodoNum = (params) => get('/manage/v1/study/examTodoNum', params)
+/**
+ * 查询我的课程目录
+ * @param {Object} params
+ * @param {string} params.studyType  0：必修课；1：选修课
+ */
+export const myCourseCatalog = (params) => get('/manage/v1/study/myCourseCatalog', params)
