@@ -5,7 +5,7 @@
         <el-breadcrumb-item :to="{ path: '/train' }">
           培训中心
         </el-breadcrumb-item>
-        <el-breadcrumb-item>{{ data.title? data.title: '--' }}</el-breadcrumb-item>
+        <el-breadcrumb-item>{{ data.title ? data.title : '--' }}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="train-intro">
@@ -32,15 +32,16 @@
         <div class="intro-item">
           分类：
           <!-- <span class="text">{{ data.categoryName? data.categoryName: '--' }}</span> -->
-          <span class="text">{{ data.categoryName == '/--'? '--': data.categoryName }}</span>
+          <span class="text">{{ data.categoryName == '/--' ? '--' : data.categoryName }}</span>
         </div>
         <div class="intro-item">
           培训时间：
-          <span class="text">{{ data.trainBeginDate? data.trainBeginDate: '--' }} ~ {{ data.trainEndDate? data.trainEndDate: '' }}</span>
+          <span class="text">{{ data.trainBeginDate ? data.trainBeginDate : '--' }} ~
+            {{ data.trainEndDate ? data.trainEndDate : '' }}</span>
         </div>
         <div class="intro-item">
           计划人数：
-          <span class="text">{{ data.people? data.people: '--' }}</span>
+          <span class="text">{{ data.people ? data.people : '无限制' }}</span>
         </div>
       </div>
       <div class="intro-list">
@@ -52,35 +53,35 @@
         </div>
         <div class="intro-item">
           培训地点：
-          <span class="text">{{ data.address? data.address: '--' }}</span>
+          <span class="text">{{ data.address ? data.address : '--' }}</span>
         </div>
         <div class="intro-item">
           联系人：
-          <span class="text">{{ data.contactName? data.contactName: '--' }}</span>
+          <span class="text">{{ data.contactName ? data.contactName : '--' }}</span>
         </div>
       </div>
       <div class="intro-list">
         <div class="intro-item">
           联系电话：
-          <span class="text">{{ data.contactPhone? data.contactPhone: '' }}</span>
+          <span class="text">{{ data.contactPhone ? data.contactPhone : '' }}</span>
         </div>
         <div class="intro-item">
           主办单位：
-          <span class="text">{{ data.sponsor? data.sponsor: '--' }}</span>
+          <span class="text">{{ data.sponsor ? data.sponsor : '--' }}</span>
         </div>
         <div class="intro-item">
           承办单位：
-          <span class="text">{{ data.organizer? data.organizer: '--' }}</span>
+          <span class="text">{{ data.organizer ? data.organizer : '--' }}</span>
         </div>
       </div>
       <div class="intro-list">
         <div class="intro-item">
           班主任：
-          <span class="text">{{ data.headTeacher? data.headTeacher: '--' }}</span>
+          <span class="text">{{ data.headTeacher ? data.headTeacher : '--' }}</span>
         </div>
         <div class="intro-item">
           助教：
-          <span class="text">{{ data.teachAssistant? data.teachAssistant: '--' }}</span>
+          <span class="text">{{ data.teachAssistant ? data.teachAssistant : '--' }}</span>
         </div>
         <div class="intro-item">
           <span class="text"></span>
@@ -197,14 +198,17 @@ export default {
             // } else {
             //   this.data.tabs = ['Arrangement', 'Intro', 'Rate']
             // }
-            this.data.tabs = ['Arrangement', 'Intro', 'Rate','MaterialsUpload']
+            this.data.tabs = ['Arrangement', 'Intro', 'Rate', 'MaterialsUpload']
             this.activeComponent = this.data.tabs[0]
           }
           this.data.trainBeginDate = moment(this.data.trainBeginTime).format('yyyy-MM-DD') || ''
           this.data.trainEndDate = moment(this.data.trainEndTime).format('yyyy-MM-DD') || ''
           this.$forceUpdate()
           let applyJoinEndDate = this.data.applyJoinEndDate || this.data.trainEndTime
-          if ((new Date(moment().format('yyyy-MM-DD')) <= new Date(applyJoinEndDate)) && this.data.status != 3) {
+          if (
+            new Date(moment().format('yyyy-MM-DD')) <= new Date(applyJoinEndDate) &&
+            this.data.status != 3
+          ) {
             this.isApplyJoin = true
           }
           localStorage.setItem(trainDataKey, JSON.stringify(this.data))
