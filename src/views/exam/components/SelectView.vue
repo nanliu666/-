@@ -74,7 +74,7 @@ export default {
     return {}
   },
   methods: {
-    // 当前选项被选且未错误答案
+    // 当前选项被选且未错误答案 isCorrect：0为错误答案，1为正确答案
     getFault(item) {
       return this.data.answerUser.includes(item.id) && !item.isCorrect
     },
