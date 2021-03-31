@@ -184,22 +184,9 @@ export default {
       value.answer = _.compact(target).join(',')
     },
     handleBlankValue(value) {
-      const content = deleteHTMLTag(_.unescape(value.content)).replace(/[_]{3,}/g, ' $ ')
-      // 手动将___转换成数组以填充物inputFlag来分隔
-      // const cloneTemp = _.cloneDeep(_.words(content, /[^_]{3,}/g))
-      let targetList = content.split(' ').filter((item) => item)
-      // _.each(cloneTemp, (item, index) => {
-      //   targetList.push(item)
-      //   if (_.size(cloneTemp) === 1) {
-      //     targetList.push('inputFlag')
-      //   } else {
-      //     if (index !== _.size(cloneTemp) - 1) {
-      //       targetList.push('inputFlag')
-      //     }
-      //   }
-      // })
-      this.blankList = targetList
-
+      // 手动将___转换成数组以填充物 $ 来分隔，通$前后的空格来进行切分，通过$定位input，精髓在$的前后空格上
+      const content = deleteHTMLTag(_.unescape(value.content)).replace(/[_]{3}/g, ' $ ')
+      this.blankList = _.filter(_.split(content, ' '))
       let tempValue = []
       _.forIn(value, (forValue, key) => {
         if (key.includes('answerModel')) {
