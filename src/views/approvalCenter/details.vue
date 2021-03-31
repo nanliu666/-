@@ -133,7 +133,7 @@
             <div v-show="pitch == 2" class="details_course_detailed_pitch2">
               <ul>
                 <li
-                  v-for="(item, index) in courseData.content"
+                  v-for="(item, index) in courseData.contents"
                   :key="index"
                   @click="jumpToLearn(item)"
                 >

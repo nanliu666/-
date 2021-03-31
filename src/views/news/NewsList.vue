@@ -75,7 +75,7 @@ export default {
     return {
       searchInput: '',
       pitch: 0,
-      total: 10,
+      total: 0,
       page: {
         pageNo: 1, //请求页码
         pageSize: 10 //每页条数
