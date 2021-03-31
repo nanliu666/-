@@ -9,13 +9,13 @@
       >
         <div class="item_img">
           <img :src="item.coverUrl" alt="" />
-          <span v-if="item.status == 1" class="span1">进行中</span>
-          <span v-if="item.status == 2" class="span2">未开始</span>
+          <span v-if="item.status == 1" class="span1">未开始</span>
+          <span v-if="item.status == 2" class="span2">进行中</span>
           <span v-if="item.status == 3" class="span3">已结束</span>
         </div>
 
         <div class="item_title">
-          {{ item.name }}
+          {{ item.menuName }}
         </div>
 
         <div class="item_time">{{ item.startTime }} ~ {{ item.endTime }}</div>
@@ -41,7 +41,7 @@
       <el-pagination
         :page-sizes="[10, 20, 30, 50, 100]"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="page.total"
+        :total="total"
         class="pagination"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -51,52 +51,46 @@
   </div>
 </template>
 <script>
-import { myElectiveCourse, myCourseCatalog } from '@/api/myTask'
+import { myCourseCatalog } from '@/api/myTask'
 export default {
   data() {
     return {
       valueRate: 4.5,
+      total: 0,
       page: {
         pageNo: 1, //请求页码
-        pageSize: 10, //每页条数
-        total: 100
+        pageSize: 10 //每页条数
       },
       listData: []
     }
   },
   created() {
-    this.myElectiveCourse()
     this.getmyCourseCatalog()
   },
   activated() {
-    this.myElectiveCourse()
-    this.getmyCourseCatalog()
+    // this.getmyCourseCatalog()
   },
   methods: {
-    async myElectiveCourse() {
-      let res = await myElectiveCourse(this.page)
-      this.listData = res.data
-      this.page.total = res.totalNum
-    },
-
     async getmyCourseCatalog() {
       let params = {
+        courseType: 0,
         studyType: 0,
         ...this.page
       }
 
       let res = await myCourseCatalog(params)
-      console.log(res)
+      this.listData = res[0].courseList.records
+      this.total = res[0].courseList.total
     },
 
     handleSizeChange(val) {
       this.page.pageNo = 1
       this.page.pageSize = val
-      this.myElectiveCourse()
+      this.getmyCourseCatalog()
     },
     handleCurrentChange(val) {
       this.page.pageNo = val
-      this.myElectiveCourse()
+      this.getmyCourseCatalog()
     }
   }
 }
@@ -112,7 +106,8 @@ export default {
       height: 276px;
       border-radius: 4px;
       overflow: hidden;
-      box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
+      box-shadow: 0 2px 8px 0 rgba(0, 63, 161, 0.06);
+      transition-duration: 0.1s;
       margin-right: 20px;
       margin-top: 20px;
       position: relative;
@@ -121,7 +116,11 @@ export default {
         margin-right: 0;
       }
       &:hover {
-        opacity: 0.7;
+        transform: translateY(-3px);
+        box-shadow: 0 9px 12px 0 rgba(0, 63, 161, 0.12);
+        .card-cover {
+          visibility: visible !important;
+        }
       }
       &_img {
         width: 100%;
@@ -224,7 +223,7 @@ export default {
     }
   }
   .complete {
-    opacity: 0.8;
+    opacity: 0.6;
   }
 }
 </style>
