@@ -325,6 +325,7 @@ import HomeRight from '@/views/home/homeRight'
 import { queryCourseList } from '@/api/course'
 import { homeQueryTrainList, homeNewsList, homeMyLiveList } from '@/api/home'
 import { getStore } from '@/util/store'
+import { mapGetters } from 'vuex'
 export default {
   name: 'Home',
   components: {
@@ -408,6 +409,9 @@ export default {
       ]
     }
   },
+  computed: {
+    ...mapGetters(['orgIds'])
+  },
   mounted() {
     this.getHotCourse()
     this.getTrainList()
@@ -417,12 +421,18 @@ export default {
       this.isOrgIdEFn()
     })
   },
+  activated() {
+    this.$nextTick(() => {
+      this.isOrgIdEFn()
+    })
+  },
   methods: {
     isOrgIdEFn() {
       // 判断是否是挖机组织
       // 获取用户的组织id（包括当前和当前以上的），存放在localstore，vuex
-      this.orgIds = getStore({ name: 'orgIds' })
-      this.isOrgIdE = this.orgIds.indexOf('5263') !== -1 ? true : false
+      let orgIdsVuex = this.orgIds
+      this.orgIdsD = orgIdsVuex || getStore({ name: 'orgIds' })
+      this.isOrgIdE = this.orgIdsD.indexOf('5263') !== -1 ? true : false
     },
     myTaskPrevFn() {
       this.$refs.myTaskRef.prev()
