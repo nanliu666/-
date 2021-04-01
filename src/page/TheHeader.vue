@@ -98,7 +98,7 @@ export default {
     isFullscreen() {
       return this.$route.meta.fullscreen
     },
-    ...mapGetters(['userId', 'userInfo'])
+    ...mapGetters(['userId', 'userInfo', 'orgIds'])
   },
   watch: {
     //监听路由变化
@@ -122,8 +122,10 @@ export default {
   methods: {
     isOrgIdEFn() {
       // 判断是否是挖机组织
-      this.orgIds = getStore({ name: 'orgIds' })
-      this.isOrgIdE = this.orgIds.indexOf('5263') !== -1 ? true : false
+      // 获取用户的组织id（包括当前和当前以上的），存放在localstore，vuex
+      let orgIdsVuex = this.orgIds
+      this.orgIdsD = orgIdsVuex || getStore({ name: 'orgIds' })
+      this.isOrgIdE = this.orgIdsD.indexOf('5263') !== -1 ? true : false
     },
     // 个人中心跳转
     toRouter(data, i) {
