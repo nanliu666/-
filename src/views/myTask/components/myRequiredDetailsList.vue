@@ -7,7 +7,7 @@
           <div class="course">
             <!-- 图片 -->
             <div class="top finger" @click="goCourseDetails">
-              <img src="./test.png" alt="" class="course_img">
+              <!-- <img src="./test.png" alt="" class="course_img"> -->
               <!-- <div class="mask" v-show="showExam"> -->
               <div class="mask">
                 <div class="hoverButton finger"  v-show="showExam" @click="goLearn">
@@ -52,7 +52,7 @@
           <div class="course">
             <!-- 图片 -->
             <div class="top finger" @click="goCourseDetails">
-              <img src="./test.png" alt="" class="course_img">
+              <!-- <img src="./test.png" alt="" class="course_img"> -->
               <!-- <div class="mask" v-show="showExam"> -->
               <div class="mask">
                 <div class="hoverButton finger"  v-show="showExam" @click="goLearn">
@@ -97,7 +97,7 @@
           <div class="course">
             <!-- 图片 -->
             <div class="top finger" @click="goCourseDetails">
-              <img src="./test.png" alt="" class="course_img">
+              <!-- <img src="./test.png" alt="" class="course_img"> -->
               <!-- <div class="mask" v-show="showExam"> -->
               <div class="mask">
                 <div class="hoverButton finger"  v-show="showExam" @click="goLearn">
@@ -142,7 +142,7 @@
           <div class="course">
             <!-- 图片 -->
             <div class="top finger" @click="goCourseDetails">
-              <img src="./test.png" alt="" class="course_img">
+              <!-- <img src="./test.png" alt="" class="course_img"> -->
               <!-- <div class="mask" v-show="showExam"> -->
               <div class="mask">
                 <div class="hoverButton finger"  v-show="showExam" @click="goLearn">
@@ -343,7 +343,7 @@ $timeHead: rgba(139, 155, 168, 0.65);
         .top{
           position: relative;
           height: 172px;
-          // background:#7498fe;
+          background:#7498fe;
           border-radius: 4px 4px 0 0;
           .course_img{
             height: 100%;
