@@ -9,6 +9,7 @@ const getters = {
   menu: (state) => state.user.menu,
   menuAll: (state) => state.user.menuAll,
   tenantContent: (state) => state.user.tenantContent,
-  menuLoading: (state) => state.user.menuLoading
+  menuLoading: (state) => state.user.menuLoading,
+  orgIds: (state) => state.user.orgIds
 }
 export default getters
