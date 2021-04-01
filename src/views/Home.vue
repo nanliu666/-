@@ -9,10 +9,7 @@
     <div class="banner">
       <el-carousel :interval="5000" height="536px" arrow="always">
         <!-- 临时添加徐工挖掘机组织自定义banner,先通过组织id判断 -->
-        <el-carousel-item
-          v-for="item in orgId === '5263' ? bannerExcavator : banner"
-          :key="item.id"
-        >
+        <el-carousel-item v-for="item in isOrgIdE ? bannerExcavator : banner" :key="item.id">
           <div class="b_item" :style="item.css"></div>
         </el-carousel-item>
       </el-carousel>
@@ -328,7 +325,6 @@ import HomeRight from '@/views/home/homeRight'
 import { queryCourseList } from '@/api/course'
 import { homeQueryTrainList, homeNewsList, homeMyLiveList } from '@/api/home'
 import { getStore } from '@/util/store'
-
 export default {
   name: 'Home',
   components: {
@@ -338,6 +334,7 @@ export default {
   },
   data() {
     return {
+      isOrgIdE: false,
       myTaskInfo: {
         nub: 0
       },
@@ -411,19 +408,22 @@ export default {
       ]
     }
   },
-  computed: {
-    orgId() {
-      let userInfo = getStore({ name: 'userInfo' })
-      return userInfo.org_id
-    }
-  },
   mounted() {
     this.getHotCourse()
     this.getTrainList()
     this.getNewsList()
     this.getHomeMyLive()
+    this.$nextTick(() => {
+      this.isOrgIdEFn()
+    })
   },
   methods: {
+    isOrgIdEFn() {
+      // 判断是否是挖机组织
+      // 获取用户的组织id（包括当前和当前以上的），存放在localstore，vuex
+      this.orgIds = getStore({ name: 'orgIds' })
+      this.isOrgIdE = this.orgIds.indexOf('5263') !== -1 ? true : false
+    },
     myTaskPrevFn() {
       this.$refs.myTaskRef.prev()
     },
