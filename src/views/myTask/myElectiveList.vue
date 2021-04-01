@@ -1,6 +1,6 @@
 <template>
-  <div class="elective-course">
-    <el-row :gutter="20">
+  <div v-loading="loading" class="elective-course">
+    <el-row v-if="courseData.length" :gutter="20">
       <el-col v-for="(z, k) in courseData" :key="k" :span="6" :style="{ marginBottom: '14px' }">
         <el-card :body-style="{ padding: '0px' }">
           <!-- 封面图片 -->
@@ -10,13 +10,15 @@
             @mouseleave=";(maskVisiable = false), (n = k)"
           >
             <img
-              :src="z.coverImg"
+              :src="z.coverUrl"
               width="100%"
               height="100%"
-              :style="{ opacity: z.isFinish ? 0.8 : 1 }"
+              :style="{ opacity: z.totalPrecent == 100 ? 0.8 : 1 }"
             />
-            <div v-if="z.isFinish" class="ended"><el-tag size="mini">已结束</el-tag></div>
-            <div v-show="!z.isFinish && maskVisiable && n == k" class="mask-layer">
+            <!-- <div v-if="z.totalPrecent == 100" class="ended">
+              <el-tag size="mini">已结束</el-tag>
+            </div> -->
+            <div v-show="maskVisiable && n == k" class="mask-layer">
               <button
                 style="
                   width: 84px;
@@ -29,34 +31,37 @@
                   margin-top: 70px;
                 "
               >
-                {{ z.progress ? '继续学习' : '开始学习' }}
+                继续学习
               </button>
             </div>
           </div>
           <!-- 内容区域 -->
           <div class="container">
-            <h1 :style="{ opacity: z.isFinish ? 0.45 : 1 }">
-              {{ z.title.length > 16 ? z.title.slice(0, 16) + '...' : z.title }}
+            <h1 :style="{ opacity: z.totalPrecent == 100 ? 0.45 : 1 }">
+              {{ z.name.length > 16 ? z.name.slice(0, 16) + '...' : z.name }}
             </h1>
             <!-- 未完成 -->
-            <div v-if="!z.isFinish" class="unfinished">
+            <div class="unfinished">
               <div class="lecturer">
-                <span>{{ z.headTeacher }}</span>
+                <span>{{ z.teacherName }}</span>
                 <el-divider direction="vertical"></el-divider>
                 <span class="iconimage_icon_user iconfont" style="font-size: 12px"></span>
-                <span style="margin-left: 5px">{{ z.people }}人</span>
+                <span style="margin-left: 5px">{{ z.studyNum }}人</span>
               </div>
               <div class="progress">
-                <el-progress :percentage="z.progress"></el-progress>
+                <el-progress :percentage="z.totalPrecent"></el-progress>
+              </div>
+              <div v-if="z.totalPrecent == 100" class="success-icon">
+                <img :src="require('@/assets/images/my_seal.png')" width="100%" height="100%" />
               </div>
             </div>
             <!-- 已完成 -->
-            <div v-else class="completed">
-              <div class="course-time" :style="{ opacity: z.isFinish ? 0.45 : 1 }">
+            <!-- <div v-else class="completed">
+              <div class="course-time" :style="{ opacity: z.totalPrecent == 100 ? 0.45 : 1 }">
                 {{ z.startTime }} - {{ z.endTime }}
               </div>
-              <el-divider :style="{ opacity: z.isFinish ? 0.45 : 1 }"></el-divider>
-              <div class="rate" :style="{ opacity: z.isFinish ? 0.45 : 1 }">
+              <el-divider :style="{ opacity: z.totalPrecent == 100 ? 0.45 : 1 }"></el-divider>
+              <div class="rate" :style="{ opacity: z.totalPrecent == 100 ? 0.45 : 1 }">
                 <el-rate
                   v-model="z.rate"
                   disabled
@@ -69,13 +74,17 @@
               <div class="success-icon">
                 <img :src="require('@/assets/images/my_seal.png')" width="100%" height="100%" />
               </div>
-            </div>
+            </div> -->
           </div>
         </el-card>
       </el-col>
     </el-row>
+    <div v-else style="text-align: center">
+      <img src="../../assets/images/nodata.png" />
+      <div>暂无数据</div>
+    </div>
     <!-- 分页 -->
-    <div class="page">
+    <div v-if="courseData.length" class="page">
       <el-pagination
         :current-page="pageConfig.pageNo"
         :page-sizes="pageConfig.sizes"
@@ -91,100 +100,12 @@
 </template>
 
 <script>
+import { electiveCourse } from '@/api/myTask'
 export default {
   name: 'MyElectiveList',
   data() {
     return {
-      courseData: [
-        {
-          coverImg: require('@/assets/images/photo1.png'),
-          title: '课程标题课程标题课程标题课程标题课程标题课程标题课程标题课程标题',
-          headTeacher: '赵老师',
-          people: 60,
-          progress: 80,
-          startTime: '2021/01/01',
-          endTime: '2021/12/31',
-          rate: 4.8,
-          isFinish: false
-        },
-        {
-          coverImg: require('@/assets/images/photo1.png'),
-          title: '课程标题课程标题课程标题课程标题课程标题课程标题课程标题课程标题',
-          headTeacher: '赵老师',
-          people: 60,
-          progress: 80,
-          startTime: '2021/01/01',
-          endTime: '2021/12/31',
-          rate: 4.8,
-          isFinish: true
-        },
-        {
-          coverImg: require('@/assets/images/photo1.png'),
-          title: '课程标题课程标题课程标题课程标题课程标题课程标题课程标题课程标题',
-          headTeacher: '赵老师',
-          people: 60,
-          progress: 0,
-          startTime: '2021/01/01',
-          endTime: '2021/12/31',
-          rate: 4.8,
-          isFinish: false
-        },
-        {
-          coverImg: require('@/assets/images/photo1.png'),
-          title: '课程标题课程标题课程标题课程标题课程标题课程标题课程标题课程标题',
-          headTeacher: '赵老师',
-          people: 60,
-          progress: 80,
-          startTime: '2021/01/01',
-          endTime: '2021/12/31',
-          rate: 4.8,
-          isFinish: true
-        },
-        {
-          coverImg: require('@/assets/images/photo1.png'),
-          title: '课程标题课程标题课程标题课程标题课程标题课程标题课程标题课程标题',
-          headTeacher: '赵老师',
-          people: 60,
-          progress: 80,
-          startTime: '2021/01/01',
-          endTime: '2021/12/31',
-          rate: 4.8,
-          isFinish: false
-        },
-        {
-          coverImg: require('@/assets/images/photo1.png'),
-          title: '课程标题课程标题课程标题课程标题课程标题课程标题课程标题课程标题',
-          headTeacher: '赵老师',
-          people: 60,
-          progress: 80,
-          startTime: '2021/01/01',
-          endTime: '2021/12/31',
-          rate: 4.8,
-          isFinish: true
-        },
-        {
-          coverImg: require('@/assets/images/photo1.png'),
-          title: '课程标题课程标题课程标题课程标题课程标题课程标题课程标题课程标题',
-          headTeacher: '赵老师',
-          people: 60,
-          progress: 80,
-          startTime: '2021/01/01',
-          endTime: '2021/12/31',
-          rate: 4.8,
-          isFinish: false
-        },
-        {
-          coverImg: require('@/assets/images/photo1.png'),
-          title: '课程标题课程标题课程标题课程标题课程标题课程标题课程标题课程标题',
-          headTeacher: '赵老师',
-          people: 60,
-          progress: 80,
-          startTime: '2021/01/01',
-          endTime: '2021/12/31',
-          rate: 4.8,
-          isFinish: true
-        }
-      ],
+      courseData: [],
       maskVisiable: false,
       n: 0,
       pageConfig: {
@@ -192,15 +113,41 @@ export default {
         pageSize: 20,
         pageNo: 1,
         total: 0
-      }
+      },
+      statusFlag: {
+        1: '未开始',
+        2: '进行中',
+        3: '已结束'
+      },
+      loading: false
     }
+  },
+  mounted() {
+    this.initData()
   },
   methods: {
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
+      this.pageConfig.pageSize = val
+      this.initData()
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
+      this.pageConfig.pageNo = val
+      this.initData()
+    },
+    async initData() {
+      let params = {
+        pageNo: this.pageConfig.pageNo,
+        pageSize: this.pageConfig.pageSize
+      }
+      this.loading = true
+      await electiveCourse(params)
+        .then((res) => {
+          this.courseData = res.data
+          this.pageConfig.total = res.totalNum
+        })
+        .finally(() => {
+          this.loading = false
+        })
     }
   }
 }
@@ -234,6 +181,7 @@ export default {
       color: #000b15;
     }
     .unfinished {
+      position: relative;
       padding-bottom: 15px;
       .lecturer {
         font-size: 12px;
@@ -243,9 +191,16 @@ export default {
         margin-top: 5px;
         /deep/ .el-progress__text {
           color: #01aafc;
-          font-size: 12px;
+          font-size: 12px !important;
           margin-left: 20px;
         }
+      }
+      .success-icon {
+        position: absolute;
+        width: 62px;
+        height: 54px;
+        right: 0;
+        top: -10px;
       }
     }
     .completed {
@@ -271,7 +226,7 @@ export default {
     }
   }
   .page {
-    float: right;
+    text-align: right;
     margin-top: 10px;
   }
 }
