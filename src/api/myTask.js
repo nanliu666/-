@@ -1,4 +1,4 @@
-import { get } from '@/util/axios'
+import { get, post } from '@/util/axios'
 
 /**
  * 查询学习待办条数
@@ -20,3 +20,9 @@ export const myCourseCatalog = (params) => get('/manage/v1/study/myCourseCatalog
  * @param {number} params.pageNo  页码
  */
 export const liveStudentList = (params) => get('api/common/v1/live/liveStudentList', params)
+/**
+ * 我的任务-选修课接口
+ * @param {number} params.pageSize 页面数量
+ * @param {number} params.pageNo  页码
+ */
+export const electiveCourse = (params) => post('api/manage/v1/study/myElectiveCourse', params)
