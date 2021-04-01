@@ -414,6 +414,14 @@ export default [
             }
           }
         ]
+      },      
+      {
+        path: '/myRequiredDetails',
+        name: 'myRequiredDetails',
+        component: () => import('@/views/myTask/myRequiredDetails.vue'),
+        meta: {
+          title: '必修课详情'
+        }
       },
       ...(process.env.NODE_ENV === 'development' ? demoRoutes : [])
     ]
