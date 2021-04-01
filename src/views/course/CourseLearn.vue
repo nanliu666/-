@@ -1,5 +1,5 @@
 <template>
-  <div class="course-learn">
+  <div id="course-learn-id" class="course-learn">
     <div class="course-learn__header">
       <i class="iconimage_icon_leftarrow iconfont" @click="goBack()"></i>
       <span class="course-learn__header__title">
@@ -241,9 +241,7 @@ export default {
     }
   },
   mounted() {
-    window.document.oncontextmenu = function() {
-      return false
-    }
+    this.cancelRightClick()
   },
   activated() {
     this.reset()
@@ -252,6 +250,7 @@ export default {
     this.loadNoteList()
     this.isFirst = true
     // this.setTimer()
+    this.cancelRightClick()
   },
   beforeRouteLeave(from, to, next) {
     this.updateVideoProgress(this.currentChapter)
@@ -260,6 +259,12 @@ export default {
     next()
   },
   methods: {
+    cancelRightClick() {
+      // 取消右击
+      document.getElementById('course-learn-id').oncontextmenu = function() {
+        return false
+      }
+    },
     // 上传完作业回调
     uploadTask(contentId) {
       this.$nextTick(() => {
