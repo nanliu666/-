@@ -2,7 +2,7 @@
   <div :class="['header', { isFullscreenHead: isFullscreen }]">
     <div class="header-inner">
       <div class="logo">
-        <img v-if="envVar === 'zehui' && orgId === '5263'" src="../assets/images/logoE.png" />
+        <img v-if="envVar === 'zehui' && isOrgIdE" src="../assets/images/logoE.png" />
         <img v-else-if="envVar === 'zehui'" src="../assets/images/logoZeHui.png" />
         <img v-else src="../assets/images/logo.png" />
       </div>
@@ -86,17 +86,14 @@ export default {
     return {
       menu,
       activePath: '/home',
-      routerTo: ''
+      routerTo: '',
+      isOrgIdE: false
     }
   },
   computed: {
     envVar() {
       let envC = process.env
       return envC.VUE_APP_ENV
-    },
-    orgId() {
-      let userInfo = getStore({ name: 'userInfo' })
-      return userInfo.org_id
     },
     isFullscreen() {
       return this.$route.meta.fullscreen
@@ -117,7 +114,17 @@ export default {
     // 初始化时设置激活中的菜单
     this.activePath = this.$route.path.match(/^\/\w*/g)[0]
   },
+  mounted() {
+    this.$nextTick(() => {
+      this.isOrgIdEFn()
+    })
+  },
   methods: {
+    isOrgIdEFn() {
+      // 判断是否是挖机组织
+      this.orgIds = getStore({ name: 'orgIds' })
+      this.isOrgIdE = this.orgIds.indexOf('5263') !== -1 ? true : false
+    },
     // 个人中心跳转
     toRouter(data, i) {
       if (i === 'backstage') {
