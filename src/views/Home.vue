@@ -312,7 +312,7 @@
     </div>
     <div class="foot">
       <div class="foot2">
-        <span>v2.0.0_20210330_Release &nbsp; &nbsp; &nbsp; 备案号 ：苏ICP备19010525号-2</span>
+        <span>v2.0.1_20210401_Release &nbsp; &nbsp; &nbsp; 备案号 ：苏ICP备19010525号-2</span>
       </div>
     </div>
   </div>
