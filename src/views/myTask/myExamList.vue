@@ -114,7 +114,13 @@ const TABLE_COLUMNS = [
     prop: 'examTime',
     slot: true,
     align: 'center',
-    minWidth: 240
+    minWidth: 150
+  },
+  {
+    label: '来源',
+    prop: 'examSourceName',
+    align: 'center',
+    minWidth: 100
   },
   {
     label: '参加次数',
@@ -122,6 +128,7 @@ const TABLE_COLUMNS = [
     align: 'center',
     minWidth: 100
   },
+
   {
     label: '考试成绩',
     slot: true,

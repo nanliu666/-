@@ -25,4 +25,4 @@ export const liveStudentList = (params) => get('api/common/v1/live/liveStudentLi
  * @param {number} params.pageSize 页面数量
  * @param {number} params.pageNo  页码
  */
-export const electiveCourse = (params) => post('api/manage/v1/study/myElectiveCourse', params)
+export const myElectiveCourse = (params) => post('/manage/v1/study/myElectiveCourse', params)

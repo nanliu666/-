@@ -63,7 +63,7 @@
               </li>
             </ul>
           </div>
-          <div style="margin-bottom: 20px">
+          <div v-show="konwledgeDetail.resUrl" style="margin-bottom: 20px">
             <li class="detail-li">
               <span class="li-label">资源地址：</span>
               <span class="li-value">
