@@ -23,7 +23,7 @@
                 <span class="homeMyTaskItemTextItem2" :title="item.address">地址：{{ item.address }}</span>
               </div>
               <div v-if="item.type == 1" class="homeMyTaskItemTextItem">
-                <span class="homeMyTaskItemTextItem2">讲师：{{ item.lecturer }}</span>
+                <span class="homeMyTaskItemTextItem2">班主任：{{ item.lecturer }}</span>
               </div>
             </div>
           </div>
