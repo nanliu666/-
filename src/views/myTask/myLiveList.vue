@@ -257,7 +257,7 @@ export default {
   /deep/.is-always-shadow {
     transition-duration: 0.1s;
     box-shadow: 0 2px 8px 0 rgba(0, 63, 161, 0.06);
-    margin-top: 8px;
+    margin-top: 10px;
     &:hover {
       transform: translateY(-3px);
       box-shadow: 0px 9px 12px 2px rgba(0.1, 63, 161, 0.12);
