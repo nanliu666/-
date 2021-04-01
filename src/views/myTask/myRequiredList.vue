@@ -6,6 +6,7 @@
         :key="index"
         class="item"
         :class="{ complete: item.totalPrecent == 100 }"
+        @click="goDetail()"
       >
         <div class="item_img">
           <img :src="item.coverUrl" alt="" />
@@ -71,6 +72,10 @@ export default {
     // this.getmyCourseCatalog()
   },
   methods: {
+    // 跳转详情页
+    goDetail(item) {
+      this.$router.push({ path: '/myRequiredDetails', query: { item: JSON.stringify(item) } })
+    },
     async getmyCourseCatalog() {
       let params = {
         courseType: 0,
