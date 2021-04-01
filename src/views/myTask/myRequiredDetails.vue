@@ -8,7 +8,7 @@
       <!-- 必修课类别 -->
       <div class="sort">
         <div class="left">
-          <img src="./components/test.png" alt="" class="course_img">
+          <!-- <img src="./components/test.png" alt="" class="course_img"> -->
         </div>
         <div class="right">
           <ul class="info">
