@@ -106,6 +106,7 @@
           <video
             v-if="isVideo"
             ref="videoRef"
+            controlslist="nodownload"
             autoplay
             preload
             controls
@@ -237,6 +238,11 @@ export default {
           this.updateVideoProgress()
         }, 30 * 1000)
       }
+    }
+  },
+  mounted() {
+    window.document.oncontextmenu = function() {
+      return false
     }
   },
   activated() {
