@@ -8,36 +8,36 @@
       <!-- 必修课类别 -->
       <div class="sort">
         <div class="left">
-          <!-- <img src="./components/test.png" alt="" class="course_img"> -->
+          <img :src="detailParams.coverUrl" alt="" class="course_img">
         </div>
         <div class="right">
           <ul class="info">
-            <li><span class="sort_title">消防学习知识</span><span class="sort_status">进行中</span></li>
+            <li>
+              <span class="sort_title">{{detailParams.menuName}}</span>
+              <span v-if="detailParams.status == '1'" class="sort_status status_1">未开始</span>
+              <span v-if="detailParams.status == '2'" class="sort_status status_2">进行中</span>
+              <span v-if="detailParams.status == '3'" class="sort_status status_3">已结束</span>
+            </li>
             <li>
               <ul class="middle">
-                <li>分类：<span class="middle_data">一级分类>二级分类</span></li>
-                <li>学习时间：<span class="middle_data">2021/02/03 - 2021/02/05</span></li>
-                <li>主办单位：<span class="middle_data">易宝软件</span></li>
+                <li>分类：<span class="middle_data">{{detailParams.categoryName? detailParams.categoryName: '--'}}</span></li>
+                <li>学习时间：<span class="middle_data">{{detailParams.startDate}} - {{detailParams.entDate}}</span></li>
+                <li>主办单位：<span class="middle_data">{{detailParams.sponsor? detailParams.sponsor: '--'}}</span></li>
               </ul>
             </li>
-            <li class="info_bottom"><span class="info_bottom_details"><i class="iconimage_icon_user iconfont iconInfo"></i>200人</span><span class="info_bottom_details"><i class="iconimage_icon_time1 iconfont iconInfo"></i>20.5小时</span><span class="info_bottom_details"><i class="iconjifen iconfont iconInfo"></i>30积分</span></li>
+            <li class="info_bottom">
+              <span class="info_bottom_details"><i class="iconimage_icon_user iconfont iconInfo"></i>{{detailParams.peopleNum? detailParams.peopleNum + '人': '--'}}</span>
+              <span class="info_bottom_details"><i class="iconimage_icon_time1 iconfont iconInfo"></i>{{detailParams.period? detailParams.period + '小时': '--'}}</span>
+              <span class="info_bottom_details"><i class="iconjifen iconfont iconInfo"></i>{{detailParams.credit? detailParams.credit + '积分': '--'}}</span>
+            </li>
           </ul>
         </div>
       </div>
       <!-- 课程分类 -->
       <div class="classification">
         <el-tabs class="content" v-model="activeName" @tab-click="handleSwitchCategories">
-          <el-tab-pane label="全部课程" name="first">
-            <my-required-details-list/>
-          </el-tab-pane>
-          <el-tab-pane label="未开始" name="second">
-            <my-required-details-list/>
-          </el-tab-pane>
-          <el-tab-pane label="进行中" name="third">
-            <my-required-details-list/>
-          </el-tab-pane>
-          <el-tab-pane label="已结束" name="fourth">
-            <my-required-details-list/>
+          <el-tab-pane v-for="tab in tabs" :key="tab.name" :label="tab.label" :name="tab.name" lazy>
+            <my-required-details-list :dataInfo="processedData"/>
           </el-tab-pane>
         </el-tabs>
         <!-- 页码 -->
@@ -45,7 +45,7 @@
           <el-pagination
             :page-sizes="[10, 20, 30, 50, 100]"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="page.total"
+            :total="total"
             class="pagination"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -60,56 +60,128 @@
 <script>
 // import moment from 'moment'
 import myRequiredDetailsList from './components/myRequiredDetailsList'
+import { getRequireCourse } from '@/api/myTask'
+import moment from 'moment'
+const TABS_ARR = [
+  {
+    name: 'all_courses',
+    label: '全部课程'
+  },
+  {
+    name: 'unplayed',
+    label: '未开始'
+  },
+  {
+    name: 'underway',
+    label: '进行中'
+  },
+  {
+    name: 'finished',
+    label: '已结束'
+  },
+]
 export default {
   name: 'MyRequiredDetails',
   components: {
     myRequiredDetailsList
   },
   props: {
-    dataInfo: {
-      type: Object,
-      default() {
-        return {}
-      }
-    }
   },
   data() {
     return {
-      activeName: 'first',
+      activeName: 'all_courses',
+      tabs: TABS_ARR, 
+      total: 0, //总条数
       page: {
         pageNo: 1, //请求页码
-        pageSize: 10, //每页条数
-        total: 100
+        pageSize: 10 //每页条数
       },
+      detailParams: {}, // 接参数
+      resData: [], // 请求接收回来的数据
+      processedData: [] //处理后的数据
+
     }
   },
   created() {
-    // this.handleDefault()
-    const params = this.$route.query
-    console.log('params----', params)
+    this.detailParams =  JSON.parse(this.$route.query.item)
+    this.detailParams.startDate = moment(this.detailParams.startTime).format('yyyy-MM-DD')
+    this.detailParams.entDate = moment(this.detailParams.endTime).format('yyyy-MM-DD')
+    // console.log('params----', this.detailParams)
+    this.getData()
   },
   methods: {
+    // 处理数据
+    handleProcessedData() {
+      // console.log('handleProcessedData---')
+
+      if (this.resData.length) {
+        let temArr = []
+        // debugger
+        for (let i = 1; i <= this.resData.length; i++) {
+          this.resData[i-1].startDate = moment(this.resData[i-1].startTime).format('yyyy-MM-DD')
+          this.resData[i-1].entDate = moment(this.resData[i-1].endTime).format('yyyy-MM-DD')
+
+          this.resData[i-1].isShow = false
+          temArr.push(this.resData[i-1])
+          // 处理数据4条数据为一组
+          if (i % 4 == 0 || i == this.resData.length) {
+            let index = parseInt(i/4) - 1
+            if (i == this.resData.length) {
+              index = index + 1
+            }
+            let temObj = {
+              index: index, //索引
+              list: temArr,
+              showExam: false
+            }
+            this.processedData.push(temObj)
+            temArr = []
+          }
+        }
+      }
+    },
     // 切换类别
     handleSwitchCategories(tab, event) {
-      // console.log(tab, event)
-      console.log('handleSwitchCategories')
+      let status = ''
+      if (tab.name == 'unplayed') {
+        status = 1
+      } else if (tab.name == 'underway') {
+        status = 2
+      } else if (tab.name == 'finished') {
+        status = 3
+      }
+      this.getData(status)
     },
     // 处理页码大小条数
     handleSizeChange(val) {
-      console.log('handleSizeChange')
+      // console.log('handleSizeChange')
       this.page.pageNo = 1
       this.page.pageSize = val
       this.getData()
     },
     // 当前页变动
     handleCurrentChange(val) {
-      console.log('handleCurrentChange')
+      // console.log('handleCurrentChange')
       this.page.pageNo = val
       this.getData()
     },
     // 获取数据
-    getData() {
-      console.log('getData')
+    getData(status) {
+      // console.log('getData')
+      let params = {
+        courseType: '0',
+        id: this.detailParams.id,
+        status: status || '', //状态（1：未开始；2：进行中；3：已结束），默认为空，表示全部
+        ...this.page
+      }
+      getRequireCourse(params).then((res) => {
+        // console.log('getRequireCourse----res', res)
+        this.total = res.totalNum
+        this.resData = res.data
+        this.processedData = []
+        this.handleProcessedData()
+        // this.dataInfo
+      })
     }
   }
 }
@@ -137,6 +209,18 @@ $timeHead: rgba(139, 155, 168, 0.65);
       font-weight: bold;
     }
   }
+  .status_1{
+    background: #E7FFEE;
+    color: #00B061;
+  }
+  .status_2{
+    background: #FFFCE6;
+    color: #FCBA00;
+  }
+  .status_3{
+    background: #E7FBFF;
+    color: #01AAFC;
+  }
   .sort{
     // 必修课种类详情
     height: 214px;
@@ -156,6 +240,7 @@ $timeHead: rgba(139, 155, 168, 0.65);
       .course_img{
         height: 100%;
         width: 100%;
+        border-radius: 4px;
       }
     }
     .right{
@@ -176,13 +261,11 @@ $timeHead: rgba(139, 155, 168, 0.65);
         .sort_status{
           margin-left: 16px;
           font-size: 12px;
-          color: #FCBA00;
           text-align: center;
           line-height: 20px;
           display: inline-block;
           width: 52px;
           height: 20px;
-          background: #FFFCE6;
           border-radius: 4px;
           position: relative;
           top: -3px;

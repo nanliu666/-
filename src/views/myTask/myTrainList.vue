@@ -78,7 +78,7 @@ export default {
       query: {
         pageSize: 10,
         pageNo: 1,
-        courseType: '0'
+        courseType: '1'
       },
       queryLoading: false
     }

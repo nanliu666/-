@@ -6,7 +6,7 @@
         :key="index"
         class="item"
         :class="{ complete: item.totalPrecent == 100 }"
-        @click="goDetail()"
+        @click="goDetail(item)"
       >
         <div class="item_img">
           <img :src="item.coverUrl" alt="" />
