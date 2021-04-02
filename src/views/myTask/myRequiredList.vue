@@ -84,8 +84,8 @@ export default {
       }
 
       let res = await myCourseCatalog(params)
-      this.listData = res[0].courseList.records
-      this.total = res[0].courseList.total
+      this.listData = res.data
+      this.total = res.totalNum
     },
 
     handleSizeChange(val) {
