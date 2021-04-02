@@ -30,6 +30,7 @@
                   color: #ffffff;
                   margin-top: 70px;
                 "
+                @click="goToCourse(z)"
               >
                 继续学习
               </button>
@@ -100,7 +101,7 @@
 </template>
 
 <script>
-import { electiveCourse } from '@/api/myTask'
+import { myElectiveCourse } from '@/api/myTask'
 export default {
   name: 'MyElectiveList',
   data() {
@@ -140,7 +141,7 @@ export default {
         pageSize: this.pageConfig.pageSize
       }
       this.loading = true
-      await electiveCourse(params)
+      await myElectiveCourse(params)
         .then((res) => {
           this.courseData = res.data
           this.pageConfig.total = res.totalNum
@@ -148,6 +149,9 @@ export default {
         .finally(() => {
           this.loading = false
         })
+    },
+    goToCourse(data) {
+      this.$router.push({ path: '/course/detail', query: { id: data.id } })
     }
   }
 }
