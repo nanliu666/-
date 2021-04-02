@@ -312,7 +312,11 @@
     </div>
     <div class="foot">
       <div class="foot2">
-        <span>v2.0.1_20210401_Release &nbsp; &nbsp; &nbsp; 备案号 ：苏ICP备19010525号-2</span>
+        <span style="opacity: 0.35;">v2.0.1_20210401_Release &nbsp; &nbsp; &nbsp;</span>
+        <span class="policeLogo"><img src="../../public/img/policeLogo.png" alt="" /></span>
+        <span style="opacity: 0.35;"><a href="https://ythzxfw.miit.gov.cn" target="_blank">
+          备案号：苏ICP备19010525号-2
+        </a></span>
       </div>
     </div>
   </div>
@@ -813,13 +817,27 @@ export default {
   width: 1200px;
   margin: auto;
   color: #fff;
-  opacity: 0.35;
+
   font-size: 12px;
   display: inline-table;
   text-align: left;
+  display: flex;
+  padding: 50px 0;
 }
 .foot2 span {
-  margin-top: 50px;
-  display: block;
+  line-height: 25px;
+  /* opacity: 0.35; */
+}
+.foot2 span img {
+  opacity: 1;
+  z-index: 999;
+}
+.policeLogo {
+  margin-right: 10px;
+  height: 28px;
+}
+
+.foot2 a {
+  color: #fff;
 }
 </style>
