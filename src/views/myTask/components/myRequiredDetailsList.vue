@@ -63,7 +63,7 @@
                 <li class="exam_name">
                   <span class="exam_info_c2 exam_title">{{item.examName}}</span>
                   <span v-if="item.status == '1'" class="base_status status_1 exam_status">未开始</span>
-                  <span v-if="item.status == '3' && item.isPass == 1" class="base_status status_4 exam_status">未通过</span>
+                  <span v-if="item.status == '2' || (item.isPass == 1 && item.status == '3')" class="base_status status_4 exam_status">未通过</span>
                   <span v-if="item.status == '3' && item.isPass == 3" class="base_status status_3 exam_status">已通过</span>
                   <span v-if="item.status == '4'" class="base_status status_5 exam_status">缺考</span>
                 </li>
