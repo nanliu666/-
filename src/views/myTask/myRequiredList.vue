@@ -38,7 +38,7 @@
       </li>
     </ul>
 
-    <div class="page">
+    <div v-if="total" class="page">
       <el-pagination
         :page-sizes="[10, 20, 30, 50, 100]"
         layout="total, sizes, prev, pager, next, jumper"
@@ -48,6 +48,11 @@
         @current-change="handleCurrentChange"
       >
       </el-pagination>
+    </div>
+
+    <div v-else style="text-align: center">
+      <img src="../../assets/images/nodata.png" />
+      <div>暂无数据</div>
     </div>
   </div>
 </template>
@@ -112,7 +117,7 @@ export default {
       border-radius: 4px;
       overflow: hidden;
       box-shadow: 0 2px 8px 0 rgba(0, 63, 161, 0.06);
-      transition-duration: 0.1s;
+      transition-duration: 0.3s;
       margin-right: 20px;
       margin-top: 20px;
       position: relative;
