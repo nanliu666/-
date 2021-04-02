@@ -1,17 +1,17 @@
 <template>
   <div class="myRequiredDetailsList">
-    <section class="">
+    <section v-if="dataInfo">
       <!-- 一级循环 -->
-      <div class="Level_1_cycle">
+      <div class="Level_1_cycle" v-for="(external,external_i) in dataInfo" :key="external_i + Math.floor(Math.random() * 100000) + 'a'">
         <div class="Level_2_cycle">
-          <div class="course">
+          <div class="course" v-for="(item,internal_i) in external.list" :key="internal_i + Math.floor(Math.random() * 100000) + 'b'">
             <!-- 图片 -->
-            <div class="top finger" @click="goCourseDetails">
-              <!-- <img src="./test.png" alt="" class="course_img"> -->
+            <div class="top finger" @click="goCourseDetails(item.id)">
+              <img :src="item.coverUrl" :alt="item.coverName" class="course_img">
               <!-- <div class="mask" v-show="showExam"> -->
               <div class="mask">
-                <div class="hoverButton finger"  v-show="showExam" @click="goLearn">
-                  立即学习
+                <div class="hoverButton finger"  v-show="item.status == 2" @click="goLearn(item)">
+                  {{item.totalPrecent? '继续学习': '立即学习'}}
                 </div>
               </div>
             </div>
@@ -20,218 +20,64 @@
               <!-- 基本信息 -->
               <div class="course_info">
                 <ul class="course_info_ul">
-                  <li class="course_title finger" @click="goCourseDetails">这是一个大标题中的小标题哈哈哈哈或或或</li>
-                  <li class="other"><span class="lecturer">赵老师</span><span class="i">|</span><span class="course_date">2021/02/04 - 2021/02/08</span></li>
+                  <li class="course_title finger" @click="goCourseDetails(item.id)">{{item.name? item.name: '--'}}</li>
+                  <li class="other">
+                    <span class="lecturer">{{item.teacherName? item.teacherName: '--'}}</span>
+                    <span class="i">|</span>
+                    <span class="course_date">{{item.startDate? item.startDate: '--'}} - {{item.entDate? item.entDate: '--'}}</span>
+                  </li>
                   <!-- 进度条 -->
                   <li class="progress">
                     <div class="progress_bar">
                       <div class=" outer">
-                        <!-- <div class="inside" :style="'width:'+item.totalPrecent+'%'"></div> -->
-                        <div class="inside"></div>
+                        <div class="inside" :style="'width:'+item.totalPrecent+'%'"></div>
                       </div>
                     </div>
-                    <div class="progress_num">100%</div>
+                    <div class="progress_num">{{item.totalPrecent? item.totalPrecent + '%': '0%'}}</div>
                   </li>
                 </ul>
               </div>
               <!-- 考试信息 -->
-              <div class="course_exam" @click="handleShowExam">
+              <div class="course_exam" @click="handleShowExam(item, item.id, external_i, internal_i)">
                 <div>关联考试：</div>
-                <div class="exam_num">3个</div>
-                <i class="el-icon-arrow-down"></i>
-                <!-- <i class="el-icon-arrow-up"></i> -->
+                <div class="exam_num">{{item.examList.length}}个</div>
+                <i v-show="item.isShow && item.examList.length" class="el-icon-arrow-down"></i>
+                <i v-show="!item.isShow && item.examList.length" class="el-icon-arrow-up"></i>
               </div>
             </div>
             <!-- 状态 -->
             <div class="course_status">
-              <!-- <span class="base_status status_1">未开始</span> -->
-              <!-- <span class="base_status status_2">进行中</span> -->
-              <span class="base_status status_3">已结束</span>
+              <span v-if="item.status == 1" class="base_status status_1">未开始</span>
+              <span v-if="item.status == 2" class="base_status status_2">进行中</span>
+              <span v-if="item.status == 3" class="base_status status_3">已结束</span>
             </div>
           </div>
-          <div class="course">
-            <!-- 图片 -->
-            <div class="top finger" @click="goCourseDetails">
-              <!-- <img src="./test.png" alt="" class="course_img"> -->
-              <!-- <div class="mask" v-show="showExam"> -->
-              <div class="mask">
-                <div class="hoverButton finger"  v-show="showExam" @click="goLearn">
-                  立即学习
-                </div>
-              </div>
-            </div>
-            <!-- 课程信息 -->
-            <div class="bottom">
-              <!-- 基本信息 -->
-              <div class="course_info">
-                <ul class="course_info_ul">
-                  <li class="course_title finger" @click="goCourseDetails">这是一个大标题中的小标题哈哈哈哈或或或</li>
-                  <li class="other"><span class="lecturer">赵老师</span><span class="i">|</span><span class="course_date">2021/02/04 - 2021/02/08</span></li>
-                  <!-- 进度条 -->
-                  <li class="progress">
-                    <div class="progress_bar">
-                      <div class=" outer">
-                        <!-- <div class="inside" :style="'width:'+item.totalPrecent+'%'"></div> -->
-                        <div class="inside"></div>
-                      </div>
-                    </div>
-                    <div class="progress_num">100%</div>
-                  </li>
-                </ul>
-              </div>
-              <!-- 考试信息 -->
-              <div class="course_exam" @click="handleShowExam">
-                <div>关联考试：</div>
-                <div class="exam_num">3个</div>
-                <i class="el-icon-arrow-down"></i>
-                <!-- <i class="el-icon-arrow-up"></i> -->
-              </div>
-            </div>
-            <!-- 状态 -->
-            <div class="course_status">
-              <!-- <span class="base_status status_1">未开始</span> -->
-              <!-- <span class="base_status status_2">进行中</span> -->
-              <span class="base_status status_3">已结束</span>
-            </div>
-          </div>
-          <div class="course">
-            <!-- 图片 -->
-            <div class="top finger" @click="goCourseDetails">
-              <!-- <img src="./test.png" alt="" class="course_img"> -->
-              <!-- <div class="mask" v-show="showExam"> -->
-              <div class="mask">
-                <div class="hoverButton finger"  v-show="showExam" @click="goLearn">
-                  立即学习
-                </div>
-              </div>
-            </div>
-            <!-- 课程信息 -->
-            <div class="bottom">
-              <!-- 基本信息 -->
-              <div class="course_info">
-                <ul class="course_info_ul">
-                  <li class="course_title finger" @click="goCourseDetails">这是一个大标题中的小标题哈哈哈哈或或或</li>
-                  <li class="other"><span class="lecturer">赵老师</span><span class="i">|</span><span class="course_date">2021/02/04 - 2021/02/08</span></li>
-                  <!-- 进度条 -->
-                  <li class="progress">
-                    <div class="progress_bar">
-                      <div class=" outer">
-                        <!-- <div class="inside" :style="'width:'+item.totalPrecent+'%'"></div> -->
-                        <div class="inside"></div>
-                      </div>
-                    </div>
-                    <div class="progress_num">100%</div>
-                  </li>
-                </ul>
-              </div>
-              <!-- 考试信息 -->
-              <div class="course_exam" @click="handleShowExam">
-                <div>关联考试：</div>
-                <div class="exam_num">3个</div>
-                <i class="el-icon-arrow-down"></i>
-                <!-- <i class="el-icon-arrow-up"></i> -->
-              </div>
-            </div>
-            <!-- 状态 -->
-            <div class="course_status">
-              <!-- <span class="base_status status_1">未开始</span> -->
-              <!-- <span class="base_status status_2">进行中</span> -->
-              <span class="base_status status_3">已结束</span>
-            </div>
-          </div>
-          <div class="course">
-            <!-- 图片 -->
-            <div class="top finger" @click="goCourseDetails">
-              <!-- <img src="./test.png" alt="" class="course_img"> -->
-              <!-- <div class="mask" v-show="showExam"> -->
-              <div class="mask">
-                <div class="hoverButton finger"  v-show="showExam" @click="goLearn">
-                  立即学习
-                </div>
-              </div>
-            </div>
-            <!-- 课程信息 -->
-            <div class="bottom">
-              <!-- 基本信息 -->
-              <div class="course_info">
-                <ul class="course_info_ul">
-                  <li class="course_title finger" @click="goCourseDetails">这是一个大标题中的小标题哈哈哈哈或或或</li>
-                  <li class="other"><span class="lecturer">赵老师</span><span class="i">|</span><span class="course_date">2021/02/04 - 2021/02/08</span></li>
-                  <!-- 进度条 -->
-                  <li class="progress">
-                    <div class="progress_bar">
-                      <div class=" outer">
-                        <!-- <div class="inside" :style="'width:'+item.totalPrecent+'%'"></div> -->
-                        <div class="inside"></div>
-                      </div>
-                    </div>
-                    <div class="progress_num">100%</div>
-                  </li>
-                </ul>
-              </div>
-              <!-- 考试信息 -->
-              <div class="course_exam" @click="handleShowExam">
-                <div>关联考试：</div>
-                <div class="exam_num">3个</div>
-                <i class="el-icon-arrow-down"></i>
-                <!-- <i class="el-icon-arrow-up"></i> -->
-              </div>
-            </div>
-            <!-- 状态 -->
-            <div class="course_status">
-              <!-- <span class="base_status status_1">未开始</span> -->
-              <!-- <span class="base_status status_2">进行中</span> -->
-              <span class="base_status status_3">已结束</span>
-            </div>
-          </div>
+          <div v-for="(item,index) in (4 - external.list.length)" :key="index + Math.floor(Math.random() * 100000) + 'c'"></div>
         </div>
         <!-- 考试列表 -->
-        <div class="exam_list" v-show="showExam">
+        <div class="exam_list" v-show="external.showExam">
           <!-- 列表内容 -->
           <ul class="exam_list_ul">
-            <li class="exam_list_li">
+            <li class="exam_list_li" v-for="(item,index) in examListData" :key="index + Math.floor(Math.random() * 100000) + 'd'">
               <ul class="exam_info">
-                <li class="exam_name"><span class="exam_info_c2 exam_title">企业文化考试企业文化考试企业文化考试</span><span class="base_status status_1 exam_status">未开始</span></li>
-                <li class="exam_date_time"><span class="exam_info_c1">考试时间：</span><span class="exam_info_c2">2021-02-03 14:25:56~2021-02-03 14:25:56</span></li>
-                <li class="time_long"><span class="exam_info_c1">考试时长：</span><span class="exam_info_c2">60分钟</span></li>
-                <li class="achievement"><span class="exam_info_c1">成绩：</span><span class="exam_info_c2">--</span></li>
-                <li class="text_button" @click="goExam">进入考试</li>
-              </ul>
-            </li>
-            <li class="exam_list_li">
-              <ul class="exam_info">
-                <li class="exam_name"><span class="exam_info_c2 exam_title">企业文化考试</span><span class="base_status status_4 exam_status">未通过</span></li>
-                <li class="exam_date_time"><span class="exam_info_c1">考试时间：</span><span class="exam_info_c2">2021-02-03 14:25:56~2021-02-03 14:25:56</span></li>
-                <li class="time_long"><span class="exam_info_c1">考试时长：</span><span class="exam_info_c2">60分钟</span></li>
-                <li class="achievement"><span class="exam_info_c1">成绩：</span><span class="exam_info_c2">--</span></li>
-                <li class="text_button" @click="goExam">进入考试</li>
-              </ul>
-            </li>
-            <li class="exam_list_li">
-              <ul class="exam_info">
-                <li class="exam_name"><span class="exam_info_c2 exam_title">企业文化考试</span><span class="base_status status_5 exam_status">缺考</span></li>
-                <li class="exam_date_time"><span class="exam_info_c1">考试时间：</span><span class="exam_info_c2">2021-02-03 14:25:56~2021-02-03 14:25:56</span></li>
-                <li class="time_long"><span class="exam_info_c1">考试时长：</span><span class="exam_info_c2">60分钟</span></li>
-                <li class="achievement"><span class="exam_info_c1">成绩：</span><span class="exam_info_c2">--</span></li>
-                <li class="text_button" @click="goExam">进入考试</li>
+                <li class="exam_name">
+                  <span class="exam_info_c2 exam_title">{{item.examName}}</span>
+                  <span v-if="item.status == '1'" class="base_status status_1 exam_status">未开始</span>
+                  <span v-if="item.status == '2'" class="base_status status_4 exam_status">未通过</span>
+                  <span v-if="item.status == '3'" class="base_status status_3 exam_status">已通过</span>
+                  <span v-if="item.status == '4'" class="base_status status_5 exam_status">缺考</span>
+                </li>
+                <li class="exam_date_time"><span class="exam_info_c1">考试时间：</span><span class="exam_info_c2">{{item.examBeginTime}}~{{item.examEndTime}}</span></li>
+                <li class="time_long"><span class="exam_info_c1">考试时长：</span><span class="exam_info_c2">{{item.reckonTimeValue? item.reckonTimeValue + '分钟': '不限时'}}</span></li>
+                <li class="achievement"><span class="exam_info_c1">成绩：</span><span class="exam_info_c2">{{item.score?item.score:'--'}}</span></li>
+                <li class="text_button" @click="goExam(item)">进入考试</li>
               </ul>
             </li>
           </ul>
           <!-- 三角形 -->
-          <div class="arrows"></div>
+          <div class="arrows" :style="'left:'+triangularPosition+'px'"></div>
         </div>
       </div>
-      <!-- <div class="Level_1_cycle">
-        <div class="Level_2_cycle">
-          <div class="course">1</div>
-          <div class="course">1</div>
-          <div class="course">1</div>
-          <div class="course">1</div>
-        </div>
-        <div class="exam_list">
-          考试列表
-        </div>
-      </div> -->
     </section>
   </div>
 </template>
@@ -245,39 +91,81 @@ export default {
   },
   props: {
     dataInfo: {
-      type: Object,
+      type: Array,
       default() {
-        return {}
+        return []
       }
     }
   },
   data() {
     return {
-      showExam: false
+      temId: null,
+      examListData: [], //考试列表
+      triangularPosition: 137 // 考试列表三角形位置
     }
   },
   created() {
-    // this.handleDefault()
   },
   methods: {
     // 考试列表切换
-    handleShowExam() {
-      console.log('handleShowExam')
-      this.showExam = !this.showExam
+    handleShowExam(item, id, external_i, internal_i) {
+
+      // 计算考试列表三角形位置
+      this.triangularPosition = 137 + (internal_i*273)
+
+      for (let i = 0; i < this.dataInfo.length; i++) {
+        // 处理考试列表展示
+        if ((i == external_i && id == this.temId) || (i == external_i && this.temId == null)) {
+          this.dataInfo[i].showExam = !this.dataInfo[i].showExam
+        } else if (i == external_i) {
+          this.dataInfo[i].showExam = true
+        } else {
+           this.dataInfo[i].showExam = false
+        }
+        if (item.examList.length == 0) {
+          this.dataInfo[i].showExam = false
+        }
+        // debugger
+        // 处理考试列表图标方向
+        for(let v = 0; v < this.dataInfo[i].list.length; v++) {
+          if (v == internal_i && i == external_i) {
+            this.dataInfo[i].list[v].isShow = !this.dataInfo[i].list[v].isShow
+          } else {
+            this.dataInfo[i].list[v].isShow = false
+          }
+        }
+      }
+      this.temId = id
+
+      this.examListData = item.examList
     },
     // 去学习
     goLearn(e) {
-      console.log('goLearn')
+      this.$router.push({ path: '/course/learn', query: { courseId: e.id } })
       // 阻止冒泡
-      e.stopPropagation();
+      window.event? window.event.cancelBubble = true : e.stopPropagation();
     },
     // 去课程详情
-    goCourseDetails() {
-      console.log('goCourseDetails')
+    goCourseDetails(id) {
+      this.$router.push({ path: '/course/detail', query: { id: id } })
     },
     // 考试列表--进去考试
-    goExam() {
-      console.log('goExam')
+    goExam(item) {
+      console.log('goExam', item)
+      this.$confirm(`您确定现在参加考试吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+      .then(() => {
+        this.$router.push({ path: '/exam/paper', query: { examId: item.examId, batchId: item.batchId} })
+      })
+      .catch(() => {
+        this.$message({
+          type: 'info',
+          message: '考试暂时不开始！'
+        })
+      })
     },
     
   }
@@ -348,6 +236,7 @@ $timeHead: rgba(139, 155, 168, 0.65);
           .course_img{
             height: 100%;
             width: 100%;
+            border-radius: 4px 4px 0 0;
           }
           .mask{
             position: absolute;
@@ -426,7 +315,7 @@ $timeHead: rgba(139, 155, 168, 0.65);
                   border-radius: 3px;
                   .inside{
                     height: 100%;
-                    width: 50%;
+                    width: 0%;
                     background: #01AAFC;
                     border-radius: 3px;
                   }
@@ -471,7 +360,7 @@ $timeHead: rgba(139, 155, 168, 0.65);
       margin: 20px 12px;
       // width: 100%;
       background: #FFFFFF;
-      box-shadow: 0 9px 12px 0 rgba(0,63,161,0.12);
+      box-shadow: 0px 4px 12px 5px rgba(0,63,161,0.1);
       border-radius: 4px;
       .exam_list_ul{
         padding: 0 24px;
@@ -510,13 +399,13 @@ $timeHead: rgba(139, 155, 168, 0.65);
           }
         }
         .exam_date_time{
-          // width: 100px;
+          width: 350px;
         }
         .time_long{
-          // width: 100px;
+          width: 150px;
         }
         .achievement{
-          // width: 100px;
+          width: 100px;
         }
         .text_button{
           // width: 100px;
@@ -529,11 +418,11 @@ $timeHead: rgba(139, 155, 168, 0.65);
         height: 0;
         border: 10px solid;
         // border-color: transparent transparent #FFFFFF;
-        border-color: transparent transparent #f7f3f3;
+        border-color: transparent transparent #FFFFFF;
         // box-shadow: 0 2px 12px 0 rgba(0,61,112,0.08);
         position: absolute;
         top: -20px;
-        left: 100px;
+        left: 137px;
       }
     }
   }
