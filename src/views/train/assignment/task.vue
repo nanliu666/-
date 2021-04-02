@@ -2,15 +2,15 @@
   <div class="task_info">
     <!-- 这里做判断，写三套 -->
     <!-- 考试模块 -->
-    <div v-if="dataInfo.type === 2" class="exam">
+    <div v-if="attributeData.type === 2" class="exam">
       <div class="status_icon">
         <div v-if="!lastCourse" class="line"></div>
         <div class="icon icon_p">
           <!-- 左边图标，1：未开始：2：进行中；3：已结束 -->
           <!-- <i class="el-icon-video-play"></i> -->
-          <i v-if="dataInfo.status == 1" class="el-icon-video-play"></i>
-          <i v-if="dataInfo.status == 2" class="el-icon-time"></i>
-          <i v-if="dataInfo.status == 3" class="el-icon-circle-check"></i>
+          <i v-if="attributeData.status == 1" class="el-icon-video-play"></i>
+          <i v-if="attributeData.status == 2" class="el-icon-time"></i>
+          <i v-if="attributeData.status == 3" class="el-icon-circle-check"></i>
         </div>
       </div>
       <section class="content content_detail">
@@ -23,8 +23,8 @@
           <div class="course_site">
             <div class="course_title f_s_16">
               <p>
-                <span>【考试】</span>{{ dataInfo.name
-                }}<span v-if="dataInfo.complete == '1'" class="finish">已通过</span><span v-if="dataInfo.complete == '2'" class="lack">未通过</span>
+                <span>【考试】</span>{{ attributeData.name
+                }}<span v-if="attributeData.complete == '1'" class="finish">已通过</span><span v-if="attributeData.complete == '2'" class="lack">未通过</span>
               </p>
             </div>
             <div class="info">
@@ -35,15 +35,15 @@
           </div>
           <div v-show="!isHidden" class="exam_info exam_time f_s_14">
             <ul>
-              <li>题目数量：共{{ dataInfo.totalNum }}题</li>
-              <li>剩余有效答题次数：{{ dataInfo.surplusParticipatNumber }}</li>
-              <li>试卷总分：{{ dataInfo.totalScore }}</li>
+              <li>题目数量：共{{ attributeData.totalNum }}题</li>
+              <li>剩余有效答题次数：{{ attributeData.surplusParticipatNumber }}</li>
+              <li>试卷总分：{{ attributeData.totalScore }}</li>
               <li>评分规则：取最高得分最为最终成绩</li>
-              <li>成绩:{{ dataInfo.score? dataInfo.score: '-' }}</li>
+              <li>成绩:{{ attributeData.score? attributeData.score: '-' }}</li>
             </ul>
           </div>
         </div>
-        <div v-if="dataInfo.complete == '1'" class="done_tips">
+        <div v-if="attributeData.complete == '1'" class="done_tips">
           <img src="./done.png" />
         </div>
         <el-row class="action">
@@ -56,7 +56,7 @@
       </section>
     </div>
     <!-- 在线课程模块 -->
-    <div v-if="dataInfo.type === 3" class="online_courses">
+    <div v-if="attributeData.type === 3" class="online_courses">
       <div class="status_icon">
         <div v-if="!lastCourse" class="line"></div>
         <div class="icon icon_p">
@@ -75,13 +75,13 @@
           <div class="course_site">
             <div class="course_title f_s_16">
               <p>
-                <span>【在线课程】</span>{{ dataInfo.name
+                <span>【在线课程】</span>{{ attributeData.name
                 }}<span v-if="data.complete" class="finish">已完成</span><span v-if="!data.complete" class="lack">未完成</span>
               </p>
             </div>
             <div class="info">
               <p>
-                <span>讲师：</span><span>{{ dataInfo.teacherName }}</span>
+                <span>讲师：</span><span>{{ attributeData.teacherName }}</span>
               </p>
               <p>
                 <span>课程时间：</span><span>{{ data.startTime }} —— {{ data.endTime }}</span>
@@ -90,9 +90,9 @@
           </div>
           <div v-show="!isHidden" class="exam_info exam_time">
             <ul>
-              <!-- <li v-for="item in dataInfo.content" :key="item.id"  @click="goDetails(item)">【{{item.type}}】章节{{item.sort}} {{item.name}}<i class="exam_info_status"><i :class="item.typeClass"></i></i></li> -->
-              <li v-for="item in dataInfo.content" :key="item.id" @click="goDetails(item)">
-                【{{ item.type }}】{{ item.name }}
+              <!-- <li v-for="item in attributeData.content" :key="item.id"  @click="goDetails(item)">【{{item.type}}】章节{{item.sort}} {{item.name}}<i class="exam_info_status"><i :class="item.typeClass"></i></i></li> -->
+              <li v-for="item in attributeData.content" :key="item.id" @click="goDetails(item)">
+                【{{ item.type_name }}】{{ item.name }}
                 <i class="exam_info_status">
                   <i v-if="item.percentageComplete == 100" class="el-icon-circle-check"></i>
                   <i
@@ -118,21 +118,21 @@
       </section>
     </div>
     <!-- 线下/面授模块 -->
-    <div v-if="dataInfo.type === 1" class="face_to_face_courses">
+    <div v-if="attributeData.type === 1" class="face_to_face_courses">
       <!-- <div class="face_to_face_courses"> -->
       <div class="status_icon">
         <div v-if="!lastCourse" class="line"></div>
         <div class="icon icon_p">
           <!-- 左边图标，1：未开始：2：进行中；3：已结束 -->
           <!-- <i class="el-icon-video-play"></i>  -->
-          <i v-if="dataInfo.status == 1" class="el-icon-video-play"></i>
-          <i v-if="dataInfo.status == 2" class="el-icon-time"></i>
-          <i v-if="dataInfo.status == 3" class="el-icon-circle-check"></i>
+          <i v-if="attributeData.status == 1" class="el-icon-video-play"></i>
+          <i v-if="attributeData.status == 2" class="el-icon-time"></i>
+          <i v-if="attributeData.status == 3" class="el-icon-circle-check"></i>
         </div>
       </div>
       <section class="content content_detail">
         <div class="course_time f_s_14 course_time_c">
-          <p>{{ dataInfo.startTime }}</p>
+          <p>{{ attributeData.startTime }}</p>
           <p>{{ data.status }}</p>
         </div>
         <div class="course_details">
@@ -140,23 +140,23 @@
             <div class="course_title f_s_16">
               <!-- <p>线下活动】挖掘机技能传授<span style="display: inline-block;float: right;">已签到</span></p> -->
               <p>
-                <span>{{ dataInfo.flag == 1 ? '【面授课程】' : '【线下活动】' }}</span>{{ dataInfo.name }}<span v-if="dataInfo.sign == '1'" class="finish">已签到</span><span v-if="dataInfo.sign == '2'" class="lack">缺席</span>
+                <span>{{ attributeData.flag == 1 ? '【面授课程】' : '【线下活动】' }}</span>{{ attributeData.name }}<span v-if="attributeData.sign == '1'" class="finish">已签到</span><span v-if="attributeData.sign == '2'" class="lack">缺席</span>
               </p>
             </div>
             <div class="info">
               <p>
-                <span>讲师：</span><span>{{ dataInfo.teacherName }}</span>
+                <span>讲师：</span><span>{{ attributeData.teacherName }}</span>
               </p>
               <p>
-                <span>教室：</span><span>{{ dataInfo.roomName }}</span>
+                <span>教室：</span><span>{{ attributeData.roomName }}</span>
               </p>
               <p>
-                <span>教室地址：</span><span>{{ dataInfo.roomAddr }}</span>
+                <span>教室地址：</span><span>{{ attributeData.roomAddr }}</span>
               </p>
             </div>
           </div>
         </div>
-        <div v-if="dataInfo.complete == '1'" class="done_tips">
+        <div v-if="attributeData.complete == '1'" class="done_tips">
           <img src="./done.png" />
         </div>
       </section>
@@ -189,18 +189,16 @@ export default {
         content: [],
         complete: true //
       },
+      attributeData: {},
       isGoLearn: true, // 是否可去学习
       isGoExam: true // 是否可去考试
     }
   },
   created() {
-    this.getData()
-    this.getList()
+    this.attributeData = JSON.parse(JSON.stringify(this.dataInfo))
     this.processData()
   },
   methods: {
-    getData() {},
-    getList() {},
     goDetails(v) {
       if (this.isGoLearn) {
         return
@@ -212,58 +210,58 @@ export default {
       this.$router.push({ path: '/course/learn', query: params })
     },
     processData() {
-      if (this.dataInfo.type === 2) {
-        this.data.startDateTime = moment(this.dataInfo.startTime).format('YYYY年MM月DD日 HH:mm')
-        this.data.endDateTime = moment(this.dataInfo.endTime).format('YYYY年MM月DD日 HH:mm')
-        this.data.startTime = moment(this.dataInfo.startTime).format('HH:mm')
-        this.data.endTime = moment(this.dataInfo.endTime).format('HH:mm')
+      if (this.attributeData.type === 2) {
+        this.data.startDateTime = moment(this.attributeData.startTime).format('YYYY年MM月DD日 HH:mm')
+        this.data.endDateTime = moment(this.attributeData.endTime).format('YYYY年MM月DD日 HH:mm')
+        this.data.startTime = moment(this.attributeData.startTime).format('HH:mm')
+        this.data.endTime = moment(this.attributeData.endTime).format('HH:mm')
         // 判断在考试时间才显示按钮去考试
-        if (new Date().getTime() >= new Date(this.dataInfo.startTime).getTime() && new Date().getTime() <= new Date(this.dataInfo.endTime).getTime() && this.dataInfo.status != 3) {
+        if (new Date().getTime() >= new Date(this.attributeData.startTime).getTime() && new Date().getTime() <= new Date(this.attributeData.endTime).getTime() && this.attributeData.status != 3) {
           // (今天时间 》= 开始时间) && (今天时间 《= 结束时间) && （!=已结办）
           this.isGoExam = false
         }
       }
-      if (this.dataInfo.type === 3) {
-        this.data.startTime = moment(this.dataInfo.startTime).format('YYYY年MM月DD日')
-        this.data.endTime = moment(this.dataInfo.endTime).format('YYYY年MM月DD日')
+      if (this.attributeData.type === 3) {
+        this.data.startTime = moment(this.attributeData.startTime).format('YYYY年MM月DD日')
+        this.data.endTime = moment(this.attributeData.endTime).format('YYYY年MM月DD日')
         // 判断在学习时间才显示按钮去学习
         let today = new Date(moment().format('YYYY-MM-DD'))
-        let startDate = new Date(moment(this.dataInfo.startTime).format('YYYY-MM-DD'))
-        let endDate = new Date(moment(this.dataInfo.endTime).format('YYYY-MM-DD'))
-        if (today >= startDate && today <= endDate && this.dataInfo.status != 3) {
+        let startDate = new Date(moment(this.attributeData.startTime).format('YYYY-MM-DD'))
+        let endDate = new Date(moment(this.attributeData.endTime).format('YYYY-MM-DD'))
+        if (today >= startDate && today <= endDate && this.attributeData.status != 3) {
           // (今天日期 》= 开始日期) && (今天日期 《= 结束日期) && （!=已结办）
           this.isGoLearn = false
           // console.log('this.isGoLearn', this.isGoLearn)
         }
       }
-      // console.log('this.dataInfo', this.dataInfo)
-      if (this.dataInfo.status === 1) {
+      // console.log('this.attributeData', this.attributeData)
+      if (this.attributeData.status === 1) {
         this.data.status = '未开始'
-      } else if (this.dataInfo.status === 2) {
+      } else if (this.attributeData.status === 2) {
         this.data.status = '进行中'
-      } else if (this.dataInfo.status === 3) {
+      } else if (this.attributeData.status === 3) {
         this.data.status = '已结束' // 表示已结办
       } else {
         this.data.status = '没数据'
       }
-      if (this.dataInfo.content && this.dataInfo.content.length) {
-        for (let item of this.dataInfo.content) {
+      if (this.attributeData.content && this.attributeData.content.length) {
+        for (let item of this.attributeData.content) {
           // console.log('sfasfadf---',item.percentageComplete)
           switch (item.type) {
             case '1':
-              item.type = '文章'
+              item.type_name = '文章'
               break
             case '2':
-              item.type = '课件'
+              item.type_name = '课件'
               break
             case '3':
-              item.type = '资料下载'
+              item.type_name = '资料下载'
               break
             case '4':
-              item.type = '作业'
+              item.type_name = '作业'
               break
             case '5':
-              item.type = '课前思考内容'
+              item.type_name = '课前思考内容'
           }
           // 判断是否全部完成
           if (item.percentageComplete != 100) {
@@ -273,7 +271,7 @@ export default {
       }
     },
     handleGoDetails() {
-      this.$router.push({ path: '/course/detail', query: { id: this.dataInfo.id } })
+      this.$router.push({ path: '/course/detail', query: { id: this.attributeData.id } })
     },
     handleGoExam() {
       this.$confirm(`您确定现在参加考试吗？`, '提示', {
@@ -282,7 +280,7 @@ export default {
         type: 'warning'
       })
       .then(() => {
-        this.$router.push({ path: '/exam/paper', query: { examId: this.dataInfo.id, batchId: this.dataInfo.examBatchId} })
+        this.$router.push({ path: '/exam/paper', query: { examId: this.attributeData.id, batchId: this.attributeData.examBatchId} })
       })
       .catch(() => {
         this.$message({
