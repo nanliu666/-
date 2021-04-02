@@ -26,3 +26,7 @@ export const liveStudentList = (params) => get('api/common/v1/live/liveStudentLi
  * @param {number} params.pageNo  页码
  */
 export const myElectiveCourse = (params) => post('/manage/v1/study/myElectiveCourse', params)
+/**
+ * 查询我的必修详情课程
+ * */
+ export const getRequireCourse = (params) => post('/manage/v1/study/myRequireCourse', params)
