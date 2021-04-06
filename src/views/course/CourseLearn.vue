@@ -651,6 +651,7 @@ export default {
         }
         .note {
           margin-bottom: 24px;
+          word-break: break-all;
           &__top {
             margin-bottom: 16px;
             display: flex;

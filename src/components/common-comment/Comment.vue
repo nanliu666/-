@@ -219,6 +219,7 @@ export default {
           font-size: 14px;
           color: rgba(0, 11, 21, 0.85);
           margin-top: 8px;
+          word-break: break-all;
         }
       }
     }
