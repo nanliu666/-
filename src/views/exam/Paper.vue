@@ -396,7 +396,6 @@ export default {
     },
     // 点击滚动到对应的题目
     navTo(data, sonIndex, parentIndex, ref = 'paperScroll') {
-      console.log('parentIndex:', parentIndex)
       if (this.paper.answerMode === 1) {
         // 整卷移动
         const isFirst = sonIndex === 0 && parentIndex === 0

@@ -225,11 +225,13 @@ export default {
   justify-content: flex-start;
   flex-wrap: wrap;
   li {
+    padding-bottom: 10px;
     /deep/ .el-input__inner {
       border-color: transparent;
       border-bottom-color: #303133;
       border-radius: 0;
-      margin-top: -18px;
+      line-height: 20px;
+      height: 20px;
       &:hover {
         border-color: transparent;
         border-bottom-color: #303133;
