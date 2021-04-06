@@ -65,7 +65,8 @@
 <script>
 const menu = [
   { label: '首页', path: '/home' },
-  { label: '我的任务', path: '/learn' },
+  // { label: '我的任务', path: '/learn' },
+  { label: '我的任务', path: '/myTask' },
   { label: '企业知识', path: '/course' },
   { label: '知识分享', path: '/knowledge' },
   { label: '考试中心', path: '/exam' },
@@ -105,6 +106,7 @@ export default {
     $route(to) {
       this.$nextTick(() => {
         this.activePath = this.getCaption(to.path, 0)
+        // this.activePath = to.path
       })
       // to , from 分别表示从哪跳转到哪，都是一个对象
       // to.path  ( 表示的是要跳转到的路由的地址 eg: /home );
@@ -142,9 +144,9 @@ export default {
       })
     },
     handleMenuClick(item) {
-      if (this.$route.path === item.path) {
-        return
-      }
+      // if (this.$route.path === item.path) {
+      //   return
+      // }
       // this.activePath = item.path
       // this.activePath = this.routerTo
       this.$router.push(item.path)
