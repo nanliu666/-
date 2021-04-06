@@ -2,7 +2,7 @@ import demoRoutes from './demo'
 import Layout from '@/page/Layout'
 import EmptyLayout from '@/page/EmptyLayout'
 import myTaskLayout from '@/views/myTask/myTask'
-import myLearnLayout from '@/views/myTask/myLearn'
+// import myLearnLayout from '@/views/myTask/myLearn'
 /**
  * 路由定义规范
  * 路由整体分八大模块，每个模块写一个路由对象，对象属性包括
@@ -358,14 +358,16 @@ export default [
         path: '/myTask',
         redirect: '/myTask/myLearn',
         component: myTaskLayout,
-        title: '我的任务',
         children: [
           {
             name: 'myLearn',
             path: '/myTask/myLearn',
             // redirect: '/myTask/myLearn/myRequiredList',
-            component: myLearnLayout,
+            // component: myLearnLayout,
             title: '学习',
+            meta: {
+              title: '我的任务'
+            },
             children: [
               {
                 path: 'myRequiredList',

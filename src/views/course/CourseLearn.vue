@@ -33,7 +33,14 @@
                       'border-color': _.get(COURSE_CHAPTER_TYPE_MAP, `${chapter.type}.color`, '')
                     }"
                   >{{ _.get(COURSE_CHAPTER_TYPE_MAP, `${chapter.type}.text`, '') }}</span>
-                  <span class="chapters__title">{{ chapter.name }}</span>
+                  <span class="chapters__title">
+                    <!-- {{ chapter.name }} -->
+                    <text-over-tooltip
+                      ref-name="testName1"
+                      class-name="fs20"
+                      :content="chapter.name"
+                    ></text-over-tooltip>
+                  </span>
                 </div>
                 <div class="chapters__handler">
                   <el-progress
@@ -166,11 +173,12 @@ import {
 } from '@/api/course'
 import { COURSE_CHAPTER_TYPE_MAP } from './config'
 import Task from './components/Task'
+import TextOverTooltip from './components/TextOverTooltip'
 const axios = require('axios/index')
 
 export default {
   name: 'CourseLearn',
-  components: { Task },
+  components: { Task, TextOverTooltip },
   data() {
     return {
       timer: null,
