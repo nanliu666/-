@@ -132,8 +132,8 @@ export default {
     }
     &_bottom {
       margin-top: 12px;
-      margin-left: 11.5vw;
-      width: 8vw;
+      margin-left: 35%;
+      width: 30%;
       height: 2px;
       background: #01aafc;
     }
