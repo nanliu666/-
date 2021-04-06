@@ -63,7 +63,7 @@ export default [
             name: 'CourseList',
             component: () => import(/* webpackChunkName: "page"*/ '@/views/course/CourseList.vue'),
             meta: {
-              title: '课程列表'
+              title: '企业知识'
             }
           },
           {
@@ -97,7 +97,7 @@ export default [
             path: 'list',
             component: () => import(/* webpackChunkName: "page"*/ '@/views/knowledge/List.vue'),
             meta: {
-              title: '知识库'
+              title: '知识分享'
             }
           },
           {
@@ -121,7 +121,7 @@ export default [
             path: 'list',
             component: () => import(/* webpackChunkName: "page"*/ '@/views/exam/List.vue'),
             meta: {
-              title: '考试'
+              title: '考试中心'
             }
           },
           {
@@ -155,7 +155,7 @@ export default [
             path: 'list',
             component: () => import(/* webpackChunkName: "page"*/ '@/views/live/List.vue'),
             meta: {
-              title: '直播'
+              title: '直播中心'
             }
           },
           {
@@ -245,7 +245,7 @@ export default [
             name: 'list',
             component: () => import(/* webpackChunkName: "page" */ '@/views/news/NewsList.vue'),
             meta: {
-              title: '新闻'
+              title: '新闻公告'
             }
           },
           {
@@ -291,7 +291,7 @@ export default [
             path: 'index',
             name: 'trainIndex',
             meta: {
-              title: '课程页面首页'
+              title: '培训中心'
             },
             component: () => import(/* webpackChunkName: "page"*/ '@/views/train')
           },
