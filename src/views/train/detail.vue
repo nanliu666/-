@@ -32,7 +32,14 @@
         <div class="intro-item">
           分类：
           <!-- <span class="text">{{ data.categoryName? data.categoryName: '--' }}</span> -->
-          <span class="text">{{ data.categoryName == '/--' ? '--' : data.categoryName }}</span>
+          <!-- <span class="text">{{ data.categoryName == '/--' ? '--' : data.categoryName }}</span> -->
+          <span class="text">
+            <text-over-tooltip
+              ref-name="categoryName-tt-detail"
+              :content="data.categoryName == '/--' ? '--' : data.categoryName"
+            >
+            </text-over-tooltip>
+          </span>
         </div>
         <div class="intro-item">
           培训时间：
@@ -53,7 +60,14 @@
         </div>
         <div class="intro-item">
           培训地点：
-          <span class="text">{{ data.address ? data.address : '--' }}</span>
+          <!-- <span class="text">{{ data.address ? data.address : '--' }}</span> -->
+          <span class="text">
+            <text-over-tooltip
+              ref-name="address-tt-detail"
+              :content="data.address ? data.address : '--'"
+            >
+            </text-over-tooltip>
+          </span>
         </div>
         <div class="intro-item">
           联系人：
@@ -67,11 +81,25 @@
         </div>
         <div class="intro-item">
           主办单位：
-          <span class="text">{{ data.sponsor ? data.sponsor : '--' }}</span>
+          <!-- <span class="text">{{ data.sponsor ? data.sponsor : '--' }}</span> -->
+          <span class="text">
+            <text-over-tooltip
+              ref-name="sponsor-tt-detail"
+              :content="data.sponsor ? data.sponsor : '--'"
+            >
+            </text-over-tooltip>
+          </span>
         </div>
         <div class="intro-item">
           承办单位：
-          <span class="text">{{ data.organizer ? data.organizer : '--' }}</span>
+          <!-- <span class="text">{{ data.organizer ? data.organizer : '--' }}</span> -->
+          <span class="text">
+            <text-over-tooltip
+              ref-name="organizer-tt-detail"
+              :content="data.organizer ? data.organizer : '--'"
+            >
+            </text-over-tooltip>
+          </span>
         </div>
       </div>
       <div class="intro-list">
@@ -112,6 +140,7 @@
 <script>
 // eslint-disable-next-line no-unused-vars
 import { Exam, Rate, Intro, Schedule, Trainee, Arrangement, MaterialsUpload } from './contents'
+import TextOverTooltip from '../course/components/TextOverTooltip'
 import { getDetail, signUp, getTrainState } from 'src/api/train'
 import globalKey from 'src/config/website'
 import moment from 'moment'
@@ -124,7 +153,8 @@ export default {
     Schedule,
     Trainee,
     Arrangement,
-    MaterialsUpload
+    MaterialsUpload,
+    TextOverTooltip
   },
   data() {
     return {
