@@ -117,10 +117,10 @@ module.exports = {
         // target: 'http://apidev.epro.com.cn/',
 
         // 测试环境
-        // target: 'http://139.159.141.248:8081',
+        target: 'http://139.159.141.248:8081',
 
         // 深圳本地开发环境1
-        target: 'http://172.16.4.55:7071',
+        // target: 'http://172.16.4.55:7071',
         // 深圳本地开发环境2
         // target: 'https://172.16.4.55',
 
