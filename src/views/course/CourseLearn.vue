@@ -57,8 +57,9 @@
               </li>
             </ul>
           </div>
+          <!-- 笔记 -->
           <div v-show="activeIndex === '2'" class="left-bar__notes">
-            <el-input
+            <!-- <el-input
               v-model="note"
               type="textarea"
               placeholder="记录你的想法吧～"
@@ -83,7 +84,8 @@
                   {{ item.remark }}
                 </div>
               </li>
-            </ul>
+            </ul> -->
+            <Note :show-add="true" :current-chapter="currentChapter"></Note>
           </div>
         </div>
       </div>
@@ -174,11 +176,12 @@ import {
 import { COURSE_CHAPTER_TYPE_MAP } from './config'
 import Task from './components/Task'
 import TextOverTooltip from './components/TextOverTooltip'
+import Note from './components/Note'
 const axios = require('axios/index')
 
 export default {
   name: 'CourseLearn',
-  components: { Task, TextOverTooltip },
+  components: { Task, TextOverTooltip, Note },
   data() {
     return {
       timer: null,
@@ -637,35 +640,37 @@ export default {
         }
       }
       &__notes {
-        padding: 24px;
+        overflow: auto;
+
+        padding: 20px;
         height: 100%;
-        .el-button {
-          margin-top: 13px;
-          float: right;
-        }
-        .notes-list {
-          overflow: auto;
-          clear: both;
-          padding-top: 20px;
-          max-height: calc(100% - 164px);
-        }
-        .note {
-          margin-bottom: 24px;
-          word-break: break-all;
-          &__top {
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-          }
-          &__user {
-            display: flex;
-            align-items: center;
-          }
-          &__username {
-            margin-left: 8px;
-          }
-        }
+        //   .el-button {
+        //     margin-top: 13px;
+        //     float: right;
+        //   }
+        //   .notes-list {
+        //     overflow: auto;
+        //     clear: both;
+        //     padding-top: 20px;
+        //     max-height: calc(100% - 164px);
+        //   }
+        //   .note {
+        //     margin-bottom: 24px;
+        //     word-break: break-all;
+        //     &__top {
+        //       margin-bottom: 16px;
+        //       display: flex;
+        //       align-items: center;
+        //       justify-content: space-between;
+        //     }
+        //     &__user {
+        //       display: flex;
+        //       align-items: center;
+        //     }
+        //     &__username {
+        //       margin-left: 8px;
+        //     }
+        //   }
       }
     }
     .main-content {

@@ -75,9 +75,15 @@
             </li>
           </ul>
         </el-tab-pane>
+        <!-- 笔记 -->
+        <el-tab-pane key="Note" label="课程笔记(1111)" name="Note">
+          <div style="padding: 0 10px;">
+            <Note />
+          </div>
+        </el-tab-pane>
+
         <el-tab-pane key="experience" label="学习心得" name="experience">
           <experience :course-name="courseData.name" />
-          <!-- 引入下载模块 -->
         </el-tab-pane>
         <el-tab-pane label="课程评价" name="third">
           <Comment :load="loadCommentList" :submit="submitComment" name="课程" />
@@ -101,9 +107,10 @@ import Comment from '@/components/common-comment/Comment'
 import { COURSE_CHAPTER_TYPE_MAP, COURSE_TYPE_MAP } from './config'
 import { mapGetters } from 'vuex'
 import Experience from './components/Experience'
+import Note from './components/Note'
 export default {
   name: 'CourseDetail',
-  components: { Comment, Experience, CommonBreadcrumb },
+  components: { Comment, Experience, CommonBreadcrumb, Note },
   data() {
     return {
       routeList: [
