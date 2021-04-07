@@ -15,7 +15,7 @@
       </div>
       <div class="content">
         <ul v-if="notifyList.length > 0" class="list">
-          <li v-for="(info, i) in notifyList" :key="i" class="info" @click="handleJump(info)">
+          <li v-for="(info, i) in notifyList" :key="i" class="info" @click.stop="viewDetails(info)">
             <div v-if="info.title" class="title">
               <span v-if="!info.isRead" class="spot"></span>【<span class="ellipsis">{{
                 info.title
@@ -41,6 +41,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { postMsgNotify, postMsgNotifyCount, getMsgNotify } from '@/api/messgeCenter'
+import TYPE_PATH_MAP from '@/const/viewConfigs'
 export default {
   name: 'Notification',
   data() {
@@ -60,6 +61,14 @@ export default {
     clearInterval(this.timer)
   },
   methods: {
+    viewDetails(data) {
+      // 先已读
+      this.handleAllRead({ id: data.id })
+      //TODO: 为什么要判断？因为第一版的点击只做了已读操作。怀疑有的消息是单纯通知，无对应页面跳转。
+      if (data.type) {
+        this.$router.push({ path: TYPE_PATH_MAP[data.type] })
+      }
+    },
     update() {
       if (!this.userId) {
         return
@@ -76,9 +85,10 @@ export default {
         query
       })
     },
-    handleAllRead() {
+    handleAllRead({ id = null }) {
       const params = {
-        userId: this.userId
+        userId: this.userId,
+        id
       }
       postMsgNotify(params).then(() => {
         this.update()
