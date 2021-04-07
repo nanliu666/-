@@ -98,8 +98,8 @@ export default {
         }
       })
     },
-    pagination({ val, limit }) {
-      this.query.pageNo = val
+    pagination({ page, limit }) {
+      this.query.pageNo = page
       this.query.pageSize = limit
       this.getData()
     },

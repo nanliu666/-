@@ -1,30 +1,37 @@
 <template>
   <div class="li-main">
     <div class="li-main-left">
-      <i
+      <!-- <i
         class="iconfont"
         :class="`icon${isInImpeach ? 'image_icon_help_press' : 'image_icon_help_normal'}`"
         @click="setImpeach(conItem)"
-      />
+      /> -->
       <span style="margin-left:5px;">{{ topicIndex + 1 }}.</span>
       <span v-show="isShowScope === 1">（{{ conItem.score }}分）</span>
     </div>
     <div class="li-main-right">
-      <QustionPreview
-        v-if="QUESTION_TYPE_GROUP !== conItem.type"
-        class="ques"
-        :data="conItem"
-        :disabled="disabled"
-      />
-      <span v-else>
-        <span class="right-title" v-html="getHTML(conItem.content)"></span>
-        <ul>
-          <li v-for="(paperItem, paperIndex) in conItem.subQuestions" :key="paperIndex" class="">
-            <span>{{ paperIndex + 1 }}.</span>
-            <QustionPreview :data="paperItem" :disabled="disabled" />
-          </li>
-        </ul>
-      </span>
+      <div>
+        <QustionPreview
+          v-if="QUESTION_TYPE_GROUP !== conItem.type"
+          class="ques"
+          :data="conItem"
+          :disabled="disabled"
+        />
+        <span v-else>
+          <span class="right-title" v-html="getHTML(conItem.content)"></span>
+          <ul>
+            <li v-for="(paperItem, paperIndex) in conItem.subQuestions" :key="paperIndex" class="">
+              <span>{{ paperIndex + 1 }}.</span>
+              <QustionPreview :data="paperItem" :disabled="disabled" />
+            </li>
+          </ul>
+        </span>
+      </div>
+      <div class="right__button">
+        <el-button size="medium" @click="setImpeach(conItem)">{{
+          isInImpeach ? '取消存疑' : '存疑'
+        }}</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -119,6 +126,10 @@ $selctColor: #fcba00;
   }
   .li-main-right {
     flex: 1;
+    .right__button {
+      display: flex;
+      justify-content: flex-end;
+    }
   }
 }
 </style>
