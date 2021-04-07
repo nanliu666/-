@@ -70,7 +70,8 @@
                 <li class="exam_date_time"><span class="exam_info_c1">考试时间：</span><span class="exam_info_c2">{{item.examBeginTime}}~{{item.examEndTime}}</span></li>
                 <li class="time_long"><span class="exam_info_c1">考试时长：</span><span class="exam_info_c2">{{item.reckonTimeValue? item.reckonTimeValue + '分钟': '不限时'}}</span></li>
                 <li class="achievement"><span class="exam_info_c1">成绩：</span><span class="exam_info_c2">{{item.score?item.score:'--'}}</span></li>
-                <li class="text_button" @click="goExam(item)">进入考试</li>
+                <!-- <li class="text_button" @click="goExam(item)">进入考试</li> disabled-->
+                <li class="text_button"><el-button type="text" :disabled="item.isDisabled"  @click="goExam(item)">进入考试</el-button></li>
               </ul>
             </li>
           </ul>
@@ -101,7 +102,7 @@ export default {
     return {
       temId: null,
       examListData: [], //考试列表
-      triangularPosition: 137 // 考试列表三角形位置
+      triangularPosition: 132 // 考试列表三角形位置
     }
   },
   created() {
@@ -111,7 +112,7 @@ export default {
     handleShowExam(item, id, external_i, internal_i) {
 
       // 计算考试列表三角形位置
-      this.triangularPosition = 137 + (internal_i*273)
+      this.triangularPosition = 132 + (internal_i*273)
 
       for (let i = 0; i < this.dataInfo.length; i++) {
         // 处理考试列表展示
@@ -136,7 +137,16 @@ export default {
         }
       }
       this.temId = id
-
+      // 处理是否可点击进去考试
+      if (item.examList.length > 0) {
+        item.examList.forEach(i => {
+          i.isDisabled = true
+          if (i.status != '1' && i.status != '4' && !(i.status == '3' && i.isPass == '2')) {
+            // !未开考 && !缺考 && !(已考试&&待发布考试结果)
+            i.isDisabled = false //可点击
+          }
+        });
+      }
       this.examListData = item.examList
     },
     // 去学习
@@ -151,21 +161,55 @@ export default {
     },
     // 考试列表--进去考试
     goExam(item) {
-      console.log('goExam', item)
-      this.$confirm(`您确定现在参加考试吗？`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-      .then(() => {
-        this.$router.push({ path: '/exam/paper', query: { examId: item.examId, batchId: item.batchId} })
-      })
-      .catch(() => {
-        this.$message({
-          type: 'info',
-          message: '考试暂时不开始！'
+      // console.log('goExam', item)
+      let promptMessage = '本考试设置了迟到限制，你已迟到不得进入参加考试！'
+      let lateMinutes = 0
+      if (item.lateBanExamValue){
+        lateMinutes = Math.ceil((new Date().getTime() - new Date(new Date(item.examBeginTime)).getTime()) /1000/60)
+        if (lateMinutes > item.lateBanExamValue) {
+          promptMessage = `本考试设置了迟到限制，你已迟到${lateMinutes}分钟不得进入参加考试！`
+        }
+      }
+      
+      if (item.lateBanExam && item.lateBanExamValue && lateMinutes > item.lateBanExamValue) {
+        // 判断是否设置迟到限制
+        this.$confirm(promptMessage, '提示', {
+          confirmButtonText: '我知道了',
+          type: 'warning',
+          showCancelButton: false
         })
-      })
+      } else if (item.joinNum && item.examTimes >= item.joinNumValue) {
+        // 判断是否超出考试次数
+        promptMessage = `本考试限制${item.joinNumValue}次机会考试，您的考试次数已用完！`
+        this.$confirm(promptMessage, '提示', {
+          confirmButtonText: '我知道了',
+          type: 'warning',
+          showCancelButton: false
+        })
+      } else {
+        // if (item.examTimes == 0 || item.isPass == 1) {
+        //   promptMessage = '您确定现在参加考试吗？'
+        // }
+        if (item.isPass == 3) {
+          promptMessage = '你已通过考试，重复考试将取成绩最好一次为最终结果。您确定现在参加考试吗？'
+        } else {
+          promptMessage = '您确定现在参加考试吗？'
+        }
+        this.$confirm(promptMessage, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        .then(() => {
+          this.$router.push({ path: '/exam/paper', query: { examId: item.examId, batchId: item.batchId} })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '考试暂时不开始！'
+          })
+        })
+      }
     },
     
   }
@@ -410,7 +454,12 @@ $timeHead: rgba(139, 155, 168, 0.65);
         .text_button{
           // width: 100px;
           color: rgba(1,170,252,1);
-          cursor:pointer;
+          // cursor:pointer;
+          /deep/ .el-button{
+            padding: 0;
+            display: inline;
+            line-height: 19px;
+          }
         }
       }
       .arrows{
@@ -422,7 +471,7 @@ $timeHead: rgba(139, 155, 168, 0.65);
         // box-shadow: 0 2px 12px 0 rgba(0,61,112,0.08);
         position: absolute;
         top: -20px;
-        left: 137px;
+        left: 132px;
       }
     }
   }
