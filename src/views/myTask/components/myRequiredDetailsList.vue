@@ -2,16 +2,16 @@
   <div class="myRequiredDetailsList">
     <section v-if="dataInfo">
       <!-- 一级循环 -->
-      <div class="Level_1_cycle" v-for="(external,external_i) in dataInfo" :key="external_i + Math.floor(Math.random() * 100000) + 'a'">
+      <div v-for="(external,external_i) in dataInfo" :key="external_i + Math.floor(Math.random() * 100000) + 'a'" class="Level_1_cycle">
         <div class="Level_2_cycle">
-          <div class="course" v-for="(item,internal_i) in external.list" :key="internal_i + Math.floor(Math.random() * 100000) + 'b'">
+          <div v-for="(item,internal_i) in external.list" :key="internal_i + Math.floor(Math.random() * 100000) + 'b'" class="course">
             <!-- 图片 -->
             <div class="top finger" @click="goCourseDetails(item.id)">
               <img :src="item.coverUrl" :alt="item.coverName" class="course_img">
               <!-- <div class="mask" v-show="showExam"> -->
               <div class="mask">
-                <div class="hoverButton finger"  v-show="item.status == 2" @click="goLearn(item)">
-                  {{item.totalPrecent? '继续学习': '立即学习'}}
+                <div v-show="item.status == 2" @click="goLearn(item)" class="hoverButton finger">
+                  {{ item.totalPrecent? '继续学习': '立即学习' }}
                 </div>
               </div>
             </div>
@@ -20,11 +20,11 @@
               <!-- 基本信息 -->
               <div class="course_info">
                 <ul class="course_info_ul">
-                  <li class="course_title finger" @click="goCourseDetails(item.id)">{{item.name? item.name: '--'}}</li>
+                  <li class="course_title finger" @click="goCourseDetails(item.id)">{{ item.name? item.name: '--' }}</li>
                   <li class="other">
-                    <span class="lecturer">{{item.teacherName? item.teacherName: '--'}}</span>
+                    <span class="lecturer">{{ item.teacherName? item.teacherName: '--' }}</span>
                     <span class="i">|</span>
-                    <span class="course_date">{{item.startDate? item.startDate: '--'}} - {{item.entDate? item.entDate: '--'}}</span>
+                    <span class="course_date">{{ item.startDate? item.startDate: '--' }} - {{ item.entDate? item.entDate: '--' }}</span>
                   </li>
                   <!-- 进度条 -->
                   <li class="progress">
@@ -33,14 +33,14 @@
                         <div class="inside" :style="'width:'+item.totalPrecent+'%'"></div>
                       </div>
                     </div>
-                    <div class="progress_num">{{item.totalPrecent? item.totalPrecent + '%': '0%'}}</div>
+                    <div class="progress_num">{{ item.totalPrecent? item.totalPrecent + '%': '0%' }}</div>
                   </li>
                 </ul>
               </div>
               <!-- 考试信息 -->
               <div class="course_exam" @click="handleShowExam(item, item.id, external_i, internal_i)">
                 <div>关联考试：</div>
-                <div class="exam_num">{{item.examList.length}}个</div>
+                <div class="exam_num">{{ item.examList.length }}个</div>
                 <i v-show="item.isShow && item.examList.length" class="el-icon-arrow-down"></i>
                 <i v-show="!item.isShow && item.examList.length" class="el-icon-arrow-up"></i>
               </div>
@@ -58,18 +58,18 @@
         <div class="exam_list" v-show="external.showExam">
           <!-- 列表内容 -->
           <ul class="exam_list_ul">
-            <li class="exam_list_li" v-for="(item,index) in examListData" :key="index + Math.floor(Math.random() * 100000) + 'd'">
+            <li v-for="(item,index) in examListData" :key="index + Math.floor(Math.random() * 100000) + 'd'" class="exam_list_li">
               <ul class="exam_info">
                 <li class="exam_name">
-                  <span class="exam_info_c2 exam_title">{{item.examName}}</span>
+                  <span class="exam_info_c2 exam_title">{{ item.examName }}</span>
                   <span v-if="item.status == '1'" class="base_status status_1 exam_status">未开始</span>
                   <span v-if="item.status == '2' || (item.isPass == 1 && item.status == '3')" class="base_status status_4 exam_status">未通过</span>
                   <span v-if="item.status == '3' && item.isPass == 3" class="base_status status_3 exam_status">已通过</span>
                   <span v-if="item.status == '4'" class="base_status status_5 exam_status">缺考</span>
                 </li>
-                <li class="exam_date_time"><span class="exam_info_c1">考试时间：</span><span class="exam_info_c2">{{item.examBeginTime}}~{{item.examEndTime}}</span></li>
-                <li class="time_long"><span class="exam_info_c1">考试时长：</span><span class="exam_info_c2">{{item.reckonTimeValue? item.reckonTimeValue + '分钟': '不限时'}}</span></li>
-                <li class="achievement"><span class="exam_info_c1">成绩：</span><span class="exam_info_c2">{{item.score?item.score:'--'}}</span></li>
+                <li class="exam_date_time"><span class="exam_info_c1">考试时间：</span><span class="exam_info_c2">{{ item.examBeginTime }}~{{ item.examEndTime }}</span></li>
+                <li class="time_long"><span class="exam_info_c1">考试时长：</span><span class="exam_info_c2">{{ item.reckonTime? item.reckonTimeValue + '分钟': '不限时' }}</span></li>
+                <li class="achievement"><span class="exam_info_c1">成绩：</span><span class="exam_info_c2">{{ item.score?item.score:'--' }}</span></li>
                 <!-- <li class="text_button" @click="goExam(item)">进入考试</li> disabled-->
                 <li class="text_button"><el-button type="text" :disabled="item.isDisabled"  @click="goExam(item)">进入考试</el-button></li>
               </ul>
@@ -139,10 +139,11 @@ export default {
       this.temId = id
       // 处理是否可点击进去考试
       if (item.examList.length > 0) {
+        let nowTem = new Date().getTime()
         item.examList.forEach(i => {
           i.isDisabled = true
-          if (i.status != '1' && i.status != '4' && !(i.status == '3' && i.isPass == '2')) {
-            // !未开考 && !缺考 && !(已考试&&待发布考试结果)
+          if (i.status != '1' && i.status != '4' && !(i.status == '3' && i.isPass == '2') && nowTem > new Date(i.examBeginTime).getTime() && nowTem < new Date(i.examEndTime).getTime()) {
+            // !未开考 && !缺考 && !(已考试&&待发布考试结果) && （当前时间 > 开始时间） && （当前时间 < 结束时间）
             i.isDisabled = false //可点击
           }
         });
@@ -153,7 +154,7 @@ export default {
     goLearn(e) {
       this.$router.push({ path: '/course/learn', query: { courseId: e.id } })
       // 阻止冒泡
-      window.event? window.event.cancelBubble = true : e.stopPropagation();
+      window.event? window.event.cancelBubble = true : e.stopPropagation()
     },
     // 去课程详情
     goCourseDetails(id) {
@@ -162,6 +163,10 @@ export default {
     // 考试列表--进去考试
     goExam(item) {
       // console.log('goExam', item)
+      /**
+       * lateBanExam 是否限制迟到 true 是、 false否
+       * lateBanExamValue 允许迟到多少分钟
+       * **/
       let promptMessage = '本考试设置了迟到限制，你已迟到不得进入参加考试！'
       let lateMinutes = 0
       if (item.lateBanExamValue){
