@@ -413,7 +413,7 @@ export default {
           // 默认必修展开
           element.isUnfold = true
         }
-      });
+      })
       this.menuList = soruce
     },
     // 展开课程
@@ -440,6 +440,7 @@ export default {
       // this.$router.push({ path: '/course/detail', query: { id: data.id } })
     },
     startStudyPlay(data) {
+      console.log('data', data)
       this.$router.push({ path: '/course/learn', query: { courseId: data.id } })
     },
     // 切换必修/选修
@@ -451,7 +452,7 @@ export default {
         } else {
           element.isUnfold = false
         }
-      });
+      })
       if (type == 'required') {
         this.currentRequiredNav = -1
       }

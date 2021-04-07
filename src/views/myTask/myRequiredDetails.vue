@@ -13,31 +13,31 @@
         <div class="right">
           <ul class="info">
             <li>
-              <span class="sort_title">{{detailParams.menuName}}</span>
+              <span class="sort_title">{{ detailParams.menuName }}</span>
               <span v-if="detailParams.status == '1'" class="sort_status status_1">未开始</span>
               <span v-if="detailParams.status == '2'" class="sort_status status_2">进行中</span>
               <span v-if="detailParams.status == '3'" class="sort_status status_3">已结束</span>
             </li>
             <li>
               <ul class="middle">
-                <li>分类：<span class="middle_data">{{detailParams.categoryName? detailParams.categoryName: '--'}}</span></li>
-                <li>学习时间：<span class="middle_data">{{detailParams.startDate}} - {{detailParams.entDate}}</span></li>
-                <li>主办单位：<span class="middle_data">{{detailParams.sponsor? detailParams.sponsor: '--'}}</span></li>
+                <li>分类：<span class="middle_data">{{ detailParams.categoryName? detailParams.categoryName: '--' }}</span></li>
+                <li>学习时间：<span class="middle_data">{{ detailParams.startDate }} - {{ detailParams.entDate }}</span></li>
+                <li>主办单位：<span class="middle_data">{{ detailParams.sponsor? detailParams.sponsor: '--' }}</span></li>
               </ul>
             </li>
             <li class="info_bottom">
-              <span class="info_bottom_details"><i class="iconimage_icon_user iconfont iconInfo"></i>{{detailParams.peopleNum? detailParams.peopleNum + '人': '--'}}</span>
-              <span class="info_bottom_details"><i class="iconimage_icon_time1 iconfont iconInfo"></i>{{detailParams.period? detailParams.period + '小时': '--'}}</span>
-              <span class="info_bottom_details"><i class="iconjifen iconfont iconInfo"></i>{{detailParams.credit? detailParams.credit + '积分': '--'}}</span>
+              <span class="info_bottom_details"><i class="iconimage_icon_user iconfont iconInfo"></i>{{ detailParams.peopleNum? detailParams.peopleNum + '人': '--' }}</span>
+              <span class="info_bottom_details"><i class="iconimage_icon_time1 iconfont iconInfo"></i>{{ detailParams.period? detailParams.period + '小时': '--' }}</span>
+              <span class="info_bottom_details"><i class="iconjifen iconfont iconInfo"></i>{{ detailParams.credit? detailParams.credit + '积分': '--' }}</span>
             </li>
           </ul>
         </div>
       </div>
       <!-- 课程分类 -->
       <div class="classification">
-        <el-tabs class="content" v-model="activeName" @tab-click="handleSwitchCategories">
+        <el-tabs v-model="activeName" class="content" @tab-click="handleSwitchCategories">
           <el-tab-pane v-for="tab in tabs" :key="tab.name" :label="tab.label" :name="tab.name" lazy>
-            <my-required-details-list :dataInfo="processedData"/>
+            <my-required-details-list :data-info="processedData"></my-required-details-list>
           </el-tab-pane>
         </el-tabs>
         <!-- 页码 -->
@@ -141,7 +141,7 @@ export default {
       }
     },
     // 切换类别
-    handleSwitchCategories(tab, event) {
+    handleSwitchCategories(tab) {
       let status = ''
       if (tab.name == 'unplayed') {
         status = 1
