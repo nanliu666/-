@@ -138,11 +138,13 @@ let TABLE_COLUMNS = [
   {
     label: '流程类型',
     prop: 'processName',
-    slot: true
+    slot: true,
+    width: '130px'
   },
   {
     label: '申请人',
-    prop: 'userName'
+    prop: 'userName',
+    width: '130px'
   },
   {
     label: '申请时间',
