@@ -1,6 +1,6 @@
 <template>
   <div class="view-contain-box">
-    <div v-if="paperData.publicAnswers" class="dot-box">
+    <div v-if="paperData.publicAnswers && data.type !== QUESTION_TYPE_SHOER" class="dot-box">
       <div class="dot-content">
         <span class="dot"></span>
         <span>
@@ -38,6 +38,7 @@
 </template>
 
 <script>
+import { QUESTION_TYPE_SHOER } from '@/const/exam'
 export default {
   name: 'GapAndShort',
   props: {
@@ -57,7 +58,9 @@ export default {
   data() {
     return {}
   },
-  created() {},
+  computed: {
+    QUESTION_TYPE_SHOER: () => QUESTION_TYPE_SHOER
+  },
   methods: {
     // 获取正确答案
     getCorrect() {
