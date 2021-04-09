@@ -2,8 +2,8 @@
   <div :class="['header', { isFullscreenHead: isFullscreen }]">
     <div class="header-inner">
       <div class="logo">
-        <img v-if="envVar === 'zehui' && isOrgIdE" src="../assets/images/logo_yb.png" />
-        <img v-else-if="envVar === 'zehui'" src="../assets/images/logo_yb.png" />
+        <img v-if="envVar === 'zehui' && isOrgIdE" src="../assets/images/logoE.png" />
+        <img v-else-if="envVar === 'zehui'" src="../assets/images/logoZeHui.png" />
         <img v-else src="../assets/images/logo_yb.png" />
       </div>
       <template v-if="userId">
