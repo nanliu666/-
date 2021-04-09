@@ -4,8 +4,9 @@
     :separator="separator"
     style="margin-top:24px; margin-bottom: 16px;"
   >
-    <el-breadcrumb-item v-for="(item, index) in routeList" :key="index" :to="{ path: item.path }">
-      {{ item.title }}
+    <el-breadcrumb-item v-for="(item, index) in routeList" :key="index">
+      <a v-if="item.path" :href="`#${item.path}`">{{ item.title }}</a>
+      <span v-else>{{ item.title }}</span>
     </el-breadcrumb-item>
   </el-breadcrumb>
 </template>

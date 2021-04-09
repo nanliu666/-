@@ -1,36 +1,38 @@
 <template>
   <div class="li-main">
     <div class="li-main-left">
-      <!-- <i
-        class="iconfont"
-        :class="`icon${isInImpeach ? 'image_icon_help_press' : 'image_icon_help_normal'}`"
-        @click="setImpeach(conItem)"
-      /> -->
       <span style="margin-left:5px;">{{ topicIndex + 1 }}.</span>
       <span v-show="isShowScope === 1">（{{ conItem.score }}分）</span>
     </div>
     <div class="li-main-right">
       <div>
-        <QustionPreview
-          v-if="QUESTION_TYPE_GROUP !== conItem.type"
-          class="ques"
-          :data="conItem"
-          :disabled="disabled"
-        />
+        <div v-if="QUESTION_TYPE_GROUP !== conItem.type">
+          <QustionPreview class="ques" :data="conItem" :disabled="disabled" />
+          <div class="right__button">
+            <el-button size="medium" @click="setImpeach(conItem)">{{
+              _.some(isInImpeachList, (imItem) => imItem === conItem.id) ? '取消存疑' : '存疑'
+            }}</el-button>
+          </div>
+        </div>
         <span v-else>
           <span class="right-title" v-html="getHTML(conItem.content)"></span>
           <ul>
-            <li v-for="(paperItem, paperIndex) in conItem.subQuestions" :key="paperIndex" class="">
+            <li
+              v-for="(paperItem, paperIndex) in conItem.subQuestions"
+              :id="`id${paperItem.id}`"
+              :key="paperIndex"
+              class="right__content"
+            >
               <span>{{ paperIndex + 1 }}.</span>
               <QustionPreview :data="paperItem" :disabled="disabled" />
+              <div class="right__button">
+                <el-button size="medium" @click="setImpeach(paperItem)">{{
+                  _.some(isInImpeachList, (imItem) => imItem === paperItem.id) ? '取消存疑' : '存疑'
+                }}</el-button>
+              </div>
             </li>
           </ul>
         </span>
-      </div>
-      <div class="right__button">
-        <el-button size="medium" @click="setImpeach(conItem)">{{
-          isInImpeach ? '取消存疑' : '存疑'
-        }}</el-button>
       </div>
     </div>
   </div>
@@ -78,7 +80,7 @@ export default {
   },
   data() {
     return {
-      isInImpeach: false
+      isInImpeachList: []
     }
   },
   computed: {
@@ -95,13 +97,23 @@ export default {
       return addLine(content)
     },
     setImpeach(data) {
-      this.getCurrentImpeach(data)
       this.$emit('setImpeach', data)
+      this.$nextTick(() => {
+        this.getCurrentImpeach(data)
+      })
     },
     getCurrentImpeach(data) {
-      this.isInImpeach = !_.some(this.paper.impeachList, (item) => {
-        return item.key === data.id
+      const temp = _.find(this.paper.impeachList, (item) => {
+        if (item.key === data.id) {
+          return data.id
+        }
       })
+      if (temp) {
+        this.isInImpeachList.push(_.get(temp, 'key'))
+      } else {
+        const inpeachIndex = _.findIndex(this.isInImpeachList, (item) => item === data.id)
+        this.isInImpeachList.splice(inpeachIndex, 1)
+      }
     }
   }
 }
@@ -113,7 +125,9 @@ $selctColor: #fcba00;
 .li-main {
   display: flex;
   justify-content: flex-start;
+  align-items: flex-start;
   .li-main-left {
+    margin-top: 2px;
     .iconfont {
       &:hover {
         color: $activeColor;
@@ -129,6 +143,11 @@ $selctColor: #fcba00;
     .right__button {
       display: flex;
       justify-content: flex-end;
+      margin-top: 4px;
+    }
+    .right__content {
+      margin-top: 10px;
+      margin-bottom: 20px;
     }
   }
 }
