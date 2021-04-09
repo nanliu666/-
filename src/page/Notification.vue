@@ -66,7 +66,12 @@ export default {
       this.handleAllRead({ id: data.id })
       //TODO: 为什么要判断？因为第一版的点击只做了已读操作。怀疑有的消息是单纯通知，无对应页面跳转。
       if (data.type) {
-        this.$router.push({ path: TYPE_PATH_MAP[data.type] })
+        const query = { query: { id: data.bizId } }
+        let targetPath = { path: TYPE_PATH_MAP[data.type] }
+        if (data.type === 'ExamNotify' || data.type === 'ExamRemind') {
+          targetPath = _.assign(targetPath, query)
+        }
+        this.$router.push(targetPath)
       }
     },
     update() {
