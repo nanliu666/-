@@ -35,7 +35,7 @@ export default {
       this.$router.push({ path: '/exam/list' })
     },
     goDetail() {
-      this.$router.push({
+      this.$router.replace({
         name: 'ExamDetail',
         query: { examId: this.$route.query.examId, batchId: this.$route.query.batchId }
       })
