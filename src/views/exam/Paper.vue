@@ -57,7 +57,7 @@
                       <span>{{ (index + 1) | number2zhcn }}、</span>
                       <span>{{ item[0].type | typeFilter }}</span>
                     </div>
-                    <ul class="list-box">
+                    <ul v-if="item[0].type !== QUESTION_TYPE_GROUP" class="list-box">
                       <li
                         v-for="(subItem, subIndex) in item"
                         :key="subItem.id"
@@ -84,6 +84,42 @@
                         </span>
                       </li>
                     </ul>
+                    <div v-else class="grounp__ul">
+                      <div
+                        v-for="(groupItem, gounpIndex) in item"
+                        :key="groupItem.id"
+                        class="grounp__li"
+                      >
+                        <span class="grounp__li__title">{{ gounpIndex + 1 }}</span>
+                        <div class="list-box grounp__li__content">
+                          <div
+                            v-for="(subItem, subIndex) in groupItem.subQuestions"
+                            :key="subItem.id"
+                            class="grounp__li__sub list-li"
+                            @click="navTo(subItem, index, subIndex)"
+                          >
+                            <span
+                              class="li-content"
+                              :class="{
+                                'select-li': currentItemIsInSelected(subItem),
+                                'doubt-li': currentItemIsInImpeach(subItem)
+                              }"
+                            >
+                              <span>（{{ subIndex + 1 }}）</span>
+                              <span class="li-tips">
+                                <i
+                                  class="iconfont "
+                                  :class="{
+                                    iconimage_icon_succeed: currentItemIsInSelected(subItem),
+                                    iconimage_icon_query: currentItemIsInImpeach(subItem)
+                                  }"
+                                />
+                              </span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </li>
                 </ul>
               </el-card>
@@ -309,8 +345,6 @@ export default {
   },
   created() {
     this.initData()
-    //阻止F5刷新
-    this.stopF5Refresh()
     this.nowTimeMs = new Date().getTime()
   },
   beforeRouteLeave(from, to, next) {
@@ -453,10 +487,21 @@ export default {
         // 基于题目数组数据结构为二维数组
         _.each(this.questionList, (parentItem, parentIndex) => {
           _.each(parentItem, (sonItem, sonIndex) => {
-            if (sonItem.id === data.id) {
-              this.impeachList.push({
-                key: data.id,
-                value: [parentIndex, sonIndex]
+            if (parentItem[0].type !== QUESTION_TYPE_GROUP) {
+              if (sonItem.id === data.id) {
+                this.impeachList.push({
+                  key: data.id,
+                  value: [parentIndex, sonIndex]
+                })
+              }
+            } else {
+              _.each(_.get(sonItem, 'subQuestions'), (subItem, subIndex) => {
+                if (subItem.id === data.id) {
+                  this.impeachList.push({
+                    key: data.id,
+                    value: [parentIndex, subIndex]
+                  })
+                }
               })
             }
           })
@@ -636,6 +681,8 @@ export default {
         this.watchCloseBookExam()
         // 监听联网断网
         this.initWatchNetworks()
+        //阻止F5刷新
+        this.stopF5Refresh()
       }
     },
     /**
@@ -1058,6 +1105,20 @@ $selctColor: #fcba00;
                       .li-tips {
                         border-bottom-color: $selctColor;
                       }
+                    }
+                  }
+                }
+                .grounp__ul {
+                  .grounp__li {
+                    display: flex;
+                    align-items: flex-start;
+                    .grounp__li__title {
+                      margin-top: 10px;
+                    }
+                    .grounp__li__content {
+                      flex: 1;
+                    }
+                    .grounp__li__sub {
                     }
                   }
                 }
