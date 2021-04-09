@@ -1,5 +1,5 @@
 <template>
-  <div class="course-learn">
+  <div id="course-learn-id" class="course-learn">
     <div class="course-learn__header">
       <i class="iconimage_icon_leftarrow iconfont" @click="goBack()"></i>
       <span class="course-learn__header__title">
@@ -33,7 +33,14 @@
                       'border-color': _.get(COURSE_CHAPTER_TYPE_MAP, `${chapter.type}.color`, '')
                     }"
                   >{{ _.get(COURSE_CHAPTER_TYPE_MAP, `${chapter.type}.text`, '') }}</span>
-                  <span class="chapters__title">{{ chapter.name }}</span>
+                  <span class="chapters__title">
+                    <!-- {{ chapter.name }} -->
+                    <text-over-tooltip
+                      ref-name="testName1"
+                      class-name="fs20"
+                      :content="chapter.name"
+                    ></text-over-tooltip>
+                  </span>
                 </div>
                 <div class="chapters__handler">
                   <el-progress
@@ -90,11 +97,11 @@
           <i v-if="!leftHidden" class="iconimage_icon_Doubleleftarrow iconfont"></i>
           <i v-else class="iconimage_icon_Doublerightarrow iconfont"></i>
         </div>
-        <div
+        <!-- <div
           v-if="currentChapter.type != '4'"
           class="detailTitel"
           v-html="_.unescape(_.unescape(currentChapter.localName))"
-        ></div>
+        ></div> -->
         <!-- 文章类型 -->
         <div
           v-if="currentChapter.type == '1'"
@@ -106,6 +113,7 @@
           <video
             v-if="isVideo"
             ref="videoRef"
+            controlslist="nodownload"
             autoplay
             preload
             controls
@@ -165,11 +173,12 @@ import {
 } from '@/api/course'
 import { COURSE_CHAPTER_TYPE_MAP } from './config'
 import Task from './components/Task'
+import TextOverTooltip from './components/TextOverTooltip'
 const axios = require('axios/index')
 
 export default {
   name: 'CourseLearn',
-  components: { Task },
+  components: { Task, TextOverTooltip },
   data() {
     return {
       timer: null,
@@ -239,6 +248,9 @@ export default {
       }
     }
   },
+  mounted() {
+    this.cancelRightClick()
+  },
   activated() {
     this.reset()
     this.loadCourseDetail()
@@ -246,6 +258,7 @@ export default {
     this.loadNoteList()
     this.isFirst = true
     // this.setTimer()
+    this.cancelRightClick()
   },
   beforeRouteLeave(from, to, next) {
     this.updateVideoProgress(this.currentChapter)
@@ -254,6 +267,12 @@ export default {
     next()
   },
   methods: {
+    cancelRightClick() {
+      // 取消右击
+      document.getElementById('course-learn-id').oncontextmenu = function() {
+        return false
+      }
+    },
     // 上传完作业回调
     uploadTask(contentId) {
       this.$nextTick(() => {
@@ -632,6 +651,7 @@ export default {
         }
         .note {
           margin-bottom: 24px;
+          word-break: break-all;
           &__top {
             margin-bottom: 16px;
             display: flex;

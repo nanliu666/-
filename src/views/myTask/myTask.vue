@@ -2,7 +2,7 @@
   <div>
     <ul class="tabs">
       <li v-for="(item, index) in tabsData" :key="item.id" class="tab" @click="clickTab(item.path)">
-        <div class="tab_box">
+        <div class="tab_box" :class="{ lastClass: index == tabsData.length - 1 }">
           <span class="tab_icon"> <img :src="item.icon" alt="" /> </span>
           <span class="tab_title" :class="{ clickClass: clickData == item.path }">
             {{ item.name }}
@@ -92,7 +92,6 @@ export default {
     width: 50%;
     height: 64px;
     padding: 12px 0;
-
     &_box {
       text-align: center;
       padding: 0 4.5%;
@@ -100,9 +99,7 @@ export default {
       justify-content: center;
       cursor: pointer;
       border-right: 1px solid #ebeced;
-      :nth-child(4) {
-        border-right: none;
-      }
+      // :last-child
     }
     &_icon {
       width: 40px;
@@ -135,8 +132,8 @@ export default {
     }
     &_bottom {
       margin-top: 12px;
-      margin-left: 11.5vw;
-      width: 8vw;
+      margin-left: 35%;
+      width: 30%;
       height: 2px;
       background: #01aafc;
     }
@@ -144,5 +141,8 @@ export default {
       color: #01aafc !important ;
     }
   }
+}
+.lastClass {
+  border: none !important ;
 }
 </style>

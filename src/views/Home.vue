@@ -9,10 +9,7 @@
     <div class="banner">
       <el-carousel :interval="5000" height="536px" arrow="always">
         <!-- 临时添加徐工挖掘机组织自定义banner,先通过组织id判断 -->
-        <el-carousel-item
-          v-for="item in orgId === '5263' ? bannerExcavator : banner"
-          :key="item.id"
-        >
+        <el-carousel-item v-for="item in isOrgIdE ? bannerExcavator : banner" :key="item.id">
           <div class="b_item" :style="item.css"></div>
         </el-carousel-item>
       </el-carousel>
@@ -315,7 +312,11 @@
     </div>
     <div class="foot">
       <div class="foot2">
-        <span>v2.0.0_20210330_Release &nbsp; &nbsp; &nbsp; 备案号 ：苏ICP备19010525号-2</span>
+        <span style="opacity: 0.35;">v2.0.1_20210401_Release &nbsp; &nbsp; &nbsp;</span>
+        <span class="policeLogo"><img src="../../public/img/policeLogo.png" alt="" /></span>
+        <span style="opacity: 0.35;"><a href="https://ythzxfw.miit.gov.cn" target="_blank">
+          备案号：苏ICP备19010525号-2
+        </a></span>
       </div>
     </div>
   </div>
@@ -328,7 +329,7 @@ import HomeRight from '@/views/home/homeRight'
 import { queryCourseList } from '@/api/course'
 import { homeQueryTrainList, homeNewsList, homeMyLiveList } from '@/api/home'
 import { getStore } from '@/util/store'
-
+import { mapGetters } from 'vuex'
 export default {
   name: 'Home',
   components: {
@@ -338,6 +339,7 @@ export default {
   },
   data() {
     return {
+      isOrgIdE: false,
       myTaskInfo: {
         nub: 0
       },
@@ -412,18 +414,30 @@ export default {
     }
   },
   computed: {
-    orgId() {
-      let userInfo = getStore({ name: 'userInfo' })
-      return userInfo.org_id
-    }
+    ...mapGetters(['orgIds'])
   },
   mounted() {
     this.getHotCourse()
     this.getTrainList()
     this.getNewsList()
     this.getHomeMyLive()
+    this.$nextTick(() => {
+      this.isOrgIdEFn()
+    })
+  },
+  activated() {
+    this.$nextTick(() => {
+      this.isOrgIdEFn()
+    })
   },
   methods: {
+    isOrgIdEFn() {
+      // 判断是否是挖机组织
+      // 获取用户的组织id（包括当前和当前以上的），存放在localstore，vuex
+      let orgIdsVuex = this.orgIds
+      this.orgIdsD = orgIdsVuex || getStore({ name: 'orgIds' })
+      this.isOrgIdE = this.orgIdsD.indexOf('5263') !== -1 ? true : false
+    },
     myTaskPrevFn() {
       this.$refs.myTaskRef.prev()
     },
@@ -803,13 +817,27 @@ export default {
   width: 1200px;
   margin: auto;
   color: #fff;
-  opacity: 0.35;
+
   font-size: 12px;
   display: inline-table;
   text-align: left;
+  display: flex;
+  padding: 50px 0;
 }
 .foot2 span {
-  margin-top: 50px;
-  display: block;
+  line-height: 25px;
+  /* opacity: 0.35; */
+}
+.foot2 span img {
+  opacity: 1;
+  z-index: 999;
+}
+.policeLogo {
+  margin-right: 10px;
+  height: 28px;
+}
+
+.foot2 a {
+  color: #fff;
 }
 </style>

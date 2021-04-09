@@ -1,5 +1,5 @@
 // 配置编译环境和线上环境之间的切换
-let systemName = '泽学院学习平台' // 系统名称
+let systemName = '易宝教育学习平台' // 系统名称
 
 let frontBaseUrl = '' // 用户前台地址
 let backBaseUrl = '' //（后台管理）
@@ -8,7 +8,7 @@ let iconfontUrl = '//at.alicdn.com/t/font_$key.css'
 let codeUrl = `${frontBaseUrl}/code`
 const env = process.env
 if (env.VUE_APP_ENV == 'xugong') {
-  systemName = '徐工管理后台'
+  systemName = '易宝教育管理后台'
 }
 if (location.host.indexOf('localhost') !== -1) {
   frontBaseUrl = 'http://localhost:1888' // 本地开发环境地址（用户前台）

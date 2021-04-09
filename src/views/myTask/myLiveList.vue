@@ -85,7 +85,7 @@
     </el-row>
 
     <el-row :gutter="20">
-      <el-col :span="6" :offset="14">
+      <el-col v-if="queryData.totalNum" :span="6" :offset="14">
         <el-pagination
           layout="total,prev,pager,next,sizes,jumper"
           :total="queryData.totalNum"
@@ -97,6 +97,11 @@
           <span class="pageSizeInput"> <el-input class="pageSizeBorder"></el-input>条/页</span>
         </el-pagination>
       </el-col>
+
+      <div v-else style="text-align: center">
+        <img src="../../assets/images/nodata.png" />
+        <div>暂无数据</div>
+      </div>
     </el-row>
   </div>
 </template>
@@ -149,7 +154,6 @@ export default {
     // isQuery查询阐述，isFirstPage判断是否从第一页开始查询，除了直接点击切换页面外点击分类等都从第一页开始查询
     async getLiveListData() {
       let res = await liveStudentList(this.queryData)
-      console.log(res)
       this.liveList = res.data
       this.queryData.totalNum = res.totalNum
     },
@@ -255,9 +259,9 @@ export default {
   }
 
   /deep/.is-always-shadow {
-    transition-duration: 0.1s;
+    transition-duration: 0.3s;
     box-shadow: 0 2px 8px 0 rgba(0, 63, 161, 0.06);
-    margin-top: 8px;
+    margin-top: 10px;
     &:hover {
       transform: translateY(-3px);
       box-shadow: 0px 9px 12px 2px rgba(0.1, 63, 161, 0.12);

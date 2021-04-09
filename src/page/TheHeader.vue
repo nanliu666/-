@@ -2,9 +2,9 @@
   <div :class="['header', { isFullscreenHead: isFullscreen }]">
     <div class="header-inner">
       <div class="logo">
-        <img v-if="envVar === 'zehui' && orgId === '5263'" src="../assets/images/logoE.png" />
-        <img v-else-if="envVar === 'zehui'" src="../assets/images/logoZeHui.png" />
-        <img v-else src="../assets/images/logo.png" />
+        <img v-if="envVar === 'zehui' && isOrgIdE" src="../assets/images/logo_yb.png" />
+        <img v-else-if="envVar === 'zehui'" src="../assets/images/logo_yb.png" />
+        <img v-else src="../assets/images/logo_yb.png" />
       </div>
       <template v-if="userId">
         <ul class="header-menu">
@@ -65,7 +65,8 @@
 <script>
 const menu = [
   { label: '首页', path: '/home' },
-  { label: '我的任务', path: '/learn' },
+  // { label: '我的任务', path: '/learn' },
+  { label: '我的任务', path: '/myTask' },
   { label: '企业知识', path: '/course' },
   { label: '知识分享', path: '/knowledge' },
   { label: '考试中心', path: '/exam' },
@@ -86,7 +87,8 @@ export default {
     return {
       menu,
       activePath: '/home',
-      routerTo: ''
+      routerTo: '',
+      isOrgIdE: false
     }
   },
   computed: {
@@ -94,20 +96,17 @@ export default {
       let envC = process.env
       return envC.VUE_APP_ENV
     },
-    orgId() {
-      let userInfo = getStore({ name: 'userInfo' })
-      return userInfo.org_id
-    },
     isFullscreen() {
       return this.$route.meta.fullscreen
     },
-    ...mapGetters(['userId', 'userInfo'])
+    ...mapGetters(['userId', 'userInfo', 'orgIds'])
   },
   watch: {
     //监听路由变化
     $route(to) {
       this.$nextTick(() => {
         this.activePath = this.getCaption(to.path, 0)
+        // this.activePath = to.path
       })
       // to , from 分别表示从哪跳转到哪，都是一个对象
       // to.path  ( 表示的是要跳转到的路由的地址 eg: /home );
@@ -117,7 +116,19 @@ export default {
     // 初始化时设置激活中的菜单
     this.activePath = this.$route.path.match(/^\/\w*/g)[0]
   },
+  mounted() {
+    this.$nextTick(() => {
+      this.isOrgIdEFn()
+    })
+  },
   methods: {
+    isOrgIdEFn() {
+      // 判断是否是挖机组织
+      // 获取用户的组织id（包括当前和当前以上的），存放在localstore，vuex
+      let orgIdsVuex = this.orgIds
+      this.orgIdsD = orgIdsVuex || getStore({ name: 'orgIds' })
+      this.isOrgIdE = this.orgIdsD.indexOf('5263') !== -1 ? true : false
+    },
     // 个人中心跳转
     toRouter(data, i) {
       if (i === 'backstage') {
@@ -133,9 +144,9 @@ export default {
       })
     },
     handleMenuClick(item) {
-      if (this.$route.path === item.path) {
-        return
-      }
+      // if (this.$route.path === item.path) {
+      //   return
+      // }
       // this.activePath = item.path
       // this.activePath = this.routerTo
       this.$router.push(item.path)

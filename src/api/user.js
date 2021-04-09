@@ -1,6 +1,10 @@
 import request, { get } from '@/util/axios'
 import website from '@/config/website'
 
+// 获取用户的组织id（包括当前和当前以上的）
+export const getOrgIds = (params) => {
+  return get('/api/manage/v1/web/index/queryOrgIds', params)
+}
 // 保存登录学分
 export const saveLoginCredit = (params) => {
   return get('/api/manage/v1/login/saveLoginCredit', params)

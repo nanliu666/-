@@ -2,7 +2,7 @@ import demoRoutes from './demo'
 import Layout from '@/page/Layout'
 import EmptyLayout from '@/page/EmptyLayout'
 import myTaskLayout from '@/views/myTask/myTask'
-import myLearnLayout from '@/views/myTask/myLearn'
+// import myLearnLayout from '@/views/myTask/myLearn'
 /**
  * 路由定义规范
  * 路由整体分八大模块，每个模块写一个路由对象，对象属性包括
@@ -63,7 +63,7 @@ export default [
             name: 'CourseList',
             component: () => import(/* webpackChunkName: "page"*/ '@/views/course/CourseList.vue'),
             meta: {
-              title: '课程列表'
+              title: '企业知识'
             }
           },
           {
@@ -97,7 +97,7 @@ export default [
             path: 'list',
             component: () => import(/* webpackChunkName: "page"*/ '@/views/knowledge/List.vue'),
             meta: {
-              title: '知识库'
+              title: '知识分享'
             }
           },
           {
@@ -121,7 +121,7 @@ export default [
             path: 'list',
             component: () => import(/* webpackChunkName: "page"*/ '@/views/exam/List.vue'),
             meta: {
-              title: '考试'
+              title: '考试中心'
             }
           },
           {
@@ -163,7 +163,7 @@ export default [
             path: 'list',
             component: () => import(/* webpackChunkName: "page"*/ '@/views/live/List.vue'),
             meta: {
-              title: '直播'
+              title: '直播中心'
             }
           },
           {
@@ -253,7 +253,7 @@ export default [
             name: 'list',
             component: () => import(/* webpackChunkName: "page" */ '@/views/news/NewsList.vue'),
             meta: {
-              title: '新闻'
+              title: '新闻公告'
             }
           },
           {
@@ -299,7 +299,7 @@ export default [
             path: 'index',
             name: 'trainIndex',
             meta: {
-              title: '课程页面首页'
+              title: '培训中心'
             },
             component: () => import(/* webpackChunkName: "page"*/ '@/views/train')
           },
@@ -366,14 +366,16 @@ export default [
         path: '/myTask',
         redirect: '/myTask/myLearn',
         component: myTaskLayout,
-        title: '我的任务',
         children: [
           {
             name: 'myLearn',
             path: '/myTask/myLearn',
-            redirect: '/myTask/myLearn/myRequiredList',
-            component: myLearnLayout,
+            // redirect: '/myTask/myLearn/myRequiredList',
+            // component: myLearnLayout,
             title: '学习',
+            meta: {
+              title: '我的任务'
+            },
             children: [
               {
                 path: 'myRequiredList',
@@ -423,7 +425,20 @@ export default [
           }
         ]
       },
+      {
+        path: '/myRequiredDetails',
+        name: 'myRequiredDetails',
+        component: () => import('@/views/myTask/myRequiredDetails.vue'),
+        meta: {
+          title: '必修课详情'
+        }
+      },
       ...(process.env.NODE_ENV === 'development' ? demoRoutes : [])
     ]
   }
 ]
+import VueRouter from 'vue-router'
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch((err) => err)
+}
