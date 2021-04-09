@@ -36,7 +36,7 @@
           <div v-show="!isHidden" class="exam_info exam_time f_s_14">
             <ul>
               <li>题目数量：共{{ attributeData.totalNum }}题</li>
-              <li>剩余有效答题次数：{{ attributeData.isLimitedJoinNum? attributeData.surplusParticipatNumber: '不限' }}</li>
+              <li>参加次数：{{ attributeData.isLimitedJoinNum? `${attributeData.examTimes}/${attributeData.joinNumValue}`: '不限' }}</li>
               <li>试卷总分：{{ attributeData.totalScore }}</li>
               <li>评分规则：取最高得分最为最终成绩</li>
               <li>成绩:{{ attributeData.score? attributeData.score: '-' }}</li>
@@ -220,6 +220,10 @@ export default {
           // (今天时间 》= 开始时间) && (今天时间 《= 结束时间) && （!=已结办）
           this.isGoExam = false
         }
+        if (this.attributeData.isLimitedJoinNum && this.attributeData.examTimes >= this.attributeData.joinNumValue) {
+          // 限制次数 && （已考次数 》= 可用次数）
+          this.isGoExam = true
+        }
       }
       if (this.attributeData.type === 3) {
         this.data.startTime = moment(this.attributeData.startTime).format('YYYY年MM月DD日')
@@ -274,7 +278,7 @@ export default {
       this.$router.push({ path: '/course/detail', query: { id: this.attributeData.id } })
     },
     handleGoExam() {
-      this.$confirm(`您确定现在参加考试吗？`, '提示', {
+      this.$confirm('您确定现在参加考试吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
