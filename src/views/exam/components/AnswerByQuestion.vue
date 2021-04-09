@@ -1,11 +1,6 @@
 <template>
   <div class="li-main">
     <div class="li-main-left">
-      <!-- <i
-        class="iconfont"
-        :class="`icon${isInImpeach ? 'image_icon_help_press' : 'image_icon_help_normal'}`"
-        @click="setImpeach(conItem)"
-      /> -->
       <span style="margin-left:5px;">{{ topicIndex + 1 }}.</span>
       <span v-show="isShowScope === 1">（{{ conItem.score }}分）</span>
     </div>
@@ -20,7 +15,11 @@
         <span v-else>
           <span class="right-title" v-html="getHTML(conItem.content)"></span>
           <ul>
-            <li v-for="(paperItem, paperIndex) in conItem.subQuestions" :key="paperIndex" class="">
+            <li
+              v-for="(paperItem, paperIndex) in conItem.subQuestions"
+              :key="paperIndex"
+              class="right__content"
+            >
               <span>{{ paperIndex + 1 }}.</span>
               <QustionPreview :data="paperItem" :disabled="disabled" />
             </li>
@@ -113,7 +112,9 @@ $selctColor: #fcba00;
 .li-main {
   display: flex;
   justify-content: flex-start;
+  align-items: flex-start;
   .li-main-left {
+    margin-top: 2px;
     .iconfont {
       &:hover {
         color: $activeColor;
@@ -129,6 +130,11 @@ $selctColor: #fcba00;
     .right__button {
       display: flex;
       justify-content: flex-end;
+      margin-top: 4px;
+    }
+    .right__content {
+      margin-top: 10px;
+      margin-bottom: 20px;
     }
   }
 }
