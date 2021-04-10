@@ -81,7 +81,14 @@ export default {
       }
       this.selected.push(category)
       this.active = category
-      this.$emit('change', category)
+
+      let ids = []
+      this.selected.forEach((item) => {
+        if (item.id) ids.push(item.id)
+      })
+      let data = { id: '' }
+      data.id = ids.toString()
+      this.$emit('change', data)
       this.loadCategory(category[this.valueKey])
     },
     handleDelete(index) {

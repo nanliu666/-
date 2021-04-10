@@ -80,7 +80,12 @@ export default {
       let today = new Date(moment().format('YYYY-MM-DD HH:mm:ss'))
       let startDate = new Date(this.data.trainBeginTime)
       let endDate = new Date(this.data.trainEndTime)
-      if (today >= startDate && today <= endDate && this.data.status != 3 && this.data.status != 1) {
+      if (
+        today >= startDate &&
+        today <= endDate &&
+        this.data.status != 3 &&
+        this.data.status != 1
+      ) {
         // (今天日期 》= 开始日期) && (今天日期 《= 结束日期) && （!=已结办）&& （!=未开始）
         this.isHandle = false
       }
