@@ -21,6 +21,7 @@
           <common-upload
             v-model="uploadData"
             :before-upload="beforeUpload"
+            :disabled="isHandle"
             :multiple="false"
             @input="onSuccess"
           >
@@ -76,11 +77,11 @@ export default {
   },
   methods: {
     processState() {
-      let today = new Date(moment().format('YYYY-MM-DD'))
-      let startDate = new Date(moment(this.data.trainBeginTime).format('YYYY-MM-DD'))
-      let endDate = new Date(moment(this.data.trainEndTime).format('YYYY-MM-DD'))
-      if (today >= startDate && today <= endDate && this.data.status != 3) {
-        // (今天日期 》= 开始日期) && (今天日期 《= 结束日期) && （!=已结办）
+      let today = new Date(moment().format('YYYY-MM-DD HH:mm:ss'))
+      let startDate = new Date(this.data.trainBeginTime)
+      let endDate = new Date(this.data.trainEndTime)
+      if (today >= startDate && today <= endDate && this.data.status != 3 && this.data.status != 1) {
+        // (今天日期 》= 开始日期) && (今天日期 《= 结束日期) && （!=已结办）&& （!=未开始）
         this.isHandle = false
       }
     },
@@ -102,7 +103,6 @@ export default {
       let params = {
         trainId: this.data.id
       }
-      console.log('params', params)
       await getFileLists(params).then((res) => {
         if (res.length > 0) {
           for (let i = 0; i < res.length; i++) {
