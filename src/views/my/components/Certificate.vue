@@ -35,6 +35,9 @@
               <div class="text">
                 {{ item.text }}
               </div>
+              <div class="awardAgency">
+                {{ item.awardAgency }}
+              </div>
               <img :src="item.logoUrl" alt="" class="logo" />
               <div class="studentName">
                 {{ item.stuName }}
@@ -262,6 +265,12 @@ export default {
     border: 1px solid #d9dbdc;
     width: 1152px;
     height: 755px;
+    .awardAgency {
+      position: absolute;
+      bottom: 100px;
+      left: 500px;
+      z-index: 99;
+    }
     .bgimg {
       display: block;
       width: 100% !important;
