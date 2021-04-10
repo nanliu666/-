@@ -416,19 +416,17 @@ export default {
   computed: {
     ...mapGetters(['orgIds'])
   },
+  watch: {
+    orgIds(val) {
+      this.isOrgIdE = val.indexOf('5263') !== -1 ? true : false
+    }
+  },
   mounted() {
     this.getHotCourse()
     this.getTrainList()
     this.getNewsList()
     this.getHomeMyLive()
-    this.$nextTick(() => {
-      this.isOrgIdEFn()
-    })
-  },
-  activated() {
-    this.$nextTick(() => {
-      this.isOrgIdEFn()
-    })
+    this.isOrgIdEFn()
   },
   methods: {
     isOrgIdEFn() {
