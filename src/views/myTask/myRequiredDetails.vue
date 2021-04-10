@@ -8,7 +8,7 @@
       <!-- 必修课类别 -->
       <div class="sort">
         <div class="left">
-          <img :src="detailParams.coverUrl" alt="" class="course_img">
+          <img :src="detailParams.coverUrl" :onerror="errorImg" alt="" class="course_img">
         </div>
         <div class="right">
           <ul class="info">
@@ -98,8 +98,8 @@ export default {
       },
       detailParams: {}, // 接参数
       resData: [], // 请求接收回来的数据
-      processedData: [] //处理后的数据
-
+      processedData: [], //处理后的数据
+      errorImg: 'this.src="' + require('@/assets/images/required_bg.png') + '"'
     }
   },
   created() {

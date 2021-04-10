@@ -7,10 +7,10 @@
           <div v-for="(item,internal_i) in external.list" :key="internal_i + Math.floor(Math.random() * 100000) + 'b'" class="course">
             <!-- 图片 -->
             <div class="top finger" @click="goCourseDetails(item.id)">
-              <img :src="item.coverUrl" :alt="item.coverName" class="course_img">
+              <img :src="item.coverUrl" :alt="item.coverName" :onerror="errorImg" class="course_img">
               <!-- <div class="mask" v-show="showExam"> -->
               <div class="mask">
-                <div v-show="item.status == 2" @click="goLearn(item)" class="hoverButton finger">
+                <div v-show="item.status == 2" class="hoverButton finger" @click="goLearn(item)">
                   {{ item.totalPrecent? '继续学习': '立即学习' }}
                 </div>
               </div>
@@ -55,7 +55,7 @@
           <div v-for="(item,index) in (4 - external.list.length)" :key="index + Math.floor(Math.random() * 100000) + 'c'"></div>
         </div>
         <!-- 考试列表 -->
-        <div class="exam_list" v-show="external.showExam">
+        <div v-show="external.showExam" class="exam_list">
           <!-- 列表内容 -->
           <ul class="exam_list_ul">
             <li v-for="(item,index) in examListData" :key="index + Math.floor(Math.random() * 100000) + 'd'" class="exam_list_li">
@@ -71,7 +71,7 @@
                 <li class="time_long"><span class="exam_info_c1">考试时长：</span><span class="exam_info_c2">{{ item.reckonTime? item.reckonTimeValue + '分钟': '不限时' }}</span></li>
                 <li class="achievement"><span class="exam_info_c1">成绩：</span><span class="exam_info_c2">{{ item.score?item.score:'--' }}</span></li>
                 <!-- <li class="text_button" @click="goExam(item)">进入考试</li> disabled-->
-                <li class="text_button"><el-button type="text" :disabled="item.isDisabled"  @click="goExam(item)">进入考试</el-button></li>
+                <li class="text_button"><el-button type="text" :disabled="item.isDisabled" @click="goExam(item)">进入考试</el-button></li>
               </ul>
             </li>
           </ul>
@@ -102,7 +102,8 @@ export default {
     return {
       temId: null,
       examListData: [], //考试列表
-      triangularPosition: 132 // 考试列表三角形位置
+      triangularPosition: 132, // 考试列表三角形位置
+      errorImg: 'this.src="' + require('@/assets/images/required_bg.png') + '"'
     }
   },
   created() {
@@ -146,7 +147,7 @@ export default {
             // !未开考 && !缺考 && !(已考试&&待发布考试结果) && （当前时间 > 开始时间） && （当前时间 < 结束时间）
             i.isDisabled = false //可点击
           }
-        });
+        })
       }
       this.examListData = item.examList
     },
@@ -350,7 +351,7 @@ $timeHead: rgba(139, 155, 168, 0.65);
                 .progress_bar{
                   flex: 1;
                   display: flex;
-							    align-items: center;
+                  align-items: center;
                 }
                 .progress_num{
                   width: 35px;
