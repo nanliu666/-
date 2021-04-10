@@ -162,7 +162,7 @@ export default {
   async created() {
     await this.getTrainEvaluate()
     const { userType, status } = this.data
-    this.disabled = userType == 0 || status == 1 || typeof this.rate.composite == 'number'
+    this.disabled = userType == 0 || status != 1 || typeof this.rate.composite == 'number'
     for (let k in this.rate) {
       if (this.rate[k] === '') {
         this.rate[k] = 0
