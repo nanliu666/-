@@ -30,6 +30,9 @@
           <div class="text">
             {{ sondata.text }}
           </div>
+          <div class="awardAgency">
+            {{ sondata.awardAgency }}
+          </div>
           <img :src="sondata.logoUrl" alt="" class="logo" />
           <div class="studentName">
             {{ sondata.stuName }}
@@ -145,6 +148,7 @@ export default {
     width: 1152px;
     height: 815px;
     margin-top: 16px;
+
     .preview_right_box {
       position: relative;
       border: 1px solid #d9dbdc;
@@ -155,6 +159,12 @@ export default {
         width: 100%;
         height: 100%;
         z-index: -1;
+      }
+      .awardAgency {
+        position: absolute;
+        bottom: 100px;
+        left: 500px;
+        z-index: 99;
       }
       .name {
         position: absolute;
