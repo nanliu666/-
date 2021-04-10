@@ -22,9 +22,10 @@
 <script>
 import myLearn from './myLearn'
 import myExamList from './myExamList'
+import myHomeWork from './myHomeWork'
 import { studyTodoNum, examTodoNum } from '@/api/myTask'
 export default {
-  components: { myLearn, myExamList },
+  components: { myLearn, myExamList, myHomeWork },
   data() {
     return {
       tabsData: [
@@ -37,7 +38,7 @@ export default {
         // {
         //   name: '作业',
         //   id: 'task',
-        //   path: '',
+        //   path: 'myHomeWork',
         //   icon: require('../../../public/img/作业.png')
         // },
         {

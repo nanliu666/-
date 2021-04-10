@@ -4,7 +4,7 @@
       <div v-for="(item, index) in data" :key="index" class="card-wrapper" @click="toDetail(item)">
         <div class="card">
           <div class="card-banner">
-            <img :src="item.coverUrl" />
+            <img :src="item.coverUrl" :onerror="errorImg" />
 
             <div
               class="card-status process"
@@ -80,7 +80,8 @@ export default {
         pageNo: 1,
         courseType: '1'
       },
-      queryLoading: false
+      queryLoading: false,
+      errorImg: 'this.src="' + require('@/assets/images/required_bg.png') + '"'
     }
   },
   created() {
@@ -88,13 +89,14 @@ export default {
   },
   methods: {
     toDetail(card) {
-      const { id: trainId, trainWay, userType } = card
+      const { id: trainId, trainWay, userType, menuName: title } = card
       this.$router.push({
         path: '/train/detail',
         query: {
           trainId,
           trainWay,
-          userType
+          userType,
+          title
         }
       })
     },

@@ -2,7 +2,7 @@
   <div v-loading="loading" class="elective-course">
     <el-row v-if="courseData.length" :gutter="20">
       <el-col v-for="(z, k) in courseData" :key="k" :span="6" :style="{ marginBottom: '14px' }">
-        <el-card :body-style="{ padding: '0px' }">
+        <el-card :body-style="{ padding: '0px', cursor: 'pointer' }" @click.native="goToCourse(z)">
           <!-- 封面图片 -->
           <div
             class="coverImg"
@@ -30,7 +30,6 @@
                   color: #ffffff;
                   margin-top: 70px;
                 "
-                @click="goToCourse(z)"
               >
                 继续学习
               </button>

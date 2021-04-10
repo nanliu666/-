@@ -45,29 +45,26 @@ const TABLE_COLUMNS = [
   {
     label: '名称',
     prop: 'resName',
-    minWidth: 150
+    width: '420px'
   },
   {
     label: '提供人',
     prop: 'providerName',
-    minWidth: 120
+    width: '200px'
   },
   {
     label: '查看人数',
     sortable: true,
-    prop: 'watchPeople',
-    minWidth: 120
+    prop: 'watchPeople'
   },
   {
     label: '下载人数',
     sortable: true,
-    prop: 'downloadPeople',
-    minWidth: 120
+    prop: 'downloadPeople'
   },
   {
     label: '评分',
-    prop: 'scope',
-    minWidth: 120
+    prop: 'scope'
   }
 ]
 const TABLE_CONFIG = {
