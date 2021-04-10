@@ -148,20 +148,6 @@ export default {
           position: absolute;
           top: 8px;
           right: 8px;
-          background: #fffce6;
-          border-radius: 4px;
-          font-size: 10px;
-          width: 52px;
-          height: 20px;
-          line-height: 20px;
-          text-align: center;
-          color: #fcba00;
-          font-style: none;
-        }
-        .span2 {
-          position: absolute;
-          top: 8px;
-          right: 8px;
           background: #e7ffee;
           border-radius: 4px;
           font-size: 10px;
@@ -170,6 +156,20 @@ export default {
           line-height: 20px;
           text-align: center;
           color: #00b061;
+          font-style: none;
+        }
+        .span2 {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          background: #fffce6;
+          border-radius: 4px;
+          font-size: 10px;
+          width: 52px;
+          height: 20px;
+          line-height: 20px;
+          text-align: center;
+          color: #fcba00;
           font-style: none;
         }
         .span3 {
