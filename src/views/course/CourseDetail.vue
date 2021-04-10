@@ -11,7 +11,25 @@
       </div>
       <div class="course-detail__info__right">
         <div class="course-detail__info__name">
-          {{ courseData.name }}
+          <span>
+            {{ courseData.name }}
+          </span>
+          <span class="myRate">
+            <el-rate
+              :value="parseFloat(courseData.scope)"
+              disabled
+              show-score
+              text-color="#878c91"
+              score-template="{value}"
+            >
+            </el-rate>分
+          </span>
+        </div>
+        <div v-if="courseData.credit" class="course-detail__info__column">
+          <span class="course-detail__info__label"> 分类： </span>
+          <span class="course-detail__info__value">
+            {{ courseData.catalogName }}
+          </span>
         </div>
         <div class="course-detail__info__column">
           <span class="course-detail__info__label"> 讲师： </span>
@@ -19,17 +37,22 @@
             {{ courseData.teacherName }}
           </span>
         </div>
-        <div v-if="courseData.credit" class="course-detail__info__column">
+        <!-- <div v-if="courseData.credit" class="course-detail__info__column">
           <span class="course-detail__info__label"> 积分： </span>
           <span class="course-detail__info__value">
             {{ courseData.credit }}
           </span>
-        </div>
-        <div v-if="courseData.period" class="course-detail__info__column">
+        </div> -->
+        <!-- <div v-if="courseData.period" class="course-detail__info__column">
           <span class="course-detail__info__label"> 学时： </span>
           <span class="course-detail__info__value">
             {{ courseData.period + 'h' }}
           </span>
+        </div> -->
+        <div class="info_number">
+          <span> <i class="el-icon-user"></i> {{ courseData.studyPeople || 0 }}人 </span>
+          <span> <i class="el-icon-time"></i> {{ courseData.period || 0 }}H </span>
+          <span> <i class="el-icon-coin"></i> {{ courseData.credit || 0 }}积分 </span>
         </div>
         <el-button type="primary" size="medium" @click="jumpToLearn(id, null)">
           立即学习
@@ -76,9 +99,9 @@
           </ul>
         </el-tab-pane>
         <!-- 笔记 -->
-        <el-tab-pane key="Note" label="课程笔记(1111)" name="Note">
+        <el-tab-pane key="Note" :label="`课程笔记(${noteTotalNum})`" name="Note">
           <div style="padding: 0 10px;">
-            <Note />
+            <Note @totalNum="totalNum" />
           </div>
         </el-tab-pane>
 
@@ -113,6 +136,7 @@ export default {
   components: { Comment, Experience, CommonBreadcrumb, Note },
   data() {
     return {
+      noteTotalNum: '',
       routeList: [
         {
           path: '/course',
@@ -148,6 +172,9 @@ export default {
   },
   mounted() {},
   methods: {
+    totalNum(i) {
+      this.noteTotalNum = i
+    },
     getSecondesToHours(chapter) {
       // 秒变成时分秒
       const regx = /^.*\.(avi|wmv|mp4|3gp|rm|rmvb|mov)$/
@@ -176,6 +203,7 @@ export default {
         return
       }
       getCourseDetail({ courseId: this.id }).then((res) => {
+        res.scope = Number(res.scope).toFixed(1)
         this.courseData = res
         this.$nextTick(() => {
           this.$refs.breadcrumb.setBreadcrumbTitle(res.name)
@@ -252,6 +280,15 @@ export default {
       color: $primaryFontColor;
       letter-spacing: 0;
       line-height: 28px;
+      display: flex;
+      justify-content: space-between;
+      .myRate {
+        display: flex;
+        font-size: 12px;
+        line-height: 19px;
+        color: #878c91;
+        margin-right: 120px;
+      }
     }
 
     &__column {
@@ -317,6 +354,20 @@ export default {
     &--handler {
       display: flex;
       align-items: center;
+    }
+  }
+  .info_number {
+    display: flex;
+    margin-top: 16px;
+    span {
+      margin-right: 24px;
+      opacity: 0.65;
+      font-family: PingFangSC-Regular;
+      font-size: 14px;
+      color: #000b15;
+      letter-spacing: 0;
+      line-height: 22px;
+      vertical-align: text-bottom;
     }
   }
 }

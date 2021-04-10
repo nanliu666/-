@@ -19,42 +19,45 @@
     </div>
 
     <ul>
-      <li v-for="(item, index) in 10" :key="index">
+      <li v-for="(item, index) in listData" :key="index">
         <div v-show="showEdit !== index" class="list">
           <div class="info">
             <div class="user_info">
               <span class="img">
-                <img :src="url" alt="" />
+                <img :src="info.avatarUrl" alt="" />
               </span>
 
-              <span class="name"> 大帅逼 </span>
+              <span class="name"> {{ info.name }} </span>
             </div>
 
             <div class="time">
-              2021/4/7 3:40:48
+              {{ item.createTime }}
             </div>
           </div>
 
           <div class="content">
             <div class="text">
-              {{ note }}
+              {{ item.remark }}
             </div>
           </div>
 
           <div class="btns">
-            <div class="toLearn">
+            <div
+              class="toLearn"
+              :style="`border: 1px solid ${setColor(item)};color: ${setColor(item)};`"
+            >
               <i class="el-icon-video-play"></i>
-              <span>看文章</span>
+              <span @click="tolearn(item)">{{ setType(item) || '去播放' }}</span>
             </div>
             <div class="edit">
               <span @click="editBtn(index)"> <i class="el-icon-edit"></i> 编辑</span>
-              <span @click="delBtn"> <i class="el-icon-delete"></i> 删除</span>
+              <span @click="delBtn(item)"> <i class="el-icon-delete"></i> 删除</span>
             </div>
           </div>
         </div>
         <div v-show="showEdit === index" class="editNote">
           <el-input
-            v-model="note"
+            v-model="item.remark"
             type="textarea"
             placeholder="记录你的想法吧～"
             maxlength="200"
@@ -65,82 +68,153 @@
 
           <div class="editNote_btn">
             <el-button size="mini" @click="showEdit = ''">取消</el-button>
-            <el-button size="mini" type="primary" @click="preservationBtn">保存</el-button>
+            <el-button size="mini" type="primary" @click="preservationBtn(item)">保存</el-button>
           </div>
         </div>
       </li>
     </ul>
 
-    <div class="page">
+    <div v-if="pageConfig.total" class="page">
       <el-pagination
         :current-page="pageConfig.pageNo"
         :page-sizes="pageConfig.sizes"
         :page-size="pageConfig.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
+        layout="total, sizes, prev, pager, next"
         :total="pageConfig.total"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       >
       </el-pagination>
     </div>
+
+    <div v-else style="text-align: center">
+      <img src="../../../assets/images/nodata.png" style="max-width: 100%;" />
+      <div>暂无数据</div>
+    </div>
   </div>
 </template>
 
 <script>
+import {
+  getCourseNotesListPC,
+  saveCourseNotePC,
+  editCourseNote,
+  deleteCourseNote
+} from '@/api/course'
+import { getuserInfo } from '@/api/my'
 export default {
   //showAdd是否显示顶部输入框
   //currentChapter 记录笔记时，播发页面
   props: ['showAdd', 'currentChapter'],
   data() {
     return {
-      url:
-        'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.wxcha.com%2Ffile%2F201704%2F27%2F21ae080743.jpg&refer=http%3A%2F%2Fimg.wxcha.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1620372842&t=53936a2266d2d9cada1e789f44864618',
+      listData: [],
+      info: {},
       pageConfig: {
         sizes: [10, 20, 50, 100],
-        pageSize: 20,
+        pageSize: 10,
         pageNo: 1,
         total: 0
       },
-      note: '1111txtxxxxxxx啥也不是txtxxxxxxx啥也不是txtxxxxxxx啥也不是txtxxxxxxx啥也不是txtxxxxxxx啥也不是txtxxxxxxx啥也不是txtxxxxxxx啥也不是txtxxxxxxx啥也不是txtxxxxxxx啥也不是txtxxxxxxx啥也不是',
       showEdit: '',
-      addnote: ''
+      addnote: '',
+      note: '',
+      current: '',
+      noteType: ['看文章', '看课件', '看资料', '看作业', '看思考'],
+      noteColor: ['#00B061', '#FC7C01', '#FF4329', '#FCBA00', '#00B061']
     }
   },
   watch: {
-    currentChapter: (newVal) => {
-      console.log(newVal)
+    currentChapter: function(newVal) {
+      this.current = newVal
     }
   },
-  created() {},
-  activated() {},
+
+  created() {
+    this.initData()
+  },
+  activated() {
+    this.initData()
+  },
 
   methods: {
+    setType(item) {
+      return this.noteType[item.contentType - 1]
+    },
+    setColor(item) {
+      return this.noteColor[item.contentType - 1]
+    },
+    tolearn(item) {
+      console.log(item)
+      this.$router.push({
+        path: '/course/learn',
+        query: {
+          courseId: this.$route.query.id || this.$route.query.courseId,
+          chapterId: item.contentId
+        }
+      })
+    },
+    // 获取数据
+    async initData() {
+      let params = {
+        courseId: this.$route.query.id || this.$route.query.courseId, //课程id
+        pageNo: this.pageConfig.pageNo, // 页码
+        pageSize: this.pageConfig.pageSize // 页面数
+      }
+      let { data, totalNum } = await getCourseNotesListPC(params)
+      this.listData = data
+      this.pageConfig.total = totalNum
+      // this.pageConfig.pageNo = totalPage
+      this.$emit('totalNum', totalNum)
+      // 头像名字
+      this.info = await getuserInfo()
+    },
     //   新增
     submitNote() {
-      this.$message({
-        message: '新增成功',
-        type: 'success'
+      let params = {
+        courseId: this.$route.query.courseId,
+        remark: this.addnote,
+        contentId: this.current.contentId
+      }
+      console.log(params)
+      saveCourseNotePC(params).then(() => {
+        this.$message({
+          message: '新增成功',
+          type: 'success'
+        })
+        this.initData()
+        this.addnote = ''
       })
     },
     // 保存
-    preservationBtn() {
-      this.showEdit = ''
-      this.$message({
-        message: '保存成功',
-        type: 'success'
+    preservationBtn(item) {
+      let params = {
+        id: item.id,
+        remark: item.remark
+      }
+      editCourseNote(params).then(() => {
+        this.showEdit = ''
+        this.initData()
+        this.$message({
+          message: '保存成功',
+          type: 'success'
+        })
       })
     },
     // 删除
-    delBtn() {
+    delBtn(item) {
       this.$confirm('确定要删除该笔记吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
+          deleteCourseNote({ id: item.id }).then(() => {
+            this.initData()
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
           })
         })
         .catch(() => {
@@ -161,9 +235,7 @@ export default {
     handleCurrentChange(val) {
       this.pageConfig.pageNo = val
       this.initData()
-    },
-    // 获取数据
-    initData() {}
+    }
   }
 }
 </script>
@@ -196,6 +268,7 @@ export default {
           border-radius: 50%;
           overflow: hidden;
           margin-right: 8px;
+          background-color: #ccc;
           img {
             width: 24px;
             height: 24px;
@@ -205,7 +278,7 @@ export default {
 
       .time {
         font-family: PingFangSC-Regular;
-        font-size: 14px;
+        font-size: 12px;
         color: rgba(0, 11, 21, 0.45);
         line-height: 22px;
         width: 118px;
@@ -223,6 +296,7 @@ export default {
         color: rgba(0, 11, 21, 0.85);
         letter-spacing: 0;
         line-height: 22px;
+        word-break: break-all;
       }
     }
 
@@ -265,10 +339,8 @@ export default {
     }
   }
   .page {
+    margin-top: 10px;
     text-align: right;
-    /deep/ .el-input {
-      width: 60px;
-    }
   }
 
   .editNote {
@@ -282,6 +354,9 @@ export default {
     .addBtn {
       margin-top: 8px;
       text-align: right;
+      //   .el-pagination {
+      //     transform: scale(0.5);
+      //   }
     }
   }
 }

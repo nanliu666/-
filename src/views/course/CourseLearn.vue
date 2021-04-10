@@ -99,11 +99,11 @@
           <i v-if="!leftHidden" class="iconimage_icon_Doubleleftarrow iconfont"></i>
           <i v-else class="iconimage_icon_Doublerightarrow iconfont"></i>
         </div>
-        <div
+        <!-- <div
           v-if="currentChapter.type != '4'"
           class="detailTitel"
           v-html="_.unescape(_.unescape(currentChapter.localName))"
-        ></div>
+        ></div> -->
         <!-- 文章类型 -->
         <div
           v-if="currentChapter.type == '1'"

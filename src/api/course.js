@@ -149,3 +149,30 @@ export const saveExperience = (params) =>
  */
 export const removeExperience = (params) =>
   del('/manage/v1/web/coursecenter/experience/remove', params)
+/**
+ * pc端查询课程笔记
+ * @param {String} params.courseId 课程id
+ * @param {Number} params.pageNo 页码
+ * @param {Number} params.pageSize 页面数量
+ */
+export const getCourseNotesListPC = (params) =>
+  get('/manage/v1/web/course/getCourseNotesListPC', params)
+/**
+ * PC端保存课程笔记
+ * @param {String} params.courseId 课程id
+ * @param {String} params.remark 笔记内容
+ * @param {String} params.contentId 章节Id
+ */
+export const saveCourseNotePC = (params) => post('/manage/v1/web/course/saveCourseNotePC', params)
+/**
+ * 编辑课程笔记
+ * @param {String} params.id
+ * @param {String} params.remark 笔记内容
+ */
+export const editCourseNote = (params) => post('api/manage/v1/web/course/editCourseNote', params)
+
+/**
+ * 删除课程笔记
+ * @param {String} params.id
+ */
+export const deleteCourseNote = (params) => get('api/manage/v1/web/course/deleteCourseNote', params)
