@@ -89,13 +89,14 @@ export default {
   },
   methods: {
     toDetail(card) {
-      const { id: trainId, trainWay, userType } = card
+      const { id: trainId, trainWay, userType, menuName: title } = card
       this.$router.push({
         path: '/train/detail',
         query: {
           trainId,
           trainWay,
-          userType
+          userType,
+          title
         }
       })
     },
