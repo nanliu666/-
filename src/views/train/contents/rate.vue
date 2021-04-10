@@ -161,13 +161,8 @@ export default {
   },
   async created() {
     await this.getTrainEvaluate()
-    // const composite = this.rate.composite
-    // this.disabled = this.data.userType === 0 && composite !== '' && !isNaN(composite)
-    // 临时改为只能评一次分
-    this.disabled = (this.rate.composite != '' || this.rate.first != '' || this.rate.second != '' || this.rate.third != '' || this.rate.fourth != '' || this.rate.fifth != '') && this.data.status != 1
-    if (this.data.status == 1) {
-      this.disabled = true
-    }
+    const { userType, status } = this.data
+    this.disabled = userType == 0 || status == 1 || typeof this.rate.composite == 'number'
     for (let k in this.rate) {
       if (this.rate[k] === '') {
         this.rate[k] = 0
