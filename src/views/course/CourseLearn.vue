@@ -508,7 +508,7 @@ export default {
     goBack() {
       this.$router.go(-1)
       // 当go(-1)不执行，就执行下面路由跳转
-      // this.$router.push({ path: '/course/detail', query: { id: this.courseId } })
+      this.$router.push({ path: '/course/detail', query: { id: this.courseId } })
     }
   }
 }
