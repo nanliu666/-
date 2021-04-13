@@ -81,6 +81,13 @@ export default {
       }
       this.selected.push(category)
       this.active = category
+
+      // let ids = []
+      // this.selected.forEach((item) => {
+      //   if (item.id) ids.push(item.id)
+      // })
+      // let data = { id: '' }
+      // data.id = ids.toString()
       this.$emit('change', category)
       this.loadCategory(category[this.valueKey])
     },

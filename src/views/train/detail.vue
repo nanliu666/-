@@ -202,11 +202,12 @@ export default {
         await this.getTrainState(trainId)
         let tabs = []
         // userType 0 代表学员 1代表老师
-        if (userType == 0) {
-          tabs = ['Intro']
-        } else {
-          tabs = ['Trainee', 'Schedule', 'Intro', 'Rate']
-        }
+        // if (userType == 0) {
+        //   tabs = ['Intro']
+        // } else {
+        //   tabs = ['Trainee', 'Schedule', 'Intro', 'Rate'] //330版先不处理讲师端
+        // }
+        tabs = ['Intro']
         // const tabs =
         //   userType === 0
         //     ? ['Course', 'Exam', 'Intro', 'Rate']

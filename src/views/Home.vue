@@ -312,7 +312,7 @@
     </div>
     <div class="foot">
       <div class="foot2">
-        <span style="opacity: 0.35;">v2.0.1_20210401_Release &nbsp; &nbsp; &nbsp;</span>
+        <span style="opacity: 0.35;">v2.1.0_20210410_Release &nbsp; &nbsp; &nbsp;</span>
         <span class="policeLogo"><img src="../../public/img/policeLogo.png" alt="" /></span>
         <span style="opacity: 0.35;"><a href="https://ythzxfw.miit.gov.cn" target="_blank">
           备案号：苏ICP备19010525号-2
@@ -416,19 +416,17 @@ export default {
   computed: {
     ...mapGetters(['orgIds'])
   },
+  watch: {
+    orgIds(val) {
+      this.isOrgIdE = val.indexOf('5263') !== -1 ? true : false
+    }
+  },
   mounted() {
     this.getHotCourse()
     this.getTrainList()
     this.getNewsList()
     this.getHomeMyLive()
-    this.$nextTick(() => {
-      this.isOrgIdEFn()
-    })
-  },
-  activated() {
-    this.$nextTick(() => {
-      this.isOrgIdEFn()
-    })
+    this.isOrgIdEFn()
   },
   methods: {
     isOrgIdEFn() {

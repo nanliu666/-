@@ -15,7 +15,12 @@
           >
             <!-- 图片 -->
             <div class="top finger" @click="goCourseDetails(item.id)">
-              <img :src="item.coverUrl" :alt="item.coverName" class="course_img" />
+              <img
+                :src="item.coverUrl"
+                :alt="item.coverName"
+                :onerror="errorImg"
+                class="course_img"
+              />
               <!-- <div class="mask" v-show="showExam"> -->
               <div class="mask">
                 <div v-show="item.status == 2" class="hoverButton finger" @click="goLearn(item)">
@@ -141,7 +146,8 @@ export default {
     return {
       temId: null,
       examListData: [], //考试列表
-      triangularPosition: 132 // 考试列表三角形位置
+      triangularPosition: 132, // 考试列表三角形位置
+      errorImg: 'this.src="' + require('@/assets/images/required_bg.png') + '"'
     }
   },
   created() {},

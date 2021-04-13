@@ -9,7 +9,7 @@
         @click="goDetail(item)"
       >
         <div class="item_img">
-          <img :src="item.coverUrl" alt="" />
+          <img :src="returnimgFn(item.coverUrl)" :onerror="errorImg" />
           <span v-if="item.status == 1" class="span1">未开始</span>
           <span v-if="item.status == 2" class="span2">进行中</span>
           <span v-if="item.status == 3" class="span3">已结束</span>
@@ -67,7 +67,8 @@ export default {
         pageNo: 1, //请求页码
         pageSize: 10 //每页条数
       },
-      listData: []
+      listData: [],
+      errorImg: 'this.src="' + require('@/assets/images/required_bg.png') + '"'
     }
   },
   created() {
@@ -77,6 +78,9 @@ export default {
     // this.getmyCourseCatalog()
   },
   methods: {
+    returnimgFn(img) {
+      return img || require('@/assets/images/required_bg.png')
+    },
     // 跳转详情页
     goDetail(item) {
       this.$router.push({ path: '/myRequiredDetails', query: { item: JSON.stringify(item) } })
@@ -144,20 +148,6 @@ export default {
           position: absolute;
           top: 8px;
           right: 8px;
-          background: #fffce6;
-          border-radius: 4px;
-          font-size: 10px;
-          width: 52px;
-          height: 20px;
-          line-height: 20px;
-          text-align: center;
-          color: #fcba00;
-          font-style: none;
-        }
-        .span2 {
-          position: absolute;
-          top: 8px;
-          right: 8px;
           background: #e7ffee;
           border-radius: 4px;
           font-size: 10px;
@@ -166,6 +156,20 @@ export default {
           line-height: 20px;
           text-align: center;
           color: #00b061;
+          font-style: none;
+        }
+        .span2 {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          background: #fffce6;
+          border-radius: 4px;
+          font-size: 10px;
+          width: 52px;
+          height: 20px;
+          line-height: 20px;
+          text-align: center;
+          color: #fcba00;
           font-style: none;
         }
         .span3 {

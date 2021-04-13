@@ -15,7 +15,10 @@
             class="select-li"
             :class="{ 'is-correct': getCorrectClass(option), 'is-fault': getFault(option) }"
           >
-            <span>{{ _.unescape(option.content) }}</span>
+            <span>
+              <span style="margin-right: 4px">{{ QUESTION_PREFACE[index] }}.</span>
+              <span>{{ _.unescape(option.content) }}</span>
+            </span>
             <question-view v-if="option.url" :url="option.url" />
           </li>
         </ul>
@@ -51,6 +54,7 @@
 
 <script>
 import questionView from './questionView'
+import { QUESTION_PREFACE } from '@/const/exam'
 export default {
   name: 'SelectView',
   components: {
@@ -73,6 +77,9 @@ export default {
   data() {
     return {}
   },
+  computed: {
+    QUESTION_PREFACE: () => QUESTION_PREFACE
+  },
   methods: {
     // 当前选项被选且未错误答案 isCorrect：0为错误答案，1为正确答案
     getFault(item) {
@@ -84,25 +91,23 @@ export default {
     },
     // 获取正确答案
     getCorrect() {
-      const target = _.chain(this.data.options)
-        .filter((item) => {
-          return _.includes(this.data.answerQuestion, item.id)
-        })
-        .map('content')
-        .join(',')
-        .value()
-      return target ? target : '暂无正确答案'
+      let target = []
+      _.each(this.data.options, (item, index) => {
+        if (_.includes(this.data.answerQuestion, item.id)) {
+          target.push(QUESTION_PREFACE[index])
+        }
+      })
+      return !_.isEmpty(target) ? _.join(target, ',') : '暂无正确答案'
     },
     // 获取考生答案
     getAnswerValue() {
-      const target = _.chain(this.data.options)
-        .filter((item) => {
-          return _.includes(this.data.answerUser, item.id)
-        })
-        .map('content')
-        .join(',')
-        .value()
-      return target ? target : '考生未作答'
+      let target = []
+      _.each(this.data.options, (item, index) => {
+        if (_.includes(this.data.answerUser, item.id)) {
+          target.push(QUESTION_PREFACE[index])
+        }
+      })
+      return !_.isEmpty(target) ? _.join(target, ',') : '考生未作答'
     }
   }
 }

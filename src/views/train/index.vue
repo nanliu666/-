@@ -64,9 +64,9 @@
           日期：
           <el-date-picker
             v-model="date"
-            value-format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd HH:mm:ss"
             size="small"
-            type="daterange"
+            type="datetimerange"
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -231,14 +231,14 @@ export default {
     toDetail(item) {
       const { id: trainId, trainName: title, trainWay, userType } = item
       // userType 0:学员,1:讲师
-      this.$router.push({ 
-        path: '/train/detail', 
-        query: { 
+      this.$router.push({
+        path: '/train/detail',
+        query: {
           title,
           trainId,
           trainWay,
           userType
-          } 
+        }
       })
     },
     sortList(list = []) {

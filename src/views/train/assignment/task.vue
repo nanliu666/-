@@ -37,8 +37,10 @@
             <ul>
               <li>题目数量：共{{ attributeData.totalNum }}题</li>
               <li>
-                剩余有效答题次数：{{
-                  attributeData.isLimitedJoinNum ? attributeData.surplusParticipatNumber : '不限'
+                参加次数：{{
+                  attributeData.isLimitedJoinNum
+                    ? `${attributeData.examTimes}/${attributeData.joinNumValue}`
+                    : '不限'
                 }}
               </li>
               <li>试卷总分：{{ attributeData.totalScore }}</li>
@@ -230,6 +232,13 @@ export default {
         ) {
           // (今天时间 》= 开始时间) && (今天时间 《= 结束时间) && （!=已结办）
           this.isGoExam = false
+        }
+        if (
+          this.attributeData.isLimitedJoinNum &&
+          this.attributeData.examTimes >= this.attributeData.joinNumValue
+        ) {
+          // 限制次数 && （已考次数 》= 可用次数）
+          this.isGoExam = true
         }
       }
       if (this.attributeData.type === 3) {
