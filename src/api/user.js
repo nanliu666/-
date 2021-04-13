@@ -34,6 +34,7 @@ export const loginByUsername = (tenantId, username, password, type, key, code, a
       tenantId,
       account,
       username,
+      device_type: 'pc',
       password,
       grant_type: website.captchaMode ? 'captcha' : 'password',
       scope: 'all',
