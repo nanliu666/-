@@ -20,20 +20,13 @@
               currentFirstType === menuItem.type ? 'el-icon-arrow-up' : 'el-icon-arrow-down'
             ]"
           /> -->
-          <i
-            :class="[
-              menuItem.isUnfold ? 'el-icon-arrow-up' : 'el-icon-arrow-down'
-            ]"
-          />
+          <i :class="[menuItem.isUnfold ? 'el-icon-arrow-up' : 'el-icon-arrow-down']" />
         </div>
         <!-- <ul
           v-if="currentFirstType === menuItem.type && !_.isEmpty(menuItem.courseList)"
           class="course-ul"
         > -->
-        <ul
-          v-if="menuItem.isUnfold && !_.isEmpty(menuItem.courseList)"
-          class="course-ul"
-        >
+        <ul v-if="menuItem.isUnfold && !_.isEmpty(menuItem.courseList)" class="course-ul">
           <li
             v-for="(item, index) in menuItem.courseList"
             :key="item.id"
@@ -407,9 +400,9 @@ export default {
         item.type = index === 0 ? 'required' : 'elective'
       })
       // 添加左边大类展开收起字段控制
-      soruce.forEach(element => {
+      soruce.forEach((element) => {
         element.isUnfold = false
-        if(element.type == 'required') {
+        if (element.type == 'required') {
           // 默认必修展开
           element.isUnfold = true
         }
@@ -446,7 +439,7 @@ export default {
     // 切换必修/选修
     toggleShow(type) {
       // 处理左边大类展开收起问题
-      this.menuList.forEach(element => {
+      this.menuList.forEach((element) => {
         if (element.type == type) {
           element.isUnfold = !element.isUnfold
         } else {

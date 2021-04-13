@@ -8,7 +8,7 @@
       <!-- 必修课类别 -->
       <div class="sort">
         <div class="left">
-          <img :src="detailParams.coverUrl" :onerror="errorImg" alt="" class="course_img">
+          <img :src="detailParams.coverUrl" :onerror="errorImg" alt="" class="course_img" />
         </div>
         <div class="right">
           <ul class="info">
@@ -20,15 +20,25 @@
             </li>
             <li>
               <ul class="middle">
-                <li>分类：<span class="middle_data">{{ detailParams.categoryName? detailParams.categoryName: '--' }}</span></li>
-                <li>学习时间：<span class="middle_data">{{ detailParams.startDate }} - {{ detailParams.entDate }}</span></li>
-                <li>主办单位：<span class="middle_data">{{ detailParams.sponsor? detailParams.sponsor: '--' }}</span></li>
+                <li>
+                  分类：<span class="middle_data">{{
+                    detailParams.categoryName ? detailParams.categoryName : '--'
+                  }}</span>
+                </li>
+                <li>
+                  学习时间：<span class="middle_data">{{ detailParams.startDate }} - {{ detailParams.entDate }}</span>
+                </li>
+                <li>
+                  主办单位：<span class="middle_data">{{
+                    detailParams.sponsor ? detailParams.sponsor : '--'
+                  }}</span>
+                </li>
               </ul>
             </li>
             <li class="info_bottom">
-              <span class="info_bottom_details"><i class="iconimage_icon_user iconfont iconInfo"></i>{{ detailParams.peopleNum? detailParams.peopleNum + '人': '--' }}</span>
-              <span class="info_bottom_details"><i class="iconimage_icon_time1 iconfont iconInfo"></i>{{ detailParams.period? detailParams.period + '小时': '--' }}</span>
-              <span class="info_bottom_details"><i class="iconjifen iconfont iconInfo"></i>{{ detailParams.credit? detailParams.credit + '积分': '--' }}</span>
+              <span class="info_bottom_details"><i class="iconimage_icon_user iconfont iconInfo"></i>{{ detailParams.peopleNum ? detailParams.peopleNum + '人' : '--' }}</span>
+              <span class="info_bottom_details"><i class="iconimage_icon_time1 iconfont iconInfo"></i>{{ detailParams.period ? detailParams.period + '小时' : '--' }}</span>
+              <span class="info_bottom_details"><i class="iconjifen iconfont iconInfo"></i>{{ detailParams.credit ? detailParams.credit + '积分' : '--' }}</span>
             </li>
           </ul>
         </div>
@@ -78,19 +88,18 @@ const TABS_ARR = [
   {
     name: 'finished',
     label: '已结束'
-  },
+  }
 ]
 export default {
   name: 'MyRequiredDetails',
   components: {
     myRequiredDetailsList
   },
-  props: {
-  },
+  props: {},
   data() {
     return {
       activeName: 'all_courses',
-      tabs: TABS_ARR, 
+      tabs: TABS_ARR,
       total: 0, //总条数
       page: {
         pageNo: 1, //请求页码
@@ -103,7 +112,7 @@ export default {
     }
   },
   created() {
-    this.detailParams =  JSON.parse(this.$route.query.item)
+    this.detailParams = JSON.parse(this.$route.query.item)
     this.detailParams.startDate = moment(this.detailParams.startTime).format('yyyy-MM-DD')
     this.detailParams.entDate = moment(this.detailParams.endTime).format('yyyy-MM-DD')
     // console.log('params----', this.detailParams)
@@ -118,14 +127,14 @@ export default {
         let temArr = []
         // debugger
         for (let i = 1; i <= this.resData.length; i++) {
-          this.resData[i-1].startDate = moment(this.resData[i-1].startTime).format('yyyy-MM-DD')
-          this.resData[i-1].entDate = moment(this.resData[i-1].endTime).format('yyyy-MM-DD')
+          this.resData[i - 1].startDate = moment(this.resData[i - 1].startTime).format('yyyy-MM-DD')
+          this.resData[i - 1].entDate = moment(this.resData[i - 1].endTime).format('yyyy-MM-DD')
 
-          this.resData[i-1].isShow = false
-          temArr.push(this.resData[i-1])
+          this.resData[i - 1].isShow = false
+          temArr.push(this.resData[i - 1])
           // 处理数据4条数据为一组
           if (i % 4 == 0 || i == this.resData.length) {
-            let index = parseInt(i/4) - 1
+            let index = parseInt(i / 4) - 1
             if (i == this.resData.length) {
               index = index + 1
             }
@@ -190,75 +199,75 @@ export default {
 <style lang="scss" scoped>
 $timeHead: rgba(139, 155, 168, 0.65);
 
-.myRequiredDetails{
-  p{
+.myRequiredDetails {
+  p {
     margin: 0;
   }
   // background: $timeHead;
   font-size: 14px;
-  .entry_path{
+  .entry_path {
     // 头部路径标识
     height: 62px;
     display: flex;
     align-items: center;
-    .common{
-      color: rgba(0,11,21,0.45);
+    .common {
+      color: rgba(0, 11, 21, 0.45);
     }
-    .especially{
-      color: rgba(0,11,21,0.85);
+    .especially {
+      color: rgba(0, 11, 21, 0.85);
       font-weight: bold;
     }
   }
-  .status_1{
-    background: #E7FFEE;
-    color: #00B061;
+  .status_1 {
+    background: #e7ffee;
+    color: #00b061;
   }
-  .status_2{
-    background: #FFFCE6;
-    color: #FCBA00;
+  .status_2 {
+    background: #fffce6;
+    color: #fcba00;
   }
-  .status_3{
-    background: #E7FBFF;
-    color: #01AAFC;
+  .status_3 {
+    background: #e7fbff;
+    color: #01aafc;
   }
-  .sort{
+  .sort {
     // 必修课种类详情
     height: 214px;
     padding: 24px;
     // width: 100%;
-    background: #FFFFFF;
-    box-shadow: 0 2px 12px 0 rgba(0,61,112,0.08);
+    background: #ffffff;
+    box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
     border-radius: 4px;
     display: flex;
-    .left{
+    .left {
       // 左边图片
       height: 100%;
       width: 273px;
       margin-right: 24px;
-      background:#7498fe;
+      background: #7498fe;
       border-radius: 4px;
-      .course_img{
+      .course_img {
         height: 100%;
         width: 100%;
         border-radius: 4px;
       }
     }
-    .right{
+    .right {
       // 右边详细详细
       flex: 1;
-      color: #000B15;
-      .info{
+      color: #000b15;
+      .info {
         display: flex;
         height: 100%;
         flex-direction: column;
         justify-content: space-between;
         // align-items: stretch;
-        .sort_title{
+        .sort_title {
           font-size: 18px;
           font-weight: bold;
           opacity: 0.85;
         }
-        .sort_status{
+        .sort_status {
           margin-left: 16px;
           font-size: 12px;
           text-align: center;
@@ -270,27 +279,27 @@ $timeHead: rgba(139, 155, 168, 0.65);
           position: relative;
           top: -3px;
         }
-        .middle{
+        .middle {
           position: relative;
           top: 2px;
           height: 80px;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
-          li{
-            color: rgba(0,11,21,0.45);
+          li {
+            color: rgba(0, 11, 21, 0.45);
           }
-          .middle_data{
-            color: rgba(0,11,21,0.85);
+          .middle_data {
+            color: rgba(0, 11, 21, 0.85);
           }
         }
-        .info_bottom{
+        .info_bottom {
           font-size: 14px;
-          color: rgba(0,11,21,0.45);
-          .info_bottom_details{
+          color: rgba(0, 11, 21, 0.45);
+          .info_bottom_details {
             margin-right: 25px;
           }
-          .iconInfo{
+          .iconInfo {
             // font-size: 14px;
             margin-right: 8px;
           }
@@ -298,34 +307,34 @@ $timeHead: rgba(139, 155, 168, 0.65);
       }
     }
   }
-  .classification{
+  .classification {
     width: 100%;
     margin-top: 24px;
     padding: 24px 0;
-    background: #FFFFFF;
-    box-shadow: 0 2px 12px 0 rgba(0,61,112,0.08);
+    background: #ffffff;
+    box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
     border-radius: 4px;
-    /deep/ .el-tabs__header{
+    /deep/ .el-tabs__header {
       margin: 0;
       padding: 0 24px;
     }
-    /deep/ .el-tabs__content{
+    /deep/ .el-tabs__content {
       margin: 0 12px;
     }
-    /deep/ .el-tabs__item{
+    /deep/ .el-tabs__item {
       height: 56px;
       line-height: 56px;
       font-size: 16px;
-      color: #000B15;
+      color: #000b15;
       opacity: 0.85;
     }
     /deep/ .el-tabs__item.is-active {
       // font-weight: bold;
-      color: #01AAFC;
+      color: #01aafc;
       opacity: 1;
     }
   }
-  .content{
+  .content {
     // margin: 0 24px;
   }
   .page {

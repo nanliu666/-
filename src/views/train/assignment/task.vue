@@ -36,10 +36,16 @@
           <div v-show="!isHidden" class="exam_info exam_time f_s_14">
             <ul>
               <li>题目数量：共{{ attributeData.totalNum }}题</li>
-              <li>参加次数：{{ attributeData.isLimitedJoinNum? `${attributeData.examTimes}/${attributeData.joinNumValue}`: '不限' }}</li>
+              <li>
+                参加次数：{{
+                  attributeData.isLimitedJoinNum
+                    ? `${attributeData.examTimes}/${attributeData.joinNumValue}`
+                    : '不限'
+                }}
+              </li>
               <li>试卷总分：{{ attributeData.totalScore }}</li>
               <li>评分规则：取最高得分最为最终成绩</li>
-              <li>成绩:{{ attributeData.score? attributeData.score: '-' }}</li>
+              <li>成绩:{{ attributeData.score ? attributeData.score : '-' }}</li>
             </ul>
           </div>
         </div>
@@ -140,7 +146,8 @@
             <div class="course_title f_s_16">
               <!-- <p>线下活动】挖掘机技能传授<span style="display: inline-block;float: right;">已签到</span></p> -->
               <p>
-                <span>{{ attributeData.flag == 1 ? '【面授课程】' : '【线下活动】' }}</span>{{ attributeData.name }}<span v-if="attributeData.sign == '1'" class="finish">已签到</span><span v-if="attributeData.sign == '2'" class="lack">缺席</span>
+                <span>{{ attributeData.flag == 1 ? '【面授课程】' : '【线下活动】' }}</span>{{ attributeData.name
+                }}<span v-if="attributeData.sign == '1'" class="finish">已签到</span><span v-if="attributeData.sign == '2'" class="lack">缺席</span>
               </p>
             </div>
             <div class="info">
@@ -211,16 +218,25 @@ export default {
     },
     processData() {
       if (this.attributeData.type === 2) {
-        this.data.startDateTime = moment(this.attributeData.startTime).format('YYYY年MM月DD日 HH:mm')
+        this.data.startDateTime = moment(this.attributeData.startTime).format(
+          'YYYY年MM月DD日 HH:mm'
+        )
         this.data.endDateTime = moment(this.attributeData.endTime).format('YYYY年MM月DD日 HH:mm')
         this.data.startTime = moment(this.attributeData.startTime).format('HH:mm')
         this.data.endTime = moment(this.attributeData.endTime).format('HH:mm')
         // 判断在考试时间才显示按钮去考试
-        if (new Date().getTime() >= new Date(this.attributeData.startTime).getTime() && new Date().getTime() <= new Date(this.attributeData.endTime).getTime() && this.attributeData.status != 3) {
+        if (
+          new Date().getTime() >= new Date(this.attributeData.startTime).getTime() &&
+          new Date().getTime() <= new Date(this.attributeData.endTime).getTime() &&
+          this.attributeData.status != 3
+        ) {
           // (今天时间 》= 开始时间) && (今天时间 《= 结束时间) && （!=已结办）
           this.isGoExam = false
         }
-        if (this.attributeData.isLimitedJoinNum && this.attributeData.examTimes >= this.attributeData.joinNumValue) {
+        if (
+          this.attributeData.isLimitedJoinNum &&
+          this.attributeData.examTimes >= this.attributeData.joinNumValue
+        ) {
           // 限制次数 && （已考次数 》= 可用次数）
           this.isGoExam = true
         }
@@ -283,15 +299,18 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       })
-      .then(() => {
-        this.$router.push({ path: '/exam/paper', query: { examId: this.attributeData.id, batchId: this.attributeData.examBatchId} })
-      })
-      .catch(() => {
-        this.$message({
-          type: 'info',
-          message: '考试暂时不开始！'
+        .then(() => {
+          this.$router.push({
+            path: '/exam/paper',
+            query: { examId: this.attributeData.id, batchId: this.attributeData.examBatchId }
+          })
         })
-      })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '考试暂时不开始！'
+          })
+        })
     },
     changeHidden() {
       this.isHidden = !this.isHidden

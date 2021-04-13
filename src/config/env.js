@@ -3,7 +3,7 @@ var systemName = '易宝教育学习平台' // 系统名称
 
 let frontBaseUrl = '' // 用户前台地址
 let backBaseUrl = '' //（后台管理）
-let iconfontVersion = ['2232073_jslvmfqvu2g']
+let iconfontVersion = ['2232073_yjirykwqoe']
 let iconfontUrl = '//at.alicdn.com/t/font_$key.css'
 let codeUrl = `${frontBaseUrl}/code`
 const env = process.env

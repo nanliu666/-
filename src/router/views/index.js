@@ -133,6 +133,14 @@ export default [
             }
           },
           {
+            path: 'middle',
+            name: 'ExamMiddle',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/exam/Middle.vue'),
+            meta: {
+              title: '考试详情'
+            }
+          },
+          {
             path: 'paper',
             name: 'ExamPaper',
             component: () => import(/* webpackChunkName: "page"*/ '@/views/exam/Paper.vue'),

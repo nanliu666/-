@@ -83,18 +83,12 @@
         <template #isPass="{ row }">
           {{ getPass(row) }}
         </template>
-        <template #status="{ row }">
-          {{ row.status | statusFilter }}
-        </template>
         <template #score="{ row }">
           {{ row.score ? row.score : '--' }}
         </template>
         <template #handler="{ row }">
-          <el-button type="text" :disabled="JoinDisabled(row)" @click="joinExam(row)">
-            参加考试
-          </el-button>
-          <el-button type="text" :disabled="JoinView(row)" @click="handleView(row)">
-            查看答卷
+          <el-button type="text" @click="toDetail(row)">
+            进入考试
           </el-button>
         </template>
       </common-table>
@@ -108,6 +102,12 @@ const TABLE_COLUMNS = [
     label: '考试名称',
     prop: 'examName',
     minWidth: 150
+  },
+  {
+    label: '来源',
+    prop: 'examSourceName',
+    align: 'center',
+    minWidth: 80
   },
   {
     label: '考试时间',
@@ -135,13 +135,6 @@ const TABLE_COLUMNS = [
     align: 'center',
     slot: true,
     minWidth: 100
-  },
-  {
-    label: '状态',
-    prop: 'status',
-    align: 'center',
-    slot: true,
-    minWidth: 100
   }
 ]
 const TABLE_CONFIG = {
@@ -152,7 +145,7 @@ const TABLE_CONFIG = {
   enablePagination: true,
   enableMultiSelect: false,
   handlerColumn: {
-    minWidth: 120
+    minWidth: 80
   }
 }
 const PASS_TYPE = [
@@ -196,19 +189,10 @@ const STATUS_TYPE = [
   }
 ]
 import { getExamList } from '@/api/exam'
-import examUtils from './examUtils'
 import moment from 'moment'
 import { mapGetters } from 'vuex'
 export default {
   name: 'ExamList',
-  filters: {
-    statusFilter(data) {
-      const target = _.find(STATUS_TYPE, (item) => {
-        return item.value === data
-      })
-      return target.label
-    }
-  },
   data() {
     return {
       passTypeOption: PASS_TYPE,
@@ -241,6 +225,10 @@ export default {
     this.loadTableData()
   },
   methods: {
+    // 去中间页面
+    toDetail(row) {
+      this.$router.push({ path: '/exam/middle', query: { id: row.batchId } })
+    },
     getPass(row) {
       return _.find(PASS_TYPE, (item) => {
         return item.value === row.isPass
@@ -277,42 +265,6 @@ export default {
       this.queryInfo.pageNo = 1
       this.loadTableData()
     },
-    // 参加考试置灰
-    JoinDisabled(row) {
-      return examUtils.JoinDisabled(row)
-    },
-    // 参加考试
-    joinExam(row) {
-      const { tips, isReNew, isShowConfirm } = examUtils.getJoinExamTips(row)
-      this.$confirm(tips, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        showConfirmButton: isShowConfirm,
-        type: 'warning'
-      }).then(() => {
-        this.$router.push({
-          name: 'ExamPaper',
-          query: { examId: row.examId, batchId: row.batchId, isReNew: isReNew }
-        })
-      })
-    },
-    // 查看答卷置灰规则
-    JoinView(row) {
-      // status缺考4、未考试2和未开考1状态下，不能查看答卷，按钮置灰
-      // 若创建考试时，不允许考生查看答卷。则不能查看答卷，按钮置灰
-      // 已提交过答卷的点击“查看答卷”挑跳转到【查看答卷】页面
-      const { status, openAnswerSheet } = row
-      const isJoinDisabled = status === 1 || status === 2 || status === 4 || !openAnswerSheet
-      return isJoinDisabled
-    },
-    // 查看答案
-    handleView(row) {
-      this.$router.push({
-        name: 'ExamDetail',
-        query: { examId: row.examId, batchId: row.batchId }
-      })
-    },
-
     // 加载函数
     async loadTableData() {
       if (this.tableLoading) return

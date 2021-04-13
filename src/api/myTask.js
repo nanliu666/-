@@ -29,4 +29,4 @@ export const myElectiveCourse = (params) => post('/manage/v1/study/myElectiveCou
 /**
  * 查询我的必修详情课程
  * */
- export const getRequireCourse = (params) => post('/manage/v1/study/myRequireCourse', params)
+export const getRequireCourse = (params) => post('/manage/v1/study/myRequireCourse', params)

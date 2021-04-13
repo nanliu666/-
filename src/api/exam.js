@@ -16,3 +16,16 @@ export const postSubmitPaper = (params) => post('/manage/v1/exam/center/submitPa
  * 查看答卷
  * */
 export const getViewAnswer = (params) => get('/manage/v1/exam/center/viewAnswer', params)
+/**
+ * 考试详情服务
+ * id=1379677543136813057 (batchId)
+ * */
+export const getViewExamInfo = (params) => get('/manage/v1/exam/center/viewExamInfo', params)
+/**
+ * 考试详情服务
+ *   "examId": "1379677543015178241",
+    "batchId": "1379677543136813057",
+    "pageNo": "1",
+  	"pageSize":"10"
+ * */
+export const examSessionList = (params) => post('/manage/v1/exam/center/examSessionList', params)

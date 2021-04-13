@@ -20,8 +20,8 @@ const TYPE_PATH_MAP = {
   FlowReject: '/approvalCenter/center', // 审批通知
   ApprovalReturn: '/approvalCenter/center', // 审批退回通知: 申请人审批被退回
   ExamAchievement: '/approvalCenter/center', // 考试成绩通知: 发布考试成绩
-  ExamNotify: '/exam/list', // 考试通知: 考试发布
-  ExamRemind: '/exam/list', // 考试提醒: 开考前N分钟
+  ExamNotify: '/exam/middle', // 考试通知: 考试发布
+  ExamRemind: '/exam/middle', // 考试提醒: 开考前N分钟
   CourseLearning: '/learn/list', // 课程学习的通知: 发布课程安排
   CourseRemind: '/learn/list', // 课程学习提醒: 课程开始前N分钟
   TrainArrange: '/train/index' // 培训安排的通知: 发布培训安排
