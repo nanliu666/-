@@ -9,93 +9,36 @@
     <div class="banner">
       <el-carousel :interval="5000" height="536px" arrow="always">
         <!-- 临时添加徐工挖掘机组织自定义banner,先通过组织id判断 -->
-        <el-carousel-item v-for="item in isOrgIdE ? bannerExcavator : banner" :key="item.id">
-          <div class="b_item" :style="item.css"></div>
+        <el-carousel-item v-for="item in banner" :key="item.bannerId">
+          <router-link :to="item.linkUrl">
+            <div
+              class="b_item"
+              :style="`background: url(${item.picUrl}) no-repeat; backgroundSize: cover`"
+            ></div>
+          </router-link>
         </el-carousel-item>
       </el-carousel>
     </div>
     <div class="homeMain">
       <div class="homeLeft">
-        <h3 class="LMTitle">
-          <span class="span1">我的任务</span>
-          <span class="span2">待完成任务{{ myTaskInfo.nub }}项</span>
-          <div class="myTaskChange">
-            <span class="myTaskPrev" @click="myTaskPrevFn"></span>
-            <span class="myTaskNext" @click="myTaskNextFn"></span>
-          </div>
-        </h3>
         <!-- 我的任务 -->
-        <div style="clear: both; ">
-          <home-my-task ref="myTaskRef" :my-task-info="myTaskInfo" />
+        <div v-for="item in diyConfig" :key="item.id">
+          <component
+            :is="diyBaseConfig[item.id].coms"
+            :my-task-info="myTaskInfo"
+            :my-live-data="myLiveData"
+            :hot-course-data="hotCourseData"
+            :train-list-data="trainListData"
+            :news-list-data="newsListData"
+          >
+          </component>
         </div>
-        <h3 class="LMTitle" style="padding-top:52px">
-          <span class="span1">最新直播</span>
-          <router-link :to="{ path: '/live/list' }">
-            更多
-          </router-link>
-        </h3>
-        <div class="LModule">
-          <div class="LModule2">
-            <div v-for="item in myLiveData" :key="item.liveId" class="homeCourse">
-              <router-link :to="{ path: '/live/Detail', query: { id: item.liveId } }">
-                <div class="homeCourseImg">
-                  <img
-                    :src="item.coverImageUrl ? item.coverImageUrl : '/img/autoL.png'"
-                    width="285"
-                    height="168"
-                    alt=""
-                  />
-                </div>
-                <div class="homeCourseText">
-                  <span class="homeCourseTitle">{{ item.channelName }}</span>
-                  <span class="homeCourseTime" :title="item.planTime[0]">{{
-                    item.planTime[0]
-                  }}</span>
-                  <div class="livePerInfo">
-                    <img
-                      :src="item.avatarUrl ? item.avatarUrl : '/img/userIconBig.png'"
-                      width="24"
-                      height="24"
-                      alt=""
-                    />
-                    <span>{{ item.lecturerName }}</span>
-                  </div>
-                </div>
-              </router-link>
-            </div>
-            <!-- <div class="homeCourse">
-              <router-link to="">
-                <div class="homeCourseImg">
-                  <img src="../assets/images/photo1.png" width="285" height="168" alt="" />
-                </div>
-                <div class="homeCourseText">
-                  <span class="homeCourseTitle">信息业发展中的重要性信息考试必要</span>
-                  <span class="homeCourseTime">今天 20:00</span>
-                  <div class="livePerInfo">
-                    <img src="/img/userIconBig.png" width="24" height="24" alt="" />
-                    <span>陆小曼</span>
-                  </div>
-                </div>
-              </router-link>
-            </div>
-            <div class="homeCourse">
-              <router-link to="">
-                <div class="homeCourseImg">
-                  <img src="../assets/images/photo1.png" width="285" height="168" alt="" />
-                </div>
-                <div class="homeCourseText">
-                  <span class="homeCourseTitle">信息安全在岗考试必要性在企业发展中的重要性信息安全在</span>
-                  <span class="homeCourseTime">今天 20:00</span>
-                  <div class="livePerInfo">
-                    <img src="/img/userIconBig.png" width="24" height="24" alt="" />
-                    <span>陆小曼</span>
-                  </div>
-                </div>
-              </router-link>
-            </div> -->
-          </div>
-        </div>
-        <h3 class="LMTitle" style="padding-top:46px">
+        <!-- <home-my-task ref="myTaskRef" :my-task-info="myTaskInfo" />        
+        <home-live :my-live-data="myLiveData"></home-live>
+        <home-hot-course :hot-course-data="hotCourseData"></home-hot-course>
+        <home-train :train-list-data="trainListData"></home-train>
+        <home-news :news-list-data="newsListData"></home-news> -->
+        <!-- <h3 class="LMTitle" style="padding-top:46px">
           <span class="span1">热门课程</span>
           <router-link :to="'/course/list'">
             更多
@@ -162,104 +105,12 @@
                     </div>
                   </div>
                 </router-link>
-              </div>
-              <!-- 
-              <div class="homeCourse">
-                <router-link to="">
-                  <div class="homeCourseImg">
-                    <img src="../assets/images/photo1.png" width="285" height="168" alt="" />
-                  </div>
-                  <div class="homeCourseText">
-                    <span class="homeCourseTitle" to=""
-                      >信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性</span
-                    >
-                    <div class="grade">
-                      <el-rate
-                        v-model="value"
-                        disabled
-                        show-score
-                        text-color="#72787E"
-                        disabled-void-color="#ccc"
-                        score-template="{value}"
-                      >
-                      </el-rate>
-                    </div>
-                    <div class="livePerInfo">
-                      <span class="iconimage_icon_user iconfont userIcon"></span>
-                      <span>6人学习</span>
-                    </div>
-                  </div>
-                </router-link>
-              </div> -->
+              </div>              
             </template>
           </div>
-        </div>
-        <h3 class="LMTitle" style="padding-top:46px">
-          <span class="span1">培训中心</span>
-          <router-link to="/train/index">
-            更多
-          </router-link>
-        </h3>
-        <div class="LModule">
-          <div class="LModule2">
-            <div
-              v-for="item in trainListData"
-              :key="item.id"
-              class="homeTrain"
-              @click="toTrainDetaill(item)"
-            >
-              <h3 class="homeTrainTitle">
-                <span>{{ item.trainName }}</span>
-              </h3>
-              <div class="homeTrainText">
-                <div class="homeTrainTextItem">
-                  <!-- <span class="iconimage_icon_time iconfont traingIcon"></span> -->
-                  <span class="homeTrainTextItem2">时间：{{ item.startTime }}</span>
-                </div>
-                <div class="homeTrainTextItem">
-                  <!-- <span class="iconimage_icon_address iconfont traingIcon"></span> -->
-                  <span class="homeTrainTextItem2">地址：{{ item.address }}</span>
-                </div>
-                <div class="homeTrainTextItem">
-                  <!-- <img
-                    :src="item.avatarUrl ? item.avatarUrl : '/img/userIconBig.png'"
-                    width="24"
-                    height="24"
-                    alt=""
-                  /> -->
-                  <span class="homeTrainTextItem2">讲师：{{ item.lecturerName }}</span>
-                  <!-- <span
-                    :class="[item.status ? trainStatus[item.status].class : '', homeTraining]"
-                  >{{ trainStatus[item.status].text }}</span> -->
-                </div>
-              </div>
-            </div>
-            <!-- 
-            <div class="homeTrain">
-              <router-link to="">
-                <h3 class="homeTrainTitle">
-                  职场礼仪职场礼仪职场礼仪职场礼仪职场礼仪职场礼仪
-                </h3>
-                <div class="homeTrainText">
-                  <div class="homeTrainTextItem">
-                    <span class="iconimage_icon_address iconfont traingIcon"></span>
-                    <span class="homeTrainTextItem2">环普产业园G1座</span>
-                  </div>
-                  <div class="homeTrainTextItem">
-                    <span class="iconimage_icon_time iconfont traingIcon"></span>
-                    <span class="homeTrainTextItem2">2020-09-12 14:30</span>
-                  </div>
-                  <div class="homeTrainTextItem">
-                    <img src="../assets/images/welcome.png" width="24" height="24" alt="" />
-                    <span class="homeTrainTextItem2">老周</span>
-                    <span class="homeTraining future">进行中</span>
-                  </div>
-                </div>
-              </router-link>
-            </div> -->
-          </div>
-        </div>
-        <h3 class="LMTitle" style="padding-top:46px">
+        </div> -->
+
+        <!-- <h3 class="LMTitle" style="padding-top:46px">
           <span class="span1">新闻中心</span>
           <router-link to="/news/list">
             更多
@@ -285,26 +136,9 @@
                   </div>
                 </div>
               </router-link>
-            </div>
-            <!-- 
-            <div class="homeCourse">
-              <router-link to="">
-                <div class="homeCourseImg">
-                  <img src="../assets/images/photo1.png" width="285" height="168" alt="" />
-                </div>
-                <div class="homeCourseText">
-                  <span class="homeCourseTitle"
-                    >信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性信息安全在岗考试必要性在企业发展中的重要性</span
-                  >
-                  <span class="homeCourseTime iconeyeopen-outlined iconfont">11</span>
-                  <div class="livePerInfo">
-                    <span>2020-10-30</span>
-                  </div>
-                </div>
-              </router-link>
-            </div> -->
+            </div>           
           </div>
-        </div>
+        </div> -->
       </div>
       <div class="homeRight">
         <home-right />
@@ -326,22 +160,42 @@
 import TheHeader from '@/page/TheHeader'
 import HomeMyTask from '@/views/home/homeMyTask'
 import HomeRight from '@/views/home/homeRight'
+import HomeLive from '@/views/home/homeLive'
+import HomeHotCourse from '@/views/home/homeHotCourse'
+import HomeTrain from '@/views/home/homeTrain'
+import HomeNews from '@/views/home/homeNews'
 import { queryCourseList } from '@/api/course'
-import { homeQueryTrainList, homeNewsList, homeMyLiveList } from '@/api/home'
+import { homeQueryTrainList, homeNewsList, homeMyLiveList, getBanners } from '@/api/home'
 import { getStore } from '@/util/store'
 import { mapGetters } from 'vuex'
+// import HomeLive from './home/homeLive.vue'
 export default {
   name: 'Home',
   components: {
     TheHeader,
     HomeMyTask,
-    HomeRight
+    HomeRight,
+    HomeLive,
+    HomeHotCourse,
+    HomeTrain,
+    HomeNews
   },
   data() {
     return {
       isOrgIdE: false,
       myTaskInfo: {
         nub: 0
+      },
+      diyBaseConfig: {
+        diyPcL1: { coms: 'HomeMyTask', name: '我的任务' },
+        diyPcL2: { coms: 'HomeLive', name: '最新直播' },
+        diyPcL3: { coms: 'HomeHotCourse', name: '热门课程' },
+        diyPcL4: { coms: 'HomeTrain', name: '培训中心' },
+        diyPcL5: { coms: 'HomeNews', name: '新闻中心' }
+        // diyPcR1: { coms: 'HomeNews', name: '个人信息' },
+        // diyPcR2: { coms: 'HomeNews', name: '学习中的课程' },
+        // diyPcR3: { coms: 'HomeNews', name: '月度积分排行榜' },
+        // diyPcR4: { coms: 'HomeNews', name: '月度学时排行榜' }
       },
       value: 3.7,
       trainStatus: {
@@ -360,30 +214,30 @@ export default {
       newsListData: [], // 新闻
       myLiveData: [], // 我的直播
       banner: [
-        {
-          css: {
-            backgroundImage: 'url(' + require('../assets/images/banner.jpg') + ')',
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: 'cover'
-          },
-          id: '11'
-        },
-        {
-          css: {
-            backgroundImage: 'url(' + require('../assets/images/banner3.jpg') + ')',
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: 'cover'
-          },
-          id: '22'
-        },
-        {
-          css: {
-            backgroundImage: 'url(' + require('../assets/images/banner4.jpg') + ')',
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: 'cover'
-          },
-          id: '33'
-        }
+        // {
+        //   css: {
+        //     backgroundImage: 'url(' + require('../assets/images/banner.jpg') + ')',
+        //     backgroundRepeat: 'no-repeat',
+        //     backgroundSize: 'cover'
+        //   },
+        //   id: '11'
+        // },
+        // {
+        //   css: {
+        //     backgroundImage: 'url(' + require('../assets/images/banner3.jpg') + ')',
+        //     backgroundRepeat: 'no-repeat',
+        //     backgroundSize: 'cover'
+        //   },
+        //   id: '22'
+        // },
+        // {
+        //   css: {
+        //     backgroundImage: 'url(' + require('../assets/images/banner4.jpg') + ')',
+        //     backgroundRepeat: 'no-repeat',
+        //     backgroundSize: 'cover'
+        //   },
+        //   id: '33'
+        // }
       ],
       bannerExcavator: [
         {
@@ -414,7 +268,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['orgIds'])
+    ...mapGetters(['orgIds']),
+    diyConfig: () => {
+      let userInfo = getStore({ name: 'userInfo' })
+      let diyConfig =
+        userInfo.cms_plan && userInfo.cms_plan.length > 0 && JSON.parse(userInfo.cms_plan)
+      return diyConfig.content
+    }
   },
   watch: {
     orgIds(val) {
@@ -422,6 +282,7 @@ export default {
     }
   },
   mounted() {
+    this.getBannersFn()
     this.getHotCourse()
     this.getTrainList()
     this.getNewsList()
@@ -436,24 +297,30 @@ export default {
       this.orgIdsD = orgIdsVuex || getStore({ name: 'orgIds' })
       this.isOrgIdE = this.orgIdsD.indexOf('5263') !== -1 ? true : false
     },
-    myTaskPrevFn() {
-      this.$refs.myTaskRef.prev()
-    },
-    myTaskNextFn() {
-      this.$refs.myTaskRef.next()
-    },
-    toTrainDetaill(item) {
-      // 调转到培训详情
-      const { id: trainId, trainName: title, trainWay, userType } = item
-      this.$router.push({
-        name: 'trainDetail',
-        params: {
-          title,
-          trainId,
-          trainWay,
-          userType
-        }
-      })
+    // myTaskPrevFn() {
+    //   this.$refs.myTaskRef.prev()
+    // },
+    // myTaskNextFn() {
+    //   this.$refs.myTaskRef.next()
+    // },
+    // toTrainDetaill(item) {
+    //   // 调转到培训详情
+    //   const { id: trainId, trainName: title, trainWay, userType } = item
+    //   this.$router.push({
+    //     name: 'trainDetail',
+    //     params: {
+    //       title,
+    //       trainId,
+    //       trainWay,
+    //       userType
+    //     }
+    //   })
+    // },
+
+    async getBannersFn() {
+      // 查询banner
+      let res = await getBanners({ deviceType: 'PC' })
+      this.banner = res
     },
     async getHomeMyLive() {
       // 我的直播
@@ -527,14 +394,14 @@ export default {
 .homeLeft {
   width: 897px;
 }
-.LMTitle {
+/deep/ .LMTitle {
   float: left;
   padding: 46px 0 21px 0;
   clear: both;
   width: 100%;
   margin: 0;
 }
-.LMTitle .span1 {
+/deep/ .LMTitle .span1 {
   font-size: 22px;
   // font-family: 'Arial', 'Microsoft YaHei', '黑体', '宋体', sans-serif;
   color: #000b15;
@@ -542,7 +409,7 @@ export default {
   padding-right: 8px;
   float: left;
 }
-.LMTitle .span2 {
+/deep/ .LMTitle .span2 {
   font-size: 14px;
   // font-family: 'Arial', 'Microsoft YaHei', '黑体', '宋体', sans-serif;
   color: #000b15;
@@ -551,11 +418,11 @@ export default {
   float: left;
   padding: 8px 0 0 8px;
 }
-.LMTitle .myTaskChange {
+/deep/ .LMTitle .myTaskChange {
   float: right;
   padding-top: 7px;
 }
-.LMTitle .myTaskPrev {
+/deep/ .LMTitle .myTaskPrev {
   width: 20px;
   height: 20px;
   display: block;
@@ -564,7 +431,7 @@ export default {
   cursor: pointer;
   margin: 0 22px 0 0;
 }
-.LMTitle .myTaskNext {
+/deep/ .LMTitle .myTaskNext {
   width: 20px;
   height: 20px;
   display: block;
@@ -572,7 +439,7 @@ export default {
   background: url('/img/bgicon.png') repeat-x -85px -172px;
   cursor: pointer;
 }
-.LMTitle a {
+/deep/ .LMTitle a {
   font-size: 14px;
   // font-family: 'Arial', 'Microsoft YaHei', '黑体', '宋体', sans-serif;
   color: #000b15;
@@ -582,14 +449,14 @@ export default {
   padding-top: 10px;
 }
 
-.LModule {
+/deep/ .LModule {
   width: 897px;
   overflow-x: hidden;
 }
-.LModule2 {
+/deep/ .LModule2 {
   width: 920px;
 }
-.homeCourse {
+/deep/ .homeCourse {
   float: left;
   width: 285px;
   height: 306px;
@@ -599,7 +466,7 @@ export default {
   margin: 0 20px 20px 0;
   border-radius: 4px;
 }
-.homeCourse .homeCourseTitle {
+/deep/ .homeCourse .homeCourseTitle {
   text-align: left;
   font-size: 14px;
   height: 55px;
@@ -613,20 +480,20 @@ export default {
   -webkit-line-clamp: 2;
   font-weight: bold;
 }
-.homeCourseImg {
+/deep/ .homeCourseImg {
   height: 168px;
 }
-.homeCourseText {
+/deep/ .homeCourseText {
   padding: 0 15px;
   overflow: hidden;
 }
-.homeCourse .hCWatchNumber {
+/deep/ .homeCourse .hCWatchNumber {
   float: left;
   font-size: 12px;
   color: #000b15;
   opacity: 0.65;
 }
-.homeCourse .homeCourseTime {
+/deep/ .homeCourse .homeCourseTime {
   padding-top: 5px;
   width: 150px;
   white-space: nowrap;
@@ -637,34 +504,34 @@ export default {
   color: #000b15;
   opacity: 0.65;
 }
-.homeCourse .homeCourseTime:before {
+/deep/ .homeCourse .homeCourseTime:before {
   padding-right: 5px;
 }
-.homeCourse .livePerInfo {
+/deep/ .homeCourse .livePerInfo {
   float: right;
 }
-.homeCourse .grade {
+/deep/ .homeCourse .grade {
   float: left;
   transform: scale(0.8);
   margin: 3px 0 0 -14px;
 }
-.homeCourse .livePerInfo img {
+/deep/ .homeCourse .livePerInfo img {
   border-radius: 50%;
   margin-right: 4px;
   float: left;
 }
-.homeCourse .livePerInfo span {
+/deep/ .homeCourse .livePerInfo span {
   float: left;
   padding: 4px 0 0 4px;
   font-size: 12px;
   color: #000b15;
   opacity: 0.65;
 }
-.homeCourse .livePerInfo .userIcon {
+/deep/ .homeCourse .livePerInfo .userIcon {
   padding: 5px 0 0 0;
 }
 
-.recommendCourse {
+/deep/ .recommendCourse {
   width: 590px;
   height: 276px;
   float: left;
@@ -673,10 +540,10 @@ export default {
   margin: 0 20px 20px 0;
   border-radius: 4px;
 }
-.recommendCourse .recommendCourseTextP {
+/deep/ .recommendCourse .recommendCourseTextP {
   position: absolute;
 }
-.recommendCourse .recommendCourseText {
+/deep/ .recommendCourse .recommendCourseText {
   border-radius: 0 0 4px 4px;
   position: relative;
   z-index: 10;
@@ -692,24 +559,24 @@ export default {
   padding: 10px 15px;
   box-sizing: border-box;
 }
-.recommendCourse .recommendCourseTitle {
+/deep/ .recommendCourse .recommendCourseTitle {
   display: block;
   font-size: 14px;
 }
-.recommendCourse .recommendGrade {
+/deep/ .recommendCourse .recommendGrade {
   float: left;
   transform: scale(0.8);
   margin: 10px 0 0 -14px;
 }
-.recommendCourse .learnNub {
+/deep/ .recommendCourse .learnNub {
   float: right;
 }
-.recommendCourse .userIcon {
+/deep/ .recommendCourse .userIcon {
   font-size: 12px;
   padding: 0 9px 0 0;
 }
 
-.homeTrain {
+/deep/ .homeTrain {
   cursor: pointer;
   width: 285px;
   height: 172px;
@@ -721,7 +588,7 @@ export default {
   float: left;
   background: url('/img/bgicon.png') repeat-x 0px 0px #fff;
 }
-.homeTrain .homeTrainTitle {
+/deep/ .homeTrain .homeTrainTitle {
   width: 285px;
   font-size: 16px;
   font-weight: normal;
@@ -733,7 +600,7 @@ export default {
   // background: url('../assets/images/icon.png') no-repeat 0 -206px;
   color: #000b15;
 }
-.homeTrain .homeTrainTitle::before {
+/deep/ .homeTrain .homeTrainTitle::before {
   float: left;
   content: '';
   display: block;
@@ -742,38 +609,38 @@ export default {
   margin: 1px 15px 0 0;
   background: url('/img/bgicon.png') repeat-x 0px -178px #fff;
 }
-.homeTrain .homeTrainTextItem {
+/deep/ .homeTrain .homeTrainTextItem {
   color: #73797f;
   display: block;
   overflow: hidden;
   padding: 10px 15px 0 62px;
   font-size: 12px;
 }
-.homeTrain .homeTrainTextItem img {
+/deep/ .homeTrain .homeTrainTextItem img {
   border-radius: 50%;
   float: left;
   margin: 0 5px 0 0;
 }
 
-.homeTrain .homeTraining {
+/deep/ .homeTrain .homeTraining {
   float: right;
   padding: 2px 6px;
   border-radius: 4px;
 }
-.homeTrain .ing {
+/deep/ .homeTrain .ing {
   background: #e7fbff;
   color: #01aafc;
 }
-.homeTrain .future {
+/deep/ .homeTrain .future {
   background: #e7ffee;
   color: #00b061;
 }
-.homeTrain .traingIcon {
+/deep/ .homeTrain .traingIcon {
   font-size: 12px;
   float: left;
   margin: 1px 5px 0 0;
 }
-.homeTrain .homeTrainTextItem2 {
+/deep/ .homeTrain .homeTrainTextItem2 {
   float: left;
   overflow: hidden;
   display: block;
@@ -782,7 +649,7 @@ export default {
   white-space: nowrap;
 }
 
-.homeRight {
+/deep/ .homeRight {
   width: 285px;
   margin-left: 35px;
 }
