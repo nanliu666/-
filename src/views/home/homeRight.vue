@@ -1,7 +1,8 @@
 <template>
   <!-- 首页左侧内容 -->
   <div class="homeRightP">
-    <div class="homePrivateInfo">
+    <!-- <home-side-user-info :home-p-info-data="homePInfoData"></home-side-user-info> -->
+    <!-- <div class="homePrivateInfo">
       <div class="homePrivateInfoImg">
         <img
           :src="homePInfoData.url ? homePInfoData.url : '/img/userIconBig.png'"
@@ -32,100 +33,13 @@
           <span class="creditType">本月学时</span>
         </div>
       </div>
-    </div>
-    <div class="learningCourse">
+    </div> -->
+    <!-- <home-side-learn-course :learning-course-data="learningCourseData"></home-side-learn-course>
+    <home-side-rank-integral :monthly-credit-data="monthlyCreditData"></home-side-rank-integral>
+    <home-side-rank-hour :monthly-period-data="monthlyPeriodData"></home-side-rank-hour> -->
+    <!-- <div class="ranking">
       <div class="homeRightTitle">
-        <span>在学课程</span>
-        <!-- <router-link to="">更多</router-link> -->
-      </div>
-      <div
-        v-for="item in learningCourseData.data"
-        :key="item.id"
-        class="learningCourseItem"
-        @click="learningCourseFn(item)"
-      >
-        <img
-          :src="item.coverUrl ? item.coverUrl : '/img/autoL.png'"
-          width="102"
-          height="58"
-          alt=""
-        />
-        <div class="courseText">
-          <h3 class="courseTitle">{{ item.name }}</h3>
-          <span class="courseTime">时长 {{ item.duration }}</span>
-          <!--  时长 -->
-          <span class="coursePercent">{{ item.totalPrecent }}%</span>
-          <div style="clear: both"></div>
-          <el-progress
-            :percentage="item.totalPrecent"
-            :stroke-width="4"
-            style="padding-top: 5px"
-            :format="format"
-          ></el-progress>
-        </div>
-      </div>
-      <!-- <div class="learningCourseItem">
-        <img
-          src="../../assets/images/photo1.png"
-          width="102"
-          height="58"
-          alt=""
-        />
-        <div class="courseText">
-          <h3 class="courseTitle">
-            信息安全十条铁规信息安全十条铁规信息安全十条铁规
-          </h3>
-          <span class="courseTime">时长 00:34:12</span>
-          <span class="coursePercent">76%</span>
-          <el-progress
-            :percentage="50"
-            :format="format"
-          ></el-progress>
-        </div>
-      </div>
-      <div class="learningCourseItem">
-        <img
-          src="../../assets/images/photo1.png"
-          width="102"
-          height="58"
-          alt=""
-        />
-        <div class="courseText">
-          <h3 class="courseTitle">
-            信息安全十条铁规信息安全十条铁规信息安全十条铁规
-          </h3>
-          <span class="courseTime">时长 00:34:12</span>
-          <span class="coursePercent">76%</span>
-          <el-progress
-            :percentage="50"
-            :format="format"
-          ></el-progress>
-        </div>
-      </div>
-      <div class="learningCourseItem">
-        <img
-          src="../../assets/images/photo1.png"
-          width="102"
-          height="58"
-          alt=""
-        />
-        <div class="courseText">
-          <h3 class="courseTitle">
-            信息安全十条铁规信息安全十条铁规信息安全十条铁规
-          </h3>
-          <span class="courseTime">时长 00:34:12</span>
-          <span class="coursePercent">76%</span>
-          <el-progress
-            :percentage="50"
-            :format="format"
-          ></el-progress>
-        </div>
-      </div> -->
-    </div>
-    <div class="ranking">
-      <div class="homeRightTitle">
-        <span>月度积分排行榜</span>
-        <!-- <router-link to="">更多</router-link> -->
+        <span>月度积分排行榜</span>        
       </div>
       <div v-for="(item, i) in monthlyCreditData" :key="item.id" class="rankingItem">
         <div :class="['rankingIndex', 'rankingIndex' + i]">0{{ i + 1 }}</div>
@@ -137,32 +51,11 @@
           <span class="rankingInfo2">{{ item.orgCode }}</span>
         </div>
         <div class="score">{{ item.monthlyScore }}分</div>
-      </div>
-      <!-- <div class="rankingItem">
-        <div class="rankingIndex rankingIndex2">
-          02
-        </div>
-        <div class="rankingImg">
-          <img
-            src="/img/userIconBig.png"
-            width="40"
-            height="40"
-            alt=""
-          />
-        </div>
-        <div class="rankingInfo">
-          <span class="rankingInfo1">小明</span>
-          <span class="rankingInfo2">开发部</span>
-        </div>
-        <div class="score">
-          234分
-        </div>      
-      </div> -->
+      </div>      
     </div>
     <div class="ranking">
       <div class="homeRightTitle">
-        <span>月度学时排行榜</span>
-        <!-- <router-link to="">更多</router-link> -->
+        <span>月度学时排行榜</span>       
       </div>
       <div v-for="(item, i) in monthlyPeriodData" :key="item.id" class="rankingItem">
         <div :class="['rankingIndex', 'rankingIndex' + i]">0{{ i + 1 }}</div>
@@ -175,19 +68,58 @@
         </div>
         <div class="score">{{ item.monthlyPeriod }}H</div>
       </div>
+    </div> -->
+    <div v-for="item in diyConfig" :key="item.id">
+      <component
+        :is="diyBaseConfig[item.id].coms"
+        :home-p-info-data="homePInfoData"
+        :learning-course-data="learningCourseData"
+        :monthly-credit-data="monthlyCreditData"
+        :monthly-period-data="monthlyPeriodData"
+      >
+      </component>
     </div>
   </div>
 </template>
 <script>
 import { homePInfo, homeLearningCourse, homeMonthlyCredit, homeMonthlyPeriod } from '@/api/home'
+import homeSideUserInfo from './side/homeSideUserInfo.vue'
+import HomeSideLearnCourse from './side/homeSideLearnCourse'
+import HomeSideRankIntegral from './side/homeSideRankIntegral.vue'
+import HomeSideRankHour from './side/homeSideRankHour.vue'
+import { getStore } from '@/util/store'
 export default {
   name: 'HomeRight',
+  components: {
+    homeSideUserInfo,
+    HomeSideLearnCourse,
+    HomeSideRankIntegral,
+    HomeSideRankHour
+  },
   data() {
     return {
-      homePInfoData: [],
-      learningCourseData: [],
+      diyBaseConfig: {
+        // diyPcL1: { coms: 'HomeMyTask', name: '我的任务' },
+        // diyPcL2: { coms: 'HomeLive', name: '最新直播' },
+        // diyPcL3: { coms: 'HomeHotCourse', name: '热门课程' },
+        // diyPcL4: { coms: 'HomeTrain', name: '培训中心' },
+        // diyPcL5: { coms: 'HomeNews', name: '新闻中心' },
+        diyPcR1: { coms: 'homeSideUserInfo', name: '个人信息' },
+        diyPcR2: { coms: 'HomeSideLearnCourse', name: '学习中的课程' },
+        diyPcR3: { coms: 'HomeSideRankIntegral', name: '月度积分排行榜' },
+        diyPcR4: { coms: 'HomeSideRankHour', name: '月度学时排行榜' }
+      },
+      homePInfoData: {},
+      learningCourseData: {},
       monthlyCreditData: [],
       monthlyPeriodData: []
+    }
+  },
+  computed: {
+    diyConfig: () => {
+      let userInfo = getStore({ name: 'userInfo' })
+      let diyConfig = JSON.parse(userInfo.cms_plan)
+      return diyConfig.side
     }
   },
   mounted() {
@@ -226,9 +158,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.homeRightP {
-}
-.homeRightP .homePrivateInfo {
+.homeRightP /deep/ .homePrivateInfo {
   width: 285px;
   height: 374px;
   background: #fff url('../../assets/images/icon.png') no-repeat 0 168px;
@@ -237,14 +167,14 @@ export default {
   margin-top: 50px;
   text-align: center;
 }
-.homeRightP .homePrivateInfoImg {
+.homeRightP /deep/ .homePrivateInfoImg {
   padding: 30px 0 0 0;
 }
-.homeRightP .homePrivateInfoImg img {
+.homeRightP /deep/ .homePrivateInfoImg img {
   border-radius: 50%;
   margin: aout;
 }
-.homeRightP .homePrivateInfoName {
+.homeRightP /deep/ .homePrivateInfoName {
   font-size: 16px;
   color: #000b15;
   opacity: 0.85;
@@ -255,7 +185,7 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.homeRightP .homePrivateInfoOrg {
+.homeRightP /deep/ .homePrivateInfoOrg {
   font-size: 12px;
   color: #01aafc;
   width: 180px;
@@ -263,47 +193,47 @@ export default {
   padding: 2px 15px;
   border-radius: 10px;
 }
-.homeRightP .privateInfoCredit {
+.homeRightP /deep/ .privateInfoCredit {
   margin: 47px auto 0 auto;
   width: 200px;
   overflow: hidden;
 }
-.homeRightP .CreditItem {
+.homeRightP /deep/ .CreditItem {
   float: left;
   width: 100px;
   padding: 0 10px 22px 10px;
 }
-.homeRightP .CreditItem .credit {
+.homeRightP /deep/ .CreditItem .credit {
   display: block;
   padding-bottom: 5px;
   font-size: 24px;
 }
-.homeRightP .CreditItem .creditType {
+.homeRightP /deep/ .CreditItem .creditType {
   display: block;
   font-size: 12px;
   color: #000b15;
   opacity: 0.45;
 }
 
-.homeRightP .homeRightTitle {
+.homeRightP /deep/ .homeRightTitle {
   overflow: hidden;
   padding: 10px 0 18px 0;
 }
-.homeRightP .homeRightTitle span {
+.homeRightP /deep/ .homeRightTitle span {
   font-size: 16px;
   color: #000b15;
   opacity: 0.85;
   font-weight: bold;
   float: left;
 }
-.homeRightP .homeRightTitle a {
+.homeRightP /deep/ .homeRightTitle a {
   float: right;
   color: #000b15;
   opacity: 0.45;
   font-size: 12px;
 }
 
-.homeRightP .learningCourse {
+.homeRightP /deep/ .learningCourse {
   background: #fff;
   box-shadow: 0 2px 12px 0 rgba(0, 88, 121, 0.08);
   border-radius: 4px;
@@ -312,22 +242,22 @@ export default {
   margin-top: 20px;
 }
 
-.homeRightP .learningCourseItem {
+.homeRightP /deep/ .learningCourseItem {
   cursor: pointer;
   display: flex;
   margin-bottom: 18px;
 }
-.homeRightP .learningCourseItem img {
+.homeRightP /deep/ .learningCourseItem img {
   border-radius: 4px;
   width: 102px;
 }
-.homeRightP .learningCourse .courseText {
+.homeRightP /deep/ .learningCourse .courseText {
   flex: 1;
   width: 140px;
   text-align: left;
   padding-left: 10px;
 }
-.homeRightP .courseTitle {
+.homeRightP /deep/ .courseTitle {
   font-size: 14px;
   margin: 0 0 5px 0;
   color: #000b15;
@@ -338,24 +268,24 @@ export default {
   text-overflow: ellipsis;
   overflow: hidden;
 }
-.homeRightP .courseTime {
+.homeRightP /deep/ .courseTime {
   float: left;
   font-size: 12px;
   opacity: 0.45;
   color: #000b15;
 }
-.homeRightP .coursePercent {
+.homeRightP /deep/ .coursePercent {
   float: right;
   font-size: 12px;
   opacity: 0.45;
   color: #000b15;
 }
-/deep/.el-progress-bar {
+/deep/ .el-progress-bar {
   padding-right: 0;
   margin-top: 2px;
 }
 
-.homeRightP .ranking {
+.homeRightP /deep/ .ranking {
   background: #fff;
   box-shadow: 0 2px 12px 0 rgba(0, 88, 121, 0.08);
   border-radius: 4px;
@@ -363,45 +293,45 @@ export default {
   padding: 10px 20px;
   margin-top: 20px;
 }
-.homeRightP .rankingItem {
+.homeRightP /deep/ .rankingItem {
   display: flex;
   margin-bottom: 20px;
 }
-.homeRightP .rankingIndex {
+.homeRightP /deep/ rankingIndex {
   width: 24px;
   margin: 13px 10px 0 0;
   font-size: 16px;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bolder;
 }
-.homeRightP .rankingIndex0 {
+.homeRightP /deep/ .rankingIndex0 {
   color: #fcba00;
 }
-.homeRightP .rankingIndex1 {
+.homeRightP /deep/ .rankingIndex1 {
   color: #00d66f;
 }
 .homeRightP .rankingIndex2 {
   color: #01aafc;
 }
-.homeRightP .rankingIndexOther {
+.homeRightP /deep/ .rankingIndexOther {
   color: #000b15;
   opacity: 0.25;
 }
-.homeRightP .rankingImg {
+.homeRightP /deep/ .rankingImg {
   width: 40px;
   margin: 0 10px 0 0;
 }
-.homeRightP .rankingImg img {
+.homeRightP /deep/ .rankingImg img {
   border-radius: 50%;
 }
-.homeRightP .rankingInfo {
+.homeRightP /deep/ .rankingInfo {
   flex: 1;
   text-align: left;
   font-size: 12px;
   color: #000;
   font-family: '微软雅黑';
 }
-.homeRightP .rankingInfo1 {
+.homeRightP /deep/ .rankingInfo1 {
   display: block;
   height: 20px;
   font-size: 12px;
@@ -411,12 +341,12 @@ export default {
   opacity: 0.85;
   padding: 1px 0 3px 0;
 }
-.homeRightP .rankingInfo2 {
+.homeRightP /deep/ .rankingInfo2 {
   display: block;
   font-size: 12px;
   opacity: 0.35;
 }
-.homeRightP .score {
+.homeRightP /deep/ .score {
   width: 60px;
   color: #000;
   opacity: 0.65;

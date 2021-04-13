@@ -1,4 +1,9 @@
 import { get } from '@/util/axios'
+// 查询banner
+export const getBanners = (params) => {
+  return get('/api/common/v1/base/banner/user', params)
+}
+
 /**
  * 首页我的培训
  * */
