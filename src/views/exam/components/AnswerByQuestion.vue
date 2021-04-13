@@ -23,8 +23,10 @@
               :key="paperIndex"
               class="right__content"
             >
-              <span>{{ paperIndex + 1 }}.</span>
-              <QustionPreview :data="paperItem" :disabled="disabled" />
+              <div class="content_topic">
+                <span class="topic__index">({{ paperIndex + 1 }}) </span>
+                <QustionPreview :data="paperItem" :disabled="disabled" />
+              </div>
               <div class="right__button">
                 <el-button size="medium" @click="setImpeach(paperItem)">{{
                   _.some(isInImpeachList, (imItem) => imItem === paperItem.id) ? '取消存疑' : '存疑'
@@ -148,6 +150,13 @@ $selctColor: #fcba00;
     .right__content {
       margin-top: 10px;
       margin-bottom: 20px;
+      .content_topic {
+        display: flex;
+        width: 100%;
+        .topic__index {
+          margin-top: 2px;
+        }
+      }
     }
   }
 }

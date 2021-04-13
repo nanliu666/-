@@ -106,9 +106,9 @@
                     <li
                       v-for="(paperItem, paperIndex) in conItem.subQuestions"
                       :key="paperIndex"
-                      class=""
+                      class="paper__li"
                     >
-                      <span>{{ paperIndex + 1 }}.</span>
+                      <span>({{ paperIndex + 1 }}) </span>
                       <QustionPreview
                         :data="paperItem"
                         :paper-data="examDetail"
@@ -321,6 +321,9 @@ export default {
       .content-box {
         .content-li {
           margin-bottom: 32px;
+        }
+        .paper__li {
+          margin: 4px 0 20px;
         }
       }
     }
