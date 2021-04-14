@@ -9,7 +9,8 @@
           placeholder="查找课程"
           suffix-icon="el-icon-search"
         />
-        <el-popover
+
+        <!-- <el-popover
           placement="bottom-start"
           width="412"
           trigger="click"
@@ -43,7 +44,32 @@
           <el-button slot="reference" size="medium">
             高级检索
           </el-button>
-        </el-popover>
+        </el-popover> -->
+
+        <div class="course-list-filter-pop__wrap">
+          <div class="course-list-filter-pop__label">
+            讲师：
+          </div>
+          <lazy-select
+            v-model="extraParams.teacherId"
+            :load="loadTeacher"
+            style="width: 100%"
+            placeholder="请选择"
+            :option-props="{
+              label: 'name',
+              value: 'idStr',
+              key: 'idStr'
+            }"
+          ></lazy-select>
+          <div class="course-list-filter-pop__footer">
+            <el-button type="primary" size="mini" @click="refreshData">
+              确定
+            </el-button>
+            <el-button size="mini" @click="resetExtraParams">
+              重置
+            </el-button>
+          </div>
+        </div>
       </div>
       <div class="course-list__filter-divider"></div>
       <category-select :load="loadCategory" @change="handleCategoryChange"></category-select>
@@ -444,18 +470,19 @@ export default {
 <style lang="scss">
 .course-list-filter-pop {
   &__wrap {
-    padding: 24px 16px;
+    display: flex;
+    padding: 0;
   }
   &__label {
-    margin-bottom: 8px;
+    width: 125px;
+    text-align: right;
+    padding-top: 7px;
   }
   &__footer {
-    margin-top: 16px;
+    margin-top: 0;
+    margin-left: 24px;
     display: flex;
     justify-content: flex-end;
-    .el-button {
-      padding: 9px 13px;
-    }
   }
 }
 </style>

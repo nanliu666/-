@@ -11,7 +11,25 @@
       </div>
       <div class="course-detail__info__right">
         <div class="course-detail__info__name">
-          {{ courseData.name }}
+          <span>
+            {{ courseData.name }}
+          </span>
+          <span class="myRate">
+            <el-rate
+              :value="parseFloat(courseData.scope)"
+              disabled
+              show-score
+              text-color="#878c91"
+              score-template="{value}"
+            >
+            </el-rate>分
+          </span>
+        </div>
+        <div v-if="courseData.credit" class="course-detail__info__column">
+          <span class="course-detail__info__label"> 分类： </span>
+          <span class="course-detail__info__value">
+            {{ courseData.catalogName }}
+          </span>
         </div>
         <div class="course-detail__info__column">
           <span class="course-detail__info__label"> 讲师： </span>
@@ -19,17 +37,22 @@
             {{ courseData.teacherName }}
           </span>
         </div>
-        <div v-if="courseData.credit" class="course-detail__info__column">
+        <!-- <div v-if="courseData.credit" class="course-detail__info__column">
           <span class="course-detail__info__label"> 积分： </span>
           <span class="course-detail__info__value">
             {{ courseData.credit }}
           </span>
-        </div>
-        <div v-if="courseData.period" class="course-detail__info__column">
+        </div> -->
+        <!-- <div v-if="courseData.period" class="course-detail__info__column">
           <span class="course-detail__info__label"> 学时： </span>
           <span class="course-detail__info__value">
             {{ courseData.period + 'h' }}
           </span>
+        </div> -->
+        <div class="info_number">
+          <span> <i class="el-icon-user"></i> {{ courseData.studyPeople || 0 }}人 </span>
+          <span> <i class="el-icon-time"></i> {{ courseData.period || 0 }}H </span>
+          <span> <i class="el-icon-coin"></i> {{ courseData.credit || 0 }}积分 </span>
         </div>
         <el-button type="primary" size="medium" @click="jumpToLearn(id, null)">
           立即学习
@@ -75,9 +98,15 @@
             </li>
           </ul>
         </el-tab-pane>
+        <!-- 笔记 -->
+        <el-tab-pane key="Note" :label="`课程笔记(${noteTotalNum})`" name="Note">
+          <div style="padding: 0 10px;">
+            <Note @totalNum="totalNum" />
+          </div>
+        </el-tab-pane>
+
         <el-tab-pane key="experience" label="学习心得" name="experience">
           <experience :course-name="courseData.name" />
-          <!-- 引入下载模块 -->
         </el-tab-pane>
         <el-tab-pane label="课程评价" name="third">
           <Comment :load="loadCommentList" :submit="submitComment" name="课程" />
@@ -95,17 +124,20 @@ import {
   getCommentList,
   addComment,
   getLearnRecord,
-  addViewLog
+  addViewLog,
+  addStudyTimes
 } from '@/api/course'
 import Comment from '@/components/common-comment/Comment'
 import { COURSE_CHAPTER_TYPE_MAP, COURSE_TYPE_MAP } from './config'
 import { mapGetters } from 'vuex'
 import Experience from './components/Experience'
+import Note from './components/Note'
 export default {
   name: 'CourseDetail',
-  components: { Comment, Experience, CommonBreadcrumb },
+  components: { Comment, Experience, CommonBreadcrumb, Note },
   data() {
     return {
+      noteTotalNum: '',
       routeList: [
         {
           path: '/course',
@@ -141,6 +173,9 @@ export default {
   },
   mounted() {},
   methods: {
+    totalNum(i) {
+      this.noteTotalNum = i
+    },
     getSecondesToHours(chapter) {
       // 秒变成时分秒
       const regx = /^.*\.(avi|wmv|mp4|3gp|rm|rmvb|mov)$/
@@ -169,6 +204,7 @@ export default {
         return
       }
       getCourseDetail({ courseId: this.id }).then((res) => {
+        res.scope = Number(res.scope).toFixed(1)
         this.courseData = res
         this.$nextTick(() => {
           this.$refs.breadcrumb.setBreadcrumbTitle(res.name)
@@ -198,6 +234,8 @@ export default {
         tenantId: this.userInfo.tenant_id,
         workNo: this.userInfo.work_no
       })
+      // 记录次数
+      addStudyTimes({ courseId: courseId })
       this.$router.push({ path: '/course/learn', query: { courseId, chapterId } })
     }
   }
@@ -245,6 +283,15 @@ export default {
       color: $primaryFontColor;
       letter-spacing: 0;
       line-height: 28px;
+      display: flex;
+      justify-content: space-between;
+      .myRate {
+        display: flex;
+        font-size: 12px;
+        line-height: 19px;
+        color: #878c91;
+        margin-right: 120px;
+      }
     }
 
     &__column {
@@ -310,6 +357,20 @@ export default {
     &--handler {
       display: flex;
       align-items: center;
+    }
+  }
+  .info_number {
+    display: flex;
+    margin-top: 16px;
+    span {
+      margin-right: 24px;
+      opacity: 0.65;
+      font-family: PingFangSC-Regular;
+      font-size: 14px;
+      color: #000b15;
+      letter-spacing: 0;
+      line-height: 22px;
+      vertical-align: text-bottom;
     }
   }
 }

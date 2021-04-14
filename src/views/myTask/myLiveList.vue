@@ -124,17 +124,17 @@ export default {
           id: '',
           label: '全部'
         },
-        // {
-        //   id: 'ready',
-        //   label: '未开始'
-        // },
+        {
+          id: 'start',
+          label: '未开始'
+        },
         {
           id: 'live',
           label: '直播中'
         },
         {
           id: 'end',
-          label: '未开始'
+          label: '已结束'
         }
         // {
         //   id: 'replay',

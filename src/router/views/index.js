@@ -290,6 +290,24 @@ export default [
           }
         ]
       },
+      // 新的个人中心
+      {
+        path: '/personal',
+        redirect: '/personal/personal',
+        component: EmptyLayout,
+        title: '个人中心',
+        children: [
+          {
+            path: 'personal',
+            name: 'personal',
+            component: () =>
+              import(/* webpackChunkName: "page" */ '@/views/personal/myPersonal.vue'),
+            meta: {
+              title: '个人中心'
+            }
+          }
+        ]
+      },
       {
         path: '/train', // 培训页面
         redirect: '/train/index',
