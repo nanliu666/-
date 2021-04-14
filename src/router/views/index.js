@@ -433,6 +433,24 @@ export default [
           title: '必修课详情'
         }
       },
+      //   作业-必修课详情
+      {
+        path: '/myTask/compulsoryDetail',
+        name: 'compulsoryDetail',
+        component: () => import('@/views/myTask/myHomeWork/components/compulsoryDetail.vue'),
+        meta: {
+          title: '作业-必修课详情'
+        }
+      },
+      //   作业-培训详情
+      {
+        path: '/myTask/trainingDetail',
+        name: 'trainingDetail',
+        component: () => import('@/views/myTask/myHomeWork/components/trainingDetail.vue'),
+        meta: {
+          title: '作业-培训详情'
+        }
+      },
       ...(process.env.NODE_ENV === 'development' ? demoRoutes : [])
     ]
   }

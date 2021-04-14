@@ -18,22 +18,24 @@
             <!-- <div v-if="z.totalPrecent == 100" class="ended">
               <el-tag size="mini">已结束</el-tag>
             </div> -->
-            <div v-show="maskVisiable && n == k" class="mask-layer">
-              <button
-                style="
-                  width: 84px;
-                  height: 32px;
-                  background: rgba(255, 255, 255, 0.2);
-                  border: 1px solid #ffffff;
-                  border-radius: 4px;
-                  font-size: 14px;
-                  color: #ffffff;
-                  margin-top: 70px;
-                "
-              >
-                继续学习
-              </button>
-            </div>
+            <transition name="fade">
+              <div v-show="maskVisiable && n == k" class="mask-layer">
+                <button
+                  style="
+                    width: 84px;
+                    height: 32px;
+                    background: rgba(255, 255, 255, 0.2);
+                    border: 1px solid #ffffff;
+                    border-radius: 4px;
+                    font-size: 14px;
+                    color: #ffffff;
+                    margin-top: 70px;
+                  "
+                >
+                  继续学习
+                </button>
+              </div>
+            </transition>
           </div>
           <!-- 内容区域 -->
           <div class="container">
@@ -227,6 +229,13 @@ export default {
         top: -10px;
       }
     }
+  }
+  .el-card {
+    transition-duration: 0.3s;
+  }
+  .el-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 9px 12px 0 rgba(0, 63, 161, 0.12);
   }
   .page {
     text-align: right;
