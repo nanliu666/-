@@ -110,16 +110,20 @@ export default {
       })
       // to , from 分别表示从哪跳转到哪，都是一个对象
       // to.path  ( 表示的是要跳转到的路由的地址 eg: /home );
+    },
+    orgIds(val) {
+      this.isOrgIdE = val.indexOf('5263') !== -1 ? true : false
     }
   },
   beforeMount() {
     // 初始化时设置激活中的菜单
     this.activePath = this.$route.path.match(/^\/\w*/g)[0]
   },
-  mounted() {
-    this.$nextTick(() => {
-      this.isOrgIdEFn()
-    })
+  created() {
+    this.isOrgIdEFn()
+  },
+  activated() {
+    this.isOrgIdEFn()
   },
   methods: {
     isOrgIdEFn() {

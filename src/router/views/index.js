@@ -133,6 +133,14 @@ export default [
             }
           },
           {
+            path: 'middle',
+            name: 'ExamMiddle',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/exam/Middle.vue'),
+            meta: {
+              title: '考试详情'
+            }
+          },
+          {
             path: 'paper',
             name: 'ExamPaper',
             component: () => import(/* webpackChunkName: "page"*/ '@/views/exam/Paper.vue'),
@@ -441,6 +449,24 @@ export default [
         component: () => import('@/views/myTask/myRequiredDetails.vue'),
         meta: {
           title: '必修课详情'
+        }
+      },
+      //   作业-必修课详情
+      {
+        path: '/myTask/compulsoryDetail',
+        name: 'compulsoryDetail',
+        component: () => import('@/views/myTask/myHomeWork/components/compulsoryDetail.vue'),
+        meta: {
+          title: '作业-必修课详情'
+        }
+      },
+      //   作业-培训详情
+      {
+        path: '/myTask/trainingDetail',
+        name: 'trainingDetail',
+        component: () => import('@/views/myTask/myHomeWork/components/trainingDetail.vue'),
+        meta: {
+          title: '作业-培训详情'
         }
       },
       ...(process.env.NODE_ENV === 'development' ? demoRoutes : [])

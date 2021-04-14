@@ -5,7 +5,6 @@
         <div class="card">
           <div class="card-banner">
             <img :src="item.coverUrl" :onerror="errorImg" />
-
             <div
               class="card-status process"
               :class="{

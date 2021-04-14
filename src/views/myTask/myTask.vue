@@ -9,7 +9,8 @@
           </span>
           <span class="tab_num" :class="{ clickClass: clickData == item.path }">(
             <span v-if="index == 0"> {{ studyNum }} </span>
-            <span v-if="index == 1"> {{ examinationNum }} </span>
+            <span v-if="index == 1"> {{ homeWorkNum }} </span>
+            <span v-if="index == 2"> {{ examinationNum }} </span>
             <!-- <span v-else>0</span> -->
             )</span>
         </div>
@@ -23,7 +24,7 @@
 import myLearn from './myLearn'
 import myExamList from './myExamList'
 import myHomeWork from './myHomeWork'
-import { studyTodoNum, examTodoNum } from '@/api/myTask'
+import { studyTodoNum, examTodoNum, homeWorkNum } from '@/api/myTask'
 export default {
   components: { myLearn, myExamList, myHomeWork },
   data() {
@@ -35,12 +36,12 @@ export default {
           path: 'myLearn',
           icon: require('../../../public/img/学习.png')
         },
-        // {
-        //   name: '作业',
-        //   id: 'task',
-        //   path: 'myHomeWork',
-        //   icon: require('../../../public/img/作业.png')
-        // },
+        {
+          name: '作业',
+          id: 'task',
+          path: 'myHomeWork',
+          icon: require('../../../public/img/作业.png')
+        },
         {
           name: '考试',
           id: 'examination',
@@ -56,8 +57,9 @@ export default {
         // }
       ],
       clickData: 'myLearn',
-      studyNum: '',
-      examinationNum: ''
+      studyNum: 0,
+      examinationNum: 0,
+      homeWorkNum: 0
     }
   },
   created() {
@@ -75,6 +77,8 @@ export default {
       this.studyNum = await studyTodoNum()
       // 考试待办条数
       this.examinationNum = await examTodoNum()
+      // 作业待办条数
+      this.homeWorkNum = await homeWorkNum()
     }
   }
 }

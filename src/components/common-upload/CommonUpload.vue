@@ -34,6 +34,22 @@ export default {
       type: Function,
       default: () => true
     },
+    onUploadComplete: {
+      type: Function,
+      default: () => true
+    },
+    onUploadProgress: {
+      type: Function,
+      default: () => true
+    },
+    onUploadError: {
+      type: Function,
+      default: () => true
+    },
+    needHandler: {
+      type: Boolean,
+      default: false
+    },
     multiple: {
       type: Boolean,
       default: false
@@ -74,6 +90,9 @@ export default {
             // eslint-disable-next-line
             console.error('upload err:', err)
           }
+          if (that.needHandler) {
+            that.onUploadError()
+          }
         },
         // 格式化时间
         formatData() {
@@ -100,6 +119,9 @@ export default {
           that.$emit('input', newValue)
           // 专门给表格设计器的上传附件组件使用的，组件name为FileUpload
           that.$emit('getValue', newValue)
+          if (that.needHandler) {
+            that.onUploadComplete(file, url)
+          }
         }
       })
     }

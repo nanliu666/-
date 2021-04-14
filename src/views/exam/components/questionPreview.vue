@@ -19,12 +19,18 @@
       >
         <el-radio-group v-model="data.answer" :disabled="disabled" class="group-container">
           <el-radio
-            v-for="option in data.options"
+            v-for="(option, index) in data.options"
             :key="option.key"
             class="radio"
             :label="option.id"
           >
-            <span>{{ _.unescape(option.content) }}</span>
+            <span>
+              <span
+                v-if="[QUESTION_TYPE_SINGLE, QUESTION_TYPE_MULTIPLE].includes(data.type)"
+                style="margin-right: 4px"
+              >{{ QUESTION_PREFACE[index] }}.</span>
+              <span>{{ _.unescape(option.content) }}</span>
+            </span>
             <question-view v-if="option.url" :url="option.url" />
           </el-radio>
         </el-radio-group>
@@ -36,7 +42,7 @@
       >
         <li class="group-container">
           <el-checkbox
-            v-for="option in data.options"
+            v-for="(option, index) in data.options"
             :key="option.id"
             v-model="option.answerModel"
             :disabled="disabled"
@@ -44,7 +50,13 @@
             class="qustion-checkbox"
             @change="changeMultiple(option)"
           >
-            <span>{{ _.unescape(option.content) }}</span>
+            <span>
+              <span
+                v-if="[QUESTION_TYPE_SINGLE, QUESTION_TYPE_MULTIPLE].includes(data.type)"
+                style="margin-right: 4px"
+              >{{ QUESTION_PREFACE[index] }}.</span>
+              <span>{{ _.unescape(option.content) }}</span>
+            </span>
             <question-view v-if="option.url" :url="option.url" />
           </el-checkbox>
         </li>
@@ -99,6 +111,7 @@ import SelectView from './SelectView'
 import GapAndShort from './GapAndShort'
 import { addLine } from '@/util/util'
 import {
+  QUESTION_PREFACE,
   QUESTION_TYPE_MAP,
   QUESTION_TYPE_MULTIPLE,
   QUESTION_TYPE_SINGLE,
@@ -146,6 +159,7 @@ export default {
     }
   },
   computed: {
+    QUESTION_PREFACE: () => QUESTION_PREFACE,
     QUESTION_TYPE_MULTIPLE: () => QUESTION_TYPE_MULTIPLE,
     QUESTION_TYPE_SINGLE: () => QUESTION_TYPE_SINGLE,
     QUESTION_TYPE_JUDGE: () => QUESTION_TYPE_JUDGE,
@@ -217,6 +231,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.qustion {
+  width: 100%;
+}
 .blank-box {
   display: inline-block;
 }
