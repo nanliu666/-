@@ -124,7 +124,8 @@ import {
   getCommentList,
   addComment,
   getLearnRecord,
-  addViewLog
+  addViewLog,
+  addStudyTimes
 } from '@/api/course'
 import Comment from '@/components/common-comment/Comment'
 import { COURSE_CHAPTER_TYPE_MAP, COURSE_TYPE_MAP } from './config'
@@ -233,6 +234,8 @@ export default {
         tenantId: this.userInfo.tenant_id,
         workNo: this.userInfo.work_no
       })
+      // 记录次数
+      addStudyTimes({ courseId: courseId })
       this.$router.push({ path: '/course/learn', query: { courseId, chapterId } })
     }
   }

@@ -176,3 +176,8 @@ export const editCourseNote = (params) => post('api/manage/v1/web/course/editCou
  * @param {String} params.id
  */
 export const deleteCourseNote = (params) => get('api/manage/v1/web/course/deleteCourseNote', params)
+/**
+ * 增加学习次数
+ * @param {String} params.courseId 课程id
+ */
+export const addStudyTimes = (params) => get('api/manage/v1/web/course/addStudyTimes', params)

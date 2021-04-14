@@ -49,8 +49,8 @@
               <el-dropdown-item @click.native="toRouter('/approvalCenter/center')">
                 审批中心
               </el-dropdown-item>
-              <!-- <el-dropdown-item>
-                后台管理
+              <!-- <el-dropdown-item @click.native="toRouter('/personal')" >
+                个人中心
               </el-dropdown-item> -->
               <el-dropdown-item @click.native="logout"> 退出登录 </el-dropdown-item>
             </el-dropdown-menu>
