@@ -1,18 +1,35 @@
 <template>
-  <div class="compulsoryCourses">
+  <div v-loading="loading" class="compulsoryCourses">
     <ul class="items">
-      <li v-for="(item, index) in 12" :key="index" class="item" @click="goDetail(item)">
+      <li
+        v-for="(item, index) in listData"
+        :key="index"
+        class="item"
+        :class="{ complete: item.totalPrecent == 100 }"
+        @click="goDetail(item)"
+      >
         <div class="item_img">
-          <img :src="require('@/assets/images/photo1.jpg')" />
+          <img :src="item.coverUrl" />
+          <span v-if="item.status == 1" class="span1">未开始</span>
+          <span v-if="item.status == 2" class="span2">进行中</span>
+          <span v-if="item.status == 3" class="span3">已结束</span>
         </div>
 
-        <div class="item_title">必须课标题必须课标题必须课标题</div>
+        <div class="item_title">
+          {{ item.name.length > 15 ? item.name.slice(0, 15) + '...' : item.name }}
+        </div>
 
-        <div class="item_time">作业提交次数<span style="margin-left: 15px">15/55</span></div>
+        <div class="item_submitted">
+          作业提交次数<span style="margin-left: 15px">{{ item.jobTimes }}/{{ item.jobNum }}</span>
+        </div>
+
+        <div v-if="item.jobPercent == 100" class="item_complete">
+          <img src="@/assets/images/my_seal.png" alt="" />
+        </div>
       </li>
     </ul>
 
-    <div v-if="!total" class="page">
+    <div v-if="total" class="page">
       <el-pagination
         :page-sizes="[10, 20, 30, 50, 100]"
         layout="total, sizes, prev, pager, next, jumper"
@@ -31,15 +48,17 @@
   </div>
 </template>
 <script>
+import { requiredWorkList } from '@/api/myTask'
 export default {
   data() {
     return {
       total: 0,
       page: {
         pageNo: 1, //请求页码
-        pageSize: 12 //每页条数
+        pageSize: 8 //每页条数
       },
-      listData: []
+      listData: [],
+      loading: false
     }
   },
   created() {
@@ -47,8 +66,23 @@ export default {
   },
   methods: {
     // 跳转详情页
-    goDetail() {},
-    async getCompulsoryCoursesg() {},
+    goDetail(data) {
+      this.$router.push({ path: '/myTask/compulsoryDetail', query: { id: data.id } })
+    },
+    async getCompulsoryCoursesg() {
+      let params = {
+        ...this.page
+      }
+      this.loading = true
+      await requiredWorkList(params)
+        .then((res) => {
+          this.listData = res.data
+          this.total = res.totalNum
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    },
 
     handleSizeChange(val) {
       this.page.pageNo = 1
@@ -70,7 +104,7 @@ export default {
     flex-wrap: wrap;
     .item {
       width: 273px;
-      height: 276px;
+      height: 250px;
       border-radius: 4px;
       overflow: hidden;
       box-shadow: 0 2px 8px 0 rgba(0, 63, 161, 0.06);
@@ -97,10 +131,52 @@ export default {
           width: 100%;
           height: 100%;
         }
+        .span1 {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          background: #fffce6;
+          border-radius: 4px;
+          font-size: 10px;
+          width: 52px;
+          height: 20px;
+          line-height: 20px;
+          text-align: center;
+          color: #fcba00;
+          font-style: none;
+        }
+        .span2 {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          background: #e7ffee;
+          border-radius: 4px;
+          font-size: 10px;
+          width: 52px;
+          height: 20px;
+          line-height: 20px;
+          text-align: center;
+          color: #00b061;
+          font-style: none;
+        }
+        .span3 {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          background: #e7fbff;
+          border-radius: 4px;
+          font-size: 10px;
+          width: 52px;
+          height: 20px;
+          line-height: 20px;
+          text-align: center;
+          color: #01aafc;
+          font-style: none;
+        }
       }
       &_title {
         width: 100%;
-        padding: 16px;
+        padding: 16px 16px 10px;
         font-family: PingFangSC-Regular;
         font-size: 14px;
         color: #000b15;
@@ -110,15 +186,26 @@ export default {
         -o-text-overflow: ellipsis;
         white-space: nowrap;
       }
-      &_time {
-        padding: 3px 16px;
+      &_submitted {
         opacity: 0.65;
+        padding-left: 16px;
         font-family: PingFangSC-Regular;
         font-size: 12px;
         color: #000b15;
-        // border-bottom: 1px solid #ebeced;
-        margin-top: -10px;
-        line-height: 28px;
+        line-height: 18px;
+      }
+      &_complete {
+        position: absolute;
+        bottom: 5px;
+        right: 9px;
+        overflow: hidden;
+        width: 62px;
+        height: 62px;
+        border-radius: 50%;
+        img {
+          width: 100%;
+          height: 100%;
+        }
       }
     }
   }
@@ -130,6 +217,9 @@ export default {
       right: 24px;
       bottom: 0px;
     }
+  }
+  .complete {
+    opacity: 0.6;
   }
 }
 </style>
