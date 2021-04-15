@@ -1,35 +1,21 @@
 <template>
   <div v-loading="loading" class="trainingDetail">
     <el-card>
-      <!-- 下拉框 -->
-      <el-select
-        v-model="courseName"
-        style="width: 380px; margin-bottom: 25px"
-        @change="courseChange"
-      >
-        <el-option
-          v-for="item in seleteCourse"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        >
-        </el-option>
-      </el-select>
       <!-- 课程列表 -->
       <div v-for="(z, i) in tableData" :key="i" class="course_list">
         <div class="course_hearder">
           <el-row type="flex" justify="space-between">
-            <el-tooltip :content="'作业来源: ' + z.name" placement="top">
-              <div class="source">作业来源：{{ z.name }}</div>
+            <el-tooltip :content="'作业来源: ' + z.jobName" placement="top">
+              <div class="source">作业来源：{{ z.jobName }}</div>
             </el-tooltip>
-            <div class="download">
+            <!-- <div class="download">
               <i class="iconimage_icon_download iconfont" style="margin-right: 5px" />打包下载
-            </div>
+            </div> -->
           </el-row>
         </div>
         <!-- 表格数据 -->
-        <el-table :data="z.trainAttachmentVOS" :show-header="false">
-          <el-table-column prop="fileName">
+        <el-table :data="z.fileInfoList" :show-header="false">
+          <el-table-column prop="fileName" show-overflow-tooltip>
             <template slot-scope="scope">
               <div class="tip">
                 {{
@@ -51,8 +37,7 @@
           <el-table-column width="120" align="right">
             <template slot-scope="scope">
               <common-upload
-                v-if="scope.row.fileCategory"
-                :disabled="scope.row.fileCategory === 'teacher' && !scope.row.fileName"
+                :disabled="scope.$index == 2 && z.fileInfoList[1].updateTime == '--'"
                 need-handler
                 :before-upload="onUploadStart"
                 :on-upload-complete="(file, url) => onUploadComplete(scope.row, file, url)"
@@ -61,24 +46,20 @@
                 <el-button
                   type="text"
                   size="medium"
-                  :disabled="scope.row.fileCategory === 'teacher' && !scope.row.fileName"
+                  :disabled="scope.$index == 2 && z.fileInfoList[1].updateTime == '--'"
                   @click="modifyHomework(scope.row)"
                 >
-                  {{
-                    scope.row.fileName
-                      ? scope.row.fileCategory === 'user'
-                        ? '修改作业'
-                        : '修改评改'
-                      : scope.row.fileCategory === 'user'
-                        ? '上传作业'
-                        : '上传评改'
-                  }}
+                  <span v-if="scope.$index == 1">
+                    {{ scope.row.updateTime == '--' ? '上传作业' : '修改作业' }}
+                  </span>
+                  <span v-if="scope.$index == 2">{{ scope.row.updateTime == '--' ? '上传评改' : '修改评改' }}
+                  </span>
                 </el-button>
               </common-upload>
               <el-button
                 type="text"
                 size="medium"
-                :disabled="!scope.row.fileName"
+                :disabled="scope.row.updateTime == '--'"
                 @click="downloadHomework(scope.row)"
               >下载</el-button>
             </template>
@@ -90,27 +71,16 @@
 </template>
 
 <script>
-import {
-  queryStudyPlanWork,
-  queryStudyAllCorseList,
-  saveCourseLinkedStudentOrTeacher
-} from '@/api/myTask'
+import { listCourseJob, saveCourseLinkedStudentOrTeacher } from '@/api/myTask'
 import { mapGetters } from 'vuex'
 import { downLoadFile } from '@/util/util'
 export default {
-  name: 'CompulsoryTable',
+  name: 'ElectiveTable',
   components: {
     commonUpload: () => import('@/components/common-upload/CommonUpload')
   },
   data() {
     return {
-      seleteCourse: [
-        {
-          value: 'all',
-          label: '全部课程'
-        }
-      ],
-      courseName: 'all',
       tableData: [],
       loading: false
     }
@@ -133,39 +103,16 @@ export default {
     // 查询课程列表
     async queryStudyPlan() {
       this.loading = true
-      await queryStudyAllCorseList({ id: this.$route.query.id })
-        .then((res) => {
-          res.map((v) => {
-            this.seleteCourse.push({ value: v.courseId, label: v.courseName })
-          })
-        })
-        .catch((err) => {
-          this.$message.error(err)
-        })
-      await queryStudyPlanWork({ userId: this.userId, studyPlanId: this.$route.query.id })
+      await listCourseJob({ courseId: this.$route.query.id, stuId: this.userId })
         .then((res) => {
           this.tableData = res
         })
         .catch((err) => {
           this.$message.error(err)
         })
-      this.loading = false
-    },
-    async courseChange(courseId) {
-      this.loading = true
-      let params = {
-        userId: this.userId,
-        studyPlanId: this.$route.query.id
-      }
-      if (courseId != 'all') params = Object.assign(params, { courseId: courseId })
-      await queryStudyPlanWork(params)
-        .then((res) => {
-          this.tableData = res
+        .finally(() => {
+          this.loading = false
         })
-        .catch((err) => {
-          this.$message.error(err)
-        })
-      this.loading = false
     },
     onUploadStart() {
       this.$message.info('正在上传')
@@ -179,7 +126,6 @@ export default {
       this.$forceUpdate()
     },
     async onUploadComplete(item, file, url) {
-      console.log(item)
       const { fileCategory, id, bizId: jobId, fileName, courseId } = item
       const { size: fileSize, name } = file.file
       const params = {
@@ -194,7 +140,6 @@ export default {
       }
       //   table.loading = true
       const message = fileName ? '修改成功' : '上传成功'
-      console.log(params)
       await saveCourseLinkedStudentOrTeacher(params)
         .then(() => {
           this.$message.success(message)

@@ -101,7 +101,10 @@ export default {
         })
     },
     goToCourse(data) {
-      this.$router.push({ path: '/course/detail', query: { id: data.id } })
+      this.$router.push({
+        path: '/myTask/electiveDetail',
+        query: { id: data.id }
+      })
     }
   }
 }
