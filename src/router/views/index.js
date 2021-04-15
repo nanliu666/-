@@ -469,6 +469,15 @@ export default [
           title: '作业-培训详情'
         }
       },
+      //   作业-选修课详情
+      {
+        path: '/myTask/electiveDetail',
+        name: 'electiveDetail',
+        component: () => import('@/views/myTask/myHomeWork/components/electiveDetail.vue'),
+        meta: {
+          title: '作业-选修课详情'
+        }
+      },
       ...(process.env.NODE_ENV === 'development' ? demoRoutes : [])
     ]
   }

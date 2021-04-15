@@ -62,17 +62,17 @@
       </el-card>
     </div>
     <!-- 全部课程 -->
-    <compulsory-table></compulsory-table>
+    <elective-table></elective-table>
   </div>
 </template>
 
 <script>
-import { studyWorkDetail } from '@/api/myTask'
-import compulsoryTable from './compulsoryTable'
+import { electiveWorkDetail } from '@/api/myTask'
+import electiveTable from './electiveTable'
 export default {
-  name: 'CompulsoryDetail',
+  name: 'ElectiveDetail',
   components: {
-    compulsoryTable
+    electiveTable
   },
   data() {
     return {
@@ -84,7 +84,7 @@ export default {
   },
   methods: {
     async getWorkDetail() {
-      await studyWorkDetail({ id: this.$route.query.id }).then((res) => {
+      await electiveWorkDetail({ id: this.$route.query.id }).then((res) => {
         this.studyworkData = res
       })
     }

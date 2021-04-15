@@ -59,6 +59,15 @@ export const studyWorkDetail = (params) =>
 export const trainWorkDetail = (params) =>
   get('/manage/v1/study/coursework/trainWorkDetail', params)
 /**
+ * 作业-选修课详情
+ */
+export const electiveWorkDetail = (params) =>
+  get('/manage/v1/study/coursework/electiveWorkDetail', params)
+/**
+ * 作业-选修课详情，课程列表
+ */
+export const listCourseJob = (params) => get('/api/manage/v1/course/listCourseJob', params)
+/**
  * 作业-培训详情，课程列表
  */
 export const queryCourseWork = (params) => get('/api/manage/v1/train/course/work', params)

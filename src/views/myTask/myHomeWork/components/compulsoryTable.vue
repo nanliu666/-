@@ -22,9 +22,9 @@
             <el-tooltip :content="'作业来源: ' + z.name" placement="top">
               <div class="source">作业来源：{{ z.name }}</div>
             </el-tooltip>
-            <div class="download">
+            <!-- <div class="download">
               <i class="iconimage_icon_download iconfont" style="margin-right: 5px" />打包下载
-            </div>
+            </div> -->
           </el-row>
         </div>
         <!-- 表格数据 -->
