@@ -10,12 +10,12 @@
       <el-carousel :interval="5000" height="536px" arrow="always">
         <!-- 临时添加徐工挖掘机组织自定义banner,先通过组织id判断 -->
         <el-carousel-item v-for="item in banner" :key="item.bannerId">
-          <router-link :to="item.linkUrl">
+          <a :href="item.linkUrl">
             <div
               class="b_item"
               :style="`background: url(${item.picUrl}) no-repeat; backgroundSize: cover`"
             ></div>
-          </router-link>
+          </a>
         </el-carousel-item>
       </el-carousel>
     </div>
