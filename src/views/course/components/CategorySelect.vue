@@ -19,8 +19,7 @@
     </div>
     <div v-show="!_.isEmpty(categoryList)" class="category__list" style="display: flex">
       <span class="category__label">分类：</span>
-
-      <ul>
+      <!-- <ul>
         <li
           v-show="!selected.length"
           style="color: #01aafc"
@@ -28,13 +27,21 @@
         >
           全部
         </li>
-      </ul>
-
-      <ul style="flex: 1">
+      </ul> -->
+      <ul ref="industryRef" style="flex: 1" :class="{ hidde: !bussinessType }">
         <li v-for="item in categoryList" :key="item[valueKey]" @click="handleCategoryClick(item)">
-          <span style="color:#ccc">| &nbsp;</span> {{ item[labelKey] }}
+          <div v-if="item[labelKey] == '全部'" style="color: #01aafc">{{ item[labelKey] }}</div>
+          <div v-else><span style="color:#ccc">| &nbsp;</span> {{ item[labelKey] }}</div>
         </li>
       </ul>
+
+      <div v-show="industryHeight" class="moreBtn">
+        <div class="moreBtn_box" @click="bussinessType = !bussinessType">
+          <span class="text">{{ bussinessType ? '收起' : '更多' }}</span>
+          <i v-show="bussinessType" class="el-icon-arrow-down"></i>
+          <i v-show="!bussinessType" class="el-icon-arrow-up"></i>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -63,9 +70,43 @@ export default {
     return {
       categoryList: [],
       selected: [],
-      active: {}
+      active: {},
+      industryHeight: true,
+      bussinessType: true
     }
   },
+
+  watch: {
+    categoryList: function() {
+      this.$nextTick(function() {
+        let cur = this.$refs['industryRef']
+        if (cur.clientHeight != 30 && cur.clientHeight != 22) {
+          // 是否显示btn
+          this.industryHeight = true
+          // // 是否显示分类
+          this.bussinessType = false
+        } else {
+          this.industryHeight = false
+          this.bussinessType = true
+        }
+      })
+    },
+    selected: function() {
+      this.$nextTick(function() {
+        let cur = this.$refs['industryRef']
+        if (cur.clientHeight != 30 && cur.clientHeight != 22) {
+          // 是否显示btn
+          this.industryHeight = true
+          // // 是否显示分类
+          this.bussinessType = false
+        } else {
+          this.industryHeight = false
+          this.bussinessType = true
+        }
+      })
+    }
+  },
+
   mounted() {
     this.loadCategory(null)
   },
@@ -73,6 +114,9 @@ export default {
     loadCategory(id) {
       this.load({ id }).then((list) => {
         this.categoryList = list
+        if (!this.selected.length) {
+          this.categoryList.unshift({ name: '全部', id: '' })
+        }
       })
     },
     handleCategoryClick(category) {
@@ -156,5 +200,22 @@ export default {
       }
     }
   }
+}
+.moreBtn {
+  font-size: 12px;
+  color: #01aafc;
+  .moreBtn_box {
+    border: 1px solid #ccc;
+    padding: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .text {
+    margin-left: 5px;
+  }
+}
+.hidde {
+  overflow: hidden;
+  height: 22px;
 }
 </style>
