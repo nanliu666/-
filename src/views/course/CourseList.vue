@@ -2,13 +2,15 @@
   <div class="course-list">
     <div class="course-list__filter course-list__block">
       <div class="course-list__search">
-        <el-input
-          v-model="params.courseName"
-          class="course-list__input"
-          clearable
-          placeholder="查找课程"
-          suffix-icon="el-icon-search"
-        />
+        <div>
+          <el-input
+            v-model="params.courseName"
+            class="course-list__input"
+            clearable
+            placeholder="查找课程"
+            suffix-icon="el-icon-search"
+          />
+        </div>
 
         <!-- <el-popover
           placement="bottom-start"
@@ -50,17 +52,19 @@
           <div class="course-list-filter-pop__label">
             讲师：
           </div>
-          <lazy-select
-            v-model="extraParams.teacherId"
-            :load="loadTeacher"
-            style="width: 100%"
-            placeholder="请选择"
-            :option-props="{
-              label: 'name',
-              value: 'idStr',
-              key: 'idStr'
-            }"
-          ></lazy-select>
+          <div>
+            <lazy-select
+              v-model="extraParams.teacherId"
+              :load="loadTeacher"
+              style="width: 100%"
+              placeholder="请选择"
+              :option-props="{
+                label: 'name',
+                value: 'idStr',
+                key: 'idStr'
+              }"
+            ></lazy-select>
+          </div>
           <div class="course-list-filter-pop__footer">
             <el-button type="primary" size="mini" @click="refreshData">
               确定
