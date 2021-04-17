@@ -470,8 +470,7 @@ export default {
     text-align: right;
   }
 }
-</style>
-<style lang="scss">
+
 .course-list-filter-pop {
   &__wrap {
     display: flex;
