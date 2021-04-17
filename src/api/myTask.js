@@ -105,3 +105,11 @@ export const saveCourseLinkedStudentOrTeacher = (params) =>
  * @param {Object} params.zipComment      zip包名称
  **/
 export const zip = (params) => get('/api/common/oss/download/zip', params)
+/**
+ * 查询问卷待办条数
+ */
+export const questionTodoNum = (params) => get('/margin/v1/asq/todo/user', params)
+/**
+ * 查询问卷列表
+ */
+export const questionnaireList = (params) => get('/margin/v1/asq/plan/user', params)
