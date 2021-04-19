@@ -231,6 +231,7 @@ export default {
       //   newVal.progress = 100
       // }
       // this.submitLearnRecords()
+
       if (this.isChapterVideo(oldVal) && oldVal.duration) {
         let videoDom = document.querySelector('video')
         videoDom.onended = () => {
@@ -247,6 +248,7 @@ export default {
         this.timer = setInterval(() => {
           this.chapterTime += 0.5
           this.updateVideoProgress()
+          this.submitLearnRecords()
         }, 30 * 1000)
       }
     }
