@@ -341,6 +341,7 @@ export default {
       height: 15px;
       display: inline-block;
       border-radius: 50%;
+      vertical-align: middle;
       background-color: rgb(223, 222, 222);
     }
     .el-button.el-button--text {
