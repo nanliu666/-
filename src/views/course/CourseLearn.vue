@@ -246,7 +246,7 @@ export default {
         clearInterval(this.timer)
         this.chapterTime = 0
         this.timer = setInterval(() => {
-          this.chapterTime += 30
+          this.chapterTime = 30
           this.updateVideoProgress()
           this.submitLearnRecords()
         }, 30 * 1000)
