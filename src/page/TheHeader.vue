@@ -20,7 +20,75 @@
         <div class="flex flex-flow flex-items right-menu">
           <div class="iconimage_icon_help iconfont help"></div>
           <Notification />
-          <el-dropdown class="dropdown-avatar">
+          <el-popover class="dropdown-avatar" width="210" trigger="click">
+            <el-button slot="reference" type="text">
+              <span class="el-dropdown-link avatar">
+                <img
+                  v-if="userInfo && userInfo.avatar_url"
+                  class="top-bar__img"
+                  :src="userInfo.avatar_url"
+                />
+                <i v-else class="iconimage_icon_headportrait iconfont" /> </span></el-button>
+            <div class="dialogContent">
+              <div class="topMenu">
+                <div class="fristLine">
+                  <div>
+                    <span></span>
+                    <el-button type="text" @click.native="toRouter('/my/record')">
+                      我的档案
+                    </el-button>
+                  </div>
+                  <div>
+                    <span></span>
+                    <el-button type="text" @click.native="toRouter('/my/info')">
+                      个人设置
+                    </el-button>
+                  </div>
+                  <!-- <div>
+                    <span></span>
+                    <el-button type="text"> 我的收藏 </el-button>
+                  </div> -->
+                </div>
+                <!-- <div class="secondLine">
+                  <div>
+                    <span></span>
+                    <el-button type="text"> 我的笔记 </el-button>
+                  </div>
+                  <div>
+                    <span></span>
+                    <el-button type="text" @click.native="toRouter('/my/info')">
+                      个人设置
+                    </el-button>
+                  </div>
+                </div> -->
+              </div>
+              <div class="centerMenu">
+                <div>
+                  <span></span>
+                  <el-button type="text" @click.native="toRouter('/approvalCenter/center')">
+                    审批中心
+                  </el-button>
+                </div>
+                <div>
+                  <span></span>
+                  <el-button
+                    v-if="userInfo.role_id && userInfo.role_id.length > 0"
+                    type="text"
+                    @click.native="toRouter('', 'backstage')"
+                  >
+                    后台管理
+                  </el-button>
+                </div>
+              </div>
+              <div class="bottomMenu">
+                <div>
+                  <el-button type="text" @click.native="logout"> 安全退出 </el-button>
+                </div>
+              </div>
+            </div>
+          </el-popover>
+
+          <!-- <el-dropdown trigger="click" class="dropdown-avatar">
             <span class="el-dropdown-link avatar">
               <img
                 v-if="userInfo && userInfo.avatar_url"
@@ -29,13 +97,13 @@
               />
               <i v-else class="iconimage_icon_headportrait iconfont" />
             </span>
-            <el-dropdown-menu slot="dropdown">
-              <!-- <el-dropdown-item>
+            <el-dropdown-menu slot="dropdown"> -->
+          <!-- <el-dropdown-item>
             <div @click="showUserCenter">
               个人中心
             </div>
           </el-dropdown-item> -->
-              <el-dropdown-item @click.native="toRouter('/my/info')"> 个人信息 </el-dropdown-item>
+          <!-- <el-dropdown-item @click.native="toRouter('/my/info')"> 个人信息 </el-dropdown-item>
               <el-dropdown-item
                 v-if="userInfo.role_id && userInfo.role_id.length > 0"
                 @click.native="toRouter('', 'backstage')"
@@ -48,13 +116,13 @@
               <el-dropdown-item @click.native="toRouter('/my/record')"> 我的档案 </el-dropdown-item>
               <el-dropdown-item @click.native="toRouter('/approvalCenter/center')">
                 审批中心
-              </el-dropdown-item>
-              <!-- <el-dropdown-item @click.native="toRouter('/personal')" >
+              </el-dropdown-item> -->
+          <!-- <el-dropdown-item @click.native="toRouter('/personal')" >
                 个人中心
               </el-dropdown-item> -->
-              <el-dropdown-item @click.native="logout"> 退出登录 </el-dropdown-item>
+          <!-- <el-dropdown-item @click.native="logout"> 退出登录 </el-dropdown-item>
             </el-dropdown-menu>
-          </el-dropdown>
+          </el-dropdown> -->
           <!-- <div class="el-icon-picture-outline hander"></div> -->
         </div>
       </template>
@@ -204,8 +272,9 @@ export default {
       cursor: pointer;
     }
     .dropdown-avatar {
-      margin-left: 24px;
+      margin-left: 36px;
     }
+
     .avatar {
       i {
         font-size: 32px;
@@ -256,5 +325,46 @@ export default {
 .isFullscreenHead {
   background: none;
   box-shadow: none;
+}
+.dialogContent {
+  height: auto;
+  width: 190px;
+  .centerMenu {
+    border-bottom: 1px solid rgb(229, 229, 229);
+  }
+  .topMenu,
+  .centerMenu,
+  .bottomMenu {
+    padding: 10px 0;
+    span {
+      width: 15px;
+      height: 15px;
+      display: inline-block;
+      border-radius: 50%;
+      background-color: rgb(223, 222, 222);
+    }
+    .el-button.el-button--text {
+      padding: 5px;
+      color: rgb(51, 51, 51);
+    }
+  }
+  .topMenu {
+    padding-top: 0;
+    border-bottom: 1px solid rgb(229, 229, 229);
+    .fristLine,
+    .secondLine {
+      vertical-align: center;
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+  .bottomMenu {
+    padding-bottom: 0;
+    color: rgb(153, 153, 153);
+    .el-button.el-button--text {
+      padding: 5px;
+      color: rgb(153, 153, 153);
+    }
+  }
 }
 </style>
