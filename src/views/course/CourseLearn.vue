@@ -436,7 +436,7 @@ export default {
       let params = { period: this.chapterTime, courseId: this.courseId }
       params.contentRecords = _.map(
         this.chapters,
-        (chapter) => `${chapter.contentId}:${chapter.progress}`
+        (chapter) => `${chapter.contentId}:${chapter.progress >= 100 ? 100 : chapter.progress}`
       ).join(',')
       if (!params.contentRecords) {
         return
