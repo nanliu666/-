@@ -26,7 +26,7 @@
           <i class="iconimage_icon_Preview1 iconfont" />
           <span>{{ konwledgeDetail.watchNum }}</span>
         </li>
-        <li>
+        <li v-show="konwledgeDetail.allowDownload === 0">
           <i class="iconimage_icon_download iconfont" />
           <span>{{ konwledgeDetail.downloadNum }}</span>
         </li>
