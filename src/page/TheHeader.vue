@@ -20,7 +20,7 @@
         <div class="flex flex-flow flex-items right-menu">
           <div class="iconimage_icon_help iconfont help"></div>
           <Notification />
-          <el-popover class="dropdown-avatar" width="210" trigger="click">
+          <el-popover class="dropdown-avatar" width="256" trigger="click">
             <el-button slot="reference" type="text">
               <span class="el-dropdown-link avatar">
                 <img
@@ -33,44 +33,38 @@
               <div class="topMenu">
                 <div class="fristLine">
                   <div>
-                    <span></span>
+                    <span class="iconwodedangan iconfont"></span>
                     <el-button type="text" @click.native="toRouter('/my/record')">
                       我的档案
                     </el-button>
                   </div>
                   <div>
-                    <span></span>
+                    <span class="icongerenshezhi iconfont"></span>
                     <el-button type="text" @click.native="toRouter('/my/info')">
                       个人设置
                     </el-button>
                   </div>
-                  <!-- <div>
-                    <span></span>
-                    <el-button type="text"> 我的收藏 </el-button>
-                  </div> -->
                 </div>
                 <!-- <div class="secondLine">
                   <div>
-                    <span></span>
+                    <span class="iconwodebiji iconfont"></span>
                     <el-button type="text"> 我的笔记 </el-button>
                   </div>
                   <div>
-                    <span></span>
-                    <el-button type="text" @click.native="toRouter('/my/info')">
-                      个人设置
-                    </el-button>
+                    <span class="iconwodeshoucang iconfont"></span>
+                    <el-button type="text"> 我的收藏 </el-button>
                   </div>
                 </div> -->
               </div>
               <div class="centerMenu">
                 <div>
-                  <span></span>
+                  <span class="iconshenpizhongxin iconfont"></span>
                   <el-button type="text" @click.native="toRouter('/approvalCenter/center')">
                     审批中心
                   </el-button>
                 </div>
                 <div>
-                  <span></span>
+                  <span class="iconhoutaiguanli iconfont"></span>
                   <el-button
                     v-if="userInfo.role_id && userInfo.role_id.length > 0"
                     type="text"
@@ -82,6 +76,7 @@
               </div>
               <div class="bottomMenu">
                 <div>
+                  <span class="iconanquantuichu iconfont"></span>
                   <el-button type="text" @click.native="logout"> 安全退出 </el-button>
                 </div>
               </div>
@@ -328,24 +323,24 @@ export default {
 }
 .dialogContent {
   height: auto;
-  width: 190px;
+  width: 230px;
   .centerMenu {
+    display: flex;
+    justify-content: space-between;
     border-bottom: 1px solid rgb(229, 229, 229);
   }
   .topMenu,
   .centerMenu,
   .bottomMenu {
-    padding: 10px 0;
-    span {
-      width: 15px;
-      height: 15px;
-      display: inline-block;
-      border-radius: 50%;
-      background-color: rgb(223, 222, 222);
+    .iconfont {
+      color: rgb(148, 152, 157);
     }
     .el-button.el-button--text {
-      padding: 5px;
-      color: rgb(51, 51, 51);
+      padding: 13px 20px 13px 5px;
+      font-family: PingFangSC-Regular;
+      font-size: 14px;
+      color: rgba(0, 11, 21, 0.85);
+      line-height: 16px;
     }
   }
   .topMenu {
@@ -362,8 +357,8 @@ export default {
     padding-bottom: 0;
     color: rgb(153, 153, 153);
     .el-button.el-button--text {
-      padding: 5px;
-      color: rgb(153, 153, 153);
+      padding: 13px 16px;
+      color: rgba(0, 11, 21, 0.85);
     }
   }
 }
