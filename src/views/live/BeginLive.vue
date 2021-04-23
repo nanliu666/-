@@ -2,14 +2,14 @@
   <div class="watchLiveCla">
     <iframe
       v-if="role !== 'Assistant'"
-      :src="`https://live.polyv.net/web-start/classroom?channelId=${id}`"
+      :src="`https://live.epro-edu.com/web-start/classroom?channelId=${id}`"
       frameborder="0"
       allow="microphone; camera"
       allowfullscreen="true"
     ></iframe>
     <iframe
       v-else
-      src="https://live.polyv.net/teacher.html"
+      src="https://live.epro-edu.com/teacher.html"
       frameborder="0"
       allow="microphone; camera"
       allowfullscreen="true"
