@@ -19,8 +19,8 @@
       <div v-for="(z, i) in tableData" :key="i" class="course_list">
         <div class="course_hearder">
           <el-row type="flex" justify="space-between">
-            <el-tooltip :content="'作业来源: ' + z.name" placement="top">
-              <div class="source">作业来源：{{ z.name }}</div>
+            <el-tooltip :content="'作业来源: ' + z[0].name" placement="top">
+              <div class="source">作业来源：{{ z[0].name }}</div>
             </el-tooltip>
             <!-- <div class="download">
               <i class="iconimage_icon_download iconfont" style="margin-right: 5px" />打包下载
@@ -28,7 +28,7 @@
           </el-row>
         </div>
         <!-- 表格数据 -->
-        <el-table :data="z.trainAttachmentVOS" :show-header="false">
+        <el-table :data="z" :show-header="false">
           <el-table-column prop="fileName">
             <template slot-scope="scope">
               <div class="tip">
@@ -145,6 +145,7 @@ export default {
       await queryStudyPlanWork({ userId: this.userId, studyPlanId: this.$route.query.id })
         .then((res) => {
           this.tableData = res
+          console.log(this.tableData)
         })
         .catch((err) => {
           this.$message.error(err)
