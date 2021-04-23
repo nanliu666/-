@@ -1,7 +1,7 @@
 <template>
   <div class="el-layout">
     <the-header v-if="!isFullscreen" />
-    <div :class="['el-main', { 'el-main--fullscreen': isFullscreen }]">
+    <div :class="['el-main', { 'el-main--fullscreen': !isNotCenter && isFullscreen }]">
       <div class="el-view">
         <keep-alive>
           <router-view v-if="_.get($route.meta, 'keepAlive', true)" :key="$route.fullPath" />
@@ -25,6 +25,9 @@ export default {
   computed: {
     isFullscreen() {
       return this.$route.meta.fullscreen
+    },
+    isNotCenter() {
+      return this.$route.meta.isNotCenter
     }
   }
 }
