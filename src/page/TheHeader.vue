@@ -158,7 +158,7 @@ export default {
   computed: {
     logoImg() {
       let logoBaseInfor = getStore({ name: 'userInfo' })
-      let logoImg = logoBaseInfor.logo && logoBaseInfor.logo.BackgroundUrl
+      let logoImg = logoBaseInfor.logo && logoBaseInfor.logo.FrontUrl
       return logoImg
     },
     envVar() {
