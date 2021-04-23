@@ -484,6 +484,15 @@ export default [
           title: '作业-选修课详情'
         }
       },
+      //   作业-调查问卷
+      {
+        path: '/myTask/fillQuestionnaire',
+        name: 'fillQuestionnaire',
+        component: () => import('@/views/myTask/questionnaire/fillQuestionnaire.vue'),
+        meta: {
+          title: '作业-调查问卷'
+        }
+      },
       ...(process.env.NODE_ENV === 'development' ? demoRoutes : [])
     ]
   }
