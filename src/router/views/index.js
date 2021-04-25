@@ -308,6 +308,28 @@ export default [
           }
         ]
       },
+      // 个人中心里面的积分
+
+      {
+        path: '/Integral',
+        name: 'Integral',
+        component: () =>
+          import(/* webpackChunkName: "page" */ '@/views/personal/components/Integral.vue'),
+        meta: {
+          title: '我的积分'
+        }
+      },
+
+      // 个人中心里面的证书
+      {
+        path: '/Certificate',
+        name: 'Certificate',
+        component: () =>
+          import(/* webpackChunkName: "page" */ '@/views/personal/components/Certificate.vue'),
+        meta: {
+          title: '我的证书'
+        }
+      },
       {
         path: '/train', // 培训页面
         redirect: '/train/index',

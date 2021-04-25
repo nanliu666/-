@@ -171,20 +171,26 @@ export default {
     },
     //   新增
     submitNote() {
-      let params = {
-        courseId: this.$route.query.courseId,
-        remark: this.addnote,
-        contentId: this.current.contentId
-      }
-      console.log(params)
-      saveCourseNotePC(params).then(() => {
-        this.$message({
-          message: '新增成功',
-          type: 'success'
+      if (this.addnote.trim()) {
+        let params = {
+          courseId: this.$route.query.courseId,
+          remark: this.addnote,
+          contentId: this.current.contentId
+        }
+
+        saveCourseNotePC(params).then(() => {
+          this.$message({
+            message: '新增成功',
+            type: 'success'
+          })
+          this.initData()
+          this.addnote = ''
         })
-        this.initData()
-        this.addnote = ''
-      })
+      } else {
+        this.$message({
+          message: '内容不能为空!'
+        })
+      }
     },
     // 保存
     preservationBtn(item) {
