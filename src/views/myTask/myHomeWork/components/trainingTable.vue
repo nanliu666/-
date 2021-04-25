@@ -52,10 +52,11 @@
             <template slot-scope="scope">
               <common-upload
                 v-if="scope.row.fileCategory"
+                v-model="uploadData"
                 :disabled="scope.row.fileCategory === 'teacher' && !scope.row.fileName"
                 need-handler
                 :before-upload="onUploadStart"
-                :on-upload-complete="(file, url) => onUploadComplete(scope.row, file, url)"
+                :on-upload-complete="(file, url) => onUploadComplete(scope, file, url)"
                 :on-upload-error="() => onUploadError()"
               >
                 <el-button
@@ -108,13 +109,15 @@ export default {
       ],
       courseName: 'all',
       tableData: [],
-      loading: false
+      loading: false,
+      uploadData: []
     }
   },
   computed: {
     ...mapGetters(['userId'])
   },
   mounted() {
+    this.initCourse()
     this.queryStudyPlan()
   },
   methods: {
@@ -126,9 +129,7 @@ export default {
       await downLoadFile(row)
       this.loading = false
     },
-    // 查询课程列表
-    async queryStudyPlan() {
-      this.loading = true
+    async initCourse() {
       await getOnlineCourse({ trainId: this.$route.query.id })
         .then((res) => {
           res.map((v) => {
@@ -138,9 +139,28 @@ export default {
         .catch((err) => {
           this.$message.error(err)
         })
+    },
+    // 查询课程列表
+    async queryStudyPlan() {
+      this.loading = true
       await queryCourseWork({ userId: this.userId, trainId: this.$route.query.id })
         .then((res) => {
           this.tableData = res
+          this.tableData.forEach((v, i) => {
+            if (v.length == 1)
+              this.tableData[i] = [
+                ...v,
+                ...[
+                  { bizId: v[0].bizId, courseId: v[0].courseId, fileCategory: 'user' },
+                  { bizId: v[0].bizId, courseId: v[0].courseId, fileCategory: 'teacher' }
+                ]
+              ]
+            if (v.length == 2)
+              this.tableData[i] = [
+                ...v,
+                ...[{ bizId: v[0].bizId, courseId: v[0].courseId, fileCategory: 'teacher' }]
+              ]
+          })
         })
         .catch((err) => {
           this.$message.error(err)
@@ -148,7 +168,6 @@ export default {
       this.loading = false
     },
     async courseChange(courseId) {
-      console.log(courseId)
       this.loading = true
       let params = {
         userId: this.userId,
@@ -158,6 +177,21 @@ export default {
       await queryCourseWork(params)
         .then((res) => {
           this.tableData = res
+          this.tableData.forEach((v, i) => {
+            if (v.length == 1)
+              this.tableData[i] = [
+                ...v,
+                ...[
+                  { bizId: v[0].bizId, courseId: v[0].courseId, fileCategory: 'user' },
+                  { bizId: v[0].bizId, courseId: v[0].courseId, fileCategory: 'teacher' }
+                ]
+              ]
+            if (v.length == 2)
+              this.tableData[i] = [
+                ...v,
+                ...[{ bizId: v[0].bizId, courseId: v[0].courseId, fileCategory: 'teacher' }]
+              ]
+          })
         })
         .catch((err) => {
           this.$message.error(err)
@@ -175,23 +209,18 @@ export default {
       this.$message.error('上传失败，请重试')
       this.$forceUpdate()
     },
-    async onUploadComplete(item, file, url) {
-      console.log(item)
-      const { fileCategory, id, bizId: jobId, fileName, courseId } = item
-      const { size: fileSize, name } = file.file
-      const params = {
-        courseId,
-        fileCategory,
-        fileName: name,
-        filePath: url,
-        fileSize,
-        jobId,
-        id: fileName ? id : '',
-        userId: this.userId
+    async onUploadComplete(scope) {
+      let params = {
+        courseId: scope.row.courseId, //课程id
+        fileCategory: scope.$index == 1 ? 'user' : 'teacher', //文件归类：用户提交的附件user、还是讲师评改的附件teacher
+        fileName: this.uploadData[this.uploadData.length - 1].localName, //文件名称，包括扩展名
+        filePath: this.uploadData[this.uploadData.length - 1].fileUrl, //文件所在路径
+        fileSize: Number(this.uploadData[this.uploadData.length - 1].fileSize).toFixed(1), //文件大小   //大小单位KB
+        id: scope.row.id || '', //对应FileInfoList里的Id，有则回传，没有则传空
+        jobId: scope.row.bizId, //对应课程作业Id
+        userId: this.userId //学员id
       }
-      //   table.loading = true
-      const message = fileName ? '修改成功' : '上传成功'
-      console.log(params)
+      const message = scope.row.fileName ? '修改成功' : '上传成功'
       await saveCourseLinkedStudentOrTeacher(params)
         .then(() => {
           this.$message.success(message)
