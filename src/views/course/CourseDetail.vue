@@ -120,12 +120,13 @@
 import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
 import moment from 'moment'
 import {
-  getCourseDetail,
+  // getCourseDetail,
   getCommentList,
   addComment,
   getLearnRecord,
   addViewLog,
-  addStudyTimes
+  addStudyTimes,
+  getCourseStudyDetail
 } from '@/api/course'
 import Comment from '@/components/common-comment/Comment'
 import { COURSE_CHAPTER_TYPE_MAP, COURSE_TYPE_MAP } from './config'
@@ -203,7 +204,7 @@ export default {
       if (!this.id) {
         return
       }
-      getCourseDetail({ courseId: this.id }).then((res) => {
+      getCourseStudyDetail({ courseId: this.id }).then((res) => {
         res.scope = Number(res.scope).toFixed(1)
         this.courseData = res
         this.$nextTick(() => {

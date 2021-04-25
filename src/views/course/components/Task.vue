@@ -169,6 +169,11 @@ export default {
         color: rgba(0, 11, 21, 0.65);
         padding-top: 5px;
         text-align: center;
+        word-wrap: break-word;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
       }
       &_Tips {
         position: absolute;
@@ -187,6 +192,7 @@ export default {
 
     &_title {
       margin: 24px 45px 4px;
+      display: -webkit-box;
     }
   }
   .tins {

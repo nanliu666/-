@@ -30,39 +30,30 @@
       <div class="userInfo_btn">
         <el-button type="primary" @click="toPersonal"> 编辑信息 </el-button>
       </div>
-
-      <!-- <div class="userInfo_bar">
-        <span :class="{ pitch: pitch === 0 }" style="cursor: pointer" @click="showBtn(0)">课程</span>
-        <span :class="{ pitch: pitch === 1 }" style="cursor: pointer" @click="showBtn(1)">培训</span>
-        <span :class="{ pitch: pitch === 2 }" style="cursor: pointer" @click="showBtn(2)">考试</span>
-        <span :class="{ pitch: pitch === 3 }" style="cursor: pointer" @click="showBtn(3)">积分</span>
-        <span :class="{ pitch: pitch === 4 }" style="cursor: pointer" @click="showBtn(4)">证书</span>
-      </div> -->
     </div>
-    <!-- <course v-show="pitch === 0"></course>
-    <cultivate v-show="pitch === 1"></cultivate>
-    <examination v-show="pitch === 2"></examination>
-    <credit v-show="pitch === 3"></credit>
-    <certificate v-show="pitch === 4"></certificate> -->
 
     <div class="content">
       <div class="option_bar">
         <ul>
-          <li :class="{ pitch: pitch === 0 }" @click="showBtn(0)">
-            <i class="el-icon-user"></i> 我的档案 <i :class="{ Line: pitch === 0 }"></i>
-          </li>
-          <li :class="{ pitch: pitch === 1 }" @click="showBtn(1)">
-            <i class="el-icon-user"></i> 我的收藏 <i :class="{ Line: pitch === 1 }"></i>
-          </li>
-          <li :class="{ pitch: pitch === 2 }" @click="showBtn(2)">
-            <i class="el-icon-user"></i> 我的笔记 <i :class="{ Line: pitch === 2 }"></i>
-          </li>
-          <li :class="{ pitch: pitch === 3 }" @click="showBtn(3)">
-            <i class="el-icon-user"></i> 个人设置 <i :class="{ Line: pitch === 3 }"></i>
+          <li
+            v-for="(item, index) in LeftData"
+            :key="index"
+            :class="{ pitch: pitch === index }"
+            @click="showBtn(index)"
+          >
+            <i :class="item.icon"></i> {{ item.title }} <i :class="{ Line: pitch === index }"></i>
           </li>
         </ul>
       </div>
-      <div class="content_item">2</div>
+      <div class="content_item">
+        <MyFiles v-show="pitch === 0"></MyFiles>
+        <MyCollection v-show="pitch === 1"></MyCollection>
+        <MyNotes v-show="pitch === 2"></MyNotes>
+        <MyMentor v-show="pitch === 3"></MyMentor>
+        <MyApprentice v-show="pitch === 4"></MyApprentice>
+        <MyShare v-show="pitch === 5"></MyShare>
+        <PersonalSettings v-show="pitch === 6"></PersonalSettings>
+      </div>
     </div>
   </div>
 </template>
@@ -72,16 +63,54 @@ import { getuserInfo } from '@/api/my'
 export default {
   name: 'Record',
   components: {
-    // course: () => import('./components/Course'),
-    // cultivate: () => import('./components/Cultivate'),
-    // examination: () => import('./components/Examination'),
-    // credit: () => import('./components/Credit'),
-    // certificate: () => import('./components/Certificate')
+    MyFiles: () => import('./components/MyFiles'), //我的档案
+    MyCollection: () => import('./components/MyCollection'), //我的收藏
+    MyNotes: () => import('./components/MyNotes'), //我的笔记
+    MyMentor: () => import('./components/MyMentor'), // 我的导师/学徒
+    MyApprentice: () => import('./components/MyApprentice'), // 我的导师/学徒
+    MyShare: () => import('./components/MyShare'), //我的分享
+    PersonalSettings: () => import('./components/PersonalSettings') //个人设置
   },
   data() {
     return {
+      // 右侧显示
       pitch: 0,
-      infoData: {}
+
+      // 头部个人信息
+      infoData: {},
+
+      // 左侧数据结构
+      LeftData: [
+        {
+          title: '我的档案',
+          icon: 'el-icon-user'
+        },
+        {
+          title: '我的收藏',
+          icon: 'el-icon-user'
+        },
+        {
+          title: '我的笔记',
+          icon: 'el-icon-user'
+        },
+        {
+          title: '我的导师',
+          icon: 'el-icon-user'
+        },
+        {
+          title: '我的学徒',
+          icon: 'el-icon-user'
+        },
+
+        {
+          title: '我的分享',
+          icon: 'el-icon-user'
+        },
+        {
+          title: '个人设置',
+          icon: 'el-icon-user'
+        }
+      ]
     }
   },
   created() {
@@ -184,10 +213,13 @@ export default {
     margin-top: 24px;
     display: flex;
     width: 100%;
+    justify-content: space-between;
     .option_bar {
       width: 20%;
-      background-color: pink;
+      background-color: #fff;
+      box-shadow: 0 2px 8px 0 rgba(0, 63, 161, 0.06);
       padding: 20px 0;
+      height: 450px;
       .pitch {
         color: #207efa;
       }
@@ -208,9 +240,7 @@ export default {
       }
     }
     &_item {
-      flex: 1;
-      background-color: #ccc;
-      margin-left: 24px;
+      width: 77.5%;
     }
   }
 }
