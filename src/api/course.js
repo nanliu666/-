@@ -181,3 +181,9 @@ export const deleteCourseNote = (params) => get('api/manage/v1/web/course/delete
  * @param {String} params.courseId 课程id
  */
 export const addStudyTimes = (params) => get('api/manage/v1/web/course/addStudyTimes', params)
+/**
+ * 学习详情接口
+ * @param {String} params.courseId 课程id
+ */
+export const getCourseStudyDetail = (params) =>
+  get('api/manage//v1/course/getCourseStudyDetail', params)

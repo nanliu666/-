@@ -171,25 +171,28 @@ export default {
     },
     //   新增
     submitNote() {
+      // 输入内容非空判断
       if (this.addnote.trim()) {
         let params = {
           courseId: this.$route.query.courseId,
           remark: this.addnote,
           contentId: this.current.contentId
         }
-
-        saveCourseNotePC(params).then(() => {
-          this.$message({
-            message: '新增成功',
-            type: 'success'
+        // 判断当前有没有播发课件
+        if (params.contentId) {
+          saveCourseNotePC(params).then(() => {
+            this.$message({
+              message: '新增成功',
+              type: 'success'
+            })
+            this.initData()
+            this.addnote = ''
           })
-          this.initData()
-          this.addnote = ''
-        })
+        } else {
+          this.$message({ message: '当前有没有播发课件哦!' })
+        }
       } else {
-        this.$message({
-          message: '内容不能为空!'
-        })
+        this.$message({ message: '内容不能为空!' })
       }
     },
     // 保存
