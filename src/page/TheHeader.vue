@@ -2,9 +2,10 @@
   <div :class="['header', { isFullscreenHead: isFullscreen }]">
     <div class="header-inner">
       <div class="logo">
-        <img v-if="envVar === 'zehui' && isOrgIdE" src="../assets/images/logoE.png" />
+        <!-- <img v-if="envVar === 'zehui' && isOrgIdE" src="../assets/images/logoE.png" />
         <img v-else-if="envVar === 'zehui'" src="../assets/images/logoZeHui.png" />
-        <img v-else src="../assets/images/logo_yb.png" />
+        <img v-else src="../assets/images/logo_yb.png" /> -->
+        <img :src="logoImg" />
       </div>
       <template v-if="userId">
         <ul class="header-menu">
@@ -20,7 +21,70 @@
         <div class="flex flex-flow flex-items right-menu">
           <div class="iconimage_icon_help iconfont help"></div>
           <Notification />
-          <el-dropdown class="dropdown-avatar">
+          <el-popover class="dropdown-avatar" width="256" trigger="click">
+            <el-button slot="reference" type="text">
+              <span class="el-dropdown-link avatar">
+                <img
+                  v-if="userInfo && userInfo.avatar_url"
+                  class="top-bar__img"
+                  :src="userInfo.avatar_url"
+                />
+                <i v-else class="iconimage_icon_headportrait iconfont" /> </span></el-button>
+            <div class="dialogContent">
+              <div class="topMenu">
+                <div class="fristLine">
+                  <div>
+                    <span class="iconwodedangan iconfont"></span>
+                    <el-button type="text" @click.native="toRouter('/my/record')">
+                      我的档案
+                    </el-button>
+                  </div>
+                  <div>
+                    <span class="icongerenshezhi iconfont"></span>
+                    <el-button type="text" @click.native="toRouter('/my/info')">
+                      个人设置
+                    </el-button>
+                  </div>
+                </div>
+                <!-- <div class="secondLine">
+                  <div>
+                    <span class="iconwodebiji iconfont"></span>
+                    <el-button type="text"> 我的笔记 </el-button>
+                  </div>
+                  <div>
+                    <span class="iconwodeshoucang iconfont"></span>
+                    <el-button type="text"> 我的收藏 </el-button>
+                  </div>
+                </div> -->
+              </div>
+              <div class="centerMenu">
+                <div>
+                  <span class="iconshenpizhongxin iconfont"></span>
+                  <el-button type="text" @click.native="toRouter('/approvalCenter/center')">
+                    审批中心
+                  </el-button>
+                </div>
+                <div>
+                  <span class="iconhoutaiguanli iconfont"></span>
+                  <el-button
+                    v-if="userInfo.role_id && userInfo.role_id.length > 0"
+                    type="text"
+                    @click.native="toRouter('', 'backstage')"
+                  >
+                    后台管理
+                  </el-button>
+                </div>
+              </div>
+              <div class="bottomMenu">
+                <div>
+                  <span class="iconanquantuichu iconfont"></span>
+                  <el-button type="text" @click.native="logout"> 安全退出 </el-button>
+                </div>
+              </div>
+            </div>
+          </el-popover>
+
+          <!-- <el-dropdown trigger="click" class="dropdown-avatar">
             <span class="el-dropdown-link avatar">
               <img
                 v-if="userInfo && userInfo.avatar_url"
@@ -29,13 +93,13 @@
               />
               <i v-else class="iconimage_icon_headportrait iconfont" />
             </span>
-            <el-dropdown-menu slot="dropdown">
-              <!-- <el-dropdown-item>
+            <el-dropdown-menu slot="dropdown"> -->
+          <!-- <el-dropdown-item>
             <div @click="showUserCenter">
               个人中心
             </div>
           </el-dropdown-item> -->
-              <el-dropdown-item @click.native="toRouter('/my/info')"> 个人信息 </el-dropdown-item>
+          <!-- <el-dropdown-item @click.native="toRouter('/my/info')"> 个人信息 </el-dropdown-item>
               <el-dropdown-item
                 v-if="userInfo.role_id && userInfo.role_id.length > 0"
                 @click.native="toRouter('', 'backstage')"
@@ -48,13 +112,13 @@
               <el-dropdown-item @click.native="toRouter('/my/record')"> 我的档案 </el-dropdown-item>
               <el-dropdown-item @click.native="toRouter('/approvalCenter/center')">
                 审批中心
-              </el-dropdown-item>
-              <!-- <el-dropdown-item @click.native="toRouter('/personal')" >
+              </el-dropdown-item> -->
+          <!-- <el-dropdown-item @click.native="toRouter('/personal')" >
                 个人中心
               </el-dropdown-item> -->
-              <el-dropdown-item @click.native="logout"> 退出登录 </el-dropdown-item>
+          <!-- <el-dropdown-item @click.native="logout"> 退出登录 </el-dropdown-item>
             </el-dropdown-menu>
-          </el-dropdown>
+          </el-dropdown> -->
           <!-- <div class="el-icon-picture-outline hander"></div> -->
         </div>
       </template>
@@ -92,6 +156,11 @@ export default {
     }
   },
   computed: {
+    logoImg() {
+      let logoBaseInfor = getStore({ name: 'userInfo' })
+      let logoImg = logoBaseInfor.logo && logoBaseInfor.logo.FrontUrl
+      return logoImg
+    },
     envVar() {
       let envC = process.env
       return envC.VUE_APP_ENV
@@ -204,8 +273,9 @@ export default {
       cursor: pointer;
     }
     .dropdown-avatar {
-      margin-left: 24px;
+      margin-left: 36px;
     }
+
     .avatar {
       i {
         font-size: 32px;
@@ -256,5 +326,46 @@ export default {
 .isFullscreenHead {
   background: none;
   box-shadow: none;
+}
+.dialogContent {
+  height: auto;
+  width: 230px;
+  .centerMenu {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgb(229, 229, 229);
+  }
+  .topMenu,
+  .centerMenu,
+  .bottomMenu {
+    .iconfont {
+      color: rgb(148, 152, 157);
+    }
+    .el-button.el-button--text {
+      padding: 13px 20px 13px 5px;
+      font-family: PingFangSC-Regular;
+      font-size: 14px;
+      color: rgba(0, 11, 21, 0.85);
+      line-height: 16px;
+    }
+  }
+  .topMenu {
+    padding-top: 0;
+    border-bottom: 1px solid rgb(229, 229, 229);
+    .fristLine,
+    .secondLine {
+      vertical-align: center;
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+  .bottomMenu {
+    padding-bottom: 0;
+    color: rgb(153, 153, 153);
+    .el-button.el-button--text {
+      padding: 13px 16px;
+      color: rgba(0, 11, 21, 0.85);
+    }
+  }
 }
 </style>

@@ -113,3 +113,11 @@ export const questionTodoNum = (params) => get('/margin/v1/asq/todo/user', param
  * 查询问卷列表
  */
 export const questionnaireList = (params) => get('/margin/v1/asq/plan/user', params)
+/**
+ * 参加问卷调查 asqPlanId:问卷id
+ */
+export const questionnaireSurvey = (params) => get('/margin/v1/asq/center/join', params)
+/**
+ * 问卷调查提交,subjectCpId:问卷模板id,mySubjectCpId:我的问卷模板id,questionList:[{questionId:问题id,answerUser:答案}]
+ */
+export const submitQuestionnaire = (params) => post('/margin/v1/asq/center/submit', params)

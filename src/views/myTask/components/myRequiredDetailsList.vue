@@ -155,7 +155,7 @@ export default {
     // 考试列表切换
     handleShowExam(item, id, external_i, internal_i) {
       // 计算考试列表三角形位置
-      this.triangularPosition = 132 + internal_i * 273
+      this.triangularPosition = 132 + internal_i * 294
 
       for (let i = 0; i < this.dataInfo.length; i++) {
         // 处理考试列表展示

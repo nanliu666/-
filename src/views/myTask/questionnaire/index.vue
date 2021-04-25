@@ -134,6 +134,10 @@ export default {
         )
       } else if (row.asqStatus == '1') {
         //   进入【填写问卷】页面
+        this.$router.push({
+          path: '/myTask/fillQuestionnaire',
+          query: { asqPlanId: row.asqPlanId }
+        })
       } else if (row.asqStatus == '3') {
         //   进入【查看问卷】页面
       }

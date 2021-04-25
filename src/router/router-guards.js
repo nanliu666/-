@@ -1,5 +1,5 @@
 import store from '../store'
-import { getToken } from '@/util/auth'
+import { getToken, removeToken, removeRefreshToken } from '@/util/auth'
 
 export default function(router) {
   router.beforeEach((to, from, next) => {
@@ -36,6 +36,8 @@ export default function(router) {
   })
 }
 function isToken(tid, next) {
+  removeToken()
+  removeRefreshToken()
   store.dispatch('tokeLogin', tid).then((res) => {
     if (res.account) {
       next({ path: '/' })

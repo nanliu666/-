@@ -218,7 +218,9 @@ export default [
             name: 'Login',
             meta: {
               title: '登录页面',
-              isAuth: false
+              isAuth: false,
+              isNotCenter: true,
+              fullscreen: true
             },
             component: () => import(/* webpackChunkName: "page"*/ '@/views/auth/Login.vue')
           },
@@ -227,7 +229,9 @@ export default [
             name: 'Register',
             meta: {
               isAuth: false,
-              title: '注册页面'
+              title: '注册页面',
+              isNotCenter: true,
+              fullscreen: true
             },
             component: () => import(/* webpackChunkName: "page"*/ '@/views/auth/Register.vue')
           },
@@ -236,7 +240,9 @@ export default [
             name: 'ForgetPassword',
             meta: {
               isAuth: false,
-              title: '忘记密码页面'
+              title: '忘记密码页面',
+              isNotCenter: true,
+              fullscreen: true
             },
             component: () => import(/* webpackChunkName: "page"*/ '@/views/auth/ForgetPassword.vue')
           }
@@ -498,6 +504,15 @@ export default [
         component: () => import('@/views/myTask/myHomeWork/components/electiveDetail.vue'),
         meta: {
           title: '作业-选修课详情'
+        }
+      },
+      //   作业-调查问卷
+      {
+        path: '/myTask/fillQuestionnaire',
+        name: 'fillQuestionnaire',
+        component: () => import('@/views/myTask/questionnaire/fillQuestionnaire.vue'),
+        meta: {
+          title: '作业-调查问卷'
         }
       },
       ...(process.env.NODE_ENV === 'development' ? demoRoutes : [])
