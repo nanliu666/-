@@ -126,6 +126,9 @@ export default {
   created() {
     this.initQuestionnaireSurvey()
   },
+  activated() {
+    this.isSuccess = false
+  },
   methods: {
     formatProgress() {
       return `${this.answeredNum}/${this.questionNum}`

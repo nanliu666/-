@@ -18,13 +18,7 @@
           <el-table-column prop="fileName" show-overflow-tooltip>
             <template slot-scope="scope">
               <div class="tip">
-                {{
-                  scope.row.fileCategory == 'teacher'
-                    ? '教师评改：'
-                    : scope.row.fileCategory == 'user'
-                      ? '学员作业：'
-                      : '作业内容：'
-                }}<span class="courseware">{{ scope.row.fileName }}</span>
+                {{ taskType(scope.$index) }}<span class="courseware">{{ scope.row.fileName }}</span>
               </div>
             </template>
           </el-table-column>
@@ -37,17 +31,17 @@
           <el-table-column width="120" align="right">
             <template slot-scope="scope">
               <common-upload
+                v-model="uploadData"
                 :disabled="scope.$index == 2 && z.fileInfoList[1].updateTime == '--'"
                 need-handler
                 :before-upload="onUploadStart"
-                :on-upload-complete="(file, url) => onUploadComplete(scope.row, file, url)"
+                :on-upload-complete="(file, url) => onUploadComplete(scope, z.id, file, url)"
                 :on-upload-error="() => onUploadError()"
               >
                 <el-button
                   type="text"
                   size="medium"
                   :disabled="scope.$index == 2 && z.fileInfoList[1].updateTime == '--'"
-                  @click="modifyHomework(scope.row)"
                 >
                   <span v-if="scope.$index == 1">
                     {{ scope.row.updateTime == '--' ? '上传作业' : '修改作业' }}
@@ -82,7 +76,8 @@ export default {
   data() {
     return {
       tableData: [],
-      loading: false
+      loading: false,
+      uploadData: []
     }
   },
   computed: {
@@ -92,8 +87,11 @@ export default {
     this.queryStudyPlan()
   },
   methods: {
-    //   修改作业
-    modifyHomework() {},
+    taskType(i) {
+      let taskList = ['作业内容：', '学员作业：', '教师评改：']
+      // return taskList.filter((item, index) => i == index)
+      return taskList[i]
+    },
     //   下载
     async downloadHomework(row) {
       this.loading = true
@@ -105,7 +103,25 @@ export default {
       this.loading = true
       await listCourseJob({ courseId: this.$route.query.id, stuId: this.userId })
         .then((res) => {
+          let pushData = {
+            fileName: '未提交',
+            filePath: '',
+            fileSize: '',
+            id: '',
+            source: '',
+            updateTime: '--',
+            userFileId: ''
+          }
           this.tableData = res
+          this.tableData.forEach((item, index) => {
+            if (item.fileInfoList.length == 1) {
+              this.tableData[index].fileInfoList.push(pushData)
+              this.tableData[index].fileInfoList.push(pushData)
+              return
+            } else if (item.fileInfoList.length == 2) {
+              this.tableData[index].fileInfoList.push(pushData)
+            }
+          })
         })
         .catch((err) => {
           this.$message.error(err)
@@ -125,21 +141,18 @@ export default {
       this.$message.error('上传失败，请重试')
       this.$forceUpdate()
     },
-    async onUploadComplete(item, file, url) {
-      const { fileCategory, id, bizId: jobId, fileName, courseId } = item
-      const { size: fileSize, name } = file.file
-      const params = {
-        courseId,
-        fileCategory,
-        fileName: name,
-        filePath: url,
-        fileSize,
-        jobId,
-        id: fileName ? id : '',
-        userId: this.userId
+    async onUploadComplete(scope, id) {
+      let params = {
+        courseId: this.$route.query.id, //课程id
+        fileCategory: scope.$index == 1 ? 'user' : 'teacher', //文件归类：用户提交的附件user、还是讲师评改的附件teacher
+        fileName: this.uploadData[this.uploadData.length - 1].localName, //文件名称，包括扩展名
+        filePath: this.uploadData[this.uploadData.length - 1].fileUrl, //文件所在路径
+        fileSize: Number(this.uploadData[this.uploadData.length - 1].fileSize).toFixed(1), //文件大小   //大小单位KB
+        id: scope.row.id || '', //对应FileInfoList里的Id，有则回传，没有则传空
+        jobId: id, //对应课程作业Id
+        userId: this.userId //学员id
       }
-      //   table.loading = true
-      const message = fileName ? '修改成功' : '上传成功'
+      const message = scope.row.fileName ? '修改成功' : '上传成功'
       await saveCourseLinkedStudentOrTeacher(params)
         .then(() => {
           this.$message.success(message)

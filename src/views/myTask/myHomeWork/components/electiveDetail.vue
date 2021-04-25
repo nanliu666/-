@@ -3,7 +3,7 @@
     <!-- 面包屑 -->
     <el-breadcrumb separator="/" style="padding: 25px 0 20px">
       <el-breadcrumb-item :to="{ path: '/myTask/myLearn' }">我的任务</el-breadcrumb-item>
-      <el-breadcrumb-item>必修课作业</el-breadcrumb-item>
+      <el-breadcrumb-item>选修课作业</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 头部卡片 -->
     <div class="header-card">
