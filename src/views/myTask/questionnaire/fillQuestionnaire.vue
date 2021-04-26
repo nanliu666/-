@@ -24,19 +24,19 @@
           <el-form ref="ruleForm" :model="questionnaireForm" :rules="questionnaireRules">
             <div v-for="(z, k) in questionList" :key="k" class="formWrap">
               <!-- 简答题 -->
-              <el-form-item
-                v-if="z.type == 'short_answer'"
-                :label="k + 1 + '.' + z.content + ' (简答题)'"
-                :prop="z.questionId"
-              >
+              <el-form-item v-if="z.type == 'short_answer'" :prop="z.questionId">
+                <div slot="label" class="label-box">
+                  <span class="label-box-title">{{ k + 1 + '.' + z.content }}</span>
+                  <span class="label-box-type">【简答题】</span>
+                </div>
                 <el-input v-model="questionnaireForm[z.questionId]"></el-input>
               </el-form-item>
               <!-- 单选题 -->
-              <el-form-item
-                v-else-if="z.type == 'single_choice'"
-                :label="k + 1 + '.' + z.content + ' (单选题)'"
-                :prop="z.questionId"
-              >
+              <el-form-item v-else-if="z.type == 'single_choice'" :prop="z.questionId">
+                <div slot="label" class="label-box">
+                  <span class="label-box-title">{{ k + 1 + '.' + z.content }}</span>
+                  <span class="label-box-type">【单选题】</span>
+                </div>
                 <el-radio-group v-model="questionnaireForm[z.questionId]">
                   <el-radio v-for="(v, i) in z.optionCpList" :key="i" :label="v.content">{{
                     v.content
@@ -44,11 +44,12 @@
                 </el-radio-group>
               </el-form-item>
               <!-- 多选题 -->
-              <el-form-item
-                v-else-if="z.type == 'multi_choice'"
-                :label="k + 1 + '.' + z.content + ' (多选题)'"
-                :prop="z.questionId"
-              >
+              <el-form-item v-else-if="z.type == 'multi_choice'" :prop="z.questionId">
+                <div slot="label" class="label-box">
+                  <span class="label-box-title">{{ k + 1 + '.' + z.content }}</span>
+                  <span class="label-box-type">【多选题】</span>
+                  <span class="label-box-tip">最少可选{{ z.multiMin }},最多可选{{ z.multiMax }}项</span>
+                </div>
                 <el-checkbox-group
                   v-model="questionnaireForm[z.questionId]"
                   :min="z.multiMin"
@@ -255,6 +256,9 @@ export default {
     /deep/ .el-form-item__label {
       float: none;
     }
+    /deep/ .el-form-item__content {
+      margin-top: -30px;
+    }
     /deep/ .el-radio-group {
       width: 100%;
       .el-radio {
@@ -264,6 +268,23 @@ export default {
     }
     .submitBtn {
       text-align: center;
+    }
+    .label-box {
+      text-align: left;
+      &-title {
+        color: #000;
+        font-weight: bold;
+      }
+      &-type {
+        font-size: 13px;
+        margin-left: 6px;
+        color: rgba(0, 11, 21, 0.5);
+      }
+      &-tip {
+        font-size: 12px;
+        margin-left: 6px;
+        color: rgba(0, 11, 21, 0.5);
+      }
     }
   }
 }
