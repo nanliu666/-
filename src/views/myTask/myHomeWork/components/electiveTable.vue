@@ -32,7 +32,7 @@
             <template slot-scope="scope">
               <common-upload
                 v-model="uploadData"
-                :disabled="scope.$index == 2 && z.fileInfoList[1].updateTime == '--'"
+                :disabled="scope.$index == 2 && z.fileInfoList[2].updateTime == '--'"
                 need-handler
                 :before-upload="onUploadStart"
                 :on-upload-complete="(file, url) => onUploadComplete(scope, z.id, file, url)"
@@ -41,7 +41,7 @@
                 <el-button
                   type="text"
                   size="medium"
-                  :disabled="scope.$index == 2 && z.fileInfoList[1].updateTime == '--'"
+                  :disabled="scope.$index == 2 && z.fileInfoList[2].updateTime == '--'"
                 >
                   <span v-if="scope.$index == 1">
                     {{ scope.row.updateTime == '--' ? '上传作业' : '修改作业' }}
