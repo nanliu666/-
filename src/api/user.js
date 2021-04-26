@@ -5,6 +5,10 @@ import website from '@/config/website'
 export const getOrgIds = (params) => {
   return get('/api/manage/v1/web/index/queryOrgIds', params)
 }
+// 获取用户的logo banner 首页布局等信息
+export const getDiyInfor = (params) => {
+  return get('/api/manage/v1/cms/plan/my', params)
+}
 // 保存登录学分
 export const saveLoginCredit = (params) => {
   return get('/api/manage/v1/login/saveLoginCredit', params)
