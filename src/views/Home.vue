@@ -270,9 +270,8 @@ export default {
   computed: {
     ...mapGetters(['orgIds']),
     diyConfig: () => {
-      let userInfo = getStore({ name: 'userInfo' })
-      let diyConfig =
-        userInfo.cms_plan && userInfo.cms_plan.length > 0 && JSON.parse(userInfo.cms_plan)
+      let diyInfor = getStore({ name: 'diyInfor' })
+      let diyConfig = diyInfor.home && diyInfor.home.length > 0 && JSON.parse(diyInfor.home)
       return diyConfig.content
     }
   },

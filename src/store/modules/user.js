@@ -9,13 +9,15 @@ import {
   refreshToken,
   getUserPrivilege,
   userDetailByToken,
-  getOrgIds
+  getOrgIds,
+  getDiyInfor
 } from '@/api/user'
 import md5 from 'js-md5'
 
 const user = {
   state: {
     orgIds: '',
+    diyInfor: {},
     tenantId: getStore({ name: 'tenantId' }) || '',
     unreadCount: '',
     tenantContent: getStore({ name: 'tenantContent' }) || '',
@@ -34,6 +36,13 @@ const user = {
       return getOrgIds({ account: telNub }).then((res) => {
         commit('SET_ORG_IDS', res)
         setStore({ name: 'orgIds', content: res })
+      })
+    },
+    // 获取用户的logo banner 首页布局等信息
+    getDiyInforAc({ commit }, params) {
+      return getDiyInfor(params).then((res) => {
+        commit('SET_DIY_INFOR', res)
+        setStore({ name: 'diyInfor', content: res })
       })
     },
     //根据用户名登录
@@ -194,6 +203,9 @@ const user = {
   mutations: {
     SET_ORG_IDS: (state, orgIds) => {
       state.orgIds = orgIds
+    },
+    SET_DIY_INFOR: (state, diyInfor) => {
+      state.diyInfor = diyInfor
     },
     SET_TOKEN: (state, token) => {
       setToken(token)
