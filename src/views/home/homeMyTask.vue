@@ -26,7 +26,7 @@
               </h3>
               <div class="homeMyTaskItemText">
                 <div class="homeMyTaskItemTextItem">
-                  <span class="homeMyTaskItemTextItem2">时间：{{ item.time }}</span>
+                  <span class="homeMyTaskItemTextItem2" :title="`${item.time}-${item.endTime}`">时间：{{ item.time }}-{{ item.endTime }}</span>
                 </div>
                 <div v-if="item.type == 1" class="homeMyTaskItemTextItem">
                   <span class="homeMyTaskItemTextItem2" :title="item.address">地址：{{ item.address }}</span>
@@ -159,7 +159,7 @@ export default {
       if (item.type == 1) {
         this.$router.push({
           name: 'trainDetail',
-          params: {
+          query: {
             title,
             trainId,
             trainWay: 3,

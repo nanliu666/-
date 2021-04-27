@@ -167,7 +167,7 @@ import HomeNews from '@/views/home/homeNews'
 import { queryCourseList } from '@/api/course'
 import { homeQueryTrainList, homeNewsList, homeMyLiveList, getBanners } from '@/api/home'
 import { getStore } from '@/util/store'
-import { mapGetters } from 'vuex'
+// import { mapGetters } from 'vuex'
 // import HomeLive from './home/homeLive.vue'
 export default {
   name: 'Home',
@@ -182,7 +182,7 @@ export default {
   },
   data() {
     return {
-      isOrgIdE: false,
+      // isOrgIdE: false,
       myTaskInfo: {
         nub: 0
       },
@@ -268,7 +268,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['orgIds']),
+    // ...mapGetters(['orgIds']),
     diyConfig: () => {
       let diyInfor = getStore({ name: 'diyInfor' })
       let diyConfig = diyInfor.home && diyInfor.home.length > 0 && JSON.parse(diyInfor.home)
@@ -276,9 +276,9 @@ export default {
     }
   },
   watch: {
-    orgIds(val) {
-      this.isOrgIdE = val.indexOf('5263') !== -1 ? true : false
-    }
+    // orgIds(val) {
+    //   this.isOrgIdE = val.indexOf('5263') !== -1 ? true : false
+    // }
   },
   mounted() {
     this.getBannersFn()
@@ -286,16 +286,16 @@ export default {
     this.getTrainList()
     this.getNewsList()
     this.getHomeMyLive()
-    this.isOrgIdEFn()
+    // this.isOrgIdEFn()
   },
   methods: {
-    isOrgIdEFn() {
-      // 判断是否是挖机组织
-      // 获取用户的组织id（包括当前和当前以上的），存放在localstore，vuex
-      let orgIdsVuex = this.orgIds
-      this.orgIdsD = orgIdsVuex || getStore({ name: 'orgIds' })
-      this.isOrgIdE = this.orgIdsD.indexOf('5263') !== -1 ? true : false
-    },
+    // isOrgIdEFn() {
+    //   // 判断是否是挖机组织
+    //   // 获取用户的组织id（包括当前和当前以上的），存放在localstore，vuex
+    //   let orgIdsVuex = this.orgIds
+    //   this.orgIdsD = orgIdsVuex || getStore({ name: 'orgIds' })
+    //   this.isOrgIdE = this.orgIdsD.indexOf('5263') !== -1 ? true : false
+    // },
     // myTaskPrevFn() {
     //   this.$refs.myTaskRef.prev()
     // },
