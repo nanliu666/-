@@ -184,6 +184,7 @@ export default {
     h1 {
       font-size: 14px;
       color: #000b15;
+      height: 20px;
     }
     .unfinished {
       position: relative;
