@@ -97,17 +97,6 @@
             </li>
           </el-timeline-item>
         </el-timeline>
-        <div class="pagination__bottom">
-          <el-pagination
-            :current-page="queryInfo.pageNo"
-            :page-sizes="[10, 20, 30, 40]"
-            :page-size="queryInfo.pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="totalNum"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-          />
-        </div>
       </div>
       <common-empty v-else text="当前还没开始考试" />
     </el-card>
@@ -139,13 +128,12 @@ export default {
           title: ''
         }
       ],
-      examInfo: {},
-      sessionList: [],
       queryInfo: {
         pageNo: 1,
-        pageSize: 10
+        pageSize: 200
       },
-      totalNum: 100
+      examInfo: {},
+      sessionList: []
     }
   },
   computed: {
@@ -173,14 +161,6 @@ export default {
     this.initData()
   },
   methods: {
-    handleSizeChange(val) {
-      this.queryInfo.pageSize = val
-      this.getList()
-    },
-    handleCurrentChange(val) {
-      this.queryInfo.pageNo = val
-      this.getList()
-    },
     moment,
     overExam(item) {
       this.currentExamId = item.examSessionId
@@ -227,7 +207,6 @@ export default {
         // eslint-disable-next-line no-unused-vars
         const { data, totalNum, totalPage } = res
         this.sessionList = data
-        this.totalNum = totalNum
       })
     }
   }
@@ -356,10 +335,6 @@ export default {
           margin-right: 60px;
         }
       }
-    }
-    .pagination__bottom {
-      display: flex;
-      justify-content: flex-end;
     }
   }
 }
