@@ -68,7 +68,7 @@
         </div>
         <!-- 提交按钮 -->
         <div class="submitBtn">
-          <el-button type="primary" size="medium" @click="submitForm">提交问卷</el-button>
+          <el-button type="primary" size="medium" :disabled="submitDisabled" @click="submitForm">提交问卷</el-button>
         </div>
       </div>
     </template>
@@ -97,7 +97,8 @@ export default {
       questionnaireForm: {},
       questionnaireRules: {},
       questionList: [],
-      isSuccess: false // 是否提交成功
+      isSuccess: false, // 是否提交成功
+      submitDisabled: false
     }
   },
   computed: {
@@ -158,6 +159,9 @@ export default {
             ]
           })
           this.questionnaireForm = cloneTemp
+        })
+        .catch(() => {
+          this.submitDisabled = true
         })
         .finally(() => {
           this.loading = false
@@ -256,9 +260,6 @@ export default {
     /deep/ .el-form-item__label {
       float: none;
     }
-    /deep/ .el-form-item__content {
-      margin-top: -30px;
-    }
     /deep/ .el-radio-group {
       width: 100%;
       .el-radio {
@@ -271,6 +272,7 @@ export default {
     }
     .label-box {
       text-align: left;
+      display: inline-block;
       &-title {
         color: #000;
         font-weight: bold;
