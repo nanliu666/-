@@ -204,8 +204,7 @@ export default {
     },
     getList() {
       examSessionList(this.queryInfo).then((res) => {
-        // eslint-disable-next-line no-unused-vars
-        const { data, totalNum, totalPage } = res
+        const { data } = res
         this.sessionList = data
       })
     }
