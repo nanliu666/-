@@ -174,10 +174,12 @@ export default {
   },
   methods: {
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
+      this.queryInfo.pageSize = val
+      this.getList()
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
+      this.queryInfo.pageNo = val
+      this.getList()
     },
     moment,
     overExam(item) {
@@ -218,6 +220,9 @@ export default {
       _.set(this.queryInfo, 'examId', examId)
       _.set(this.queryInfo, 'batchId', batchId)
       this.$refs.breadcrumb.setBreadcrumbTitle(examName)
+      this.getList()
+    },
+    getList() {
       examSessionList(this.queryInfo).then((res) => {
         // eslint-disable-next-line no-unused-vars
         const { data, totalNum, totalPage } = res
