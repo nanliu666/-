@@ -3,6 +3,7 @@
     <el-card class="search-card">
       <el-input
         v-model="queryInfo.examName"
+        :disabled="tableLoading"
         class="input-box"
         placeholder="输入考试名称搜索"
         prefix-icon="el-icon-search"
@@ -245,7 +246,7 @@ export default {
     searchFun: _.debounce(function() {
       this.queryInfo.pageNo = 1
       this.loadTableData()
-    }, 500),
+    }, 1000),
     handleCategoryChange(category) {
       this.queryInfo.catalogId = category.id
       this.loadTableData()

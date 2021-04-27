@@ -181,7 +181,6 @@ export default {
     },
     moment,
     overExam(item) {
-      console.log('item==', item)
       this.currentExamId = item.examSessionId
     },
     outExam() {
@@ -313,7 +312,7 @@ export default {
 .bottom-card {
   margin-top: 20px;
   /deep/ .el-card__body {
-    height: 50vh;
+    // height: 50vh;
     margin-top: -24px;
   }
   /deep/ .el-menu--horizontal {
@@ -325,7 +324,10 @@ export default {
     padding-left: 10px;
   }
   /deep/ .el-timeline-item__node--normal {
-    left: -10px;
+    // left: -10px;
+    top: 20px;
+  }
+  /deep/ .el-timeline-item__tail {
     top: 20px;
   }
   .bottom__content {
@@ -333,6 +335,7 @@ export default {
     .timeline__top {
       height: 90%;
       margin-top: 20px;
+      overflow: auto;
       .timeline {
         .time__li {
           display: flex;
