@@ -515,6 +515,24 @@ export default [
           title: '作业-调查问卷'
         }
       },
+      //   业务申请-外训报名
+      {
+        path: '/application/outsideTraining',
+        name: 'outsideTraining',
+        component: () => import('@/views/application/outsideTraining.vue'),
+        meta: {
+          title: '业务申请-外训报名'
+        }
+      },
+      //   业务申请-培训需求申请
+      {
+        path: '/application/trainingNeeds',
+        name: 'trainingNeeds',
+        component: () => import('@/views/application/trainingNeeds.vue'),
+        meta: {
+          title: '业务申请-培训需求申请'
+        }
+      },
       ...(process.env.NODE_ENV === 'development' ? demoRoutes : [])
     ]
   }
