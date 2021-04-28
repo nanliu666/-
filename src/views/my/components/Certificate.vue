@@ -195,6 +195,7 @@ export default {
       margin-right: 20px;
       box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
       position: relative;
+      cursor: pointer;
       &:nth-child(4n) {
         margin-right: 0;
       }
