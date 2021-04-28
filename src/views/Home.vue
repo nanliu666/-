@@ -25,6 +25,7 @@
         <div v-for="item in diyConfig" :key="item.id">
           <component
             :is="diyBaseConfig[item.id] ? diyBaseConfig[item.id].coms : ''"
+            v-if="diyBaseConfig[item.id]"
             :my-task-info="myTaskInfo"
             :my-live-data="myLiveData"
             :hot-course-data="hotCourseData"
