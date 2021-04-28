@@ -273,6 +273,9 @@ export default {
     .label-box {
       text-align: left;
       display: inline-block;
+      width: 1130px;
+      vertical-align: top;
+      margin-top: -3px;
       &-title {
         color: #000;
         font-weight: bold;

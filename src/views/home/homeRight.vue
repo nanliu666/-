@@ -71,7 +71,7 @@
     </div> -->
     <div v-for="item in diyConfig" :key="item.id">
       <component
-        :is="diyBaseConfig[item.id].coms"
+        :is="diyBaseConfig[item.id] ? diyBaseConfig[item.id].coms : ''"
         :home-p-info-data="homePInfoData"
         :learning-course-data="learningCourseData"
         :monthly-credit-data="monthlyCreditData"
@@ -117,8 +117,8 @@ export default {
   },
   computed: {
     diyConfig: () => {
-      let userInfo = getStore({ name: 'userInfo' })
-      let diyConfig = JSON.parse(userInfo.cms_plan)
+      let diyInfor = getStore({ name: 'diyInfor' })
+      let diyConfig = diyInfor.home && diyInfor.home.length > 0 && JSON.parse(diyInfor.home)
       return diyConfig.side
     }
   },

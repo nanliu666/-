@@ -25,10 +25,7 @@
             :label="option.id"
           >
             <span>
-              <span
-                v-if="[QUESTION_TYPE_SINGLE, QUESTION_TYPE_MULTIPLE].includes(data.type)"
-                style="margin-right: 4px"
-              >{{ QUESTION_PREFACE[index] }}.</span>
+              <span v-if="[QUESTION_TYPE_SINGLE].includes(data.type)" style="margin-right: 4px">{{ QUESTION_PREFACE[index] }}.</span>
               <span>{{ _.unescape(option.content) }}</span>
             </span>
             <question-view v-if="option.url" :url="option.url" />
@@ -51,10 +48,7 @@
             @change="changeMultiple(option)"
           >
             <span>
-              <span
-                v-if="[QUESTION_TYPE_SINGLE, QUESTION_TYPE_MULTIPLE].includes(data.type)"
-                style="margin-right: 4px"
-              >{{ QUESTION_PREFACE[index] }}.</span>
+              <span style="margin-right: 4px">{{ QUESTION_PREFACE[index] }}.</span>
               <span>{{ _.unescape(option.content) }}</span>
             </span>
             <question-view v-if="option.url" :url="option.url" />

@@ -24,7 +24,7 @@
         <!-- 我的任务 -->
         <div v-for="item in diyConfig" :key="item.id">
           <component
-            :is="diyBaseConfig[item.id].coms"
+            :is="diyBaseConfig[item.id] ? diyBaseConfig[item.id].coms : ''"
             :my-task-info="myTaskInfo"
             :my-live-data="myLiveData"
             :hot-course-data="hotCourseData"
@@ -153,6 +153,7 @@
         </a></span>
       </div>
     </div>
+    <el-backtop />
   </div>
 </template>
 
