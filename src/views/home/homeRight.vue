@@ -71,7 +71,7 @@
     </div> -->
     <div v-for="item in diyConfig" :key="item.id">
       <component
-        :is="diyBaseConfig[item.id].coms"
+        :is="diyBaseConfig[item.id] ? diyBaseConfig[item.id].coms : ''"
         :home-p-info-data="homePInfoData"
         :learning-course-data="learningCourseData"
         :monthly-credit-data="monthlyCreditData"
