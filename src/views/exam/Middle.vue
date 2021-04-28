@@ -97,17 +97,6 @@
             </li>
           </el-timeline-item>
         </el-timeline>
-        <div class="pagination__bottom">
-          <el-pagination
-            :current-page="queryInfo.pageNo"
-            :page-sizes="[10, 20, 30, 40]"
-            :page-size="queryInfo.pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="totalNum"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-          />
-        </div>
       </div>
       <common-empty v-else text="当前还没开始考试" />
     </el-card>
@@ -139,13 +128,12 @@ export default {
           title: ''
         }
       ],
-      examInfo: {},
-      sessionList: [],
       queryInfo: {
         pageNo: 1,
-        pageSize: 10
+        pageSize: 200
       },
-      totalNum: 100
+      examInfo: {},
+      sessionList: []
     }
   },
   computed: {
@@ -173,15 +161,8 @@ export default {
     this.initData()
   },
   methods: {
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
-    },
     moment,
     overExam(item) {
-      console.log('item==', item)
       this.currentExamId = item.examSessionId
     },
     outExam() {
@@ -219,11 +200,12 @@ export default {
       _.set(this.queryInfo, 'examId', examId)
       _.set(this.queryInfo, 'batchId', batchId)
       this.$refs.breadcrumb.setBreadcrumbTitle(examName)
+      this.getList()
+    },
+    getList() {
       examSessionList(this.queryInfo).then((res) => {
-        // eslint-disable-next-line no-unused-vars
-        const { data, totalNum, totalPage } = res
+        const { data } = res
         this.sessionList = data
-        this.totalNum = totalNum
       })
     }
   }
@@ -313,7 +295,7 @@ export default {
 .bottom-card {
   margin-top: 20px;
   /deep/ .el-card__body {
-    height: 50vh;
+    // height: 50vh;
     margin-top: -24px;
   }
   /deep/ .el-menu--horizontal {
@@ -325,7 +307,10 @@ export default {
     padding-left: 10px;
   }
   /deep/ .el-timeline-item__node--normal {
-    left: -10px;
+    // left: -10px;
+    top: 20px;
+  }
+  /deep/ .el-timeline-item__tail {
     top: 20px;
   }
   .bottom__content {
@@ -333,6 +318,7 @@ export default {
     .timeline__top {
       height: 90%;
       margin-top: 20px;
+      overflow: auto;
       .timeline {
         .time__li {
           display: flex;
@@ -348,10 +334,6 @@ export default {
           margin-right: 60px;
         }
       }
-    }
-    .pagination__bottom {
-      display: flex;
-      justify-content: flex-end;
     }
   }
 }
