@@ -65,6 +65,7 @@ export default {
     }
   },
   computed: {
+    //  获取当前tab，默认第一个
     clickData() {
       return _.get(this.$route, 'query.clickData', 'myLearn')
     }
