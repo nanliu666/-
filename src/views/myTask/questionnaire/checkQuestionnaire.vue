@@ -5,14 +5,10 @@
       <el-breadcrumb-item :to="{ path: '/myTask/myLearn' }">学习</el-breadcrumb-item>
       <el-breadcrumb-item>调查问卷</el-breadcrumb-item>
     </el-breadcrumb>
-    <template v-if="!isSuccess">
+    <template>
       <!-- 问卷进度 -->
       <el-card>
-        <el-progress
-          :percentage="toPercent"
-          :format="formatProgress"
-          :stroke-width="12"
-        ></el-progress>
+        <el-progress :percentage="100" :format="formatProgress" :stroke-width="12"></el-progress>
       </el-card>
       <div v-loading="loading" class="container">
         <h1 class="title">{{ questionnaireTemp.subjectName }}</h1>
@@ -29,7 +25,7 @@
                   <span class="label-box-title">{{ k + 1 + '.' + z.content }}</span>
                   <span class="label-box-type">【简答题】</span>
                 </div>
-                <el-input v-model="questionnaireForm[z.questionId]"></el-input>
+                <el-input v-model="questionnaireForm[z.questionId]" disabled></el-input>
               </el-form-item>
               <!-- 单选题 -->
               <el-form-item v-else-if="z.type == 'single_choice'" :prop="z.questionId">
@@ -37,7 +33,7 @@
                   <span class="label-box-title">{{ k + 1 + '.' + z.content }}</span>
                   <span class="label-box-type">【单选题】</span>
                 </div>
-                <el-radio-group v-model="questionnaireForm[z.questionId]">
+                <el-radio-group v-model="questionnaireForm[z.questionId]" disabled>
                   <el-radio v-for="(v, i) in z.optionCpList" :key="i" :label="v.questionOptionId">{{
                     v.content
                   }}</el-radio>
@@ -50,11 +46,7 @@
                   <span class="label-box-type">【多选题】</span>
                   <span class="label-box-tip">最少可选{{ z.multiMin }},最多可选{{ z.multiMax }}项</span>
                 </div>
-                <el-checkbox-group
-                  v-model="questionnaireForm[z.questionId]"
-                  :min="1"
-                  :max="z.multiMax"
-                >
+                <el-checkbox-group v-model="questionnaireForm[z.questionId]" disabled>
                   <el-checkbox
                     v-for="(v, i) in z.optionCpList"
                     :key="i"
@@ -68,37 +60,24 @@
         </div>
         <!-- 提交按钮 -->
         <div class="submitBtn">
-          <el-button type="primary" size="medium" :disabled="submitDisabled" @click="submitForm">提交问卷</el-button>
+          <el-button type="primary" size="medium" :disabled="true">提交问卷</el-button>
         </div>
       </div>
     </template>
-    <!-- 提交成功占位图 -->
-    <div v-else class="container" style="text-align: center; padding: 125px 0 300px; margin-top: 0">
-      <el-image
-        :src="require('@/assets/images/success.svg')"
-        style="width: 134px; height: 134px"
-      ></el-image>
-      <p class="tip" style="font-size: 16px; margin: 30px 0">问卷提交成功，感谢您的参与</p>
-      <router-link :to="{ path: '/myTask/myLearn' }">
-        <el-button type="primary" size="medium">返回列表</el-button>
-      </router-link>
-    </div>
   </div>
 </template>
 
 <script>
-import { questionnaireSurvey, submitQuestionnaire } from '@/api/myTask'
+import { viewAnswer } from '@/api/myTask'
 export default {
-  name: 'FillQuestionnaire',
+  name: 'CheckQuestionnaire',
   data() {
     return {
       loading: false,
       questionnaireTemp: {},
       questionnaireForm: {},
       questionnaireRules: {},
-      questionList: [],
-      isSuccess: false, // 是否提交成功
-      submitDisabled: false
+      questionList: []
     }
   },
   computed: {
@@ -109,48 +88,28 @@ export default {
         if (v.status) num += 1
       })
       return num
-    },
-    // 已答题目数量
-    answeredNum: function() {
-      let num = 0
-      this.questionList.map((v) => {
-        if (
-          v.status &&
-          this.questionnaireForm[v.questionId] &&
-          this.questionnaireForm[v.questionId].length
-        )
-          num += 1
-      })
-      return num
-    },
-    // 计算百分比
-    toPercent: function() {
-      return this.questionNum
-        ? Math.round((this.answeredNum / this.questionNum) * 10000) / 100
-        : 100
     }
   },
   created() {
     this.initQuestionnaireSurvey()
   },
-  activated() {
-    this.isSuccess = false
-  },
   methods: {
     formatProgress() {
-      return `${this.answeredNum}/${this.questionNum}`
+      return `${this.questionNum}/${this.questionNum}`
     },
     // 初始化数据
     async initQuestionnaireSurvey() {
       this.loading = true
-      let params = { asqPlanId: this.$route.query.asqPlanId }
-      await questionnaireSurvey(params)
+      let params = { subjectCpId: this.$route.query.subjectCpId }
+      await viewAnswer(params)
         .then((res) => {
           this.questionnaireTemp = res
           this.questionList = this.questionnaireTemp.questionCpList
           let cloneTemp = {}
           this.questionList.map((v) => {
-            cloneTemp[v.questionId] = ''
+            if (v.type == 'multi_choice') {
+              cloneTemp[v.questionId] = v.answerUser.split(',')
+            } else cloneTemp[v.questionId] = v.answerUser
             this.questionnaireRules[v.questionId] = [
               {
                 required: !!v.status,
@@ -158,94 +117,14 @@ export default {
                 trigger: v.type == 'short_answer' ? 'blur' : 'change'
               }
             ]
-            //   多选返回一个空数组,校验最少选和最多选
-            if (v.type == 'multi_choice') {
-              cloneTemp[v.questionId] = []
-              this.questionnaireRules[v.questionId].push({
-                type: 'array',
-                min: v.multiMin,
-                max: v.multiMax,
-                message: `最少可选${v.multiMin},最多可选${v.multiMax}项`,
-                trigger: 'change'
-              })
-            }
           })
           this.questionnaireForm = cloneTemp
-        })
-        .catch(() => {
-          this.submitDisabled = true
+          console.log(this.questionList)
+          console.log(this.questionnaireForm)
         })
         .finally(() => {
           this.loading = false
         })
-    },
-    // 提交表单
-    submitForm() {
-      this.$refs.ruleForm.validate((valid) => {
-        if (valid) {
-          // 处理问卷提交参数
-          let params = {
-            subjectCpId: this.questionnaireTemp.subjectCpId,
-            mySubjectCpId: this.questionnaireTemp.mySubjectCpId,
-            questionList: []
-          }
-          for (let key in this.questionnaireForm) {
-            let temp = Array.isArray(this.questionnaireForm[key])
-              ? this.questionnaireForm[key].join(',')
-              : this.questionnaireForm[key]
-            params.questionList.push({
-              questionId: key,
-              answerUser: temp
-            })
-          }
-          // 非填题未答提示
-          let topic = false
-          for (let i = 0; i < this.questionList.length; i++) {
-            if (
-              !this.questionList[i].status &&
-              !this.questionnaireForm[this.questionList[i].questionId].length
-            ) {
-              topic = true
-              break
-            }
-          }
-          // topic为true代表非填题未答,为false代表正常提交
-          this.$confirm(
-            topic
-              ? '你还有非必填题目未填写，是否继续提交问卷？'
-              : '确认提交吗，提交之后不可再修改。',
-            '提示',
-            {
-              confirmButtonText: '提交问卷',
-              cancelButtonText: topic ? '继续填写' : '取消',
-              type: 'warning'
-            }
-          ).then(async () => {
-            this.loading = true
-            await submitQuestionnaire(params).then(() => {
-              this.isSuccess = true
-              this.loading = false
-            })
-          })
-        } else {
-          // 必填题没有答完提示
-          let noAnswer = []
-          this.questionList.map((v, i) => {
-            if (v.status && !this.questionnaireForm[v.questionId].length)
-              noAnswer.push(`第${i + 1}道`)
-          })
-          //   this.$confirm(`请完善所有试题`, '提示', {
-          //     confirmButtonText: '继续填写',
-          //     showCancelButton: false,
-          //     type: 'warning'
-          //   })
-          this.$confirm(`${noAnswer.join('、')}试题未填写,暂时无法提交`, '提示', {
-            confirmButtonText: '继续填写',
-            showCancelButton: false,
-            type: 'warning'
-          })
-        }
-      })
     }
   }
 }
