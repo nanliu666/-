@@ -31,6 +31,7 @@ export default {
   components: { myLearn, myExamList, questionnaire, myHomeWork },
   data() {
     return {
+      clickData: '',
       tabsData: [
         {
           name: '学习',
@@ -64,16 +65,11 @@ export default {
       questionTodoNum: 0
     }
   },
-  computed: {
-    //  获取当前tab，默认第一个
-    clickData() {
-      return _.get(this.$route, 'query.clickData', 'myLearn')
-    }
-  },
   created() {
     this.getInfo()
   },
   activated() {
+    this.clickData = _.get(this.$route, 'query.clickData', 'myLearn')
     this.getInfo()
   },
   methods: {
