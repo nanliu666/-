@@ -112,26 +112,28 @@
         ></div>
         <!-- 课件 -->
         <div v-if="currentChapter.type == '2'" class="content--iframe">
-          <video
-            v-if="isVideo"
-            ref="videoRef"
-            controlslist="nodownload"
-            autoplay
-            preload
-            controls
-            :src="currentChapter.content"
-            :height="contentHeight"
-            :width="contentWidth"
-            style="width:100%;"
-          ></video>
-          <div v-if="!isVideo" style=" height:100%">
-            <div v-if="getFileType(currentChapter.content) == 'txt'" ref="currentTXT"></div>
-            <img
-              v-else-if="/(jpg|png|gif)$/.test(getFileType(currentChapter.content))"
-              ref="currentImg"
-              :src="currentSrc"
-            />
-            <iframe v-else :src="currentSrc" width="100%" height="100%" frameborder="0"></iframe>
+          <div style=" height:100%">
+            <video
+              v-if="isVideo"
+              ref="videoRef"
+              controlslist="nodownload"
+              autoplay
+              preload
+              controls
+              :src="currentChapter.content"
+              :height="contentHeight"
+              :width="contentWidth"
+              style="width:100%;"
+            ></video>
+            <div v-if="!isVideo" style=" height:100%">
+              <div v-if="getFileType(currentChapter.content) == 'txt'" ref="currentTXT"></div>
+              <img
+                v-else-if="/(jpg|png|gif)$/.test(getFileType(currentChapter.content))"
+                ref="currentImg"
+                :src="currentSrc"
+              />
+              <iframe v-else :src="currentSrc" width="100%" height="100%" frameborder="0"></iframe>
+            </div>
           </div>
         </div>
         <!--资料-->
