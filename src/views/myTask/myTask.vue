@@ -58,11 +58,15 @@ export default {
           icon: require('../../../public/img/问卷.png')
         }
       ],
-      clickData: 'myLearn',
       studyNum: 0,
       examinationNum: 0,
       homeWorkNum: 0,
       questionTodoNum: 0
+    }
+  },
+  computed: {
+    clickData() {
+      return _.get(this.$route, 'query.clickData', 'myLearn')
     }
   },
   created() {
