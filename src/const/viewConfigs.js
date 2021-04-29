@@ -24,6 +24,7 @@ const TYPE_PATH_MAP = {
   ExamRemind: '/exam/middle', // 考试提醒: 开考前N分钟
   CourseLearning: '/myTask/myLearn', // 课程学习的通知: 发布课程安排
   CourseRemind: '/myTask/myLearn', // 课程学习提醒: 课程开始前N分钟
-  TrainArrange: '/train/index' // 培训安排的通知: 发布培训安排
+  TrainArrange: '/train/index', // 培训安排的通知: 发布培训安排
+  QuestionnaireArrangement: '/myTask/myLearn?clickData=questionnaire' // 培训安排的通知: 发布培训安排
 }
 export default TYPE_PATH_MAP
