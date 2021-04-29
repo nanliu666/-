@@ -112,7 +112,19 @@ export default {
         this.getInfo()
       })
     },
+    // 是否空文件
+    isFileSize(file) {
+      if (file.size === 0) {
+        this.$message({
+          message: '请不要上传空文件哦！',
+          type: 'warning'
+        })
+        return true
+      }
+    },
+
     beforeUpload(file) {
+      if (this.isFileSize(file)) return false
       const isLt20M = file.size / 1024 / 1024 < 20
       if (!isLt20M) {
         this.$message.error('上传文件大小不能超过 20MB!')
