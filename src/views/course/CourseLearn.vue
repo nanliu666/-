@@ -341,7 +341,7 @@ export default {
     },
     // 非视频课件
     getContentUrl(chapter) {
-      const office = /.*\.(doc|xls|xlsx|ppt|pptx)$/
+      const office = /.*\.(doc|docx|xls|xlsx|ppt|pptx)$/
       if (office.test(chapter.content)) {
         this.currentSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURI(
           chapter.content
