@@ -31,6 +31,7 @@ export default {
   components: { myLearn, myExamList, questionnaire, myHomeWork },
   data() {
     return {
+      clickData: '',
       tabsData: [
         {
           name: '学习',
@@ -58,7 +59,6 @@ export default {
           icon: require('../../../public/img/问卷.png')
         }
       ],
-      clickData: 'myLearn',
       studyNum: 0,
       examinationNum: 0,
       homeWorkNum: 0,
@@ -69,6 +69,7 @@ export default {
     this.getInfo()
   },
   activated() {
+    this.clickData = _.get(this.$route, 'query.clickData', 'myLearn')
     this.getInfo()
   },
   methods: {
