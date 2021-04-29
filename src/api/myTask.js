@@ -121,3 +121,7 @@ export const questionnaireSurvey = (params) => get('/margin/v1/asq/center/join',
  * 问卷调查提交,subjectCpId:问卷模板id,mySubjectCpId:我的问卷模板id,questionList:[{questionId:问题id,answerUser:答案}]
  */
 export const submitQuestionnaire = (params) => post('/margin/v1/asq/center/submit', params)
+/**
+ * 查看调查结果,subjectCpId:问卷副本id
+ */
+export const viewAnswer = (params) => get('/margin/v1/asq/center/viewAnswer', params)

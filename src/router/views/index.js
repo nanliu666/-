@@ -588,6 +588,14 @@ export default [
           title: '作业-调查问卷'
         }
       },
+      {
+        path: '/myTask/checkQuestionnaire',
+        name: 'checkQuestionnaire',
+        component: () => import('@/views/myTask/questionnaire/checkQuestionnaire.vue'),
+        meta: {
+          title: '作业-查看问卷'
+        }
+      },
       //   业务申请-外训报名
       {
         path: '/application/outsideTraining',
