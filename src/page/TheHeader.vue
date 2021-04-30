@@ -183,17 +183,17 @@ export default {
         this.logoUrl = logoBaseInfor.logo && logoBaseInfor.logo.FrontUrl
       },
       deep: true
-    },
-    orgIds(val) {
-      this.isOrgIdE = val.indexOf('5263') !== -1 ? true : false
     }
+    // orgIds(val) {
+    //   this.isOrgIdE = val.indexOf('5263') !== -1 ? true : false
+    // }
   },
   beforeMount() {
     // 初始化时设置激活中的菜单
     this.activePath = this.$route.path.match(/^\/\w*/g)[0]
   },
   created() {
-    this.isOrgIdEFn()
+    // this.isOrgIdEFn()
   },
   mounted() {
     this.$nextTick(() => {
@@ -202,16 +202,16 @@ export default {
     })
   },
   activated() {
-    this.isOrgIdEFn()
+    // this.isOrgIdEFn()
   },
   methods: {
-    isOrgIdEFn() {
-      // 判断是否是挖机组织
-      // 获取用户的组织id（包括当前和当前以上的），存放在localstore，vuex
-      let orgIdsVuex = this.orgIds
-      this.orgIdsD = orgIdsVuex || getStore({ name: 'orgIds' })
-      this.isOrgIdE = this.orgIdsD.indexOf('5263') !== -1 ? true : false
-    },
+    // isOrgIdEFn() {
+    //   // 判断是否是挖机组织
+    //   // 获取用户的组织id（包括当前和当前以上的），存放在localstore，vuex
+    //   let orgIdsVuex = this.orgIds
+    //   this.orgIdsD = orgIdsVuex || getStore({ name: 'orgIds' })
+    //   this.isOrgIdE = this.orgIdsD.indexOf('5263') !== -1 ? true : false
+    // },
     // 个人中心跳转
     toRouter(data, i) {
       if (i === 'backstage') {
@@ -234,7 +234,6 @@ export default {
       // this.activePath = this.routerTo
       this.$router.push(item.path)
     },
-
     getCaption(obj, state) {
       let index = obj.lastIndexOf('/')
       if (state == 0) {

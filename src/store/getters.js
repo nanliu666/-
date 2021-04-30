@@ -11,6 +11,6 @@ const getters = {
   tenantContent: (state) => state.user.tenantContent,
   menuLoading: (state) => state.user.menuLoading,
   orgIds: (state) => state.user.orgIds,
-  diyInfor: (state) => state.diyInfor
+  diyInfor: (state) => state.user.diyInfor
 }
 export default getters
