@@ -65,20 +65,16 @@
                   </el-button>
                 </div>
                 <div>
-                  <span class="iconhoutaiguanli iconfont"></span>
-                  <el-button
-                    v-if="userInfo.role_id && userInfo.role_id.length > 0"
-                    type="text"
-                    @click.native="toRouter('', 'backstage')"
-                  >
-                    后台管理
-                  </el-button>
+                  <span class="iconanquantuichu iconfont"></span>
+                  <el-button type="text" @click.native="logout"> 安全退出 </el-button>
                 </div>
               </div>
               <div class="bottomMenu">
-                <div>
-                  <span class="iconanquantuichu iconfont"></span>
-                  <el-button type="text" @click.native="logout"> 安全退出 </el-button>
+                <div v-if="userInfo.role_id && userInfo.role_id.length > 0">
+                  <span class="iconhoutaiguanli iconfont"></span>
+                  <el-button type="text" @click.native="toRouter('', 'backstage')">
+                    后台管理
+                  </el-button>
                 </div>
               </div>
             </div>

@@ -20,12 +20,7 @@
         关联课程
       </div>
       <ul class="course__ul">
-        <li
-          v-for="item in data.courseInfo"
-          :key="item.id"
-          class="course__li"
-          @click="goDetail(item)"
-        >
+        <li v-for="item in data.courseInfo" :key="item.id" class="course__li">
           <el-image class="logo__img" :src="item.coverUrl" fit="cover">
             <div slot="error" class="image__slot">
               <i class="el-icon-picture-outline"></i>
@@ -117,7 +112,6 @@ export default {
       width: calc(100% / 4);
     }
     .course__li {
-      cursor: pointer;
       width: calc(100% / 4);
       margin-bottom: 20px;
       .logo__img {
