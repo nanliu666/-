@@ -206,6 +206,12 @@ export default {
           type: 'warning'
         })
         return true
+      } else if (item.status == 3) {
+        this.$message({
+          message: '本期课程已结束，不支持查看！',
+          type: 'warning'
+        })
+        return true
       }
       return false
     },
