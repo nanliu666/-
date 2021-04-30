@@ -47,7 +47,7 @@
               v-if="!item.isRead"
               size="medium"
               class="sign"
-              @click="handleAllRead({ id: item.id })"
+              @click.stop="handleAllRead({ id: item.id })"
             >
               标记已读
             </el-button>
