@@ -23,9 +23,17 @@
           <div class="survey">
             <img :src="require('@/assets/images/questionnaire.png')" />
             <div class="tip">
-              <div class="satisfaction">
-                {{ z.asqName.length > 10 ? z.asqName.slice(0, 10) + '...' : z.asqName }}
-              </div>
+              <el-tooltip
+                v-if="z.asqName.length > 10"
+                effect="dark"
+                :content="z.asqName"
+                placement="top"
+              >
+                <div class="satisfaction">
+                  {{ z.asqName.slice(0, 10) + '...' }}
+                </div>
+              </el-tooltip>
+              <div v-else class="satisfaction">{{ z.asqName }}</div>
               <div class="peopleNum">
                 <i class="iconrenshu iconfont iconfontNum"></i><span>{{ z.joinCount }}人参加</span>
               </div>
@@ -118,6 +126,7 @@ export default {
 
     // 问卷卡片跳转
     checkQuestionnaire(row) {
+      console.log(row)
       // 问卷状态 1-进行中 2-未开始 3-已结束,asqLogicStatus 1-正常 2-暂停
       // 1、未开始状态 2、后台暂停进行中问卷，前台显示未开始
       if (row.asqStatus == '2' || row.asqLogicStatus == 2) {
@@ -132,14 +141,18 @@ export default {
             type: 'warning'
           }
         )
-      } else if (row.asqStatus == '1') {
+      } else if (row.asqStatus == '1' && !row.finish) {
         //   进入【填写问卷】页面
         this.$router.push({
           path: '/myTask/fillQuestionnaire',
           query: { asqPlanId: row.asqPlanId }
         })
-      } else if (row.asqStatus == '3') {
+      } else if (row.asqStatus == '3' || row.finish) {
         //   进入【查看问卷】页面
+        this.$router.push({
+          path: '/myTask/checkQuestionnaire',
+          query: { subjectCpId: row.subjectId }
+        })
       }
     }
   }

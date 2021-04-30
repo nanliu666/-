@@ -22,8 +22,9 @@ const TYPE_PATH_MAP = {
   ExamAchievement: '/approvalCenter/center', // 考试成绩通知: 发布考试成绩
   ExamNotify: '/exam/middle', // 考试通知: 考试发布
   ExamRemind: '/exam/middle', // 考试提醒: 开考前N分钟
-  CourseLearning: '/learn/list', // 课程学习的通知: 发布课程安排
-  CourseRemind: '/learn/list', // 课程学习提醒: 课程开始前N分钟
-  TrainArrange: '/train/index' // 培训安排的通知: 发布培训安排
+  CourseLearning: '/myTask/myLearn', // 课程学习的通知: 发布课程安排
+  CourseRemind: '/myTask/myLearn', // 课程学习提醒: 课程开始前N分钟
+  TrainArrange: '/train/index', // 培训安排的通知: 发布培训安排
+  QuestionnaireArrangement: '/myTask/myLearn?clickData=questionnaire' // 培训安排的通知: 发布培训安排
 }
 export default TYPE_PATH_MAP

@@ -189,7 +189,7 @@ export default {
             this.addnote = ''
           })
         } else {
-          this.$message({ message: '当前有没有播发课件哦!' })
+          this.$message({ message: '当前有没有播放课件哦!' })
         }
       } else {
         this.$message({ message: '内容不能为空!' })

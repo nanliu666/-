@@ -2,6 +2,7 @@ import demoRoutes from './demo'
 import Layout from '@/page/Layout'
 import EmptyLayout from '@/page/EmptyLayout'
 import myTaskLayout from '@/views/myTask/myTask'
+import lecturerTask from '@/views/lecturerTask/task'
 // import myLearnLayout from '@/views/myTask/myLearn'
 /**
  * 路由定义规范
@@ -408,6 +409,78 @@ export default [
           }
         ]
       },
+
+      {
+        path: '/lecturerTask',
+        redirect: '/lecturerTask/task',
+        component: lecturerTask,
+        children: [
+          {
+            name: 'lecturerTask',
+            path: '/lecturerTask/task',
+            // redirect: '/myTask/myLearn/myRequiredList',
+            // component: myLearnLayout,
+            meta: {
+              title: '讲师任务'
+            },
+            children: [
+              // {
+              //   path: 'myRequiredList',
+              //   name: 'myRequiredList',
+              //   component: () =>
+              //     import(/* webpackChunkName: "page"*/ '@/views/myTask/myRequiredList.vue'),
+              //   meta: {
+              //     title: '必修课'
+              //   }
+              // },
+              // {
+              //   path: 'myTrainList',
+              //   name: 'myTrainList',
+              //   component: () =>
+              //     import(/* webpackChunkName: "page" */ '@/views/myTask/myTrainList.vue'),
+              //   meta: {
+              //     title: '培训'
+              //   }
+              // },
+              // {
+              //   path: 'myElectiveList',
+              //   name: 'myElectiveList',
+              //   component: () =>
+              //     import(/* webpackChunkName: "page" */ '@/views/myTask/myElectiveList.vue'),
+              //   meta: {
+              //     title: '选修课'
+              //   }
+              // },
+              // {
+              //   path: 'myLiveList',
+              //   name: 'myLiveList',
+              //   component: () =>
+              //     import(/* webpackChunkName: "page" */ '@/views/myTask/myLiveList.vue'),
+              //   meta: {
+              //     title: '直播'
+              //   }
+              // }
+            ]
+          }
+          // {
+          //   path: '/myTask/myExamList',
+          //   name: 'myExamList',
+          //   component: () => import('@/views/myTask/myExamList.vue'),
+          //   meta: {
+          //     title: '考试'
+          //   }
+          // }
+        ]
+      },
+      {
+        path: '/requiredCourseDetail',
+        name: 'requiredCourseDetail',
+        component: () => import('@/views/lecturerTask/requiredCourse/requiredCourseDetail.vue'),
+        meta: {
+          title: '必修课详情'
+        }
+      },
+
       {
         path: '/myTask',
         redirect: '/myTask/myLearn',
@@ -513,6 +586,32 @@ export default [
         component: () => import('@/views/myTask/questionnaire/fillQuestionnaire.vue'),
         meta: {
           title: '作业-调查问卷'
+        }
+      },
+      {
+        path: '/myTask/checkQuestionnaire',
+        name: 'checkQuestionnaire',
+        component: () => import('@/views/myTask/questionnaire/checkQuestionnaire.vue'),
+        meta: {
+          title: '作业-查看问卷'
+        }
+      },
+      //   业务申请-外训报名
+      {
+        path: '/application/outsideTraining',
+        name: 'outsideTraining',
+        component: () => import('@/views/application/outsideTraining.vue'),
+        meta: {
+          title: '业务申请-外训报名'
+        }
+      },
+      //   业务申请-培训需求申请
+      {
+        path: '/application/trainingNeeds',
+        name: 'trainingNeeds',
+        component: () => import('@/views/application/trainingNeeds.vue'),
+        meta: {
+          title: '业务申请-培训需求申请'
         }
       },
       ...(process.env.NODE_ENV === 'development' ? demoRoutes : [])

@@ -14,7 +14,7 @@
             class="course"
           >
             <!-- 图片 -->
-            <div class="top finger" @click="goCourseDetails(item.id)">
+            <div class="top finger" @click="goCourseDetails(item)">
               <img
                 :src="item.coverUrl"
                 :alt="item.coverName"
@@ -33,7 +33,7 @@
               <!-- 基本信息 -->
               <div class="course_info">
                 <ul class="course_info_ul">
-                  <li class="course_title finger" @click="goCourseDetails(item.id)">
+                  <li class="course_title finger" @click="goCourseDetails(item)">
                     {{ item.name ? item.name : '--' }}
                   </li>
                   <li class="other">
@@ -199,15 +199,28 @@ export default {
       }
       this.examListData = item.examList
     },
+    isStatus(item) {
+      if (item.status == 1) {
+        this.$message({
+          message: '课程暂未开始，无法进行学习，请耐心等待！',
+          type: 'warning'
+        })
+        return true
+      }
+      return false
+    },
     // 去学习
     goLearn(e) {
+      if (this.isStatus(e)) return
       this.$router.push({ path: '/course/learn', query: { courseId: e.id } })
       // 阻止冒泡
       window.event ? (window.event.cancelBubble = true) : e.stopPropagation()
     },
+
     // 去课程详情
-    goCourseDetails(id) {
-      this.$router.push({ path: '/course/detail', query: { id: id } })
+    goCourseDetails(item) {
+      if (this.isStatus(item)) return
+      this.$router.push({ path: '/course/detail', query: { id: item.id } })
     },
     // 考试列表--进去考试
     goExam(item) {

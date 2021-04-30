@@ -112,25 +112,29 @@
         ></div>
         <!-- 课件 -->
         <div v-if="currentChapter.type == '2'" class="content--iframe">
-          <video
-            v-if="isVideo"
-            ref="videoRef"
-            controlslist="nodownload"
-            autoplay
-            preload
-            controls
-            :src="currentChapter.content"
-            :height="contentHeight"
-            :width="contentWidth"
-            style="width:100%;"
-          ></video>
-          <iframe
-            v-if="!isVideo"
-            :src="getContentUrl(currentChapter)"
-            width="100%"
-            height="100%"
-            frameborder="0"
-          ></iframe>
+          <div style=" height:100%">
+            <video
+              v-if="isVideo"
+              ref="videoRef"
+              controlslist="nodownload"
+              autoplay
+              preload
+              controls
+              :src="currentChapter.content"
+              :height="contentHeight"
+              :width="contentWidth"
+              style="width:100%;"
+            ></video>
+            <div v-if="!isVideo" style=" height:100%">
+              <div v-if="getFileType(currentChapter.content) == 'txt'" ref="currentTXT"></div>
+              <img
+                v-else-if="/(jpg|png|gif)$/.test(getFileType(currentChapter.content))"
+                ref="currentImg"
+                :src="currentSrc"
+              />
+              <iframe v-else :src="currentSrc" width="100%" height="100%" frameborder="0"></iframe>
+            </div>
+          </div>
         </div>
         <!--资料-->
         <div v-if="currentChapter.type == '3'" class="content--download">
@@ -184,6 +188,7 @@ export default {
   components: { Task, TextOverTooltip, Note },
   data() {
     return {
+      currentSrc: '',
       timer: null,
       circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
       activeIndex: '1',
@@ -195,7 +200,7 @@ export default {
       note: '',
       leftHidden: false,
       pageIndex: -1,
-      chapterTime: 0 //章节停留时间
+      chapterTime: 0 //章节停留时间,
     }
   },
   computed: {
@@ -220,6 +225,9 @@ export default {
   },
   watch: {
     currentChapter(newVal, oldVal) {
+      if (!this.isVideo) {
+        this.getContentUrl(newVal)
+      }
       // if (this.isChapterVideo(oldVal) && oldVal.duration) {
       //   this.updateVideoProgress(oldVal)
       //   this.setDuration()
@@ -272,6 +280,11 @@ export default {
     next()
   },
   methods: {
+    getFileType(url) {
+      let type = url.split('.')
+      type = type[type.length - 1]
+      return type
+    },
     cancelRightClick() {
       // 取消右击
       document.getElementById('course-learn-id').oncontextmenu = function() {
@@ -330,11 +343,44 @@ export default {
     },
     // 非视频课件
     getContentUrl(chapter) {
-      const office = /.*\.(doc|xls|xlsx|ppt|pptx)$/
+      const office = /.*\.(doc|docx|xls|xlsx|ppt|pptx)$/
       if (office.test(chapter.content)) {
-        return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURI(chapter.content)}`
+        this.currentSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURI(
+          chapter.content
+        )}`
+      }
+
+      const officeTxtImg = /.*\.(jpg|png|gif|txt|TXT)$/
+      if (officeTxtImg.test(chapter.content)) {
+        this.genSrc(chapter.content)
       }
       return chapter.content
+    },
+    genSrc(url) {
+      axios.get(url).then((res) => {
+        const { data } = res
+        if (/(jpg|png|gif)$/.test(this.getFileType(url))) {
+          // img
+          this.$nextTick(() => {
+            this.currentSrc = url
+          })
+        } else {
+          this.$nextTick(() => (this.$refs.currentTXT.innerHTML = data))
+        }
+      })
+    },
+    blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const fileReader = new FileReader()
+        fileReader.onload = (e) => {
+          resolve(e.target.result)
+        }
+        // readAsDataURL
+        fileReader.readAsDataURL(blob)
+        fileReader.onerror = () => {
+          reject(new Error('blobToBase64 error'))
+        }
+      })
     },
     // 每1分钟收集一下进度
     // setTimer() {
@@ -729,6 +775,7 @@ export default {
         }
         &--iframe {
           height: 100%;
+          padding: 25px;
         }
       }
 

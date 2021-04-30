@@ -22,43 +22,42 @@
   </div>
 </template>
 <script>
-import myLearn from './myLearn'
-import myExamList from './myExamList'
-import myHomeWork from './myHomeWork'
-import questionnaire from './questionnaire'
-import { studyTodoNum, examTodoNum, homeWorkNum, questionTodoNum } from '@/api/myTask'
+import electiveCoursesList from './electiveCourses/electiveCoursesList'
+import liveList from './live/liveList'
+import requiredCourseList from './requiredCourse/requiredCourseList'
+import trainList from './train/trainList'
 export default {
-  components: { myLearn, myExamList, questionnaire, myHomeWork },
+  components: { electiveCoursesList, liveList, requiredCourseList, trainList },
   data() {
     return {
-      clickData: '',
       tabsData: [
         {
-          name: '学习',
-          id: 'study',
-          path: 'myLearn',
+          name: '必修课',
+          id: 'requiredCourseList',
+          path: 'requiredCourseList',
           icon: require('../../../public/img/学习.png')
         },
         {
-          name: '作业',
-          id: 'task',
-          path: 'myHomeWork',
+          name: '培训',
+          id: 'trainList',
+          path: 'trainList',
           icon: require('../../../public/img/作业.png')
         },
         {
-          name: '考试',
-          id: 'examination',
-          path: 'myExamList',
+          name: '选修课',
+          id: 'electiveCoursesList',
+          path: 'electiveCoursesList',
 
           icon: require('../../../public/img/考试.png')
         },
         {
-          name: '问卷',
-          id: 'questionnaire',
-          path: 'questionnaire',
+          name: '直播',
+          id: 'liveList',
+          path: 'liveList',
           icon: require('../../../public/img/问卷.png')
         }
       ],
+      clickData: 'requiredCourseList',
       studyNum: 0,
       examinationNum: 0,
       homeWorkNum: 0,
@@ -69,7 +68,6 @@ export default {
     this.getInfo()
   },
   activated() {
-    this.clickData = _.get(this.$route, 'query.clickData', 'myLearn')
     this.getInfo()
   },
   methods: {
@@ -77,15 +75,15 @@ export default {
       this.clickData = path
     },
     async getInfo() {
-      // 学习待办条数
-      this.studyNum = await studyTodoNum()
-      // 考试待办条数
-      this.examinationNum = await examTodoNum()
-      // 作业待办条数
-      this.homeWorkNum = await homeWorkNum()
-      // 问卷待办条数
-      let res = await questionTodoNum()
-      this.questionTodoNum = res.asqTodoList
+      //   // 学习待办条数
+      //   this.studyNum = await studyTodoNum()
+      //   // 考试待办条数
+      //   this.examinationNum = await examTodoNum()
+      //   // 作业待办条数
+      //   this.homeWorkNum = await homeWorkNum()
+      //   // 问卷待办条数
+      //   let res = await questionTodoNum()
+      //   this.questionTodoNum = res.asqTodoList
     }
   }
 }
