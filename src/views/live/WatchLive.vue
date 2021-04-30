@@ -18,7 +18,7 @@ export default {
       let { userid, sk, avatar, userName, wId, type } = this.$route.query
       let sign = sk + userid + sk + ts
       sign = md5(sign)
-      let url = `https://live.epro-edu.com/watch/${wId}`
+      let url = `https://live-watch.epro-edu.com/watch/${wId}`
       url =
         type === 'direct'
           ? url +
