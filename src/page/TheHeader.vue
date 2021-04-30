@@ -5,7 +5,7 @@
         <!-- <img v-if="envVar === 'zehui' && isOrgIdE" src="../assets/images/logoE.png" />
         <img v-else-if="envVar === 'zehui'" src="../assets/images/logoZeHui.png" />
         <img v-else src="../assets/images/logo_yb.png" /> -->
-        <img :src="logoImg" />
+        <img :src="logoUrl" />
       </div>
       <template v-if="userId">
         <ul class="header-menu">
@@ -146,17 +146,18 @@ export default {
   data() {
     return {
       menu,
+      logoUrl: '',
       activePath: '/home',
       routerTo: '',
       isOrgIdE: false
     }
   },
   computed: {
-    logoImg() {
-      let logoBaseInfor = getStore({ name: 'diyInfor' })
-      let logoImg = logoBaseInfor.logo && logoBaseInfor.logo.FrontUrl
-      return logoImg
-    },
+    // logoImg() {
+    //   let logoBaseInfor = this.diyInfor||getStore({ name: 'diyInfor' })
+    //   let logoImg = logoBaseInfor.logo && logoBaseInfor.logo.FrontUrl
+    //   return logoImg
+    // },
     envVar() {
       let envC = process.env
       return envC.VUE_APP_ENV
@@ -164,7 +165,7 @@ export default {
     isFullscreen() {
       return this.$route.meta.fullscreen
     },
-    ...mapGetters(['userId', 'userInfo', 'orgIds'])
+    ...mapGetters(['userId', 'userInfo', 'orgIds', 'diyInfor'])
   },
   watch: {
     //监听路由变化
@@ -176,6 +177,13 @@ export default {
       // to , from 分别表示从哪跳转到哪，都是一个对象
       // to.path  ( 表示的是要跳转到的路由的地址 eg: /home );
     },
+    diyInfor: {
+      handler() {
+        let logoBaseInfor = this.diyInfor || getStore({ name: 'diyInfor' })
+        this.logoUrl = logoBaseInfor.logo && logoBaseInfor.logo.FrontUrl
+      },
+      deep: true
+    },
     orgIds(val) {
       this.isOrgIdE = val.indexOf('5263') !== -1 ? true : false
     }
@@ -186,6 +194,12 @@ export default {
   },
   created() {
     this.isOrgIdEFn()
+  },
+  mounted() {
+    this.$nextTick(() => {
+      let logoBaseInfor = this.diyInfor || getStore({ name: 'diyInfor' })
+      this.logoUrl = logoBaseInfor.logo && logoBaseInfor.logo.FrontUrl
+    })
   },
   activated() {
     this.isOrgIdEFn()
