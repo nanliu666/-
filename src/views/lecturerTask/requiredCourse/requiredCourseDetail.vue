@@ -40,7 +40,7 @@
             <li class="info_bottom">
               <span class="info_bottom_details"><i class="iconimage_icon_user iconfont iconInfo"></i>{{ detailParams.peopleNum ? detailParams.peopleNum + '人' : '--' }}</span>
               <span class="info_bottom_details"><i class="iconimage_icon_time1 iconfont iconInfo"></i>{{ detailParams.period ? detailParams.period + '小时' : '--' }}</span>
-              <span class="info_bottom_details"><i class="iconjifen iconfont iconInfo"></i>{{ detailParams.credit ? detailParams.credit + '积分' : '--' }}</span>
+              <span v-if="false" class="info_bottom_details"><i class="iconjifen iconfont iconInfo"></i>{{ detailParams.credit ? detailParams.credit + '积分' : '--' }}</span>
             </li>
           </ul>
         </div>

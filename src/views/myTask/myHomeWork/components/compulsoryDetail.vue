@@ -43,7 +43,7 @@
                 <li>
                   <span class="info_bottom_details"><i class="iconimage_icon_user iconfont iconInfo"></i>{{ studyworkData.peopleNum }}人</span>
                   <span class="info_bottom_details"><i class="iconimage_icon_time1 iconfont iconInfo"></i>{{ studyworkData.period }}h</span>
-                  <span class="info_bottom_details"><i class="iconjifen iconfont iconInfo"></i>{{ studyworkData.credit }}积分</span>
+                  <span v-if="false" class="info_bottom_details"><i class="iconjifen iconfont iconInfo"></i>{{ studyworkData.credit }}积分</span>
                 </li>
               </ul>
             </div>
