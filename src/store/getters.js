@@ -10,6 +10,7 @@ const getters = {
   menuAll: (state) => state.user.menuAll,
   tenantContent: (state) => state.user.tenantContent,
   menuLoading: (state) => state.user.menuLoading,
-  orgIds: (state) => state.user.orgIds
+  orgIds: (state) => state.user.orgIds,
+  diyInfor: (state) => state.diyInfor
 }
 export default getters
