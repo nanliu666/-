@@ -52,7 +52,7 @@
         <div class="info_number">
           <span> <i class="el-icon-user"></i> {{ courseData.studyPeople || 0 }}人 </span>
           <span> <i class="el-icon-time"></i> {{ courseData.period || 0 }}H </span>
-          <span> <i class="el-icon-coin"></i> {{ courseData.credit || 0 }}积分 </span>
+          <span v-if="false"> <i class="el-icon-coin"></i> {{ courseData.credit || 0 }}积分 </span>
         </div>
         <el-button type="primary" size="medium" @click="jumpToLearn(id, null)">
           立即学习
