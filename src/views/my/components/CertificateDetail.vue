@@ -9,10 +9,10 @@
       </el-button>
     </div>
 
-    <div class="title">{{ sondata.templateName }}（{{ sondata.certificateNo }}）</div>
+    <div class="title">{{ sondata.templateName }}（{{ CertificateNumberInitials }}-{{ serialNumber }}）</div>
 
     <div class="info">
-      <span>颁发机构：{{ CertificateNumberInitials }}</span>
+      <span>颁发机构：{{ sondata.awardAgency }}</span>
       <span>发放时间：{{ sondata.grantTime }}</span>
     </div>
 
