@@ -372,7 +372,6 @@ export default {
     padding-bottom: 0;
     color: rgb(153, 153, 153);
     .el-button.el-button--text {
-      padding: 13px 16px;
       color: rgba(0, 11, 21, 0.85);
     }
   }
