@@ -27,7 +27,7 @@
       @click="tonewsDetails(item, index)"
     >
       <div class="list_box_l">
-        <img :src="item.picUrl" alt="" />
+        <img :src="item.picUrl" :onerror="errorImg" alt="" />
       </div>
       <div class="list_box_r">
         <div class="list_box_r_title">
@@ -82,6 +82,7 @@ export default {
   name: 'NewsList',
   data() {
     return {
+      errorImg: 'this.src="' + require('@/assets/images/newsBg.png') + '"',
       searchInput: '',
       pitch: 0,
       total: 0,
