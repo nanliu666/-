@@ -59,7 +59,7 @@
           @click="sysRuleSource = '登录积分'"
         >登录积分</span>
         <span
-          v-show="sehrchBtn === 0"
+          v-show="false"
           :class="{ typeBtn: sysRuleSource === '在线学习积分' }"
           @click="sysRuleSource = '在线学习积分'"
         >在线学习积分</span>

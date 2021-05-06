@@ -11,8 +11,15 @@
         <div v-for="item in newsListData" :key="item.id" class="homeCourse">
           <router-link :to="`/news/Details?id=${item.id}&hits=${item.hits}&isHot=1`">
             <div class="homeCourseImg">
-              <img
+              <!-- <img
                 :src="item.picUrl ? item.picUrl : '/img/autoL.png'"
+                width="285"
+                height="168"
+                alt=""
+              /> -->
+              <img
+                :src="item.picUrl"
+                :onerror="errorImg"
                 width="285"
                 height="168"
                 alt=""
@@ -41,7 +48,12 @@ export default {
         return []
       }
     }
-  }
+  },
+  data() {
+    return {
+      errorImg: 'this.src="' + require('@/assets/images/newsBg.png') + '"'
+    }
+  },
 }
 </script>
 <style lang="scss" scoped></style>

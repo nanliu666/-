@@ -25,6 +25,7 @@
         <div v-for="item in diyConfig" :key="item.id">
           <component
             :is="diyBaseConfig[item.id] ? diyBaseConfig[item.id].coms : ''"
+            v-if="diyBaseConfig[item.id]"
             :my-task-info="myTaskInfo"
             :my-live-data="myLiveData"
             :hot-course-data="hotCourseData"
@@ -168,7 +169,7 @@ import HomeNews from '@/views/home/homeNews'
 import { queryCourseList } from '@/api/course'
 import { homeQueryTrainList, homeNewsList, homeMyLiveList, getBanners } from '@/api/home'
 import { getStore } from '@/util/store'
-// import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 // import HomeLive from './home/homeLive.vue'
 export default {
   name: 'Home',
@@ -269,10 +270,11 @@ export default {
     }
   },
   computed: {
-    // ...mapGetters(['orgIds']),
+    ...mapGetters(['diyInfor']),
     diyConfig: () => {
-      let diyInfor = getStore({ name: 'diyInfor' })
-      let diyConfig = diyInfor.home && diyInfor.home.length > 0 && JSON.parse(diyInfor.home)
+      let diyInfor = diyInfor || getStore({ name: 'diyInfor' })
+      let diyConfig =
+        diyInfor && diyInfor.home && diyInfor.home.length > 0 && JSON.parse(diyInfor.home)
       return diyConfig.content
     }
   },

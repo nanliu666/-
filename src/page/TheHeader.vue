@@ -5,7 +5,7 @@
         <!-- <img v-if="envVar === 'zehui' && isOrgIdE" src="../assets/images/logoE.png" />
         <img v-else-if="envVar === 'zehui'" src="../assets/images/logoZeHui.png" />
         <img v-else src="../assets/images/logo_yb.png" /> -->
-        <img :src="logoImg" />
+        <img :src="logoUrl" />
       </div>
       <template v-if="userId">
         <ul class="header-menu">
@@ -65,20 +65,16 @@
                   </el-button>
                 </div>
                 <div>
-                  <span class="iconhoutaiguanli iconfont"></span>
-                  <el-button
-                    v-if="userInfo.role_id && userInfo.role_id.length > 0"
-                    type="text"
-                    @click.native="toRouter('', 'backstage')"
-                  >
-                    后台管理
-                  </el-button>
+                  <span class="iconanquantuichu iconfont"></span>
+                  <el-button type="text" @click.native="logout"> 安全退出 </el-button>
                 </div>
               </div>
               <div class="bottomMenu">
-                <div>
-                  <span class="iconanquantuichu iconfont"></span>
-                  <el-button type="text" @click.native="logout"> 安全退出 </el-button>
+                <div v-if="userInfo.role_id && userInfo.role_id.length > 0">
+                  <span class="iconhoutaiguanli iconfont"></span>
+                  <el-button type="text" @click.native="toRouter('', 'backstage')">
+                    后台管理
+                  </el-button>
                 </div>
               </div>
             </div>
@@ -150,17 +146,18 @@ export default {
   data() {
     return {
       menu,
+      logoUrl: '',
       activePath: '/home',
       routerTo: '',
       isOrgIdE: false
     }
   },
   computed: {
-    logoImg() {
-      let logoBaseInfor = getStore({ name: 'diyInfor' })
-      let logoImg = logoBaseInfor.logo && logoBaseInfor.logo.FrontUrl
-      return logoImg
-    },
+    // logoImg() {
+    //   let logoBaseInfor = this.diyInfor||getStore({ name: 'diyInfor' })
+    //   let logoImg = logoBaseInfor.logo && logoBaseInfor.logo.FrontUrl
+    //   return logoImg
+    // },
     envVar() {
       let envC = process.env
       return envC.VUE_APP_ENV
@@ -168,7 +165,7 @@ export default {
     isFullscreen() {
       return this.$route.meta.fullscreen
     },
-    ...mapGetters(['userId', 'userInfo', 'orgIds'])
+    ...mapGetters(['userId', 'userInfo', 'orgIds', 'diyInfor'])
   },
   watch: {
     //监听路由变化
@@ -180,28 +177,41 @@ export default {
       // to , from 分别表示从哪跳转到哪，都是一个对象
       // to.path  ( 表示的是要跳转到的路由的地址 eg: /home );
     },
-    orgIds(val) {
-      this.isOrgIdE = val.indexOf('5263') !== -1 ? true : false
+    diyInfor: {
+      handler() {
+        let logoBaseInfor = this.diyInfor || getStore({ name: 'diyInfor' })
+        this.logoUrl = logoBaseInfor.logo && logoBaseInfor.logo.FrontUrl
+      },
+      deep: true
     }
+    // orgIds(val) {
+    //   this.isOrgIdE = val.indexOf('5263') !== -1 ? true : false
+    // }
   },
   beforeMount() {
     // 初始化时设置激活中的菜单
     this.activePath = this.$route.path.match(/^\/\w*/g)[0]
   },
   created() {
-    this.isOrgIdEFn()
+    // this.isOrgIdEFn()
+  },
+  mounted() {
+    this.$nextTick(() => {
+      let logoBaseInfor = this.diyInfor || getStore({ name: 'diyInfor' })
+      this.logoUrl = logoBaseInfor.logo && logoBaseInfor.logo.FrontUrl
+    })
   },
   activated() {
-    this.isOrgIdEFn()
+    // this.isOrgIdEFn()
   },
   methods: {
-    isOrgIdEFn() {
-      // 判断是否是挖机组织
-      // 获取用户的组织id（包括当前和当前以上的），存放在localstore，vuex
-      let orgIdsVuex = this.orgIds
-      this.orgIdsD = orgIdsVuex || getStore({ name: 'orgIds' })
-      this.isOrgIdE = this.orgIdsD.indexOf('5263') !== -1 ? true : false
-    },
+    // isOrgIdEFn() {
+    //   // 判断是否是挖机组织
+    //   // 获取用户的组织id（包括当前和当前以上的），存放在localstore，vuex
+    //   let orgIdsVuex = this.orgIds
+    //   this.orgIdsD = orgIdsVuex || getStore({ name: 'orgIds' })
+    //   this.isOrgIdE = this.orgIdsD.indexOf('5263') !== -1 ? true : false
+    // },
     // 个人中心跳转
     toRouter(data, i) {
       if (i === 'backstage') {
@@ -224,7 +234,6 @@ export default {
       // this.activePath = this.routerTo
       this.$router.push(item.path)
     },
-
     getCaption(obj, state) {
       let index = obj.lastIndexOf('/')
       if (state == 0) {
@@ -363,7 +372,6 @@ export default {
     padding-bottom: 0;
     color: rgb(153, 153, 153);
     .el-button.el-button--text {
-      padding: 13px 16px;
       color: rgba(0, 11, 21, 0.85);
     }
   }
