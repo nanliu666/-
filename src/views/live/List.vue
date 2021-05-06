@@ -547,7 +547,7 @@ export default {
       background: #fff;
       padding: 5px 20px 0;
       box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
-      margin: 30px 0;
+      margin: 20px 0;
       > div {
         margin: 0;
       }
