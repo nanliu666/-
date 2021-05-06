@@ -167,7 +167,7 @@ export default {
           rules: [
             {
               //pattern: /^[\$|\!|%|\*|\^|&|\(|\)|a-zA-Z|0-9|\-|_]+(\.[\$|\!|%|\*|\^|&|\(|\)|a-zA-Z|0-9|\-|_]+)*@[a-zA-Z|0-9]+(\.(com|cn))+$/,
-              pattern: /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((.[a-zA-Z0-9_-]{2,3}){1,2})$/,
+              pattern: /^([a-zA-Z0-9_-]{1,16})@([a-zA-Z0-9]{1,9})(\.[a-zA-Z0-9]{1,9}){0,3}(\.(?:com|net|org|edu|gov|mil|cn|us)){1,4}$/,
               message: '邮箱格式不正确',
               trigger: 'blur'
             },
