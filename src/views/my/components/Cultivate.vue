@@ -24,18 +24,18 @@
             <div>{{ item.trainName }}</div>
             <span v-show="item.status == 2" class="underway">进行中</span>
             <span v-show="item.status == 1" class="not">未开始</span>
-            <span v-show="item.status == 0" class="finished">已结办</span>
+            <span v-show="item.status == 3" class="finished">已结办</span>
           </div>
           <div class="btn">
             <el-button
-              v-show="!item.isPass"
+              v-show="item.status != 3"
               size="medium"
               type="primary"
               @click="toDetail(item.id)"
             >
               前往学习
             </el-button>
-            <el-button v-show="item.isPass" size="medium" @click="toDetail(item.id)">
+            <el-button v-show="item.status == 3" size="medium" @click="toDetail(item.id)">
               查看详情
             </el-button>
           </div>
@@ -60,7 +60,7 @@
             <span>{{ item.address }}</span>
           </div>
         </div>
-        <div v-show="item.isPass" class="seal">
+        <div v-show="item.status == 3" class="seal">
           <img src="@/assets/images/my_seal.png" alt="" />
         </div>
       </div>
@@ -91,7 +91,9 @@
 </template>
 
 <script>
-import { queryTrainList } from '@/api/my'
+// import { queryTrainList } from '@/api/my'
+import { myCourseCatalog } from '@/api/myTask' //查找我参加的培训
+
 export default {
   name: 'Cultivate',
   data() {
@@ -101,7 +103,8 @@ export default {
       total: 100,
       page: {
         pageNo: 1, //请求页码
-        pageSize: 10 //每页条数
+        pageSize: 10, //每页条数
+        courseType: '1'
       },
       listData: []
     }
@@ -128,9 +131,16 @@ export default {
       })
     },
     async getInfo() {
-      let res = await queryTrainList({ trainName: this.searchInput, ...this.page })
-      this.listData = res.records
-      this.total = res.total
+      // let res = await queryTrainList({ trainName: this.searchInput, ...this.page })
+      // this.listData = res.records
+      // this.total = res.total
+
+      let res = await myCourseCatalog({ name: this.searchInput, ...this.page })
+      res.data.forEach((elem) => {
+        elem.trainName = elem.menuName
+      })
+      this.listData = res.data || []
+      this.total = res.totalNum
     },
     showBtn(i) {
       this.pitch = i
