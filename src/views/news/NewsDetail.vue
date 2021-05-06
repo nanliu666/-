@@ -119,9 +119,15 @@ export default {
           ...data
         }
       }
+      // 如果热门要传hits 不要topTime
+      if (this.$route.query.isHot) {
+        params.hits = this.data.hits || this.$route.query.hits
+      } else {
+        params.topTime = this.data.topTime
+      }
 
       params.isHot = this.$route.query.isHot
-      params.topTime = this.data.topTime
+
       // console.log(params)
       let res = await newsInfo(params)
       if (JSON.stringify(res) != '{}') {
@@ -154,7 +160,7 @@ export default {
   }
   .content {
     width: 1200px;
-   /* height: 1000px;*/
+    /* height: 1000px;*/
     margin: 0 auto;
     background-color: #fff;
     box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.1);
