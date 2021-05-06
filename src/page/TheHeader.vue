@@ -179,7 +179,9 @@ export default {
     },
     diyInfor: {
       handler() {
-        let logoBaseInfor = this.diyInfor || getStore({ name: 'diyInfor' })
+        let logoBaseInfor =
+          (this.diyInfor && this.diyInfor.logo && this.diyInfor.logo.length > 0 && this.diyInfor) ||
+          getStore({ name: 'diyInfor' })
         this.logoUrl = logoBaseInfor.logo && logoBaseInfor.logo.FrontUrl
       },
       deep: true
@@ -197,7 +199,9 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      let logoBaseInfor = this.diyInfor || getStore({ name: 'diyInfor' })
+      let logoBaseInfor =
+        (this.diyInfor && this.diyInfor.logo && this.diyInfor.logo.length > 0 && this.diyInfor) ||
+        getStore({ name: 'diyInfor' })
       this.logoUrl = logoBaseInfor.logo && logoBaseInfor.logo.FrontUrl
     })
   },
