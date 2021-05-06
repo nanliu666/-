@@ -22,10 +22,10 @@
   </div>
 </template>
 <script>
-import electiveCoursesList from './electiveCourses/electiveCoursesList'
-import liveList from './live/liveList'
-import requiredCourseList from './requiredCourse/requiredCourseList'
-import trainList from './train/trainList'
+import electiveCoursesList from './electiveCourses/electiveCoursesList' //选修课
+import liveList from './live/liveList' //直播
+import requiredCourseList from './requiredCourse/requiredCourseList' //必修课
+import trainList from './train/trainList' //培训
 export default {
   components: { electiveCoursesList, liveList, requiredCourseList, trainList },
   data() {

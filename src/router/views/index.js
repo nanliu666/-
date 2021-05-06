@@ -472,12 +472,21 @@ export default [
           // }
         ]
       },
+
       {
         path: '/requiredCourseDetail',
         name: 'requiredCourseDetail',
         component: () => import('@/views/lecturerTask/requiredCourse/requiredCourseDetail.vue'),
         meta: {
           title: '必修课详情'
+        }
+      },
+      {
+        path: '/examinationDetail',
+        name: 'examinationDetail',
+        component: () => import('@/views/lecturerTask/requiredCourse/examinationDetail.vue'),
+        meta: {
+          title: '考试详情'
         }
       },
 

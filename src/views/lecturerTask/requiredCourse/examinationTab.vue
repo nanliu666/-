@@ -102,7 +102,9 @@ export default {
     this.getInfo()
   },
   methods: {
-    toAnswer() {},
+    toAnswer() {
+      this.$router.push({ path: '/examinationDetail', query: {} })
+    },
     //  处理页码改变
     handleCurrentPageChange(param) {
       this.page.pageNo = param
