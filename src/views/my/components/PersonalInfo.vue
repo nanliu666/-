@@ -165,11 +165,12 @@ export default {
           offset: 5,
           required: true,
           rules: [
-            // {
-            //   pattern: /^[\$|\!|%|\*|\^|&|\(|\)|a-zA-Z|0-9|\-|_]+(\.[\$|\!|%|\*|\^|&|\(|\)|a-zA-Z|0-9|\-|_]+)*@[a-zA-Z|0-9]+(\.(com|cn))+$/,
-            //   message: '邮箱格式不正确',
-            //   trigger: 'blur'
-            // },
+            {
+              //pattern: /^[\$|\!|%|\*|\^|&|\(|\)|a-zA-Z|0-9|\-|_]+(\.[\$|\!|%|\*|\^|&|\(|\)|a-zA-Z|0-9|\-|_]+)*@[a-zA-Z|0-9]+(\.(com|cn))+$/,
+              pattern: /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((.[a-zA-Z0-9_-]{2,3}){1,2})$/,
+              message: '邮箱格式不正确',
+              trigger: 'blur'
+            },
             { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
             // { validator: checkEmail, trigger: 'blur' }
           ]

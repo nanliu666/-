@@ -38,8 +38,8 @@
       <div v-show="industryHeight" class="moreBtn">
         <div class="moreBtn_box" @click="bussinessType = !bussinessType">
           <span class="text">{{ bussinessType ? '收起' : '更多' }}</span>
-          <i v-show="bussinessType" class="el-icon-arrow-down"></i>
-          <i v-show="!bussinessType" class="el-icon-arrow-up"></i>
+          <i v-show="!bussinessType" class="el-icon-arrow-down"></i>
+          <i v-show="bussinessType" class="el-icon-arrow-up"></i>
         </div>
       </div>
     </div>
