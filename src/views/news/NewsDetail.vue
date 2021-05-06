@@ -207,6 +207,9 @@ export default {
         margin-left: 10px;
       }
     }
+    .newsImg_info img {
+      width: 100%;
+    }
     .info {
       //opacity: 0.65;
       font-family: PingFangSC-Regular;
@@ -215,10 +218,5 @@ export default {
       line-height: 22px;
     }
   }
-}
-</style>
-<style>
-.newsImg_info img {
-  width: 100%;
 }
 </style>
