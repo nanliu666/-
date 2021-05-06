@@ -69,7 +69,12 @@ export default {
     this.getInfo()
   },
   activated() {
-    this.clickData = _.get(this.$route, 'query.clickData', 'myLearn')
+    if (this.$route.params.questionnaire) {
+      this.clickData = _.get(this.$route, 'query.clickData', 'questionnaire')
+    } else {
+      this.clickData = _.get(this.$route, 'query.clickData', 'myLearn')
+    }
+
     this.getInfo()
   },
   methods: {

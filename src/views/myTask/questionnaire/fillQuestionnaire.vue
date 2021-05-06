@@ -79,7 +79,7 @@
         style="width: 134px; height: 134px"
       ></el-image>
       <p class="tip" style="font-size: 16px; margin: 30px 0">问卷提交成功，感谢您的参与</p>
-      <router-link :to="{ path: '/myTask/myLearn' }">
+      <router-link :to="{ name: 'myLearn', params: { questionnaire: true } }">
         <el-button type="primary" size="medium">返回列表</el-button>
       </router-link>
     </div>
