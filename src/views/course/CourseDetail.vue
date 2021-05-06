@@ -83,7 +83,7 @@
                   }"
                 >{{ _.get(COURSE_CHAPTER_TYPE_MAP, `${chapter.type}.text`, '') }}</span>
                 <span class="course-detail__chapters--title">{{ chapter.name }}</span>
-                <span class="course-detail__chapters--time">{{ getSecondesToHours(chapter) }}</span>
+                <!-- <span class="course-detail__chapters--time">{{ getSecondesToHours(chapter) }}</span> -->
               </div>
               <div class="course-detail__chapters--handler">
                 <el-progress

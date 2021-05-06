@@ -132,7 +132,22 @@
                 ref="currentImg"
                 :src="currentSrc"
               />
-              <iframe v-else :src="currentSrc" width="100%" height="100%" frameborder="0"></iframe>
+              <iframe
+                v-else-if="
+                  /(doc|docx|xls|xlsx|ppt|pptx)$/.test(getFileType(currentChapter.content))
+                "
+                :src="currentSrc"
+                width="100%"
+                height="100%"
+                frameborder="0"
+              ></iframe>
+              <iframe
+                v-else
+                :src="currentChapter.content"
+                width="100%"
+                height="100%"
+                frameborder="0"
+              ></iframe>
             </div>
           </div>
         </div>
@@ -297,8 +312,6 @@ export default {
         this.chapters.forEach((item, index) => {
           if (item.contentId == contentId) {
             this.chapters[index].progress = 100
-            // console.log(contentId)
-            // console.log(this.chapters)
             this.submitLearnRecords()
           }
         })
@@ -487,7 +500,6 @@ export default {
       if (!params.contentRecords) {
         return
       }
-      // console.log(params)
       updateLearnRecord(params)
         .then()
         .catch()
@@ -513,7 +525,6 @@ export default {
           if (chapter.contentId == this.chapterId) {
             this.currentChapter = chapter
           }
-          // console.log(this.chapters)
         })
       })
     },

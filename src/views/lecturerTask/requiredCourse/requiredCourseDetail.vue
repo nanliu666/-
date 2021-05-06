@@ -74,9 +74,9 @@
 </template>
 
 <script>
-import situationTab from './situationTab'
-import courseTab from './courseTab'
-import examinationTab from './examinationTab'
+import situationTab from './situationTab' //学习情况
+import courseTab from './courseTab' //学习课程
+import examinationTab from './examinationTab' //考试情况
 import moment from 'moment'
 
 export default {
