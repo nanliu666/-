@@ -207,6 +207,10 @@ export default {
       getCourseStudyDetail({ courseId: this.id }).then((res) => {
         res.scope = Number(res.scope).toFixed(1)
         this.courseData = res
+        let titleArr = res.catalogName || '课程'
+        titleArr = titleArr.split('/')
+        let titleStr = titleArr.join(' > ')
+        this.routeList[0].title = titleStr
         this.$nextTick(() => {
           this.$refs.breadcrumb.setBreadcrumbTitle(res.name)
         })
