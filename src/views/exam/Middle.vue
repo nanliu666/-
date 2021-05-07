@@ -92,7 +92,7 @@
               <el-button
                 v-if="examInfo.openAnswerSheet && item.examSessionId === currentExamId"
                 size="medium"
-                @click="handleView"
+                @click="handleView(item)"
               >查看答卷</el-button>
             </li>
           </el-timeline-item>
@@ -169,11 +169,10 @@ export default {
       this.currentExamId = ''
     },
     // 查看答案
-    handleView() {
-      const { examId, batchId } = this.examInfo
+    handleView(data) {
       this.$router.push({
         name: 'ExamDetail',
-        query: { examId: examId, batchId: batchId }
+        query: { examSessionId: data.examSessionId }
       })
     },
     // 参加考试
