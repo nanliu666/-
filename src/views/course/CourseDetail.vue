@@ -82,7 +82,15 @@
                     'border-color': _.get(COURSE_CHAPTER_TYPE_MAP, `${chapter.type}.color`, '')
                   }"
                 >{{ _.get(COURSE_CHAPTER_TYPE_MAP, `${chapter.type}.text`, '') }}</span>
-                <span class="course-detail__chapters--title">{{ chapter.name }}</span>
+                <span class="course-detail__chapters--title">
+                  <text-over-tooltip
+                    ref-name="testName1"
+                    class-name="fs20"
+                    :content="chapter.name"
+                  ></text-over-tooltip>
+
+                  <!-- {{ chapter.name }} -->
+                </span>
                 <!-- <span class="course-detail__chapters--time">{{ getSecondesToHours(chapter) }}</span> -->
               </div>
               <div class="course-detail__chapters--handler">
@@ -118,6 +126,7 @@
 
 <script>
 import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
+import TextOverTooltip from './components/TextOverTooltip'
 import moment from 'moment'
 import {
   // getCourseDetail,
@@ -135,7 +144,7 @@ import Experience from './components/Experience'
 import Note from './components/Note'
 export default {
   name: 'CourseDetail',
-  components: { Comment, Experience, CommonBreadcrumb, Note },
+  components: { Comment, Experience, CommonBreadcrumb, Note, TextOverTooltip },
   data() {
     return {
       noteTotalNum: '',
@@ -209,7 +218,7 @@ export default {
         this.courseData = res
         let titleArr = res.catalogName || '课程'
         titleArr = titleArr.split('/')
-        let titleStr = titleArr.join(' > ')
+        let titleStr = titleArr.join(' / ')
         this.routeList[0].title = titleStr
         this.$nextTick(() => {
           this.$refs.breadcrumb.setBreadcrumbTitle(res.name)
@@ -329,6 +338,7 @@ export default {
   }
   &__chapters {
     li {
+      width: 100%;
       display: flex;
       height: 48px;
       align-items: center;
@@ -378,5 +388,10 @@ export default {
       vertical-align: text-bottom;
     }
   }
+}
+
+.course-detail__chapters--title {
+  display: inline-block;
+  width: 900px;
 }
 </style>
