@@ -124,8 +124,8 @@ import { frontBaseUrl } from '@/config/env'
 import { mapGetters } from 'vuex'
 const STATUS_MAP = {
   live: '直播中',
-  // start: '未开始',
-  end: '未开始'
+  start: '未开始',
+  end: '已结束'
 }
 export default {
   name: 'LiveDetail',
