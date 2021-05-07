@@ -15,7 +15,7 @@ export const postSubmitPaper = (params) => post('/manage/v1/exam/center/submitPa
 /**
  * 查看答卷
  * */
-export const getViewAnswer = (params) => get('/manage/v1/exam/center/viewAnswer', params)
+export const getViewAnswer = (params) => get('/manage/v1/exam/center/viewAnswerEachSession', params)
 /**
  * 考试详情服务
  * id=1379677543136813057 (batchId)

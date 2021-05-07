@@ -352,6 +352,8 @@ export default {
       this.clearIntervalAll()
       this.resetF5Refresh()
       this.clearWatchClose()
+      // 关闭闭卷监听
+      this.clearWatchCloseBookExam()
       this.isSuccess = false
       next(true)
     } else {
@@ -388,23 +390,6 @@ export default {
         })
       })
       return parentObj
-    },
-    // 检测闭卷
-    watchCloseBookExam() {
-      const { isDecoil } = this.paper
-      // isDecoil：0是闭卷，1为开卷
-      if (isDecoil === 0) {
-        // 跳转其他页面触发交卷
-        window.onbeforeunload = function() {
-          this.changeAutoEndExam()
-        }
-        // 切屏触发自动交卷
-        document.addEventListener('visibilitychange', () => {
-          if (document.visibilityState === 'visible') {
-            this.changeAutoEndExam()
-          }
-        })
-      }
     },
     changeAutoEndExam() {
       if (!this.isSuccess && !this.isAutoEnd) {
@@ -678,7 +663,7 @@ export default {
       // 开发环境先关闭
       if (process.env.NODE_ENV === 'production') {
         // 闭卷监听
-        this.watchCloseBookExam()
+        this.initWatchCloseBookExam()
         // 监听联网断网
         this.initWatchNetworks()
         //阻止F5刷新
@@ -701,6 +686,33 @@ export default {
     },
     clearWatchClose() {
       window.removeEventListener('beforeunload', this.watchCloseChrome)
+    },
+    // 开启闭卷监听
+    initWatchCloseBookExam() {
+      const { isDecoil } = this.paper
+      // isDecoil：0是闭卷，1为开卷
+      if (isDecoil === 0) {
+        // 切屏触发自动交卷
+        window.addEventListener('visibilitychange', this.watchBookExam)
+        // 跳转其他页面触发交卷
+        window.addEventListener('beforeunload', this.watchBookExam)
+      }
+    },
+    // 关闭闭卷监听
+    clearWatchCloseBookExam() {
+      const { isDecoil } = this.paper
+      // isDecoil：0是闭卷，1为开卷
+      if (isDecoil === 0) {
+        // 切屏触发自动交卷
+        window.removeEventListener('visibilitychange', this.watchBookExam)
+        // 跳转其他页面触发交卷
+        window.removeEventListener('beforeunload', this.watchBookExam)
+      }
+    },
+    watchBookExam() {
+      if (document.visibilityState === 'visible') {
+        this.changeAutoEndExam()
+      }
     },
     watchCloseChrome(e) {
       // 兼容IE8和Firefox 4之前的版本
