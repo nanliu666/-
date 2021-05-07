@@ -139,7 +139,8 @@ export default {
     async initData() {
       let params = {
         pageNo: this.pageConfig.pageNo,
-        pageSize: this.pageConfig.pageSize
+        pageSize: this.pageConfig.pageSize,
+        courseType: 0
       }
       this.loading = true
       await myElectiveCourse(params)
