@@ -137,8 +137,16 @@
                   :key="index"
                   @click="jumpToLearn(item)"
                 >
-                  <div>
-                    <i>{{ index + 1 }}</i> <span>{{ item.name }}</span>
+                  <div class="tooltip_">
+                    <i>{{ index + 1 }}</i>
+
+                    <span>
+                      <text-over-tooltip
+                        ref-name="testName1"
+                        class-name="fs20"
+                        :content="item.name"
+                      ></text-over-tooltip>
+                    </span>
                   </div>
                   <!-- <div class="btn">查看内容</div> -->
                 </li>
@@ -240,6 +248,8 @@ import {
 import moment from 'moment'
 import 'moment/locale/zh-cn'
 import { getCourseDetail } from '@/api/course'
+import TextOverTooltip from '../course/components/TextOverTooltip'
+
 moment.locale('zh-cn')
 
 // 审批状态
@@ -254,7 +264,8 @@ const { CANCEL, EMPTY, PASS, REJECT } = APPROVE_STATUS_TYPE
 export default {
   name: 'Apprv2Detail',
   components: {
-    steps
+    steps,
+    TextOverTooltip
   },
   data() {
     return {
@@ -1087,6 +1098,17 @@ export default {
     padding: 16px;
     display: flex;
     justify-content: center;
+  }
+}
+.tooltip_ {
+  width: 100%;
+  display: flex;
+  span {
+    width: 95%;
+    text-align: left;
+  }
+  i {
+    width: 10px;
   }
 }
 </style>
