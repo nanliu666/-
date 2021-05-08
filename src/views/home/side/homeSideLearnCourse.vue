@@ -48,6 +48,12 @@ export default {
   methods: {
     format() {
       return '' //percentage === 100 ? '满' : `${percentage}%`;
+    },
+    learningCourseFn(item) {
+      // 我学习中的课程跳转
+      this.$router.push({
+        path: `/course/detail?id=${item.id}`
+      })
     }
   }
 }
