@@ -2,14 +2,14 @@
   <div class="watchLiveCla">
     <iframe
       v-if="role !== 'Assistant'"
-      :src="`https://live.epro-edu.com/web-start/classroom?channelId=${id}`"
+      :src="liveUrl"
       frameborder="0"
       allow="microphone; camera"
       allowfullscreen="true"
     ></iframe>
     <iframe
       v-else
-      src="https://live.epro-edu.com/teacher.html"
+      :src="teacherUrl"
       frameborder="0"
       allow="microphone; camera"
       allowfullscreen="true"
@@ -17,12 +17,21 @@
   </div>
 </template>
 <script>
+import { liveBaseUrl } from '@/config/env'
 export default {
   name: 'WatchLive',
   data() {
     return {
       id: this.$route.query.beginId,
       role: this.$route.query.roleName
+    }
+  },
+  computed: {
+    teacherUrl() {
+      return `${liveBaseUrl}/teacher.html`
+    },
+    liveUrl() {
+      return `${liveBaseUrl}/web-start/classroom?channelId=${this.id}`
     }
   }
 }
