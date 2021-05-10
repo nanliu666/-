@@ -3,6 +3,7 @@ var systemName = '易宝教育学习平台' // 系统名称
 
 let frontBaseUrl = '' // 用户前台地址
 let backBaseUrl = '' //（后台管理）
+let liveBaseUrl = '' //前台直播地址
 let iconfontVersion = ['2232073_wul8t1tndf']
 let iconfontUrl = '//at.alicdn.com/t/font_$key.css'
 let codeUrl = `${frontBaseUrl}/code`
@@ -48,4 +49,26 @@ if (env.VUE_APP_ENV == 'dev') {
 } else if (env.VUE_APP_ENV == 'xugong') {
   backBaseUrl = 'http://admin.zexueyuan.com.cn' //徐工环境地址（后台管理）
 }
-export { frontBaseUrl, backBaseUrl, iconfontUrl, iconfontVersion, codeUrl, env, systemName }
+
+if (env.VUE_APP_ENV == 'dev') {
+  liveBaseUrl = 'http://172.16.4.55:7071' // 深圳本地开发环境地址（用户前台）
+} else if (env.VUE_APP_ENV == 'sit') {
+  liveBaseUrl = 'http://139.159.141.248:7071' // 线上sit环境地址（用户前台）
+} else if (env.VUE_APP_ENV == 'pro') {
+  liveBaseUrl = 'https://live.epro-edu.com' //生产环境地址（用户前台）
+} else if (env.VUE_APP_ENV == 'zehui') {
+  liveBaseUrl = 'https://live.zexueyuan.com.cn' //泽汇生产环境地址（用户前台）
+} else if (env.VUE_APP_ENV == 'xugong') {
+  liveBaseUrl = 'https://live.zexueyuan.com.cn' //徐工环境地址（用户前台）
+}
+
+export {
+  frontBaseUrl,
+  backBaseUrl,
+  iconfontUrl,
+  iconfontVersion,
+  codeUrl,
+  env,
+  systemName,
+  liveBaseUrl
+}
