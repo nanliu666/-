@@ -53,7 +53,7 @@ if (env.VUE_APP_ENV == 'dev') {
 if (env.VUE_APP_ENV == 'dev') {
   liveBaseUrl = 'http://172.16.4.55:7071' // 深圳本地开发环境地址（用户前台）
 } else if (env.VUE_APP_ENV == 'sit') {
-  liveBaseUrl = 'http://139.159.141.248:7071' // 线上sit环境地址（用户前台）
+  liveBaseUrl = 'https://live.epro-edu.com' // 线上sit环境地址（用户前台）
 } else if (env.VUE_APP_ENV == 'pro') {
   liveBaseUrl = 'https://live.epro-edu.com' //生产环境地址（用户前台）
 } else if (env.VUE_APP_ENV == 'zehui') {
