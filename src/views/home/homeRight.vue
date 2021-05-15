@@ -88,7 +88,7 @@ import homeSideUserInfo from './side/homeSideUserInfo.vue'
 import HomeSideLearnCourse from './side/homeSideLearnCourse'
 import HomeSideRankIntegral from './side/homeSideRankIntegral.vue'
 import HomeSideRankHour from './side/homeSideRankHour.vue'
-import { getStore } from '@/util/store'
+import { mapGetters } from 'vuex'
 export default {
   name: 'HomeRight',
   components: {
@@ -113,16 +113,23 @@ export default {
       homePInfoData: {},
       learningCourseData: {},
       monthlyCreditData: [],
-      monthlyPeriodData: []
+      monthlyPeriodData: [],
+      diyConfig: []
     }
   },
   computed: {
-    diyConfig: () => {
-      let diyInfor = getStore({ name: 'diyInfor' })
-      let diyConfig = diyInfor.home && diyInfor.home.length > 0 && JSON.parse(diyInfor.home)
-      return diyConfig.side
+    ...mapGetters(['diyInfor'])
+  },
+  watch: {
+    diyInfor: {
+      handler(val) {
+        let diyConfig = val && val.home && val.home.length > 0 && JSON.parse(val.home)
+        this.diyConfig = diyConfig.side
+      },
+      deep: true
     }
   },
+
   mounted() {
     this.getHomePInfo()
     this.getLearningCourse()

@@ -168,7 +168,6 @@ import HomeTrain from '@/views/home/homeTrain'
 import HomeNews from '@/views/home/homeNews'
 import { queryCourseList } from '@/api/course'
 import { homeQueryTrainList, homeNewsList, homeMyLiveList, getBanners } from '@/api/home'
-import { getStore } from '@/util/store'
 import { mapGetters } from 'vuex'
 // import HomeLive from './home/homeLive.vue'
 export default {
@@ -266,19 +265,24 @@ export default {
           },
           id: '33'
         }
-      ]
+      ],
+      diyConfig: []
     }
   },
   computed: {
-    ...mapGetters(['diyInfor']),
-    diyConfig: () => {
-      let diyInfor = diyInfor || getStore({ name: 'diyInfor' })
-      let diyConfig =
-        diyInfor && diyInfor.home && diyInfor.home.length > 0 && JSON.parse(diyInfor.home)
-      return diyConfig.content
-    }
+    ...mapGetters(['diyInfor'])
   },
   watch: {
+    diyInfor: {
+      handler(val) {
+        console.log(val)
+        let diyConfig = val && val.home && val.home.length > 0 && JSON.parse(val.home)
+
+        this.diyConfig = diyConfig.content
+        console.log(this.diyConfig)
+      },
+      deep: true
+    }
     // orgIds(val) {
     //   this.isOrgIdE = val.indexOf('5263') !== -1 ? true : false
     // }
