@@ -13,9 +13,14 @@ export const getTakeExam = (params) => get('/manage/v1/exam/center/takeExam', pa
  * */
 export const postSubmitPaper = (params) => post('/manage/v1/exam/center/submitPaper', params)
 /**
- * 查看答卷
+ * 查看答卷(从详情进去)
  * */
-export const getViewAnswer = (params) => get('/manage/v1/exam/center/viewAnswerEachSession', params)
+export const viewAnswerEachSession = (params) =>
+  get('/manage/v1/exam/center/viewAnswerEachSession', params)
+/**
+ * 查看答卷(从考完试进去)
+ * */
+export const getViewAnswer = (params) => get('/manage/v1/exam/center/viewAnswer', params)
 /**
  * 考试详情服务
  * id=1379677543136813057 (batchId)
