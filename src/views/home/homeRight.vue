@@ -126,7 +126,8 @@ export default {
         let diyConfig = val && val.home && val.home.length > 0 && JSON.parse(val.home)
         this.diyConfig = diyConfig.side
       },
-      deep: true
+      deep: true,
+      immediate: true
     }
   },
 

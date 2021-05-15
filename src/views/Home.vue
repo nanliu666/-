@@ -275,13 +275,11 @@ export default {
   watch: {
     diyInfor: {
       handler(val) {
-        console.log(val)
         let diyConfig = val && val.home && val.home.length > 0 && JSON.parse(val.home)
-
         this.diyConfig = diyConfig.content
-        console.log(this.diyConfig)
       },
-      deep: true
+      deep: true,
+      immediate: true
     }
     // orgIds(val) {
     //   this.isOrgIdE = val.indexOf('5263') !== -1 ? true : false
