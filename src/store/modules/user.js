@@ -17,7 +17,7 @@ import md5 from 'js-md5'
 const user = {
   state: {
     orgIds: '',
-    diyInfor: {}, // 用户的logo banner 首页布局等信息
+    diyInfor: getStore({ name: 'diyInfor' }) || {}, //
     tenantId: getStore({ name: 'tenantId' }) || '',
     unreadCount: '',
     tenantContent: getStore({ name: 'tenantContent' }) || '',
