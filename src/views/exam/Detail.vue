@@ -130,7 +130,7 @@
 
 <script>
 import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
-import { getViewAnswer } from '@/api/exam'
+import { getViewAnswer, viewAnswerEachSession } from '@/api/exam'
 import moment from 'moment'
 import QustionPreview from './components/questionPreview'
 import CommonEmpty from '@/components/common-empty/Empty'
@@ -217,7 +217,8 @@ export default {
     },
     moment,
     async loadData() {
-      this.examDetail = await getViewAnswer(_.assign(this.queryInfo, this.$route.query))
+      const loadFun = _.get(this.$route.query, 'examId') ? getViewAnswer : viewAnswerEachSession
+      this.examDetail = await loadFun(_.assign(this.queryInfo, this.$route.query))
       this.initQuestionList()
     },
     addScore(args) {
