@@ -37,7 +37,7 @@ export default {
     goDetail() {
       this.$router.replace({
         name: 'ExamDetail',
-        query: { examId: this.$route.query.examId, batchId: this.$route.query.batchId }
+        query: { examSessionId: this.paper.successPaper.examSessionId }
       })
     }
   }
