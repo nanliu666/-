@@ -724,3 +724,23 @@ export const toPercent = (point = 0, total = 0, decimal = 0) => {
   let str = ((Number(num * 100) / Number(sum * 100)) * 100).toFixed(decimal)
   return Number(str)
 }
+// office预览
+const url = 'http://139.9.41.27:9090/fcscloud'
+
+const instance = axios.create({
+  timeout: 100000, //默认超时时间
+  withCredentials: false, //跨域请求，允许保存cookie
+  validateStatus: function(status) {
+    return status >= 200 && status <= 500
+  }
+})
+
+//获取转码后的文件
+export const getReviewUrl = async (params = {}) => {
+  let str = ''
+  for (let key in params) {
+    str += `${key}=${params[key]}&`
+  }
+  str = str.substr(0, str.length - 1)
+  return await instance.post(`${url}/composite/httpfile?${str}`)
+}
