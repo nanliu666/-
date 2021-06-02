@@ -184,7 +184,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { toPercent } from '@/util/util'
+import { toPercent, getReviewUrl } from '@/util/util'
 import {
   getCourseDetail,
   getLearnRecord,
@@ -355,12 +355,22 @@ export default {
       return `/img/file/image_icon_${fileDict[ext] || 'other'}.png`
     },
     // 非视频课件
-    getContentUrl(chapter) {
+    async getContentUrl(chapter) {
       const office = /.*\.(doc|docx|xls|xlsx|ppt|pptx)$/
       if (office.test(chapter.content)) {
-        this.currentSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURI(
-          chapter.content
-        )}`
+        // this.currentSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURI(
+        //   chapter.content
+        // )}`
+
+        let { data } = await getReviewUrl({
+          isDownloa: 0,
+          isShowTitle: 0,
+          isPrint: 0,
+          isCopy: 1,
+          convertType: 0,
+          fileUrl: chapter.content
+        })
+        this.currentSrc = data.data.viewUrl
       }
 
       const officeTxtImg = /.*\.(jpg|png|gif|txt|TXT)$/
