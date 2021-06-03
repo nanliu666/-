@@ -357,7 +357,8 @@ export default {
     // 非视频课件
     async getContentUrl(chapter) {
       const office = /.*\.(doc|docx|xls|xlsx|ppt|pptx)$/
-      if (office.test(chapter.content)) {
+      const isPdf = /.*\.(pdf)$/
+      if (office.test(chapter.content) || isPdf.test(chapter.content)) {
         // this.currentSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURI(
         //   chapter.content
         // )}`
@@ -367,7 +368,7 @@ export default {
           isShowTitle: 0,
           isPrint: 0,
           isCopy: 1,
-          convertType: 0,
+          convertType: office.test(chapter.content) ? 0 : 14,
           fileUrl: chapter.content
         })
         this.currentSrc = data.data.viewUrl
