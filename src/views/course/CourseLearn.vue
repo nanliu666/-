@@ -368,7 +368,7 @@ export default {
           isShowTitle: 0,
           isPrint: 0,
           isCopy: 1,
-          convertType: office.test(chapter.content) ? 0 : 14,
+          convertType: office.test(chapter.content) ? 0 : 20,
           fileUrl: chapter.content
         })
         this.currentSrc = data.data.viewUrl
