@@ -19,7 +19,7 @@ import loadmore from './directive/loadmore'
 import VueClipboard from 'vue-clipboard2'
 Vue.use(VueClipboard)
 Vue.prototype._ = _
-Vue.component('commonTable', commonTable)
+Vue.component('commonTable', commonTable) 
 
 if (process.env.NODE_ENV !== 'production') {
   const mock = require('@/mock')
