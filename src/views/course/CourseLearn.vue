@@ -134,7 +134,7 @@
               />
               <iframe
                 v-else-if="
-                  /(doc|docx|xls|xlsx|ppt|pptx)$/.test(getFileType(currentChapter.content))
+                  /(doc|docx|xls|xlsx|ppt|pptx|pdf)$/.test(getFileType(currentChapter.content))
                 "
                 :src="currentSrc"
                 width="100%"
