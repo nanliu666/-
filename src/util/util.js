@@ -725,7 +725,7 @@ export const toPercent = (point = 0, total = 0, decimal = 0) => {
   return Number(str)
 }
 // office预览
-const url = 'http://139.9.41.27:9090/fcscloud'
+const url = 'https://convert.zexueyuan.com.cn/fcscloud'
 
 const instance = axios.create({
   timeout: 100000, //默认超时时间

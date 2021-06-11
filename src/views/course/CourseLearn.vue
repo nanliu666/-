@@ -133,6 +133,7 @@
                 :src="currentSrc"
               />
               <iframe
+              id="fileiframe"
                 v-else-if="
                   /(doc|docx|xls|xlsx|ppt|pptx|pdf)$/.test(getFileType(currentChapter.content))
                 "

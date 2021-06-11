@@ -23,10 +23,10 @@ if (env.VUE_APP_ENV == 'dev') {
   frontBaseUrl = 'https://user.epro-edu.com' //生产环境地址（用户前台）
 } else if (env.VUE_APP_ENV == 'zehui') {
   frontBaseUrl = 'https://user.zexueyuan.com.cn' //泽汇生产环境地址（用户前台）
-  systemName = '泽学院管理后台'
+  systemName = '泽学院学习平台'
 } else if (env.VUE_APP_ENV == 'xugong') {
   frontBaseUrl = 'https://user.zexueyuan.com.cn' //徐工环境地址（用户前台）
-  systemName = '徐工管理后台'
+  systemName = '徐工学习平台'
 }
 // if (env.VUE_APP_ENV == 'development') {
 //   baseUrl = '' // 开发环境地址（用户前台）

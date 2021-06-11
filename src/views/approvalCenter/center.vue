@@ -58,7 +58,7 @@
                   </el-date-picker>
                 </el-form-item>
 
-                <el-form-item v-show="pitch != 1" label="当着状态">
+                <el-form-item v-show="pitch != 1" label="当前状态">
                   <el-select v-model="searchForm.status" placeholder="请选择">
                     <el-option label="审批中" value="Approve"></el-option>
                     <el-option label="已通过" value="Pass"></el-option>
