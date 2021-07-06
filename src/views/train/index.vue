@@ -45,11 +45,11 @@
             :class="{ selected: filterForm.trainWay === 3 }"
             @click="type(3)"
           >混合</span>
-          <span
+          <!-- <span
             class="filter-radio"
             :class="{ selected: filterForm.trainScope === 'outer' }"
             @click="type(4)"
-          >外训</span>
+          >外训</span> -->
         </div>
         <div class="filter-item">
           状态：
@@ -158,7 +158,7 @@
 
 <script>
 import Pagination from 'src/components/common-pagination'
-import { getList, getKonwList } from 'src/api/train'
+import { getList } from 'src/api/train'
 export default {
   name: 'Train',
   components: {
@@ -279,7 +279,7 @@ export default {
         this.data = this.sortList(records)
         this.total = total
       })
-      getKonwList({}).then(() => {})
+      // getKonwList({}).then(() => {})
     },
     toDetail(item) {
       const { id: trainId, trainName: title, trainWay, userType } = item
