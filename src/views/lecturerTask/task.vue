@@ -3,17 +3,29 @@
     <ul class="tabs">
       <li v-for="(item, index) in tabsData" :key="item.id" class="tab" @click="clickTab(item.path)">
         <div class="tab_box" :class="{ lastClass: index == tabsData.length - 1 }">
-          <span class="tab_icon"> <img :src="item.icon" alt="" /> </span>
+          <!-- <span class="tab_icon"> <img :src="item.icon" alt="" /> </span> -->
+          <i
+            class="iconfont tab_icon"
+            :class="{
+              clickClass: clickData == item.path,
+              iconxuexi: index === 0,
+              iconpeixun: index === 1,
+              iconjingpinkecheng: index === 2,
+              icon02f: index === 3
+            }"
+          ></i>
           <span class="tab_title" :class="{ clickClass: clickData == item.path }">
             {{ item.name }}
           </span>
-          <span class="tab_num" :class="{ clickClass: clickData == item.path }">(
+          <!-- <span class="tab_num" :class="{ clickClass: clickData == item.path }">
+            (
             <span v-if="index == 0"> {{ studyNum }} </span>
             <span v-if="index == 1"> {{ homeWorkNum }} </span>
             <span v-if="index == 2"> {{ examinationNum }} </span>
             <span v-if="index == 3"> {{ questionTodoNum }} </span>
-            <!-- <span v-else>0</span> -->
-            )</span>
+
+            )
+          </span> -->
         </div>
         <div :class="{ tab_bottom: clickData == item.path }"></div>
       </li>
@@ -22,10 +34,10 @@
   </div>
 </template>
 <script>
-import electiveCoursesList from './electiveCourses/electiveCoursesList' //选修课
-import liveList from './live/liveList' //直播
 import requiredCourseList from './requiredCourse/requiredCourseList' //必修课
 import trainList from './train/trainList' //培训
+import electiveCoursesList from './electiveCourses/electiveCoursesList' //选修课
+import liveList from './live/liveList' //直播
 export default {
   components: { electiveCoursesList, liveList, requiredCourseList, trainList },
   data() {
@@ -35,26 +47,25 @@ export default {
           name: '必修课',
           id: 'requiredCourseList',
           path: 'requiredCourseList',
-          icon: require('../../../public/img/学习.png')
+          icon: 'iconxuexi'
         },
         {
           name: '培训',
           id: 'trainList',
           path: 'trainList',
-          icon: require('../../../public/img/作业.png')
+          icon: 'iconpeixun'
         },
         {
           name: '选修课',
           id: 'electiveCoursesList',
           path: 'electiveCoursesList',
-
-          icon: require('../../../public/img/考试.png')
+          icon: 'iconjingpinkecheng'
         },
         {
           name: '直播',
           id: 'liveList',
           path: 'liveList',
-          icon: require('../../../public/img/问卷.png')
+          icon: 'icon02f'
         }
       ],
       clickData: 'requiredCourseList',
@@ -102,6 +113,7 @@ export default {
     width: 50%;
     height: 64px;
     padding: 12px 0;
+    color: rgba(0, 11, 21, 0.65);
     &_box {
       text-align: center;
       padding: 0 4.5%;
@@ -117,6 +129,8 @@ export default {
       border-radius: 50%;
       display: inline-block;
       line-height: 40px;
+      font-size: 20px;
+      color: #d9d9d9;
       img {
         width: 100%;
         height: 100%;
@@ -125,12 +139,11 @@ export default {
     &_title {
       font-family: PingFangSC-Medium;
       font-size: 16px;
-      color: #5d646b;
       letter-spacing: 0;
       line-height: 32px;
       margin: 0 8px;
-      font-weight: bold;
       padding-top: 4px;
+      color: rgba(0, 11, 21, 0.65);
     }
     &_num {
       font-family: PingFangSC-Medium;
@@ -145,10 +158,10 @@ export default {
       margin-left: 35%;
       width: 30%;
       height: 2px;
-      background: #01aafc;
+      background: #2875d4;
     }
     .clickClass {
-      color: #01aafc !important ;
+      color: #2875d4 !important ;
     }
   }
 }

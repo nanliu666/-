@@ -17,12 +17,12 @@
         </el-button>
       </div>
     </div>
-    <div>
+    <div v-loading="messageLoading">
       <div class="list">
         <ul>
           <li
-            v-for="item in listData"
-            :key="item.id"
+            v-for="(item,index) in listData"
+            :key="index"
             class="flex flex-flow flex-items list__li"
             @click="viewDetails(item)"
           >
@@ -82,6 +82,7 @@ export default {
   name: 'MessageCenter',
   data() {
     return {
+      messageLoading:false,
       page: {
         currentPage: 1,
         pageSize: 10,
@@ -127,9 +128,25 @@ export default {
       this.handleAllRead({ id: data.id })
       //TODO: 为什么要判断？因为第一版的点击只做了已读操作。怀疑有的消息是单纯通知，无对应页面跳转。
       if (data.type) {
-        const query = { query: { id: data.bizId } }
+        // const query = { query: { id: data.bizId } }
+        // if (data.type === 'ExamNotify' || data.type === 'ExamRemind') {
+        //   targetPath = _.assign(targetPath, query)
+        // }
+        let query = {}
         let targetPath = { path: TYPE_PATH_MAP[data.type] }
-        if (data.type === 'ExamNotify' || data.type === 'ExamRemind') {
+        if (data.type === 'TrainArrange') {
+          query = { query: { clickDataIn: 'myTrainList' } }
+          targetPath = _.assign(targetPath, query)
+        }
+        if (
+          data.type === 'LiveBroadcastEveryOne' ||
+          data.type === 'LiveBroadcastPlanGust' ||
+          data.type === 'LiveBroadcastBegin' ||
+          data.type === 'LiveBroadcastPlan' ||
+          data.type === 'LiveRemindToStudents' ||
+          data.type === 'LiveRemindToTeachers'
+        ) {
+          query = { query: { id: data.id } }
           targetPath = _.assign(targetPath, query)
         }
         this.$router.push(targetPath)
@@ -162,10 +179,13 @@ export default {
         pageSize: this.page.pageSize,
         isRead: this.searchParams.isRead
       }
+      this.messageLoading=true
       getMsgNotify(params).then((res) => {
         const { data, totalNum } = res
         this.listData = data
         this.page.total = totalNum
+      }).finally(()=>{
+        this.messageLoading=false
       })
       postMsgNotifyCount({
         userId: this.$store.getters.userId

@@ -93,17 +93,17 @@
       <div
         ref="content"
         :class="['main-content', { fullwidth: leftHidden }]"
-        :style="`${currentChapter.type == '5' ? 'overflow:hidden;' : ''}`"
+        :style="`${currentChapter.type == '1' ? 'overflow:hidden;' : ''}`"
       >
         <div class="collapse-btn" @click="collapseLeft()">
           <i v-if="!leftHidden" class="iconimage_icon_Doubleleftarrow iconfont"></i>
           <i v-else class="iconimage_icon_Doublerightarrow iconfont"></i>
         </div>
-        <!-- <div
-          v-if="currentChapter.type != '4'"
+        <div
+          v-if="currentChapter.type == '1'"
           class="detailTitel"
           v-html="_.unescape(_.unescape(currentChapter.localName))"
-        ></div> -->
+        ></div>
         <!-- 文章类型 -->
         <div
           v-if="currentChapter.type == '1'"
@@ -113,7 +113,7 @@
         <!-- 课件 -->
         <div v-if="currentChapter.type == '2'" class="content--iframe">
           <div style=" height:100%">
-            <video
+            <!-- <video
               v-if="isVideo"
               ref="videoRef"
               controlslist="nodownload"
@@ -124,31 +124,37 @@
               :height="contentHeight"
               :width="contentWidth"
               style="width:100%;"
-            ></video>
+            ></video> -->
             <div v-if="!isVideo" style=" height:100%">
-              <div v-if="getFileType(currentChapter.content) == 'txt'" ref="currentTXT"></div>
+              <!-- <div v-if="getFileType(currentChapter.content) == 'txt'" ref="currentTXT"></div> -->
               <img
-                v-else-if="/(jpg|png|gif)$/.test(getFileType(currentChapter.content))"
+                v-if="
+                  /(jpg|png|gif|jpeg|bmp|JPG|PNG|GIF|JPEG|BMP)$/.test(
+                    getFileType(currentChapter.content)
+                  )
+                "
                 ref="currentImg"
-                :src="currentSrc"
+                :src="currentChapter.content"
+                style="display: block;margin: 0 auto;"
               />
               <iframe
-              id="fileiframe"
-                v-else-if="
-                  /(doc|docx|xls|xlsx|ppt|pptx|pdf)$/.test(getFileType(currentChapter.content))
+                v-if="
+                  /(doc|docx|xls|xlsx|ppt|pptx|pdf|txt|rtf|wps|DOC|DOCX|XLS|XLSX|PPT|PPTX|PDF|TXT|RTF|WPS)$/.test(
+                    getFileType(currentChapter.content)
+                  )
                 "
                 :src="currentSrc"
                 width="100%"
                 height="100%"
                 frameborder="0"
               ></iframe>
-              <iframe
+              <!-- <iframe
                 v-else
                 :src="currentChapter.content"
                 width="100%"
                 height="100%"
                 frameborder="0"
-              ></iframe>
+              ></iframe> -->
             </div>
           </div>
         </div>
@@ -161,9 +167,9 @@
             <div class="file-name">
               {{ currentChapter.localName }}
             </div>
-            <a target="_blank" :href="currentChapter.content">
-              <el-button type="primary" size="medium">立即下载</el-button>
-            </a>
+            <!-- <a target="_blank" :href="currentChapter.content" > -->
+            <el-button type="primary" size="medium" @click="downLoadImg(currentChapter)">立即下载</el-button>
+            <!-- </a> -->
           </div>
         </div>
         <!--考试-->
@@ -171,12 +177,77 @@
           <Task :task-data="currentChapter" @uploadTask="uploadTask" />
         </div>
 
-        <!-- 课前思考 -->
-        <div v-if="currentChapter.type == '5'" class="content--richtext">
-          <div
+        <!-- 视频 -->
+        <div
+          v-if="currentChapter.type == '5'"
+          ref="videoBox"
+          class="content--richtext"
+          :class="{ videoBox: fullScreenBox }"
+        >
+          <!-- <div
             style="overflow-y:auto;"
             v-html="_.unescape(_.unescape(currentChapter.content))"
-          ></div>
+          ></div> -->
+
+          <video
+            v-if="isVideo"
+            ref="videoRef"
+            controlslist="nodownload"
+            autoplay
+            preload
+            :src="currentChapter.content"
+            :height="contentHeight"
+            :width="contentWidth"
+            style="width:100%;"
+            class="isVideo"
+          ></video>
+
+          <div class="myControls">
+            <div class="currentBar">
+              <el-slider v-model="currentBar" :show-tooltip="false"></el-slider>
+            </div>
+            <div class="btnS">
+              <div class="videoBtn">
+                <span
+                  v-show="!videoPaused"
+                  class="el-icon-video-pause _videoBtn"
+                  @click="videoSuspendBtn"
+                ></span>
+                <span
+                  v-show="videoPaused"
+                  class="el-icon-video-play _videoBtn"
+                  @click="videoPlayBtn"
+                ></span>
+                <span class="el-icon-refresh-right _videoBtn" @click="videoReplayBtn"></span>
+                <span class="playTime">{{ nowDate }}/ {{ wholeDate }} </span>
+              </div>
+              <div class="parameterBtn">
+                <div class="voices">
+                  <el-slider v-model="voices" class="slider"></el-slider>
+                  <span class="title">音量</span>
+                </div>
+                <div class="timeS">
+                  <ul class="my_option">
+                    <li
+                      v-for="(item, index) in timesOptions"
+                      :key="index"
+                      @click="timesVal = item.value"
+                    >
+                      {{ item.label }}
+                    </li>
+                  </ul>
+                  <div class="my_select">
+                    {{ timesVal || '倍速' }} {{ `${timesVal ? 'x' : ''}` }}
+                  </div>
+                </div>
+
+                <div class="FullScreen" @click="fullScreenBtn">
+                  <span class="el-icon-full-screen"></span>
+                </div>
+                <!-- <div class="suspension" @click="suspensionBtn">[xiao]</div> -->
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -197,6 +268,8 @@ import { COURSE_CHAPTER_TYPE_MAP } from './config'
 import Task from './components/Task'
 import TextOverTooltip from './components/TextOverTooltip'
 import Note from './components/Note'
+import { downLoadFile } from '@/util/util'
+// import { clearInterval } from 'tinymce/themes/silver/theme'
 const axios = require('axios/index')
 
 export default {
@@ -204,8 +277,20 @@ export default {
   components: { Task, TextOverTooltip, Note },
   data() {
     return {
+      sliderData: 0,
+      contentWidth: '100%',
+      contentHeight: '100%',
+      videoPaused: false,
+      isFullScreen: 0,
+      fullScreenBox: true,
+      voices: 50,
+      videoCurrentTime: '',
       currentSrc: '',
       timer: null,
+      videoTimer: null,
+      nowDate: '',
+      wholeDate: '',
+      currentBar: 0,
       circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
       activeIndex: '1',
       submitting: false,
@@ -216,7 +301,16 @@ export default {
       note: '',
       leftHidden: false,
       pageIndex: -1,
-      chapterTime: 0 //章节停留时间,
+      chapterTime: 0, //章节停留时间,
+      timesOptions: [
+        { label: '0.5x', value: 0.5 },
+        { label: '0.75x', value: 0.75 },
+        { label: '1x', value: 1 },
+        { label: '1.25x', value: 1.25 },
+        { label: '1.5x', value: 1.5 },
+        { label: '2x', value: 2 }
+      ],
+      timesVal: ''
     }
   },
   computed: {
@@ -226,24 +320,56 @@ export default {
     chapterId() {
       return this.$route.query.chapterId
     },
-    contentWidth() {
-      return this.$refs.content.offsetWidth
-    },
-    contentHeight() {
-      return this.$refs.content.offsetHeight
-    },
+    // contentWidth() {
+    //   return this.$refs.content.offsetWidth
+    // },
+    // contentHeight() {
+    //   return this.$refs.content.offsetHeight
+    // },
     isVideo() {
-      const regx = /^.*\.(avi|wmv|mp4|3gp|rm|rmvb|mov)$/
+      const regx = /^.*\.(avi|wmv|mp4|3gp|rm|rmvb|mov|AVI|WMV|MP4|3GP|RM|RMVB|MOV)$/
       return regx.test(this.currentChapter.content)
     },
     COURSE_CHAPTER_TYPE_MAP: () => COURSE_CHAPTER_TYPE_MAP,
     ...mapGetters(['userInfo'])
   },
   watch: {
+    // 视频倍速播放
+    timesVal(newVal) {
+      let videoRef = this.$refs.videoRef
+      if (videoRef) videoRef.playbackRate = newVal
+    },
+    // 让视频只能往后拖
+    currentBar(newVal) {
+      let vd = this.$refs.videoRef
+      // 现在视频的播放时间
+      // (vd.currentTime)
+      // 视频总时长
+      // (vd.duration)
+      // 当前百分比
+
+      let currentBar = parseInt((vd.currentTime / vd.duration) * 100)
+      if (newVal < currentBar) {
+        let tade = (newVal / 100) * vd.duration
+        this.currentChapter.period = parseInt(tade)
+        vd.currentTime = parseInt(tade)
+        this.videoplayInit()
+        this.videoPlayBtn()
+      }
+    },
+    // 视频音量
+    voices(newVal) {
+      let videoRef = this.$refs.videoRef
+      if (videoRef) videoRef.volume = newVal / 100
+    },
     currentChapter(newVal, oldVal) {
       if (!this.isVideo) {
         this.getContentUrl(newVal)
       }
+      this.videoplayInit()
+      // 进入页面判断是否视频，断点续放
+      this.breakpoint(newVal)
+
       // if (this.isChapterVideo(oldVal) && oldVal.duration) {
       //   this.updateVideoProgress(oldVal)
       //   this.setDuration()
@@ -255,9 +381,20 @@ export default {
       //   newVal.progress = 100
       // }
       // this.submitLearnRecords()
+      if (newVal.type == 3) {
+        newVal.progress = 100
+      }
 
       if (this.isChapterVideo(oldVal) && oldVal.duration) {
         let videoDom = document.querySelector('video')
+        this.chapters.forEach((item, index) => {
+          if (oldVal.contentId == item.contentId) {
+            this.chapters[index].period = parseInt(videoDom.currentTime)
+            // console.log(this.chapters[index].period);
+            // console.log(oldVal);
+          }
+        })
+
         videoDom.onended = () => {
           this.updateVideoProgress()
           this.submitLearnRecords()
@@ -266,14 +403,17 @@ export default {
       if (!this.isChapterVideo(newVal) && newVal.type != 4) {
         newVal.progress = 100
       }
+
       if (newVal !== oldVal) {
-        clearInterval(this.timer)
+        // if (this.timer) clearInterval(this.timer)
         this.chapterTime = 0
-        this.timer = setInterval(() => {
-          this.chapterTime = 30
-          this.updateVideoProgress()
-          this.submitLearnRecords()
-        }, 30 * 1000)
+        this.coundown()
+
+        // this.timer = setInterval(() => {
+        //   this.chapterTime = 30
+        //   this.updateVideoProgress()
+        //   this.submitLearnRecords()
+        // }, 30 * 1000)
       }
     }
   },
@@ -288,14 +428,51 @@ export default {
     this.isFirst = true
     // this.setTimer()
     this.cancelRightClick()
+    this.videoplayInit()
   },
+  // deactivated() {
+  //   this.updateVideoProgress(this.currentChapter)
+  //   this.submitLearnRecords()
+  //   //  清除定时器两个定时
+  //   if (this.timer) clearTimeout(this.timer)
+  //   this.timer = null
+  //   if (this.videoTimer) clearInterval(this.videoTimer)
+  //   this.clearIntervalFn()
+  // },
   beforeRouteLeave(from, to, next) {
     this.updateVideoProgress(this.currentChapter)
     this.submitLearnRecords()
-    clearInterval(this.timer)
+    //  清除定时器两个定时
+    if (this.timer) clearTimeout(this.timer)
+    this.timer = null
+    if (this.videoTimer) clearInterval(this.videoTimer)
+    this.clearIntervalFn()
     next()
   },
   methods: {
+    coundown() {
+      if (this.timer) clearTimeout(this.timer)
+      this.timer = setTimeout(() => {
+        this.chapterTime = 30
+        this.updateVideoProgress()
+        this.submitLearnRecords()
+        this.coundown()
+      }, 30 * 1000)
+    },
+    //  清除定时器
+    clearIntervalFn() {
+      //这里停止了定时器
+      if (this.videoTimer) {
+        for (let i = 1; i <= this.videoTimer; i++) {
+          clearInterval(this.videoTimer)
+        }
+      }
+    },
+
+    downLoadImg(data) {
+      // 下载
+      downLoadFile(data)
+    },
     getFileType(url) {
       let type = url.split('.')
       type = type[type.length - 1]
@@ -357,25 +534,25 @@ export default {
     },
     // 非视频课件
     async getContentUrl(chapter) {
-      const office = /.*\.(doc|docx|xls|xlsx|ppt|pptx)$/
-      const isPdf = /.*\.(pdf)$/
+      const office = /.*\.(doc|docx|xls|xlsx|ppt|pptx|txt|rtf|wps|jpg|png|gif|DOC|DOCX|XLS|XLSX|PPT|PPTX|TXT|RTF|WPS|JPG|PNG|GIF)$/
+      const isPdf = /.*\.(PDF|pdf)$/
       if (office.test(chapter.content) || isPdf.test(chapter.content)) {
         // this.currentSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURI(
         //   chapter.content
-        // )}`
-
+        // )}`;
         let { data } = await getReviewUrl({
           isDownloa: 0,
           isShowTitle: 0,
           isPrint: 0,
           isCopy: 1,
+          htmlName: chapter.localName,
           convertType: office.test(chapter.content) ? 0 : 20,
           fileUrl: chapter.content
         })
         this.currentSrc = data.data.viewUrl
       }
 
-      const officeTxtImg = /.*\.(jpg|png|gif|txt|TXT)$/
+      const officeTxtImg = /.*\.(jpg|png|gif|jpeg|txt|JPG|PNG|GIF|JPEG|TXT)$/
       if (officeTxtImg.test(chapter.content)) {
         this.genSrc(chapter.content)
       }
@@ -384,7 +561,7 @@ export default {
     genSrc(url) {
       axios.get(url).then((res) => {
         const { data } = res
-        if (/(jpg|png|gif)$/.test(this.getFileType(url))) {
+        if (/(jpg|png|gif|jpeg|JPG|PNG|GIF|JPEG)$/.test(this.getFileType(url))) {
           // img
           this.$nextTick(() => {
             this.currentSrc = url
@@ -407,29 +584,6 @@ export default {
         }
       })
     },
-    // 每1分钟收集一下进度
-    // setTimer() {
-    //   this.timer = setInterval(() => {
-    //     this.updateVideoProgress()
-    //     this.submitLearnRecords()
-    //     // }, 10000)
-    //   }, 1 * 60 * 1000)
-    // },
-    // 视频看完更新一下
-    // videoTimerFn() {
-    //   if (this.currentChapter.duration) {
-    //     this.timer = setInterval(() => {
-    //       this.chapters.map((val) => {
-    //         if (val.contentId === this.currentChapter.contentId) {
-    //           val.progress = 100
-    //         }
-    //       })
-
-    //       this.updateVideoProgress()
-    //       this.submitLearnRecords()
-    //     }, this.currentChapter.duration * 1000)
-    //   }
-    // },
     //  初始化
     reset() {
       this.leftHidden = false
@@ -445,27 +599,46 @@ export default {
       return this.currentChapter.contentId === chapter.contentId
     },
     isChapterVideo(chapter) {
-      const regx = /^.*\.(avi|wmv|mp4|3gp|rm|rmvb|mov)$/
+      const regx = /^.*\.(avi|wmv|mp4|3gp|rm|rmvb|mov|AVI|WMV|MP4|3GP|RM|RMVB|MOV)$/
       return regx.test(chapter.content)
     },
     async handleChapterClick(chapter) {
       // this.pageIndex -= 1
+      // this.timesVal = ''
+      // this.$nextTick(() => {
+      //   let videoRef = this.$refs.videoRef
+      //   if (!videoRef) return
+      //   videoRef.addEventListener('play', function() {
+      //     videoRef.currentTime = chapter.period
+      //     this.videoCurrentTime = videoRef.currentTime
+      //     videoRef.playbackRate = 1
+      //   })
+      // })
+
+      this.breakpoint(chapter)
+
       await this.updateVideoProgress()
       await this.submitLearnRecords()
+      // await this.loadCourseDetail()
+      this.currentChapter = null
       this.currentChapter = chapter
     },
     // 进度
     calcProcess(chapter) {
-      if (!this.isChapterVideo(chapter)) {
-        // 兼容旧数据，现在视频以外的类型进度都是100，之前是1
-        if (chapter.progress > 0) {
-          return 100
-        } else {
-          return 0
-        }
-      } else {
-        return parseInt(chapter.progress)
-      }
+      let progressData = chapter.progress
+      if (progressData > 98) progressData = 100
+      return progressData
+
+      // if (!this.isChapterVideo(chapter)) {
+      //   // 兼容旧数据，现在视频以外的类型进度都是100，之前是1
+      //   if (chapter.progress > 0) {
+      //     return 100
+      //   } else {
+      //     return 0
+      //   }
+      // } else {
+      //   return parseInt(chapter.progress) || 0
+      // }
     },
     // 进度状态
     getChapterStatus(chapter) {
@@ -473,7 +646,7 @@ export default {
         return '正在学'
       }
       if (!this.isChapterVideo(chapter)) {
-        if (chapter.progress == 100) {
+        if (chapter.progress > 98) {
           return '已学习'
         } else {
           return '未学习'
@@ -481,7 +654,7 @@ export default {
       } else {
         if (chapter.progress == '0') {
           return '未学习'
-        } else if (chapter.progress == 100) {
+        } else if (chapter.progress > 98) {
           return '已学习'
         } else {
           return '学习中'
@@ -504,18 +677,40 @@ export default {
       //   period = 0
       //   this.isFirst = false
       // }
-      let params = { period: this.chapterTime, courseId: this.courseId }
+      let params = {
+        contentPeriods: '',
+        period: this.chapterTime,
+        courseId: this.courseId,
+        studyPlanId: this.$route.query.studyPlanId || '',
+        trainId: this.$route.query.trainId || ''
+      }
       params.contentRecords = _.map(
         this.chapters,
         (chapter) => `${chapter.contentId}:${chapter.progress >= 100 ? 100 : chapter.progress}`
       ).join(',')
+
       if (!params.contentRecords) {
         return
       }
+      params.contentPeriods = _.map(
+        this.chapters,
+        (chapter) =>
+          `${chapter.contentId}:${chapter.duration !== '' ? this.TiemToFixed(chapter) : 0}`
+        //  (chapter) => console.log(chapter)
+      ).join(',')
+      // console.log(params);
+      // return
       updateLearnRecord(params)
         .then()
         .catch()
     },
+
+    TiemToFixed(chapter) {
+      let durationNum = chapter.duration || 0
+      let Tiem = chapter.progress / 100 >= 1 ? durationNum : durationNum * (chapter.progress / 100)
+      return Tiem.toFixed(0)
+    },
+
     // 查询学员学习课程记录
     loadChapters() {
       if (!this.courseId) {
@@ -547,7 +742,7 @@ export default {
           .get(chapter.content + '?avinfo')
           .then((res) => {
             const duration = _.get(res, 'data.format.duration', null)
-            chapter.duration = parseInt(duration)
+            chapter.duration = parseInt(duration) || chapter.duration
             resolve()
           })
           .catch((err) => {
@@ -580,9 +775,114 @@ export default {
         })
     },
     goBack() {
-      this.$router.go(-1)
-      // 当go(-1)不执行，就执行下面路由跳转
-      this.$router.push({ path: '/course/detail', query: { id: this.courseId } })
+      if (this.timer) clearTimeout(this.timer)
+      this.clearIntervalFn()
+      this.$router.push({
+        path: '/course/detail',
+        query: {
+          id: this.courseId,
+          studyPlanId: this.$route.query.studyPlanId || '',
+          trainId: this.$route.query.trainId || ''
+        }
+      })
+    },
+
+    // 视频播放控件
+    // 获取视频播发时间  ： 总时间&播发时间
+    // 视频进度条
+    videoplayInit() {
+      clearInterval(this.videoTimer)
+      this.videoTimer = setInterval(() => {
+        let vd = this.$refs.videoRef
+        if (!vd) return
+        this.nowDate = this.formatSeconds(vd.currentTime)
+        this.wholeDate = this.formatSeconds(vd.duration)
+        this.currentBar = parseInt((vd.currentTime / vd.duration) * 100)
+        let pausedData = vd.paused
+        this.videoPaused = pausedData
+      }, 500)
+    },
+
+    // 断点
+    breakpoint(chapter) {
+      this.timesVal = ''
+      this.$nextTick(() => {
+        let videoRef = this.$refs.videoRef
+        if (!videoRef) return
+        videoRef.addEventListener('play', () => {
+          videoRef.currentTime = chapter.period
+          this.videoCurrentTime = videoRef.currentTime
+          videoRef.playbackRate = 1
+        })
+      })
+    },
+
+    // 视频暂停
+    videoSuspendBtn() {
+      let vd = this.$refs.videoRef
+      this.currentChapter.period = vd.currentTime
+      vd.pause()
+    },
+    // 视频播放
+    videoPlayBtn() {
+      let vd = this.$refs.videoRef
+      this.$nextTick(() => {
+        setTimeout(() => {
+          vd.play()
+        }, 500)
+      })
+    },
+
+    // 视频重新播放
+    videoReplayBtn() {
+      let vd = this.$refs.videoRef
+      this.currentChapter.period = 0
+      vd.currentTime = 0
+      this.videoPlayBtn()
+    },
+    // 视频全屏
+    fullScreenBtn() {
+      if (this.isFullScreen) {
+        // Webkit
+        document.webkitCancelFullScreen() //退出全屏
+        // // Firefox
+        // document.mozCancelFullScreen()
+        // // W3C
+        // document.exitFullscreen()
+        this.isFullScreen = 0
+      } else {
+        let vd = this.$refs.videoBox
+        vd.webkitRequestFullScreen() // Webkit
+        // vd.mozRequestFullScreen() // Firefox
+        // vd.requestFullscreen() // W3C
+        this.isFullScreen = 1
+      }
+    },
+
+    videoplayOln() {},
+
+    // 秒转换成时间
+    formatSeconds(value) {
+      let theTime = parseInt(value) // 秒
+      let middle = 0 // 分
+      let hour = 0 // 小时
+
+      if (theTime > 60) {
+        middle = parseInt(theTime / 60)
+        theTime = parseInt(theTime % 60)
+        if (middle > 60) {
+          hour = parseInt(middle / 60)
+          middle = parseInt(middle % 60)
+        }
+      }
+      let result = '' + (parseInt(theTime) || 0) + '秒'
+      if (middle > 0) {
+        result = '' + parseInt(middle) + '分' + result
+      }
+      if (hour > 0) {
+        result = '' + parseInt(hour) + '小时' + result
+      }
+      return result
     }
   }
 }
@@ -777,9 +1077,10 @@ export default {
       }
       .content {
         &--richtext {
-          padding: 40px;
+          // padding: 40px;
           overflow-y: auto;
           height: 100%;
+          position: relative;
         }
         &--test {
           margin: 40px;
@@ -789,6 +1090,9 @@ export default {
           margin: 40px;
           .img-wr {
             margin-right: 24px;
+            img {
+              margin: 0 auto;
+            }
           }
           .file-name {
             color: $primaryFontColor;
@@ -810,5 +1114,148 @@ export default {
       }
     }
   }
+}
+.content--iframe {
+  /deep/ body img {
+    display: block;
+    margin: 0 auto;
+  }
+}
+// /deep/.el-input__inner {
+//   background-color: rgba(0, 0, 0, 0.474) !important;
+//   border: none;
+//   color: #fff;
+// }
+// /deep/ .el-select-dropdown .el-popper {
+//   background-color: pink;
+//   border: none;
+// }
+.isVideo {
+  margin: 0;
+  padding: 0;
+}
+.myControls {
+  width: 100%;
+  height: 80px;
+  background: linear-gradient(rgba(0, 0, 0, 0.212), rgb(0, 0, 0));
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  // display: none;
+  opacity: 0;
+  transition: all 0.8s;
+  &:hover {
+    opacity: 1;
+  }
+  .currentBar {
+    padding: 0 24px;
+  }
+  .btnS {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 24px;
+
+    .videoBtn {
+      width: 200px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 30px;
+      color: #a0a8ae;
+      cursor: pointer;
+      ._videoBtn {
+        border-radius: 50%;
+      }
+      ._videoBtn:hover {
+        box-shadow: 0px 2px 8px #000000;
+      }
+      ._videoBtn:active {
+        color: #01aafc;
+      }
+
+      .playTime {
+        font-size: 12px;
+        width: 120px;
+        text-align: right;
+        line-height: 30px;
+        cursor: default;
+      }
+    }
+    .parameterBtn {
+      display: flex;
+      justify-content: space-between;
+      .timeS {
+        position: relative;
+        padding: 15px 0;
+        margin-top: -15px;
+        cursor: pointer;
+        &:hover {
+          .my_option {
+            display: block;
+          }
+        }
+        .my_select {
+          width: 60px;
+          margin-top: 1px;
+          background-color: rgba(255, 255, 255, 0);
+          border: none;
+          color: #a0a8ae;
+          text-align: center;
+        }
+        .my_option {
+          background-color: rgba(0, 0, 0, 0.678);
+          position: absolute;
+          left: 0;
+          top: -165px;
+          color: rgba(255, 255, 255, 0.849);
+          border-radius: 3px;
+          padding: 5px 0;
+          li {
+            padding: 5px 10px;
+          }
+          display: none;
+        }
+      }
+
+      .voices {
+        width: 180px;
+        margin-top: -6px;
+        display: flex;
+        .title {
+          width: 60px;
+          color: #a0a8ae;
+          text-align: center;
+          line-height: 36px;
+        }
+        .slider {
+          flex: 1;
+        }
+      }
+      .FullScreen,
+      .suspension {
+        color: #a0a8ae;
+        font-size: 18px;
+        width: 50px;
+        text-align: right;
+        cursor: pointer;
+      }
+    }
+  }
+}
+video::-webkit-media-controls {
+  display: none !important;
+}
+select,
+option {
+  /*Chrome和Firefox里面的边框是不一样的，所以复写了一下*/
+  border: none;
+  outline: none;
+  /*很关键：将默认的select选择框样式清除*/
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  /*将背景改为红色*/
+  background: #fff;
+  /*加padding防止文字覆盖*/
+  padding-right: 14px;
 }
 </style>

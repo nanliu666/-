@@ -7,7 +7,7 @@
       :placement="placement"
     >
       <div class="ellipsis" :class="className" @mouseover="onMouseOver(refName)">
-        <span :ref="refName">{{ content }}</span>
+        <span :ref="refName">{{ content || '--' }}</span>
       </div>
     </el-tooltip>
   </div>
@@ -76,5 +76,13 @@ export default {
   //     color: orange;
   //     line-height: 14px;
   //   }
+  .fs18 {
+    font-family: PingFangSC-Medium;
+    font-size: 18px;
+    color: #000b15;
+    letter-spacing: 0;
+    line-height: 28px;
+    font-weight: 500;
+  }
 }
 </style>

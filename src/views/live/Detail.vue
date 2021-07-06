@@ -56,13 +56,30 @@
                 </div>
               </div>
             </div>
-            <el-button v-if="isTrainee" type="primary" size="medium" @click.native="watchLiveFun">
-              观看直播
-            </el-button>
-            <el-button v-if="!isTrainee" type="primary" size="medium" @click.native="beginLiveFn">
-              <span v-if="detailData.status === 'live'">继续直播</span>
-              <span v-else>开始直播</span>
-            </el-button>
+            <!-- 学员端只有观看直播 -->
+            <div v-if="hasLiveButton && isTrainee">
+              <el-button type="primary" size="medium" @click.native="watchLiveFun">
+                观看直播
+              </el-button>
+            </div>
+            <!-- 讲师端的直播按钮是不需要进行逻辑判断 -->
+            <div v-if="!isTrainee">
+              <el-button type="primary" size="medium" @click.native="beginLiveFn">
+                <span v-if="detailData.status === 'live'">继续直播</span>
+                <span v-else>开始直播</span>
+              </el-button>
+            </div>
+            <div v-if="hasSignButton && isTrainee">
+              <!-- 未报名的按钮需要激活状态 -->
+              <el-button
+                type="primary"
+                :disabled="detailData.applyJoinStatus !== 'NotRegistered'"
+                size="medium"
+                @click.native="applyButton"
+              >
+                {{ applyButtonText }}
+              </el-button>
+            </div>
           </div>
         </div>
         <div v-if="watchLiveLink" class="header__right">
@@ -84,12 +101,20 @@
         </div>
       </div>
     </el-card>
-    <el-card class="live__main">
+    <!-- 讲师端页面tabs -->
+    <el-card v-if="!isTrainee" class="live__main">
       <el-tabs v-model="activeIndex" @tab-click="handleSelect">
-        <el-tab-pane v-if="!isTrainee" label="直播信息" name="1">
+        <!-- 讲师存在报名情况，用于处理学员的报名 -->
+        <el-tab-pane v-if="detailData.isApprove" label="报名情况" name="6">
+          <SignUp></SignUp>
+        </el-tab-pane>
+        <el-tab-pane label="考试情况" :name="`${detailData.isApprove ? 7 : 6}`">
+          <Examination></Examination>
+        </el-tab-pane>
+        <el-tab-pane label="直播信息" name="1">
           <live-info :data="detailData" />
         </el-tab-pane>
-        <el-tab-pane v-if="!isTrainee" label="数据统计" name="2">
+        <el-tab-pane label="数据统计" name="2">
           <live-statistics :live-plan-id="detailData.liveId + ''" />
         </el-tab-pane>
         <el-tab-pane label="直播详情" name="3">
@@ -102,7 +127,34 @@
           <Comment
             :load="loadCommentList"
             :has-handle="isTrainee"
+            :is-editable="_.get(detailData, 'isWatch', false)"
             :submit="submitComment"
+            :is-comment="2"
+            name="直播"
+          />
+        </el-tab-pane>
+      </el-tabs>
+    </el-card>
+    <!-- 学员端页面tabs -->
+    <el-card v-if="isTrainee" class="live__main">
+      <el-tabs v-model="activeIndex" @tab-click="handleSelect">
+        <!-- 报名前和审核中只能看直播详情tab页 -->
+        <el-tab-pane label="直播详情" name="3">
+          <live-particulars :data="detailData" />
+        </el-tab-pane>
+        <el-tab-pane v-if="hasLiveButton" label="直播考试" name="8">
+          <live-exam />
+        </el-tab-pane>
+        <el-tab-pane v-if="hasLiveButton" label="直播回放" name="4">
+          <live-playback />
+        </el-tab-pane>
+        <el-tab-pane v-if="hasLiveButton" label="直播评论" name="5">
+          <Comment
+            :load="loadCommentList"
+            :has-handle="isTrainee"
+            :is-editable="_.get(detailData, 'isWatch', false)"
+            :submit="submitComment"
+            disable-text="您未观看该直播，暂不能对该直播评价，先去观看再来评价哦"
             name="直播"
           />
         </el-tab-pane>
@@ -112,20 +164,41 @@
 </template>
 
 <script>
-import { getLiveDetail, getCommentList, postComment, getUserRole } from '@/api/live'
+import {
+  getLiveDetail,
+  getCommentList,
+  postComment,
+  getUserRole,
+  userLiveApplyJoin
+} from '@/api/live'
 import Comment from '@/components/common-comment/Comment'
 import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
 import LiveInfo from './components/LiveInfo'
 import LiveParticulars from './components/LiveParticulars'
 import LivePlayback from './components/LivePlayback'
 import LiveStatistics from './components/LiveStatistics'
+import LiveExam from './components/LiveExam'
 import vueQr from 'vue-qr'
 import { frontBaseUrl } from '@/config/env'
 import { mapGetters } from 'vuex'
+
+import SignUp from '../lecturerTask/live/SignUp' //报名情况
+import Examination from '../lecturerTask/live/Examination' //考试情况
+import moment from 'moment'
+// 讲师的tabs的展示逻辑
+// 1.存在报名情况显示：
+// 报名情况、考试情况、直播信息、数据统计、直播详情、直播回放、直播评论
+// 2.不存在报名情况显示
+// 考试情况、直播信息、数据统计、直播详情、直播回放、直播评论
+
+// 学员的tabs展示
+// 1.已报名存在
+// 直播详情、直播考试、直播回放、直播评论
+// 2.未报名展示
+// 直播详情
 const STATUS_MAP = {
   live: '直播中',
-  start: '未开始',
-  end: '已结束'
+  end: '未开始'
 }
 export default {
   name: 'LiveDetail',
@@ -136,7 +209,10 @@ export default {
     LiveParticulars,
     LivePlayback,
     LiveStatistics,
-    vueQr
+    LiveExam,
+    vueQr,
+    SignUp,
+    Examination
   },
   data() {
     return {
@@ -153,15 +229,46 @@ export default {
       ],
       roleName: '',
       statusMap: STATUS_MAP,
-      activeIndex: '1',
+      activeIndex: '3',
       detailData: {}
     }
   },
   computed: {
+    // 拥有直播系列的按钮（能查看直播考试等tabs）只针对学员身份有以下几种情况
+    // 1.直播报名不需要审批（isApprove false）
+    // 2.报名需要审批（isApprove true），且用户报名状态为已报名（applyJoinStatus为SignedUp）
+    // applyJoinStatus字典组：NotRegistered-未报名/UnderReview-审核中/SignedUp-已报名
+    // 3.authType: code以及direct(验证码以及指定学员)不许报名
+    // 4.讲师身份直播按钮常驻
+    hasLiveButton() {
+      const { isApprove, applyJoinStatus, authType } = this.detailData
+      const conditionOne = !isApprove
+      const conditionTwo = isApprove && applyJoinStatus === 'SignedUp'
+      const conditionThree = authType === 'code' || authType === 'direct'
+      return conditionOne || conditionTwo || conditionThree
+    },
+    // 存在报名按钮的情况
+    hasSignButton() {
+      const { isApprove, signupDeadline, authType } = this.detailData
+      // 未填写报名截止日期可以一直报名
+      const dateLine = signupDeadline && moment().isSameOrBefore(moment(signupDeadline))
+      // 必须是学员，直播报名需要审批，并且所有人可见
+      const conditionOne = this.isTrainee && isApprove && authType === ''
+      return (dateLine || conditionOne) && this.applyButtonText
+    },
+    applyButtonText() {
+      const BUTTON_TEXT_MAP = {
+        NotRegistered: '预约报名',
+        UnderReview: '审核中'
+      }
+      return BUTTON_TEXT_MAP[this.detailData.applyJoinStatus]
+    },
     ...mapGetters(['userId']),
+    // 是否是学员
     isTrainee() {
       return this.roleName === 'Trainee'
     },
+
     watchLiveLink() {
       let { userId, avatar } = this.detailData.currentUser ? this.detailData.currentUser : {}
       let QRURL = ''
@@ -171,87 +278,95 @@ export default {
         QRURL = `${frontBaseUrl}/#/beginLive?beginId=${this.detailData.channelId}&roleName=${this.roleName}`
       }
       return QRURL
-      // return `${location.origin}/#/WatchLive?wId=${this.detailData.channelId}`
-      // return `${location.origin}/#/WatchLive?wId=${_.get(this.currentUserInfo, 'account')}`
     },
     id() {
-      const id = _.get(this.$route, 'query.id', null)
-      const route = `${id ? `${this.$route.path}?id=${id}` : `${this.$route.path}`}`
-      _.set(this.routeList, '[1].path', route)
-      return id
+      return _.get(this.$route, 'query.id', null)
     }
   },
   activated() {
-    const params = { liveId: this.id }
-    getLiveDetail(params).then((res) => {
-      // 重组数据，将数据组合成低保需要的格式
-      const sortRules = {
-        '': 3,
-        Lecturer: 0, //主讲师
-        Assistant: 1, // 助教
-        Guest: 2 // 嘉宾
-      }
-      const { loginInfo } = res
-      this.currentUserInfo = _.find(loginInfo, (item) => item.userId === this.userId)
-      let temp = []
-      _.chain(loginInfo)
-        .groupBy('roleName')
-        .forIn((value, key) => {
-          _.each(value, (item, index) => {
-            switch (key) {
-              case 'Lecturer':
-                _.set(item, 'showUserName', '主讲师')
-                break
-              case 'Assistant':
-                _.set(
-                  item,
-                  'showUserName',
-                  `${item.userName}（助教${_.size(value) > 1 ? `${index + 1}` : ''}）`
-                )
-                break
-              case 'Guest':
-                _.set(
-                  item,
-                  'showUserName',
-                  `${item.userName}（嘉宾${_.size(value) > 1 ? `${index + 1}` : ''}）`
-                )
-                break
-              default:
-                _.set(
-                  item,
-                  'showUserName',
-                  `${item.userName}（身份缺失${_.size(value) > 1 ? `${index + 1}` : ''}）`
-                )
-                break
-            }
-          })
-          temp.push(value)
-        })
-        .value()
-      const tempArray = _.flatten(temp)
-      tempArray.sort(function(a, b) {
-        return sortRules[a.roleName] - sortRules[b.roleName]
-      })
-      res.loginInfo = tempArray
-      this.detailData = res
-    })
-    getUserRole(params).then((res) => {
-      const { roleName } = res
-      this.roleName = roleName
-      this.activeIndex = res.roleName === 'Trainee' ? '3' : '1'
-    })
+    this.initData()
   },
   methods: {
+    initData() {
+      const params = { liveId: this.id }
+      getLiveDetail(params).then((res) => {
+        // 重组数据，将数据组合成低保需要的格式
+        const sortRules = {
+          '': 3,
+          Lecturer: 0, //主讲师
+          Assistant: 1, // 助教
+          Guest: 2 // 嘉宾
+        }
+        const { loginInfo } = res
+        this.currentUserInfo = _.find(loginInfo, (item) => item.userId === this.userId)
+        let temp = []
+        _.chain(loginInfo)
+          .groupBy('roleName')
+          .forIn((value, key) => {
+            _.each(value, (item, index) => {
+              switch (key) {
+                case 'Lecturer':
+                  _.set(item, 'showUserName', '主讲师')
+                  break
+                case 'Assistant':
+                  _.set(
+                    item,
+                    'showUserName',
+                    `${item.userName}（助教${_.size(value) > 1 ? `${index + 1}` : ''}）`
+                  )
+                  break
+                case 'Guest':
+                  _.set(
+                    item,
+                    'showUserName',
+                    `${item.userName}（嘉宾${_.size(value) > 1 ? `${index + 1}` : ''}）`
+                  )
+                  break
+                default:
+                  _.set(
+                    item,
+                    'showUserName',
+                    `${item.userName}（身份缺失${_.size(value) > 1 ? `${index + 1}` : ''}）`
+                  )
+                  break
+              }
+            })
+            temp.push(value)
+          })
+          .value()
+        const tempArray = _.flatten(temp)
+        tempArray.sort(function(a, b) {
+          return sortRules[a.roleName] - sortRules[b.roleName]
+        })
+        res.loginInfo = tempArray
+        this.detailData = res
+      })
+      getUserRole(params).then((res) => {
+        const { roleName } = res
+        this.roleName = roleName
+        this.activeIndex = res.roleName === 'Trainee' ? '3' : '6'
+        // this.activeIndex = res.roleName === 'Trainee' ? '3' : '1'
+      })
+    },
+    // 点击报名
+    applyButton() {
+      userLiveApplyJoin({ liveId: this.id }).then(() => {
+        this.$message.success('报名成功')
+        this.initData()
+      })
+    },
     playFun() {
       if (this.isTrainee) {
-        this.watchLiveFun()
+        if (this.hasLiveButton) {
+          this.watchLiveFun()
+        }
       } else {
         this.beginLiveFn()
       }
     },
     // 观看直播
     watchLiveFun() {
-      let { userId, avatar, userName } = this.detailData.currentUser
+      let { userId, avatar, userName, phonenum } = this.detailData.currentUser
         ? this.detailData.currentUser
         : {}
       this.$router.push({
@@ -260,6 +375,7 @@ export default {
           wId: this.detailData.channelId,
           userid: userId,
           avatar: avatar,
+          phonenum,
           userName: encodeURIComponent(userName),
           sk: this.detailData.authSecretOrCode,
           type: this.detailData.authType
@@ -300,8 +416,8 @@ export default {
       display: flex;
       .header__logo {
         position: relative;
-        width: 320px;
-        height: 180px;
+        width: 480px;
+        height: 270px;
         margin-right: 40px;
         .logo__img {
           width: 100%;
@@ -372,25 +488,31 @@ export default {
         flex-direction: column;
         justify-content: space-between;
         .label {
+          opacity: 0.45;
           font-family: PingFangSC-Regular;
           font-size: 14px;
-          color: rgba(#000b15, 0.45);
+          color: #000b15;
+          letter-spacing: 0;
+          line-height: 22px;
         }
         .value {
           opacity: 0.85;
           font-family: PingFangSC-Regular;
           font-size: 14px;
           color: #000b15;
+          letter-spacing: 0;
+          line-height: 22px;
         }
         .header__title {
           font-family: PingFangSC-Medium;
+          margin-bottom: 40px;
           font-size: 18px;
           color: #000b15;
-          font-weight: 550;
-          margin-bottom: 16px;
+          letter-spacing: 0;
+          line-height: 28px;
+          font-weight: 600;
         }
-        .content__classify {
-        }
+
         .live__time {
           display: flex;
           .value__li {

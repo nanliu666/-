@@ -125,3 +125,7 @@ export const submitQuestionnaire = (params) => post('/margin/v1/asq/center/submi
  * 查看调查结果,subjectCpId:问卷副本id
  */
 export const viewAnswer = (params) => get('/margin/v1/asq/center/viewAnswer', params)
+/**
+ * 我的直播待办和已结束的数量
+ */
+ export const liveStudentNum = (params) => get('/api/common/v1/live/liveStudentNum', params)

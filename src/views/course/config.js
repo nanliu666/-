@@ -10,7 +10,7 @@ export const COURSE_CHAPTER_TYPE_MAP = {
     color: variables.primaryColor
   },
   '2': {
-    text: '课件',
+    text: '文档',
     color: '#FC7C01'
   },
   '3': {
@@ -21,11 +21,11 @@ export const COURSE_CHAPTER_TYPE_MAP = {
     text: '作业',
     color: '#FCBA00'
   },
-  '5': {
+  '6': {
     text: '课前思考',
     color: '#00B061'
   },
-  '6': {
+  '5': {
     text: '视频',
     color: variables.primaryColor
   }

@@ -88,12 +88,14 @@ import homeSideUserInfo from './side/homeSideUserInfo.vue'
 import HomeSideLearnCourse from './side/homeSideLearnCourse'
 import HomeSideRankIntegral from './side/homeSideRankIntegral.vue'
 import HomeSideRankHour from './side/homeSideRankHour.vue'
+import HomeSideLectureStyle from './side/homeSideLectureStyle.vue'
 import { mapGetters } from 'vuex'
 export default {
   name: 'HomeRight',
   components: {
     homeSideUserInfo,
     HomeSideLearnCourse,
+    HomeSideLectureStyle,
     HomeSideRankIntegral,
     HomeSideRankHour
   },
@@ -108,7 +110,8 @@ export default {
         diyPcR1: { coms: 'homeSideUserInfo', name: '个人信息' },
         diyPcR2: { coms: 'HomeSideLearnCourse', name: '学习中的课程' },
         diyPcR3: { coms: 'HomeSideRankIntegral', name: '月度积分排行榜' },
-        diyPcR4: { coms: 'HomeSideRankHour', name: '月度学时排行榜' }
+        diyPcR4: { coms: 'HomeSideRankHour', name: '月度学时排行榜' },
+        diyPcR5: { coms: 'HomeSideLectureStyle', name: '讲师风采' }
       },
       homePInfoData: {},
       learningCourseData: {},
@@ -130,7 +133,6 @@ export default {
       immediate: true
     }
   },
-
   mounted() {
     this.getHomePInfo()
     this.getLearningCourse()
@@ -140,12 +142,6 @@ export default {
   methods: {
     format() {
       return '' //percentage === 100 ? '满' : `${percentage}%`;
-    },
-    learningCourseFn(item) {
-      // 我学习中的课程跳转
-      this.$router.push({
-        path: `/course/detail?id=${item.id}`
-      })
     },
     async getHomePInfo() {
       // 获取首页个人信息
@@ -265,6 +261,7 @@ export default {
   width: 140px;
   text-align: left;
   padding-left: 10px;
+  position: relative;
 }
 .homeRightP /deep/ .courseTitle {
   font-size: 14px;
@@ -282,16 +279,21 @@ export default {
   font-size: 12px;
   opacity: 0.45;
   color: #000b15;
+  position: absolute;
+  bottom: 10px;
 }
 .homeRightP /deep/ .coursePercent {
   float: right;
   font-size: 12px;
   opacity: 0.45;
   color: #000b15;
+  position: absolute;
+  bottom: 10px;
+  right: 0;
 }
 /deep/ .el-progress-bar {
   padding-right: 0;
-  margin-top: 2px;
+  margin-top: 22px;
 }
 
 .homeRightP /deep/ .ranking {
@@ -306,12 +308,16 @@ export default {
   display: flex;
   margin-bottom: 20px;
 }
-.homeRightP /deep/ rankingIndex {
+.homeRightP /deep/ .rankingItem .rankingIndex2 {
+  color: #2875D4;
+}
+.homeRightP /deep/ .rankingIndex {
   width: 24px;
-  margin: 13px 10px 0 0;
+  margin: 13px 8px 0 0;
   font-size: 16px;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bolder;
+  color: rgba(0,11,21,0.25);
 }
 .homeRightP /deep/ .rankingIndex0 {
   color: #fcba00;
@@ -320,7 +326,7 @@ export default {
   color: #00d66f;
 }
 .homeRightP .rankingIndex2 {
-  color: #01aafc;
+  color: #2875D4;
 }
 .homeRightP /deep/ .rankingIndexOther {
   color: #000b15;
@@ -328,7 +334,7 @@ export default {
 }
 .homeRightP /deep/ .rankingImg {
   width: 40px;
-  margin: 0 10px 0 0;
+  margin: 0 16px 0 0;
 }
 .homeRightP /deep/ .rankingImg img {
   border-radius: 50%;
@@ -338,22 +344,28 @@ export default {
   text-align: left;
   font-size: 12px;
   color: #000;
+  width: 0;
   font-family: '微软雅黑';
 }
 .homeRightP /deep/ .rankingInfo1 {
   display: block;
   height: 20px;
-  font-size: 12px;
+  font-size: 14px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   opacity: 0.85;
-  padding: 1px 0 3px 0;
+  padding: 1px 0 0 0;
+  font-weight: 500;
+  margin-bottom: 4px;
 }
 .homeRightP /deep/ .rankingInfo2 {
   display: block;
   font-size: 12px;
   opacity: 0.35;
+   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .homeRightP /deep/ .score {
   width: 60px;
@@ -361,5 +373,8 @@ export default {
   opacity: 0.65;
   padding: 10px 0 0 0;
   font-size: 14px;
+   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

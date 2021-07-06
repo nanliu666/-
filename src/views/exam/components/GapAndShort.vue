@@ -64,7 +64,7 @@ export default {
   methods: {
     // 获取正确答案
     getCorrect() {
-      return _.get(this.data, 'answerQuestion', '未设置标椎答案')
+      return _.unescape(_.get(this.data, 'answerQuestion', '未设置标椎答案'))
     },
     getResult(data) {
       const key = _.get(data, 'result', '-1')

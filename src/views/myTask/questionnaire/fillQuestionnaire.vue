@@ -7,77 +7,81 @@
     </el-breadcrumb>
     <template v-if="!isSuccess">
       <!-- 问卷进度 -->
-      <el-card>
-        <el-progress
-          :percentage="toPercent"
-          :format="formatProgress"
-          :stroke-width="12"
-        ></el-progress>
-      </el-card>
-      <div v-loading="loading" class="container">
-        <h1 class="title">{{ questionnaireTemp.subjectName }}</h1>
-        <p class="subtitle">
-          {{ questionnaireTemp.remark }}
-        </p>
-        <!-- 问卷表单 -->
-        <div class="quesForm">
-          <el-form ref="ruleForm" :model="questionnaireForm" :rules="questionnaireRules">
-            <div v-for="(z, k) in questionList" :key="k" class="formWrap">
-              <!-- 简答题 -->
-              <el-form-item v-if="z.type == 'short_answer'" :prop="z.questionId">
-                <div slot="label" class="label-box">
-                  <span class="label-box-title">{{ k + 1 + '.' + z.content }}</span>
-                  <span class="label-box-type">【简答题】</span>
-                </div>
-                <el-input v-model="questionnaireForm[z.questionId]"></el-input>
-              </el-form-item>
-              <!-- 单选题 -->
-              <el-form-item v-else-if="z.type == 'single_choice'" :prop="z.questionId">
-                <div slot="label" class="label-box">
-                  <span class="label-box-title">{{ k + 1 + '.' + z.content }}</span>
-                  <span class="label-box-type">【单选题】</span>
-                </div>
-                <el-radio-group v-model="questionnaireForm[z.questionId]">
-                  <el-radio v-for="(v, i) in z.optionCpList" :key="i" :label="v.questionOptionId">{{
-                    v.content
-                  }}</el-radio>
-                </el-radio-group>
-              </el-form-item>
-              <!-- 多选题 -->
-              <el-form-item v-else-if="z.type == 'multi_choice'" :prop="z.questionId">
-                <div slot="label" class="label-box">
-                  <span class="label-box-title">{{ k + 1 + '.' + z.content }}</span>
-                  <span class="label-box-type">【多选题】</span>
-                  <span class="label-box-tip">最少可选{{ z.multiMin }},最多可选{{ z.multiMax }}项</span>
-                </div>
-                <el-checkbox-group
-                  v-model="questionnaireForm[z.questionId]"
-                  :min="1"
-                  :max="z.multiMax"
-                >
-                  <el-checkbox
-                    v-for="(v, i) in z.optionCpList"
-                    :key="i"
-                    :label="v.questionOptionId"
-                    style="display: block"
-                  >{{ v.content }}</el-checkbox>
-                </el-checkbox-group>
-              </el-form-item>
-            </div>
-          </el-form>
-        </div>
-        <!-- 提交按钮 -->
-        <div class="submitBtn">
-          <el-button type="primary" size="medium" :disabled="submitDisabled" @click="submitForm">提交问卷</el-button>
+      <div class="content">
+        <el-card>
+          <el-progress
+            :percentage="toPercent"
+            :format="formatProgress"
+            :stroke-width="12"
+          ></el-progress>
+        </el-card>
+        <div v-loading="loading" class="container">
+          <h1 class="title">{{ questionnaireTemp.subjectName }}</h1>
+          <p class="subtitle">
+            {{ questionnaireTemp.remark }}
+          </p>
+          <!-- 问卷表单 -->
+          <div class="quesForm">
+            <el-form ref="ruleForm" :model="questionnaireForm" :rules="questionnaireRules">
+              <div v-for="(z, k) in questionList" :key="k" class="formWrap">
+                <!-- 简答题 -->
+                <el-form-item v-if="z.type == 'short_answer'" :prop="z.questionId">
+                  <div slot="label" class="label-box">
+                    <span class="label-box-title">{{ k + 1 + '.' + z.content }}</span>
+                    <span class="label-box-type">【简答题】</span>
+                  </div>
+                  <el-input v-model="questionnaireForm[z.questionId]"></el-input>
+                </el-form-item>
+                <!-- 单选题 -->
+                <el-form-item v-else-if="z.type == 'single_choice'" :prop="z.questionId">
+                  <div slot="label" class="label-box">
+                    <span class="label-box-title">{{ k + 1 + '.' + z.content }}</span>
+                    <span class="label-box-type">【单选题】</span>
+                  </div>
+                  <el-radio-group v-model="questionnaireForm[z.questionId]">
+                    <el-radio
+                      v-for="(v, i) in z.optionCpList"
+                      :key="i"
+                      :label="v.questionOptionId"
+                    >{{ v.content }}</el-radio>
+                  </el-radio-group>
+                </el-form-item>
+                <!-- 多选题 -->
+                <el-form-item v-else-if="z.type == 'multi_choice'" :prop="z.questionId">
+                  <div slot="label" class="label-box">
+                    <span class="label-box-title">{{ k + 1 + '.' + z.content }}</span>
+                    <span class="label-box-type">【多选题】</span>
+                    <span class="label-box-tip">最少可选{{ z.multiMin }},最多可选{{ z.multiMax }}项</span>
+                  </div>
+                  <el-checkbox-group
+                    v-model="questionnaireForm[z.questionId]"
+                    :min="1"
+                    :max="z.multiMax"
+                  >
+                    <el-checkbox
+                      v-for="(v, i) in z.optionCpList"
+                      :key="i"
+                      :label="v.questionOptionId"
+                      style="display: block"
+                    >{{ v.content }}</el-checkbox>
+                  </el-checkbox-group>
+                </el-form-item>
+              </div>
+            </el-form>
+          </div>
+          <!-- 提交按钮 -->
+          <div class="submitBtn">
+            <el-button type="primary" size="medium" :disabled="submitDisabled" @click="submitForm">提交问卷</el-button>
+          </div>
         </div>
       </div>
     </template>
     <!-- 提交成功占位图 -->
     <div v-else class="container" style="text-align: center; padding: 125px 0 300px; margin-top: 0">
-      <el-image
-        :src="require('@/assets/images/success.svg')"
-        style="width: 134px; height: 134px"
-      ></el-image>
+      <i
+        class="iconimage_icon_Correctprompt iconfont"
+        style="font-size: 160px; color: rgb(0, 214, 111)"
+      ></i>
       <p class="tip" style="font-size: 16px; margin: 30px 0">问卷提交成功，感谢您的参与</p>
       <router-link :to="{ name: 'myLearn', params: { questionnaire: true } }">
         <el-button type="primary" size="medium">返回列表</el-button>
@@ -257,11 +261,19 @@ export default {
     margin-right: -70px;
     padding-right: 70px;
   }
+  ::v-deep .el-card.is-always-shadow {
+    border: none;
+    box-shadow: 0 2px 8px 0 rgba(0, 61, 112, 0.06);
+  }
+  ::v-deep .el-progress-bar__outer {
+    height: 6px;
+  }
+  .content {
+    box-shadow: 0 2px 8px 0 rgba(0, 61, 112, 0.06);
+  }
   .container {
     background: #ffffff;
-    box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
     border-radius: 4px;
-    margin-top: 20px;
     padding: 24px;
     .title {
       margin: 0;

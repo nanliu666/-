@@ -1,6 +1,6 @@
 <template>
   <div v-loading="loading" class="elective-course">
-    <el-row v-if="courseData.length" :gutter="20">
+    <el-row v-if="courseData.length">
       <el-col v-for="(z, k) in courseData" :key="k" :span="6" :style="{ marginBottom: '14px' }">
         <el-card :body-style="{ padding: '0px', cursor: 'pointer' }" @click.native="goToCourse(z)">
           <!-- 封面图片 -->
@@ -115,7 +115,7 @@ export default {
   .coverImg {
     position: relative;
     width: 100%;
-    height: 172px;
+    height: 166px;
     .ended {
       position: absolute;
       top: 8px;
@@ -199,6 +199,21 @@ export default {
   .page {
     text-align: right;
     margin-top: 10px;
+  }
+  ::v-deep .el-col.el-col-6 {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 285px;
+    height: 282px;
+    margin-right: 20px !important;
+    margin-bottom: 20px !important;
+    &:nth-of-type(4n) {
+      margin-right: 0 !important;
+    }
+  }
+  ::v-deep .el-card.is-always-shadow {
+    height: 282px;
+    width: 285px;
   }
 }
 </style>

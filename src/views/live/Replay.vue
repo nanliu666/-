@@ -56,7 +56,14 @@
         <!--&gt;</div>-->
         <!-- 课件 -->
         <div ref="content--iframe" class="content--iframe">
-          <video ref="video" preload controls :src="currentChapter.localUrl"></video>
+          <video
+            ref="video"
+            preload
+            controls
+            controlsList="nodownload"
+            :src="currentChapter.localUrl"
+            @contextmenu.prevent
+          ></video>
         </div>
         <!--&lt;!&ndash;资料&ndash;&gt;-->
         <!--<div v-if="currentChapter.type == '3'" class="content&#45;&#45;download">-->

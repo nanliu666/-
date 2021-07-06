@@ -19,7 +19,10 @@
           {{ item.menuName }}
         </div>
 
-        <div class="item_time">{{ item.startTime }} ~ {{ item.endTime }}</div>
+        <div class="item_time">
+          {{ item.startTime.split(' ')[0].replace(/-/g, '/') }} -
+          {{ item.endTime.split(' ')[0].replace(/-/g, '/') }}
+        </div>
 
         <div class="item_Rate">
           <!-- <el-rate
@@ -74,9 +77,9 @@ export default {
   created() {
     this.getmyCourseCatalog()
   },
-  activated() {
-    // this.getmyCourseCatalog()
-  },
+  // activated() {
+  //   this.getmyCourseCatalog()
+  // },
   methods: {
     returnimgFn(img) {
       return img || require('@/assets/images/required_bg.png')
@@ -95,6 +98,7 @@ export default {
       let res = await myCourseCatalog(params)
       this.listData = res.data
       this.total = res.totalNum
+      this.$emit('RequiredListNumTotal', res.todoNum)
     },
 
     handleSizeChange(val) {
@@ -115,23 +119,25 @@ export default {
   .items {
     display: flex;
     flex-wrap: wrap;
+    background-color: #fafafa;
     .item {
       width: 273px;
       height: 276px;
-      border-radius: 4px;
       overflow: hidden;
-      box-shadow: 0 2px 8px 0 rgba(0, 63, 161, 0.06);
       transition-duration: 0.3s;
       margin-right: 20px;
       margin-top: 20px;
       position: relative;
       cursor: pointer;
+      background: #ffffff;
+      box-shadow: 0 2px 8px 0 rgba(0, 61, 112, 0.08);
+      border-radius: 4px;
       &:nth-child(4n) {
         margin-right: 0;
       }
       &:hover {
         transform: translateY(-3px);
-        box-shadow: 0 9px 12px 0 rgba(0, 63, 161, 0.12);
+        box-shadow: 0 8px 20px 0 rgba(0, 61, 112, 0.12);
         .card-cover {
           visibility: visible !important;
         }
@@ -148,42 +154,42 @@ export default {
           position: absolute;
           top: 8px;
           right: 8px;
-          background: #e7ffee;
           border-radius: 4px;
           font-size: 10px;
           width: 52px;
           height: 20px;
           line-height: 20px;
           text-align: center;
-          color: #00b061;
           font-style: none;
+          background: #fffee6;
+          color: #f5c200;
         }
         .span2 {
           position: absolute;
           top: 8px;
           right: 8px;
-          background: #fffce6;
           border-radius: 4px;
           font-size: 10px;
           width: 52px;
           height: 20px;
           line-height: 20px;
           text-align: center;
-          color: #fcba00;
           font-style: none;
+          background-color: #f0f9ff;
+          color: #2875d4;
         }
         .span3 {
           position: absolute;
           top: 8px;
           right: 8px;
-          background: #e7fbff;
           border-radius: 4px;
           font-size: 10px;
           width: 52px;
           height: 20px;
           line-height: 20px;
           text-align: center;
-          color: #01aafc;
+          background-color: #f5f5f6;
+          color: rgba(0, 11, 21, 0.45);
           font-style: none;
         }
       }

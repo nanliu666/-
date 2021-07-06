@@ -1,9 +1,23 @@
 <template>
   <div>
     <common-breadcrumb ref="breadcrumb" :route-list="routeList" />
-    <el-card class="middle-card">
+    <el-card ref="xxx" class="middle-card">
       <div class="card-title">
-        {{ konwledgeDetail.resName }}
+        <div class="left">{{ konwledgeDetail.resName }}</div>
+        <div class="right">
+          <el-rate
+            :value="+konwledgeDetail.evaluateScore"
+            disabled
+            show-score
+            text-color="#ff9900"
+            score-template="{value}分"
+          >
+          </el-rate>
+          <span>
+            <i class="iconoperating_ic_favorites iconfont"></i>
+            收藏
+          </span>
+        </div>
       </div>
       <ul class="detail-ul">
         <li class="detail-li">
@@ -13,12 +27,20 @@
           }}</span>
         </li>
         <li class="detail-li">
-          <span class="li-label">所在目录：</span>
+          <span class="li-label">所在分类：</span>
           <span class="li-value">{{ konwledgeDetail.catalogName }}</span>
+        </li>
+        <li class="detail-li">
+          <span class="li-label">知识类型：</span>
+          <span class="li-value">{{ knowType }}</span>
         </li>
         <li class="detail-li">
           <span class="li-label">更新时间：</span>
           <span class="li-value">{{ konwledgeDetail.updateTime }}</span>
+        </li>
+        <li class="detail-li">
+          <span class="li-label">知识体系:</span>
+          <span class="li-value">{{ konwledgeDetail.knowledgeSystemFullName || '--' }}</span>
         </li>
       </ul>
       <ul class="person">
@@ -31,68 +53,24 @@
           <span>{{ konwledgeDetail.downloadNum }}</span>
         </li>
         <li>
-          <i class="iconimage_icon_comment iconfont" />
+          <i class="iconoperating_ic_favorites iconfont" />
           <span>{{ konwledgeDetail.commentNum }}</span>
         </li>
       </ul>
     </el-card>
-    <el-card class="bottom-card" style="min-height:50vh">
+    <el-card class="bottom-card" style="min-height: 50vh">
       <el-tabs v-model="activeIndex" @tab-click="handleSelect">
         <el-tab-pane label="资源介绍" name="1">
-          <div v-if="!_.isEmpty(fileGroup)">
-            <div class="image-ul">
-              <div v-for="(item, index) in fileGroup.true" :key="index">
-                <common-image-view
-                  :url="item.url"
-                  :file-name="item.fileName"
-                  :is-download="konwledgeDetail.allowDownload === 1"
-                  :preview-src-list="previewSrcList"
-                  @downloadFile="downloadFile"
-                />
-              </div>
-            </div>
-            <ul v-for="(item, index) in fileGroup.false" :key="index">
-              <li class="file-title">
-                <span>{{ item.fileName }}</span>
-                <i
-                  v-if="konwledgeDetail.allowDownload === 1"
-                  class="el-icon-download"
-                  style="margin-left: 10px; cursor: pointer"
-                  @click.stop="downloadFile(item)"
-                ></i>
-              </li>
-            </ul>
-          </div>
-          <div v-show="konwledgeDetail.resUrl" style="margin-bottom: 20px">
-            <li class="detail-li">
-              <span class="li-label">资源地址：</span>
-              <span class="li-value">
-                <span>{{ konwledgeDetail.resUrl }}</span>
-                <el-button
-                  v-clipboard:copy="konwledgeDetail.resUrl"
-                  v-clipboard:success="onCopy"
-                  style="margin-left: 10px"
-                  type="primary"
-                  size="small"
-                >
-                  复制链接
-                </el-button>
-              </span>
-            </li>
-          </div>
-          <div
-            v-show="konwledgeDetail.introduction"
-            v-html="_.unescape(konwledgeDetail.introduction)"
-          />
-          <common-empty
-            v-show="
-              !konwledgeDetail.introduction && !konwledgeDetail.resUrl && _.isEmpty(fileGroup)
-            "
+          <localFile
+            :need-load-num="true"
+            :apply-detail="{ formId: $route.query.id }"
+            :introduction="false"
           />
         </el-tab-pane>
         <el-tab-pane label="评论" name="3">
           <Comment
             v-show="activeIndex === '3'"
+            :is-comment="konwledgeDetail.isComment"
             :load="loadCommentList"
             :submit="submitComment"
             name="知识"
@@ -107,24 +85,22 @@
 <script>
 import Comment from '@/components/common-comment/Comment'
 import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
-import CommonEmpty from '@/components/common-empty/Empty'
-import CommonImageView from '@/components/common-image-viewer/Viewer'
+import localFile from '@/views/approvalDetail/applyKnowledgeShare.vue'
 import {
   getKnowledgeDetails,
   putWatchOperate,
-  putDownloadOperate,
   getEvaluateList,
   addCourseScope,
   saveKnowledgeOperateCredit
 } from '@/api/knowledge'
-import { downLoadFile } from '@/util/util'
+import { dateConver } from '@/util/date'
+
 export default {
   name: 'KnowledgeDetail',
   components: {
-    CommonImageView,
-    CommonEmpty,
     CommonBreadcrumb,
-    Comment
+    Comment,
+    localFile
   },
   data() {
     return {
@@ -150,29 +126,25 @@ export default {
       const route = `${id ? `${this.$route.path}?id=${id}` : `${this.$route.path}`}`
       _.set(this.routeList, '[1].path', route)
       return id
+    },
+    knowType() {
+      const type = this.konwledgeDetail.type
+      if (type === 1) return '视频'
+      else if (type === 2) return '文档'
+      else return '资料下载'
     }
   },
   mounted() {
     this.initData()
   },
   methods: {
-    // 复制链接
-    onCopy() {
-      this.$message.success('复制链接成功！')
-    },
-    // 下载
-    downloadFile(data) {
-      // 保存知识库学分
-      saveKnowledgeOperateCredit()
-      putDownloadOperate({ knowledgeId: this.$route.query.id })
-      downLoadFile(data)
-    },
     initData() {
       // 保存知识库学分
       saveKnowledgeOperateCredit()
       putWatchOperate({ knowledgeId: this.id })
       getKnowledgeDetails({ id: this.id }).then((res) => {
         this.konwledgeDetail = res
+        this.konwledgeDetail.updateTime = dateConver(this.konwledgeDetail.updateTime)
         this.$refs.breadcrumb.setBreadcrumbTitle(this.konwledgeDetail.resName)
         this.fileGroup = _.groupBy(this.konwledgeDetail.attachments, (item) => {
           return this.fileTypeIsImage(item.fileName)
@@ -193,7 +165,6 @@ export default {
         return false
       }
     },
-    downloadAll() {},
     /**
      * 处理nav切换
      */
@@ -217,16 +188,19 @@ export default {
 }
 .detail-li {
   font-family: PingFangSC-Regular;
-  margin-right: 40px;
   display: flex;
   align-items: center;
   .li-label {
     font-size: 14px;
     color: rgba(0, 11, 21, 0.45);
+    letter-spacing: 0;
+    line-height: 22px;
   }
   .li-value {
     font-size: 14px;
     color: rgba(0, 11, 21, 0.85);
+    letter-spacing: 0;
+    line-height: 22px;
   }
 }
 .middle-card {
@@ -235,11 +209,30 @@ export default {
     font-size: 18px;
     color: rgba(0, 11, 21, 0.85);
     margin-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    .right {
+      display: flex;
+      align-items: center;
+      span {
+        font-size: 12px;
+        color: rgba(0, 11, 21, 0.45);
+        letter-spacing: 0;
+        line-height: 18px;
+        margin-left: 25px;
+        cursor: pointer;
+      }
+    }
   }
   .detail-ul {
     display: flex;
     justify-content: flex-start;
     margin-bottom: 18px;
+    flex-wrap: wrap;
+    li {
+      width: 33%;
+      flex-shrink: 0;
+    }
   }
 
   .person {
@@ -249,11 +242,18 @@ export default {
     display: flex;
     justify-content: flex-start;
     li {
-      margin-right: 24px;
+      margin-right: 50px;
       display: flex;
       align-items: center;
       i {
         margin-right: 8px;
+      }
+      span {
+        font-size: 14px;
+        color: rgba(0, 11, 21, 0.85);
+        letter-spacing: 0.5px;
+        line-height: 22px;
+        font-weight: 600;
       }
     }
   }

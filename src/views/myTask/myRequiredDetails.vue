@@ -3,7 +3,9 @@
     <section>
       <!-- 入口路径 -->
       <div class="entry_path">
-        <p><span class="common">学习 / </span><span class="especially">必修课详情</span></p>
+        <p>
+          <span class="common" @click="$router.go(-1)">学习 / </span><span class="especially">必修课详情</span>
+        </p>
       </div>
       <!-- 必修课类别 -->
       <div class="sort">
@@ -21,24 +23,28 @@
             <li>
               <ul class="middle">
                 <li>
-                  分类：<span class="middle_data">{{
+                  <span class="label"> 分类：</span>
+                  <span class="middle_data">{{
                     detailParams.categoryName ? detailParams.categoryName : '--'
                   }}</span>
                 </li>
                 <li>
-                  学习时间：<span class="middle_data">{{ detailParams.startDate }} - {{ detailParams.entDate }}</span>
+                  <span class="label"> 学习时间：</span>
+
+                  <span class="middle_data">{{ detailParams.startDate }} - {{ detailParams.entDate }}</span>
                 </li>
                 <li>
-                  主办单位：<span class="middle_data">{{
+                  <span class="label"> 主办单位：</span>
+                  <span class="middle_data">{{
                     detailParams.sponsor ? detailParams.sponsor : '--'
                   }}</span>
                 </li>
               </ul>
             </li>
             <li class="info_bottom">
-              <span class="info_bottom_details"><i class="iconimage_icon_user iconfont iconInfo"></i>{{ detailParams.peopleNum ? detailParams.peopleNum + '人' : '--' }}</span>
-              <span class="info_bottom_details"><i class="iconimage_icon_time1 iconfont iconInfo"></i>{{ detailParams.period ? detailParams.period + '小时' : '--' }}</span>
-              <span v-if="false" class="info_bottom_details"><i class="iconjifen iconfont iconInfo"></i>{{ detailParams.credit ? detailParams.credit + '积分' : '--' }}</span>
+              <span class="info_bottom_details"><i class="iconimage_icon_user iconfont iconInfo"></i>{{ detailParams.peopleNum ? detailParams.peopleNum : '--' }}</span>
+              <span class="info_bottom_details"><i class="iconimage_icon_time1 iconfont iconInfo"></i>{{ detailParams.period ? detailParams.period + 'h' : '--' }}</span>
+              <span class="info_bottom_details"><i class="iconjifen iconfont iconInfo"></i>{{ detailParams.credit ? detailParams.credit : '--' }}</span>
             </li>
           </ul>
         </div>
@@ -184,12 +190,12 @@ export default {
         ...this.page
       }
       getRequireCourse(params).then((res) => {
-        // console.log('getRequireCourse----res', res)
+        console.log(res)
         this.total = res.totalNum
         this.resData = res.data
         this.processedData = []
         this.handleProcessedData()
-        // this.dataInfo
+        this.detailParams.credit = res.data[0].credit
       })
     }
   }
@@ -198,12 +204,10 @@ export default {
 
 <style lang="scss" scoped>
 $timeHead: rgba(139, 155, 168, 0.65);
-
 .myRequiredDetails {
   p {
     margin: 0;
   }
-  // background: $timeHead;
   font-size: 14px;
   .entry_path {
     // 头部路径标识
@@ -212,6 +216,7 @@ $timeHead: rgba(139, 155, 168, 0.65);
     align-items: center;
     .common {
       color: rgba(0, 11, 21, 0.45);
+      cursor: pointer;
     }
     .especially {
       color: rgba(0, 11, 21, 0.85);
@@ -219,20 +224,19 @@ $timeHead: rgba(139, 155, 168, 0.65);
     }
   }
   .status_1 {
-    background: #e7ffee;
-    color: #00b061;
+    color: #f5c200;
+    background-color: #fffee6;
   }
   .status_2 {
-    background: #fffce6;
-    color: #fcba00;
+    color: #2875d4;
+    background-color: #f0f9ff;
   }
   .status_3 {
-    background: #e7fbff;
-    color: #01aafc;
+    color: rgba(0, 11, 21, 0.45);
+    background-color: #f5f5f6;
   }
   .sort {
     // 必修课种类详情
-    height: 214px;
     padding: 24px;
     // width: 100%;
     background: #ffffff;
@@ -241,8 +245,8 @@ $timeHead: rgba(139, 155, 168, 0.65);
     display: flex;
     .left {
       // 左边图片
-      height: 100%;
-      width: 273px;
+      height: 270px;
+      width: 480px;
       margin-right: 24px;
       background: #7498fe;
       border-radius: 4px;
@@ -260,12 +264,13 @@ $timeHead: rgba(139, 155, 168, 0.65);
         display: flex;
         height: 100%;
         flex-direction: column;
-        justify-content: space-between;
         // align-items: stretch;
         .sort_title {
           font-size: 18px;
-          font-weight: bold;
-          opacity: 0.85;
+          color: #000b15;
+          letter-spacing: 0;
+          line-height: 28px;
+          font-weight: 600;
         }
         .sort_status {
           margin-left: 16px;
@@ -287,22 +292,45 @@ $timeHead: rgba(139, 155, 168, 0.65);
           flex-direction: column;
           justify-content: space-between;
           li {
-            color: rgba(0, 11, 21, 0.45);
-          }
-          .middle_data {
-            color: rgba(0, 11, 21, 0.85);
+            .label {
+              opacity: 0.45;
+              font-family: PingFangSC-Regular;
+              font-size: 14px;
+              color: #000b15;
+              letter-spacing: 0;
+              line-height: 22px;
+              margin-bottom: 8px;
+            }
+            .middle_data {
+              font-family: PingFangSC-Regular;
+              font-size: 14px;
+              color: #000b15;
+              letter-spacing: 0;
+              line-height: 22px;
+              opacity: 0.85;
+              color: #000b15;
+            }
           }
         }
         .info_bottom {
+          font-family: PingFangSC-Regular;
           font-size: 14px;
-          color: rgba(0, 11, 21, 0.45);
+          color: rgba(0, 11, 21, 0.85);
+          letter-spacing: 0.5px;
+          line-height: 22px;
+          margin-top: 24px;
           .info_bottom_details {
             margin-right: 25px;
           }
           .iconInfo {
-            // font-size: 14px;
             margin-right: 8px;
           }
+          i {
+            color: #8c9196;
+          }
+        }
+        & > li:first-of-type {
+          margin-bottom: 40px;
         }
       }
     }
@@ -311,7 +339,7 @@ $timeHead: rgba(139, 155, 168, 0.65);
     width: 100%;
     margin-top: 24px;
     padding: 24px 0;
-    background: #ffffff;
+    background-color: #f7f8f8;
     box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
     border-radius: 4px;
     /deep/ .el-tabs__header {
@@ -329,13 +357,9 @@ $timeHead: rgba(139, 155, 168, 0.65);
       opacity: 0.85;
     }
     /deep/ .el-tabs__item.is-active {
-      // font-weight: bold;
       color: #01aafc;
       opacity: 1;
     }
-  }
-  .content {
-    // margin: 0 24px;
   }
   .page {
     display: flex;

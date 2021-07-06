@@ -1,71 +1,105 @@
 <template>
-  <div class="CertificateDetail">
-    <div class="topBtn">
-      <el-button @click="toCertificate">
-        返回上一级
-      </el-button>
-      <el-button type="primary" @click="downLoadInfo">
-        下载证书
-      </el-button>
+  <div>
+    <div>
+      <common-breadcrumb ref="breadcrumb" :route-list="routeList" />
     </div>
 
-    <div class="title">{{ sondata.templateName }}（{{ sondata.certificateNo }}）</div>
+    <div class="CertificateDetail">
+      <div class="topBtn">
+        <div>
+          <div class="title">
+            {{ sondata.templateName }}（{{ sondata.certificateNo }}）
 
-    <div class="info">
-      <span>颁发机构：{{ CertificateNumberInitials }}</span>
-      <span>发放时间：{{ sondata.grantTime }}</span>
-    </div>
-
-    <div class="name">
-      {{ sondata.templateName }}
-    </div>
-
-    <div ref="capture">
-      <div class="preview_right_in">
-        <div class="preview_right_box">
-          <img :src="sondata.backUrl" alt="" class="bgimg" />
-          <div class="name">
-            {{ sondata.templateName }}
+            <!-- <span v-if="sondata.status == 1" class="status">
+              正常
+            </span>
+            <span v-if="sondata.status == 2" class="status">
+              停用
+            </span> -->
+            <span v-if="sondata.status == 3" class="status">
+              已失效
+            </span>
           </div>
-          <div class="text">
-            {{ sondata.text }}
-          </div>
-          <div class="awardAgency">
-            {{ sondata.awardAgency }}
-          </div>
-          <img :src="sondata.logoUrl" alt="" class="logo" />
-          <div class="studentName">
-            {{ sondata.stuName }}
-          </div>
-          <div class="serial">
-            <div>证书编号:</div>
-            <div>{{ CertificateNumberInitials }}-{{ serialNumber }}</div>
-            <div>{{ sondata.grantTime }}</div>
+          <div class="info">
+            <span>颁发机构：{{ sondata.awardAgency || '--' }}</span>
+            <span>发放时间：{{ sondata.grantTime || '--' }}</span>
+            <span>有效期：{{ sondata.bornTime || '--' }} ~ {{ sondata.deadTime || '--' }} </span>
           </div>
         </div>
+        <div class="btn">
+          <el-button type="primary" @click="downLoadInfo">
+            下载证书
+          </el-button>
+        </div>
       </div>
-    </div>
 
-    <a href=""></a>
+      <div class="name_text">
+        {{ sondata.text }}
+      </div>
+
+      <div ref="capture" class="capture">
+        <CertificateComponents :certificate-data="sondata"></CertificateComponents>
+      </div>
+
+      <!-- <div ref="capture" >
+        <div class="preview_right_in">
+          <div class="preview_right_box">
+            <img :src="sondata.backUrl" alt="" class="bgimg" />
+            <div class="name">
+              {{ sondata.templateName }}
+            </div>
+            <div class="text">
+              {{ sondata.text }}
+            </div>
+            <div class="awardAgency">
+              {{ sondata.awardAgency }}
+            </div>
+            <img :src="sondata.logoUrl" alt="" class="logo" />
+            <div class="studentName">
+              {{ sondata.stuName }}
+            </div>
+            <div class="serial">
+              <div>证书编号:</div>
+              <div>{{ CertificateNumberInitials }}-{{ serialNumber }}</div>
+              <div>{{ sondata.grantTime }}</div>
+            </div>
+          </div>
+        </div>
+      </div> -->
+    </div>
   </div>
 </template>
 
 <script>
 import html2canvas from 'html2canvas'
+import CertificateComponents from './CertificateComponents'
 import { pinyin } from 'pinyin-pro'
 export default {
   name: 'CertificateDetail',
-  props: {
-    sondata: {
-      type: Object,
-      default: () => {}
-    }
+  components: {
+    CertificateComponents,
+    CommonBreadcrumb: () => import('@/components/common-breadcrumb/Breadcrumb')
   },
   data() {
     return {
+      routeList: [
+        {
+          path: '/personal',
+          title: '我的档案'
+        },
+        {
+          path: '/Certificate',
+          title: '证书'
+        },
+        {
+          path: '',
+          title: '证书详情'
+        }
+      ],
       CertificateNumberInitials: '',
       serialNumber: '',
-      image: ''
+      image: '',
+      sondata: {}
     }
   },
   watch: {
@@ -77,9 +111,27 @@ export default {
       this.CertificateNumberInitials = currentstr ? currentstr : 'YB'
       let currentArr = this.sondata.certificateNo.split('-')
       this.serialNumber = `${currentArr[1]}-${currentArr[2]}`
+    },
+    $route: {
+      handler: function() {
+        this.getData()
+      },
+      // 深度观察监听
+      deep: true
     }
   },
+  created() {
+    this.getData()
+  },
+  activated() {
+    this.getData()
+  },
   methods: {
+    getData() {
+      this.$nextTick(() => {
+        this.sondata = JSON.parse(this.$route.query.item)
+      })
+    },
     //点击生成图片
     downLoadInfo() {
       html2canvas(this.$refs.capture, { useCORS: true, logging: true }).then((canvas) => {
@@ -91,20 +143,7 @@ export default {
         document.body.appendChild(link)
         link.click()
       })
-    },
-
-    toCertificate() {
-      this.$emit('ChangeBtn', true)
     }
-    // 下载
-    // downLoadInfo() {
-    //   this.drawPhoto()
-    //   let data = {
-    //     url: this.sondata.backUrl,
-    //     fileName: this.sondata.templateName
-    //   }
-    //   downLoadFile(data)
-    // }
   }
 }
 </script>
@@ -117,22 +156,28 @@ export default {
   .topBtn {
     display: flex;
     justify-content: space-between;
+    border-bottom: 1px solid #ebeced;
   }
   .title {
+    font-family: PingFangSC-Medium;
     font-size: 14px;
     color: rgba(0, 11, 21, 0.85);
     letter-spacing: 0;
-    margin-top: 40px;
+    line-height: 22px;
+    font-weight: 500;
   }
   .info {
     display: flex;
     padding: 8px 0 20px;
-    border-bottom: 1px solid #ebeced;
+
     span {
       margin-right: 16px;
+      font-family: PingFangSC-Regular;
       font-size: 14px;
       color: rgba(0, 11, 21, 0.45);
       letter-spacing: 0;
+      line-height: 22px;
+      font-weight: 400;
     }
   }
   .name {
@@ -140,6 +185,15 @@ export default {
     color: rgba(0, 11, 21, 0.85);
     letter-spacing: 0;
     margin-top: 20px;
+  }
+  .name_text {
+    margin: 20px 0 20px;
+    font-family: PingFangSC-Regular;
+    font-size: 14px;
+    color: rgba(0, 11, 21, 0.85);
+    letter-spacing: 0;
+    line-height: 22px;
+    font-weight: 400;
   }
 
   .preview_right_in {
@@ -218,6 +272,15 @@ export default {
         line-height: 28px;
       }
     }
+  }
+  .status {
+    background-color: rgba(0, 0, 0, 0.226);
+    padding: 5px 10px;
+    color: #fff;
+    border-radius: 3px;
+  }
+  .capture {
+    padding-left: 135px;
   }
 }
 </style>

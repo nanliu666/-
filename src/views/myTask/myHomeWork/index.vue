@@ -24,13 +24,16 @@ export default {
 
 <style scoped lang="scss">
 .tabs_box {
-  background: #ffffff;
+  background: #f9fafa;
   box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
   border-radius: 4px;
   margin-top: 16px;
-  padding: 24px;
+  padding: 24px 0;
 }
 /deep/.el-tabs__item {
   font-size: 16px;
+}
+/deep/ .el-tabs__nav-scroll {
+  padding: 0 24px;
 }
 </style>

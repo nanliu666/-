@@ -15,8 +15,22 @@ module.exports = {
   productionSourceMap: false,
   chainWebpack: (config) => {
     const entry = config.entry('app')
+    // const svgRule = config.module.rule('svg')
     entry.add('babel-polyfill').end()
     entry.add('classlist-polyfill').end()
+    // svgRule.uses.clear() // 清除已有的loader, 如果不这样做会添加在此loader之后
+    // svgRule.exclude.add(/node_modules/) // 正则匹配排除node_modules目录
+    // svgRule // 添加svg新的loader处理
+    //   .test(/\.svg$/)
+    //   .use('svg-sprite-loader')
+    //   .loader('svg-sprite-loader')
+    //   .options({
+    //     symbolId: 'icon-[name]'
+    //   })
+    // 修改images loader 添加svg处理
+    // const imagesRule = config.module.rule('images')
+    // imagesRule.exclude.add(resolve('src/assets/images/myTask'))
+    // config.module.rule('images').test(/\.(png|jpe?g|gif|svg)(\?.*)?$/)
     //忽略的打包文件
     if (isProduction) {
       config.externals({
@@ -103,7 +117,7 @@ module.exports = {
     })
   },
   devServer: {
-    port: 1888,
+    port: 5188,
     open: true,
     proxy: {
       '/api': {
@@ -126,12 +140,17 @@ module.exports = {
 
         // 辛桃发IP
         // target: 'http://192.168.40.134',
+        // 浩敏
+        // target: 'http://172.16.4.92',
 
         // 贺磊IP
-        // target: 'http://192.168.40.112',
+        //target: 'http://10.134.5.206',
 
         // 殷云
         // target: 'http://192.168.40.110',
+
+        // 春光
+        // target: 'http://10.134.5.189',
 
         // 王佳
         // target: 'http://192.168.40.111',
@@ -140,6 +159,10 @@ module.exports = {
         // target: 'https://saber.bladex.vip/',
         ws: true,
         changeOrigin: true
+      },
+      '/eln': {
+        // target: 'http://139.159.141.248:1888'
+        target: 'http://139.9.41.27:1888'
       }
     }
   },

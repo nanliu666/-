@@ -1,6 +1,6 @@
 <template>
   <div class="questionnaire">
-    <el-row v-if="questionData.length" v-loading="loading" :gutter="20">
+    <el-row v-if="questionData.length" v-loading="loading">
       <el-col v-for="(z, k) in questionData" :key="k" :span="6">
         <div
           class="content"
@@ -21,7 +21,7 @@
             <img :src="require('@/assets/images/my_seal.png')" />
           </div>
           <div class="survey">
-            <img :src="require('@/assets/images/questionnaire.png')" />
+            <img src="@/assets/images/my_task.png" />
             <div class="tip">
               <el-tooltip
                 v-if="z.asqName.length > 10"
@@ -35,7 +35,7 @@
               </el-tooltip>
               <div v-else class="satisfaction">{{ z.asqName }}</div>
               <div class="peopleNum">
-                <i class="iconrenshu iconfont iconfontNum"></i><span>{{ z.joinCount }}人参加</span>
+                <i class="iconrenshu iconfont iconfontNum"></i><span class="label">{{ z.joinCount }}人参加</span>
               </div>
             </div>
           </div>
@@ -77,18 +77,18 @@ export default {
       asqStatusObj: {
         1: {
           name: '进行中',
-          bgColor: '#fffce6',
-          color: '#fcba00'
+          bgColor: '#F0F9FF',
+          color: '#2875D4'
         },
         2: {
           name: '未开始',
-          bgColor: '#e7ffee',
-          color: '#00b061'
+          bgColor: '#F5C200',
+          color: '#FFFEE6'
         },
         3: {
           name: '已结束',
-          bgColor: '#e7fbff',
-          color: '#01aafc'
+          bgColor: '#F5F5F6',
+          color: 'rgba(0,11,21,0.45)'
         }
       },
       pageConfig: {
@@ -165,7 +165,6 @@ export default {
   box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
   border-radius: 4px;
   margin-top: 16px;
-  padding: 24px;
   .el-col {
     margin-bottom: 20px;
   }
@@ -176,13 +175,14 @@ export default {
     border: 1px solid #ebeced;
     border-radius: 4px;
     transition-duration: 0.3s;
+    height: 155px;
     &:hover {
       transform: translateY(-3px);
       box-shadow: 0 9px 12px 0 rgba(0, 63, 161, 0.12);
     }
     .status {
       position: absolute;
-      top: 8px;
+      top: 29px;
       right: 8px;
       border-radius: 4px;
       font-size: 10px;
@@ -197,8 +197,8 @@ export default {
       top: 56px;
       right: 10px;
       img {
-        width: 62px;
-        height: 54px;
+        width: 34px;
+        height: 38px;
       }
     }
   }
@@ -206,15 +206,17 @@ export default {
     display: flex;
     margin: 33px 0 0 25px;
     img {
-      width: 60px;
-      height: 64px;
+      width: 34px;
+      height: 38px;
     }
     .tip {
-      margin-left: 10px;
+      margin-left: 16px;
       color: #000b15;
       .satisfaction {
         font-size: 14px;
-        margin-top: 10px;
+        color: #000b15;
+        line-height: 22px;
+        font-weight: 600;
       }
       .peopleNum {
         font-size: 12px;
@@ -224,6 +226,11 @@ export default {
           margin-right: 5px;
           vertical-align: middle;
         }
+        .label {
+          font-size: 12px;
+          color: rgba(0, 11, 21, 0.85);
+          line-height: 18px;
+        }
       }
     }
   }
@@ -231,10 +238,10 @@ export default {
     border-top: 1px solid #ebeced;
     margin-top: 16px;
     opacity: 0.65;
-    padding: 17px 0;
     font-size: 12px;
     color: #000b15;
-    text-align: center;
+    padding-left: 25px;
+    padding-top: 16px !important;
     .iconfont_clock {
       margin-right: 10px;
       vertical-align: middle;
@@ -250,6 +257,16 @@ export default {
     }
     .empty-text {
       color: #909090;
+    }
+  }
+  ::v-deep .el-col.el-col-6 {
+    width: 385px;
+    height: 155px;
+    padding: 0 !important;
+    margin-right: 22px;
+    margin-bottom: 20px;
+    &:nth-of-type(3n) {
+      margin-right: 0 !important;
     }
   }
 }

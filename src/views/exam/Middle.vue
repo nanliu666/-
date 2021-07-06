@@ -6,26 +6,10 @@
         {{ examInfo.examName }}
       </div>
       <div class="middle__content">
-        <ul class="detail-ul">
+        <ul class="detail__ul">
           <li class="detail-li">
             <span class="li-label">考试来源：</span>
             <span class="li-value">{{ examInfo.examSourceName }}</span>
-          </li>
-          <li class="detail-li">
-            <span class="li-label">考试时间：</span>
-            <span class="li-value">
-              <span>{{ examInfo.examBeginTime }}</span>
-              <span>~</span>
-              <span>{{ examInfo.examEndTime }}</span>
-            </span>
-          </li>
-          <li class="detail-li">
-            <span class="li-label">考试时长：</span>
-            <span class="li-value">{{
-              !examInfo.reckonTime || (examInfo.reckonTime && examInfo.reckonTimeValue === 0)
-                ? '不限制'
-                : `${examInfo.reckonTimeValue}分钟`
-            }}</span>
           </li>
           <li class="detail-li">
             <span class="li-label">参加次数：</span>
@@ -36,9 +20,23 @@
             }}</span>
           </li>
           <li class="detail-li">
+            <span class="li-label">考试时间：</span>
+            <span class="li-value">
+              <span>{{ examInfo.examBeginTime }}</span>
+              <span>~</span>
+              <span>{{ examInfo.examEndTime }}</span>
+            </span>
+          </li>
+          <li class="detail-li">
             <span class="li-label">考试模式：</span>
+            <span class="li-value">{{ examInfo.isDecoil ? '开卷考试' : '闭卷考试' }}</span>
+          </li>
+          <li class="detail-li">
+            <span class="li-label">考试时长：</span>
             <span class="li-value">{{
-              examInfo.examPattern === 'general' ? '普通考试' : '线下考试'
+              !examInfo.reckonTime || (examInfo.reckonTime && examInfo.reckonTimeValue === 0)
+                ? '不限制'
+                : `${examInfo.reckonTimeValue}分钟`
             }}</span>
           </li>
           <li class="detail-li">
@@ -47,6 +45,14 @@
               examInfo.passType === 1 ? `${examInfo.passScope}分` : `${examInfo.passPercentage}%`
             }}以上</span>
           </li>
+          <li v-if="examInfo.examPattern !== 'general'" class="detail-li">
+            <span class="li-label">考试地点：</span>
+            <span class="li-value">
+              <span>{{ examInfo.roomAddr }}</span>
+              <span> - </span>
+              <span>{{ examInfo.roomName }}</span>
+            </span>
+          </li>
           <li class="detail-li">
             <span class="li-label">积分：</span>
             <span class="li-value">{{
@@ -54,49 +60,79 @@
             }}</span>
           </li>
         </ul>
-        <div class="content__right">
-          <div class="score__box">
-            <div class="score__content" :class="{ is__hidden: !examInfo.score }">
+        <!-- 得分与是否通过考试的显示规则是独立的 -->
+        <div
+          v-if="examInfo.scoreVisible || (examInfo.answerBeginTime && examInfo.resultVisible)"
+          class="content__right"
+        >
+          <div v-if="examInfo.scoreVisible" class="score__box">
+            <div class="content__title">我的得分</div>
+            <div class="score__content">
               <span class="content" :class="[examInfo.isPass === 3 ? 'green' : 'red']">{{
                 examInfo.score
               }}</span>
-              <span class="text">分</span>
             </div>
-            <el-button
-              class="content__button"
-              type="primary"
-              :disabled="joinDisable"
-              @click="joinExam"
-            >
-              {{ buttonText }}
-            </el-button>
           </div>
-          <svg class="icon icon__box" aria-hidden="true" :class="{ is__hidden: !examInfo.score }">
-            <use v-if="examInfo.isPass === 3" xlink:href="#iconyitongguo" />
-            <use v-if="examInfo.isPass === 1" xlink:href="#iconbianzu10" />
+          <!-- 已参加考试并且resultVisible为true需要显示 -->
+          <svg
+            v-if="examInfo.answerBeginTime && examInfo.resultVisible"
+            class="icon"
+            :class="[examInfo.scoreVisible ? 'icon__box' : 'not__score']"
+            aria-hidden="true"
+          >
+            <use v-if="examInfo.isPass === 3" xlink:href="#iconic_biaoqian_yitongguo" />
+            <use v-if="examInfo.isPass === 1" xlink:href="#iconic_biaoqian_weitongguo" />
           </svg>
         </div>
       </div>
+      <div class="handle__button">
+        <!-- 显示考试的按钮的规则 -->
+        <!-- 必须可以参加考试 -->
+        <!-- joinStatus：0-未报名,1-审核中,2-可参加考试，3已驳回 -->
+        <el-button
+          v-if="examInfo.joinStatus === 2 && examInfo.examPattern !== 'offline'"
+          class="content__button"
+          type="primary"
+          :disabled="joinDisable"
+          @click="joinExam"
+        >
+          {{ buttonText }}
+        </el-button>
+        <!-- 显示报名的按钮的规则 -->
+        <!-- 可以公开报名、未报名或者已报名但审核未通过,或者没有超过报名时间的情况存在报名按钮 -->
+        <el-button
+          v-if="hasApplyButton"
+          class="content__button"
+          type="primary"
+          :disabled="joinApplyDisable"
+          @click="applyExam"
+        >
+          {{ applyButtonText }}
+        </el-button>
+      </div>
     </el-card>
-    <el-card class="bottom-card" style="min-height:50vh">
+    <el-card v-if="examInfo.examPattern === 'general'" class="bottom-card" style="min-height:50vh">
+      <div class="record__title">
+        <span class="title">考试记录</span>
+        <span v-if="examInfo.openResults" class="sub__title">
+          <span>（考试结束</span>
+          <span>{{
+            examInfo.openResultsValue === 0 ? '后一直' : `${examInfo.openResultsValue}天内`
+          }}</span>
+          <span>可查看成绩）</span>
+        </span>
+      </div>
       <div v-if="!_.isEmpty(sessionList)" class="bottom__content">
-        <el-timeline class="timeline__top">
-          <el-timeline-item v-for="item in sessionList" :key="item.examSessionId" class="timeline">
-            <li class="time__li" @mouseenter="overExam(item)" @mouseleave="outExam">
-              <div>
-                <span class="time__box">{{
-                  moment(item.createTime).format('MM/DD HH:mm:ss')
-                }}</span>
-                <span>得分：{{ item.score ? item.score : '待发布' }}</span>
-              </div>
-              <el-button
-                v-if="examInfo.openAnswerSheet && item.examSessionId === currentExamId"
-                size="medium"
-                @click="handleView(item)"
-              >查看答卷</el-button>
-            </li>
-          </el-timeline-item>
-        </el-timeline>
+        <common-table
+          v-loading="tableLoading"
+          :columns="columns"
+          :config="tableConfig"
+          :data="sessionList"
+        >
+          <template #handler="{row}">
+            <el-button type="text" @click="handleView(row)">查看答卷</el-button>
+          </template>
+        </common-table>
       </div>
       <common-empty v-else text="当前还没开始考试" />
     </el-card>
@@ -106,7 +142,7 @@
 <script>
 import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
 import CommonEmpty from '@/components/common-empty/Empty'
-import { getViewExamInfo, examSessionList } from '@/api/exam'
+import { getViewExamInfo, examSessionList, joinApplyExam } from '@/api/exam'
 import examUtils from './examUtils'
 import moment from 'moment'
 export default {
@@ -117,7 +153,27 @@ export default {
   },
   data() {
     return {
-      currentExamId: '',
+      tableLoading: false,
+      columns: [
+        {
+          label: '考试时间',
+          prop: 'createTime',
+          formatter: (row) => moment(row.createTime).format('MM/DD HH:mm:ss')
+        },
+        {
+          label: '得分',
+          prop: 'score',
+          formatter: (row) => (row.scoreVisible ? row.score : '未设置查看分数')
+        }
+      ],
+      tableConfig: {
+        handlerColumn: {
+          width: 100
+        },
+        enablePagination: true,
+        showHandler: true,
+        showIndexColumn: false
+      },
       routeList: [
         {
           path: '/exam/list',
@@ -152,6 +208,23 @@ export default {
       }
       return target
     },
+    // 公开报名，或者今天在报名结束日期之前，并且未可参加考试（0， 1， 3）都存在报名按钮
+    hasApplyButton() {
+      const { joinStatus, publicFlag, joinEndDate } = this.examInfo
+      return joinStatus !== 2 && (publicFlag || moment(new Date()).isSameOrBefore(joinEndDate))
+    },
+    // 审核中状态需要置灰
+    joinApplyDisable() {
+      return this.examInfo.joinStatus === 1
+    },
+    applyButtonText() {
+      let text = '立即报名'
+      // 报名状态:0-未报名,1-报名审核中,2-可参加考试，3-已拒绝（显示报名按钮）
+      if (this.examInfo.joinStatus === 1) {
+        text = '审核中'
+      }
+      return text
+    },
     id() {
       const id = _.get(this.$route, 'query.id', null)
       return id
@@ -161,18 +234,26 @@ export default {
     this.initData()
   },
   methods: {
-    moment,
-    overExam(item) {
-      this.currentExamId = item.examSessionId
-    },
-    outExam() {
-      this.currentExamId = ''
-    },
     // 查看答案
     handleView(data) {
       this.$router.push({
         name: 'ExamDetail',
-        query: { examSessionId: data.examSessionId }
+        query: {
+          examSessionId: data.examSessionId,
+          examName: this.examInfo.examName,
+          examIds: this.$route.query.id
+        }
+      })
+    },
+    // 考试报名
+    applyExam() {
+      const params = {
+        batchId: this.examInfo.batchId,
+        examId: this.examInfo.examId
+      }
+      joinApplyExam(params).then(() => {
+        this.$message.success('报名成功')
+        this.initData()
       })
     },
     // 参加考试
@@ -193,19 +274,25 @@ export default {
     },
     async initData() {
       const examInfoRes = await getViewExamInfo({ id: this.id })
-      const { examName, examId, batchId } = examInfoRes
+      const { examName, examId, batchId, openAnswerSheet, scoreVisible } = examInfoRes
       this.examInfo = examInfoRes
       _.set(this.routeList, '[1].title', examName)
       _.set(this.queryInfo, 'examId', examId)
       _.set(this.queryInfo, 'batchId', batchId)
       this.$refs.breadcrumb.setBreadcrumbTitle(examName)
       this.getList()
+      this.tableConfig.showHandler = openAnswerSheet && scoreVisible
     },
     getList() {
-      examSessionList(this.queryInfo).then((res) => {
-        const { data } = res
-        this.sessionList = data
-      })
+      this.tableLoading = true
+      examSessionList(this.queryInfo)
+        .then((res) => {
+          const { data } = res
+          this.sessionList = data
+        })
+        .finally(() => {
+          this.tableLoading = false
+        })
     }
   }
 }
@@ -223,20 +310,19 @@ export default {
     font-size: 18px;
     color: rgba(0, 11, 21, 0.85);
     margin-bottom: 18px;
+    font-weight: 550;
   }
   .middle__content {
     display: flex;
     justify-content: space-between;
-    .detail-ul {
+    .detail__ul {
       display: flex;
       justify-content: flex-start;
       flex: 1;
-      margin-bottom: 18px;
       flex-wrap: wrap;
       .detail-li {
         font-family: PingFangSC-Regular;
-        padding-right: 40px;
-        width: 50%;
+        width: calc(100% / 2);
         display: flex;
         align-items: center;
         margin-bottom: 10px;
@@ -251,23 +337,38 @@ export default {
       }
     }
     .content__right {
-      width: 300px;
       display: flex;
-      .is__hidden {
-        visibility: hidden;
+      justify-content: center;
+      align-content: center;
+      flex-direction: column;
+      position: relative;
+      padding: 0 100px;
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 28px;
+        background-color: #ebeced;
+        width: 1px;
+        height: 64px;
+      }
+      .content__title {
+        font-family: PingFangSC-Regular;
+        font-size: 14px;
+        color: rgba(0, 11, 21, 0.85);
+        font-weight: 400;
       }
       .score__box {
         display: flex;
         flex-direction: column;
         .score__content {
-          display: flex;
-          align-items: flex-end;
-          justify-content: center;
-          margin-bottom: 4px;
+          padding-top: 8px;
           .content {
-            font-size: 40px;
-            font-weight: 550;
-            display: flex;
+            font-family: DINAlternate-Bold;
+            font-size: 48px;
+            color: rgba(0, 11, 21, 0.85);
+            line-height: 48px;
+            font-weight: 700;
           }
           .green {
             color: #339900;
@@ -275,42 +376,59 @@ export default {
           .red {
             color: #d9001b;
           }
-          .text {
-            margin-bottom: 6px;
-          }
         }
       }
-
-      .content__button {
-        align-self: flex-end;
-      }
       .icon__box {
-        margin-left: 20px;
-        font-size: 100px;
+        position: absolute;
+        right: 28px;
+        top: -25px;
+        font-size: 60px;
       }
+      .not__score {
+        font-size: 80px;
+      }
+    }
+  }
+  .handle__button {
+    margin-top: 14px;
+    .content__button {
+      background-color: #2875d4;
+      font-family: PingFangSC-Regular;
+      font-size: 16px;
+      color: #ffffff;
+    }
+    .is-disabled {
+      background-color: #94baea;
     }
   }
 }
 .bottom-card {
   margin-top: 20px;
-  /deep/ .el-card__body {
-    // height: 50vh;
-    margin-top: -24px;
+  .record__title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    .title {
+      font-family: PingFangSC-Medium;
+      font-size: 16px;
+      color: rgba(0, 11, 21, 0.85);
+      font-weight: 500;
+    }
+    .sub__title {
+      font-family: PingFangSC-Regular;
+      font-size: 12px;
+      color: rgba(0, 11, 21, 0.45);
+      font-weight: 400;
+    }
   }
-  /deep/ .el-menu--horizontal {
-    border-bottom: 1px solid #ebeced !important;
-  }
-  /deep/ .el-timeline-item {
-  }
-  /deep/ .el-timeline-item__wrapper {
-    padding-left: 10px;
-  }
-  /deep/ .el-timeline-item__node--normal {
-    // left: -10px;
-    top: 20px;
-  }
-  /deep/ .el-timeline-item__tail {
-    top: 20px;
+  /deep/ .has-gutter {
+    .cell {
+      background-color: #fafafa;
+      font-family: PingFangSC-Regular;
+      font-size: 14px;
+      color: rgba(0, 11, 21, 0.45);
+      font-weight: 400;
+    }
   }
   .bottom__content {
     height: 100%;

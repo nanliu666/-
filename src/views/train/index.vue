@@ -14,51 +14,53 @@
         </el-input>
       </div>
       <div class="filter-wrapper">
-        <div class="filter-item">
-          类型：
+        <!-- <div class="filter-item">
+          知识体系：
           <span
             class="filter-radio"
             :class="{ selected: !filterForm.trainWay }"
             @click="filterForm.trainWay = ''"
+            >全部</span
+          >
+        </div> -->
+        <div class="filter-item">
+          类型：
+          <span
+            class="filter-radio"
+            :class="{ selected: !filterForm.trainWay && filterForm.trainScope === '' }"
+            @click="type(0)"
           >全部</span>
           <span
             class="filter-radio"
             :class="{ selected: filterForm.trainWay === 2 }"
-            @click="filterForm.trainWay = 2"
+            @click="type(1)"
           >面授</span>
           <span
             class="filter-radio"
             :class="{ selected: filterForm.trainWay === 1 }"
-            @click="filterForm.trainWay = 1"
+            @click="type(2)"
           >在线</span>
           <span
             class="filter-radio"
             :class="{ selected: filterForm.trainWay === 3 }"
-            @click="filterForm.trainWay = 3"
+            @click="type(3)"
           >混合</span>
+          <span
+            class="filter-radio"
+            :class="{ selected: filterForm.trainScope === 'outer' }"
+            @click="type(4)"
+          >外训</span>
         </div>
         <div class="filter-item">
           状态：
           <span
             class="filter-radio"
             :class="{ selected: filterForm.status === '' }"
-            @click="filterForm.status = ''"
+            @click="type(5)"
           >全部</span>
-          <span
-            class="filter-radio"
-            :class="{ selected: filterForm.status === 1 }"
-            @click="filterForm.status = 1"
-          >未开始</span>
-          <span
-            class="filter-radio"
-            :class="{ selected: filterForm.status === 2 }"
-            @click="filterForm.status = 2"
-          >进行中</span>
-          <span
-            class="filter-radio"
-            :class="{ selected: filterForm.status === 3 }"
-            @click="filterForm.status = 3"
-          >已结办</span>
+          <span class="filter-radio" :class="{ selected: filterForm.status === 1 }" @click="type(6)">未开始</span>
+          <span class="filter-radio" :class="{ selected: filterForm.status === 2 }" @click="type(7)">进行中</span>
+          <span class="filter-radio" :class="{ selected: filterForm.status === 3 }" @click="type(8)">已结办</span>
         </div>
         <div class="filter-item">
           日期：
@@ -75,7 +77,7 @@
           <el-button
             type="primary"
             size="medium"
-            style="margin-left: 16px;"
+            style="margin-left: 16px"
             @click.native="filterList"
           >
             查询
@@ -84,69 +86,62 @@
       </div>
     </div>
     <div class="bottom-container">
-      <ul v-if="data.length" class="train-list">
-        <li v-for="item in data" :key="item.id" class="train-item">
-          <div class="top-wrap">
-            <div class="title">
-              <div class="name">
-                {{ item.trainName }}
-              </div>
-              <div
-                class="status"
-                :class="{
-                  doing: item.status === 2,
-                  done: item.status === 3,
-                  will: item.status === 1
-                }"
-              >
-                {{ item.status === 2 ? '进行中' : item.status === 3 ? '已结办' : '未开始' }}
-              </div>
-            </div>
-            <el-button
-              class="study-button"
-              :type="item.status !== 2 ? '' : 'primary'"
-              size="medium"
-              @click.native="toDetail(item)"
+      <ul v-if="data.length > 0" class="train-list">
+        <li v-for="item in data" :key="item.id" class="train-item" @click="toDetail(item)">
+          <div class="img">
+            <img :src="imgSrc(item)" />
+            <div
+              class="status"
+              :class="item.status === 2 ? 'blue' : item.status === 3 ? 'grey' : 'yellow'"
             >
-              {{ item.status !== 2 ? '查看详情' : '前往学习' }}
-            </el-button>
-          </div>
-          <div class="bottom-wrap">
-            <div class="desc-list">
-              <div class="desc-item">
-                培训类型：
-                <span class="text">{{
-                  item.trainWay === 2 ? '面授' : item.trainWay === 3 ? '混合' : '在线'
-                }}</span>
-              </div>
-              <div class="desc-item">
-                培训时间：
-                <span class="text">{{ item.startTime }}-{{ item.endTime }}</span>
-              </div>
-              <div class="desc-item">
-                培训讲师：
-                <span class="text">{{ item.lecturerName }}</span>
-              </div>
-            </div>
-            <div class="desc-list">
-              <div class="desc-item" style="margin-top: 16px;">
-                培训地点：
-                <span class="text">{{ item.address }}</span>
-              </div>
+              {{ item.status === 2 ? '进行中' : item.status === 3 ? '已结办' : '未开始' }}
             </div>
           </div>
-          <!-- <div v-if="item.status === 3" class="done-tips"> -->
-          <div v-if="item.isPass" class="done-tips">
-            <img src="./done.png" />
+          <div class="content">
+            <p class="title">{{ item.trainName }}</p>
+            <p class="info">
+              <span>{{
+                item.trainWay === 2
+                  ? '面授培训'
+                  : item.trainWay === 3
+                    ? '混合培训'
+                    : item.trainWay === 1
+                      ? '在线培训'
+                      : '外训'
+              }}</span>
+              <span>{{ item.startTime.split(' ')[0] }} - {{ item.endTime.split(' ')[0] }}</span>
+            </p>
+            <div v-show="filterForm.trainWay !== 4" class="footer">
+              <div class="left">
+                <el-rate
+                  v-if="item.trainScope === 'inside'"
+                  :value="item.composite ? +item.composite : 0"
+                  disabled
+                  show-score
+                  text-color="#ff9900"
+                  :score-template="item.composite ? item.composite + '分' : '0分'"
+                >
+                </el-rate>
+
+                <el-tooltip
+                  v-else
+                  class="item"
+                  effect="dark"
+                  :content="item.categoryName"
+                  placement="top-start"
+                  :disabled="item.categoryName.length < 10"
+                >
+                  <span>{{ item.categoryName }}</span>
+                </el-tooltip>
+              </div>
+            </div>
           </div>
         </li>
       </ul>
 
       <div v-else class="no-data">
-        <i class="el-icon-search"> </i>
-        <div class="text">
-          无数据
-        </div>
+        <img src="../../assets/images/nodata.png" />
+        <div>暂无数据</div>
       </div>
       <div class="pagi-container">
         <pagination
@@ -163,7 +158,7 @@
 
 <script>
 import Pagination from 'src/components/common-pagination'
-import { getList } from 'src/api/train'
+import { getList, getKonwList } from 'src/api/train'
 export default {
   name: 'Train',
   components: {
@@ -179,25 +174,36 @@ export default {
         status: '',
         startTime: '',
         endTime: '',
+        trainScope: '',
         pageNo: 1,
         pageSize: 10
       },
       data: [],
       total: 0,
       cacheSatus: '',
-      cacheTrainWay: ''
+      cacheTrainWay: '',
+      trainScope: 'inside'
+    }
+  },
+  computed: {
+    imgSrc() {
+      return (data) => {
+        if (data.coverPic) return data.coverPic
+        else if (data.trainWay === 1 && data.trainScope === 'inside')
+          return require('@/assets/images/online.png')
+        else if (data.trainWay === 2 && data.trainScope === 'inside')
+          return require('@/assets/images/Offline.png')
+        else if (data.trainWay === 3 && data.trainScope === 'inside')
+          return require('@/assets/images/mixin.png')
+        else if (data.trainWay === 4 && data.trainScope === 'outer')
+          return require('@/assets/images/outTrain.png')
+      }
     }
   },
 
   watch: {
     filterForm: {
-      handler(val) {
-        if (val.status != this.cacheSatus || val.trainWay != this.cacheTrainWay) {
-          this.filterList()
-          this.cacheTrainWay = val.trainWay
-          this.cacheSatus = val.status
-        }
-      },
+      handler() {},
       deep: true
     }
   },
@@ -205,6 +211,52 @@ export default {
     this.filterList()
   },
   methods: {
+    type(index) {
+      switch (index) {
+        case 0:
+          this.filterForm.trainWay = ''
+          this.filterForm.trainScope = ''
+          break
+        case 1:
+          this.filterForm.trainWay = 2
+          this.filterForm.trainScope = 'inside'
+          break
+        case 2:
+          this.filterForm.trainWay = 1
+          this.filterForm.trainScope = 'inside'
+          break
+        case 3:
+          this.filterForm.trainWay = 3
+          this.filterForm.trainScope = 'inside'
+          break
+        case 4:
+          this.filterForm.trainWay = ''
+          this.filterForm.trainScope = 'outer'
+          break
+        case 5:
+          this.filterForm.status = ''
+          break
+        case 6:
+          this.filterForm.status = 1
+          break
+        case 7:
+          this.filterForm.status = 2
+          break
+        case 8:
+          this.filterForm.status = 3
+          break
+      }
+      if (
+        this.filterForm.status != this.cacheSatus ||
+        this.filterForm.trainWay != this.cacheTrainWay ||
+        this.filterForm.trainScope != this.trainScope
+      ) {
+        this.filterList()
+        this.cacheTrainWay = this.filterForm.trainWay
+        this.cacheSatus = this.filterForm.status
+        this.trainScope = this.filterForm.trainScope
+      }
+    },
     filterList() {
       this.filterForm.pageNo = 1
       this.filterForm.pageSize = 10
@@ -227,10 +279,10 @@ export default {
         this.data = this.sortList(records)
         this.total = total
       })
+      getKonwList({}).then(() => {})
     },
     toDetail(item) {
       const { id: trainId, trainName: title, trainWay, userType } = item
-      // userType 0:学员,1:讲师
       this.$router.push({
         path: '/train/detail',
         query: {
@@ -274,7 +326,8 @@ export default {
           margin-right: 24px;
           color: rgba(0, 11, 21, 0.85);
           &.selected {
-            color: #01aafc;
+            color: #2875d4;
+            font-weight: 600;
           }
         }
         .el-date-editor {
@@ -285,82 +338,110 @@ export default {
   }
   .bottom-container {
     .train-list {
-      margin-top: 20px;
-      .train-item {
-        position: relative;
-        background-color: #fff;
-        padding: 24px;
-        box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
-        cursor: default;
-        &:not(:first-child) {
-          margin-top: 20px;
+      display: flex;
+      padding-top: 20px;
+      flex-wrap: wrap;
+      li {
+        cursor: pointer;
+        flex-direction: 0;
+        width: 285px;
+        height: 282px;
+        margin-bottom: 20px;
+        margin-right: 20px;
+        background: #ffffff;
+        box-shadow: 0 2px 8px 0 rgba(0, 63, 161, 0.06);
+        border-radius: 4px;
+        p {
+          margin: 0;
         }
-        .top-wrap {
+        &:nth-of-type(4n) {
+          margin-right: 0;
+        }
+        .img {
           position: relative;
-          .title {
-            display: flex;
-            align-items: center;
-            font-size: 0;
-            .name {
-              font-size: 18px;
-              color: rgba(0, 11, 21, 0.85);
-              margin-right: 16px;
-            }
-            .status {
-              height: 20px;
-              line-height: 20px;
-              text-align: center;
-              width: 52px;
-              font-size: 12px;
-              border-radius: 4px;
-              &.will {
-                color: #00b061;
-                background-color: #e7ffee;
-              }
-              &.doing {
-                color: #fcba00;
-                background-color: #fffce6;
-              }
-              &.done {
-                color: #01aafc;
-                background-color: #e7fbff;
-              }
-            }
-          }
-          .study-button {
-            position: absolute;
-            top: 0;
-            right: 0;
-          }
-        }
-        .bottom-wrap {
-          margin-top: 18px;
-          .desc-list {
-            display: flex;
-            color: rgba(0, 11, 21, 0.45);
-            font-size: 14px;
-            .desc-item {
-              display: flex;
-              flex: 1;
-              align-items: center;
-              .text {
-                width: 287px;
-                color: rgba(0, 11, 21, 0.85);
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-              }
-            }
-          }
-        }
-        .done-tips {
-          position: absolute;
-          top: 25.15px;
-          right: 149.23px;
-          width: 77.54px;
-          height: 67.69px;
+          width: 100%;
+          height: 166px;
+          border-radius: 4px 4px 0 0;
           img {
             width: 100%;
+            height: 100%;
+          }
+          .status {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 52px;
+            height: 20px;
+            font-size: 12px;
+            text-align: center;
+            line-height: 22px;
+            font-weight: 400;
+            border-radius: 4px;
+          }
+          .yellow {
+            color: #f5c200;
+            background-color: #fffee6;
+          }
+          .grey {
+            color: rgba(0, 11, 21, 0.45);
+            background-color: #f5f5f6;
+          }
+          .blue {
+            color: #2875d4;
+            background-color: #f0f9ff;
+          }
+        }
+        .content {
+          background-color: #fff;
+          padding: 15px;
+          .title {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 14px;
+            color: rgba(0, 11, 21, 0.85);
+            line-height: 22px;
+            font-weight: 500;
+          }
+          .info {
+            font-size: 12px;
+            margin-top: 8px;
+            opacity: 0.45;
+            font-family: PingFangSC-Regular;
+            color: rgba(0, 11, 21, 0.85);
+            span:first-of-type {
+              margin-right: 17px;
+            }
+          }
+          .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 17px;
+            font-size: 12px;
+            color: rgba(0, 11, 21, 0.45);
+            .left {
+              width: 100%;
+              span {
+                display: inline-block;
+                width: 50%;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
+            }
+            .right {
+              font-size: 12px;
+              color: rgba(0, 11, 21, 0.45);
+              border-radius: 4px;
+              background-color: #f5f5f6;
+              padding: 1px 8px;
+            }
+            /deep/span.el-rate__text {
+              font-size: 12px;
+              color: rgba(0, 11, 21, 0.45) !important;
+              line-height: 18px;
+            }
           }
         }
       }
@@ -414,6 +495,17 @@ export default {
   }
   .pagi-container {
     margin-top: 16px;
+  }
+  .train-item {
+    border-radius: 4px 4px 0 0;
+    overflow: hidden;
+    &:hover {
+      box-shadow: 0 8px 20px 0 rgba(0, 61, 112, 0.12) !important;
+      margin-top: -2px;
+    }
+  }
+  .filter-radio:hover {
+    color: #2875d4 !important;
   }
 }
 </style>

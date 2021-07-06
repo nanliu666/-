@@ -3,32 +3,36 @@
     <ul class="tabs">
       <li v-for="(item, index) in tabsData" :key="item.id" class="tab" @click="clickTab(item.path)">
         <div class="tab_box" :class="{ lastClass: index == tabsData.length - 1 }">
-          <span class="tab_icon"> <img :src="item.icon" alt="" /> </span>
+          <span class="tab_icon">
+            <img class="topIcon" :src="topIcon(item)" alt="" />
+          </span>
           <span class="tab_title" :class="{ clickClass: clickData == item.path }">
             {{ item.name }}
           </span>
-          <span class="tab_num" :class="{ clickClass: clickData == item.path }">(
+          <span v-if="index != 4" class="tab_num" :class="{ clickClass: clickData == item.path }">(
             <span v-if="index == 0"> {{ studyNum }} </span>
             <span v-if="index == 1"> {{ homeWorkNum }} </span>
             <span v-if="index == 2"> {{ examinationNum }} </span>
             <span v-if="index == 3"> {{ questionTodoNum }} </span>
-            <!-- <span v-else>0</span> -->
             )</span>
         </div>
         <div :class="{ tab_bottom: clickData == item.path }"></div>
       </li>
     </ul>
-    <component :is="clickData"></component>
+    <component :is="clickData" ref="mytask"></component>
   </div>
 </template>
 <script>
+import taskIcon from '@/components/svg-icon'
 import myLearn from './myLearn'
 import myExamList from './myExamList'
 import myHomeWork from './myHomeWork'
 import questionnaire from './questionnaire'
+import studyMap from './studyMap'
 import { studyTodoNum, examTodoNum, homeWorkNum, questionTodoNum } from '@/api/myTask'
 export default {
-  components: { myLearn, myExamList, questionnaire, myHomeWork },
+  components: { myLearn, myExamList, questionnaire, myHomeWork, studyMap, taskIcon },
+
   data() {
     return {
       clickData: '',
@@ -36,33 +40,59 @@ export default {
         {
           name: '学习',
           id: 'study',
-          path: 'myLearn',
-          icon: require('../../../public/img/学习.png')
+          path: 'myLearn'
         },
         {
           name: '作业',
           id: 'task',
-          path: 'myHomeWork',
-          icon: require('../../../public/img/作业.png')
+          path: 'myHomeWork'
         },
         {
           name: '考试',
           id: 'examination',
-          path: 'myExamList',
-
-          icon: require('../../../public/img/考试.png')
+          path: 'myExamList'
         },
         {
           name: '问卷',
           id: 'questionnaire',
-          path: 'questionnaire',
-          icon: require('../../../public/img/问卷.png')
+          path: 'questionnaire'
+        },
+        {
+          name: '学习地图',
+          id: 'studyMap',
+          path: 'studyMap'
         }
       ],
       studyNum: 0,
       examinationNum: 0,
       homeWorkNum: 0,
       questionTodoNum: 0
+    }
+  },
+  computed: {
+    topIcon() {
+      return (data) => {
+        let url = ''
+        switch (data.path) {
+          case 'myLearn':
+            url = this.clickData === 'myLearn' ? 'activeStudy.svg' : 'study.svg'
+            break
+          case 'myHomeWork':
+            url = this.clickData === 'myHomeWork' ? 'activeWork.svg' : 'work.svg'
+            break
+          case 'myExamList':
+            url = this.clickData === 'myExamList' ? 'activeTest.svg' : 'test.svg'
+            break
+          case 'questionnaire':
+            url = this.clickData === 'questionnaire' ? 'activeQuestion.svg' : 'question.svg'
+            break
+          case 'studyMap':
+            url = this.clickData === 'studyMap' ? 'avtiveMap.svg' : 'map.svg'
+            break
+        }
+
+        return require('@/assets/images/myTask/' + url)
+      }
     }
   },
   created() {
@@ -91,6 +121,10 @@ export default {
       // 问卷待办条数
       let res = await questionTodoNum()
       this.questionTodoNum = res.asqTodoList
+      //更新问卷数据
+      if (this.clickData === 'questionnaire') {
+        this.$refs.mytask.getQuestionnaireList()
+      }
     }
   }
 }
@@ -116,11 +150,11 @@ export default {
       justify-content: center;
       cursor: pointer;
       border-right: 1px solid #ebeced;
-      // :last-child
+      align-items: center;
     }
     &_icon {
-      width: 40px;
-      height: 40px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
       display: inline-block;
       line-height: 40px;
@@ -152,10 +186,10 @@ export default {
       margin-left: 35%;
       width: 30%;
       height: 2px;
-      background: #01aafc;
+      background: #2875d4;
     }
     .clickClass {
-      color: #01aafc !important ;
+      color: #2875d4 !important ;
     }
   }
 }

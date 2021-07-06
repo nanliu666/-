@@ -1,5 +1,11 @@
 import request from '@/util/axios'
-
+export const getKonwList = (params) => {
+  return request({
+    url: '/api/blade-resource/v1/category/relatedKnowledgeList',
+    method: 'post',
+    params
+  })
+}
 export const getList = (params) => {
   return request({
     url: '/api/blade-manage/v1/web/queryTrainList',
@@ -108,10 +114,18 @@ export function getTrainInfo(params) {
     params
   })
 }
+// 查询培训评定
+export function queryAssessment(params) {
+  return request({
+    url: '/api/blade-manage/v1/train/queryAssessment',
+    method: 'get',
+    params
+  })
+}
 // 获取报名状态
 export function getTrainState(params) {
   return request({
-    url: '/manage/v1/train/join/state',
+    url: '/manage/v1/getTrainState',
     method: 'get',
     params
   })
@@ -144,6 +158,22 @@ export function saveFile(data) {
 export function deleteSubmitFile(params) {
   return request({
     url: 'api/manage/v1/trainsubmitfile/deleteSubmitFile',
+    method: 'get',
+    params
+  })
+}
+// 培训请假
+export function leave(params) {
+  return request({
+    url: 'api/manage/v1/web/train/trainLeaveApply',
+    method: 'get',
+    params
+  })
+}
+// 获取培训参加人数
+export function trainNum(params) {
+  return request({
+    url: 'api/manage/v1/train/people/statistics',
     method: 'get',
     params
   })

@@ -344,3 +344,23 @@ export function TWCardValid(data) {
   }
   return pass
 }
+
+// 多表单校验
+export function validateForms(formRefs) {
+  let objectList = []
+  let results = formRefs.map(formRef =>
+    new Promise((resolve, reject) => {
+      formRef.validate((valid, object) => {
+        if (valid) {
+          resolve()
+        } else {
+          objectList.push(object)
+          reject()
+        }
+      })
+    })
+  )
+  return Promise.all(results).catch(() => {
+    return Promise.reject(objectList)
+  })
+}

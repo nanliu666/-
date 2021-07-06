@@ -34,3 +34,8 @@ export const getViewExamInfo = (params) => get('/manage/v1/exam/center/viewExamI
   	"pageSize":"10"
  * */
 export const examSessionList = (params) => post('/manage/v1/exam/center/examSessionList', params)
+/**
+ * 考试报名
+ * id=1379677543136813057 (batchId)
+ * */
+export const joinApplyExam = (params) => post('/manage/v1/exam/center/joinExam', params)

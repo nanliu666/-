@@ -1,71 +1,93 @@
 <template>
   <div class="comment-styles">
-    <div v-if="hasHandle">
-      <div v-if="isEditable" class="comment-top">
-        <div class="top-title">
-          <div class="title">给该{{ name }}打分：</div>
-          <el-rate v-model="scopeParams.scope" allow-half></el-rate>
+    <div v-if="showComment" class="rate">
+      <div v-if="hasHandle">
+        <div v-if="isEditable" class="comment-top">
+          <div class="top-title">
+            <div class="title">给该{{ name }}打分：</div>
+            <el-rate
+              v-model="scopeParams.scope"
+              show-score
+              text-color="#ff9900"
+              score-template="{value}分"
+              allow-half
+            ></el-rate>
+          </div>
+          <el-input
+            v-model="scopeParams.remark"
+            type="textarea"
+            :rows="2"
+            placeholder="评论一下吧"
+            maxlength="500"
+            resize="none"
+            show-word-limit
+            @focus="inputFocus"
+          >
+          </el-input>
+          <el-button
+            :disabled="!scopeParams.scope && !scopeParams.remark.trim()"
+            class="button-box"
+            type="primary"
+            size="medium"
+            @click="publish"
+          >
+            发布
+          </el-button>
         </div>
-        <el-input
-          v-model="scopeParams.remark"
-          type="textarea"
-          :rows="2"
-          placeholder="评论一下吧"
-          maxlength="500"
-          resize="none"
-          show-word-limit
-          @focus="inputFocus"
-        >
-        </el-input>
-        <el-button
-          :disabled="!scopeParams.scope && !scopeParams.remark.trim()"
-          class="button-box"
-          type="primary"
-          size="medium"
-          @click="publish"
-        >
-          发布
-        </el-button>
+        <div v-else class="disabled-text">
+          <el-alert :title="disableText" type="warning" show-icon :closable="false" />
+        </div>
       </div>
-      <div v-else class="disabled-text">
-        <el-alert :title="disableText" type="warning" show-icon />
+      <div v-else class="warning">
+        <i class="iconfont iconimage_icon_warning"></i>
+        <span>您还未学习本课程，暂不能对课程评价，先去学习再来评价哦！</span>
       </div>
     </div>
-    <div v-if="!_.isEmpty(commentList)" class="comment-bottom">
-      <ul class="comment-ul">
-        <li v-for="(item, index) in commentList" :key="index" class="comment-li">
-          <div class="li-top">
-            <el-avatar size="small" :src="item.avatarUrl || circleUrl"></el-avatar>
-            <span class="title-name">{{ item.userName }}</span>
-          </div>
-          <div style="padding-left:36px">
-            <div class="li-middle">
-              {{ item.createTime }}
+    <div class="content">
+      <div v-if="!_.isEmpty(commentList)" class="comment-bottom">
+        <ul class="comment-ul">
+          <li v-for="(item, index) in commentList" :key="index" class="comment-li">
+            <div class="li-top">
+              <el-avatar size="small" :src="item.avatarUrl || circleUrl"></el-avatar>
+              <span class="title-name">{{ item.userName }}</span>
             </div>
-            <el-rate v-model="item.scope" disabled allow-half></el-rate>
-            <div class="li-bottom">
-              {{ item.remark }}
+            <div style="padding-left: 36px">
+              <div class="li-middle">
+                {{ item.createTime }}
+              </div>
+              <el-rate
+                v-model="item.scope"
+                show-score
+                text-color="#ff9900"
+                score-template="{value}分"
+                disabled
+                allow-half
+              ></el-rate>
+              <div class="li-bottom">
+                {{ item.remark }}
+              </div>
             </div>
-          </div>
-        </li>
-      </ul>
-      <el-pagination
-        class="pagination-box"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="listParams.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="totalNum"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      >
-      </el-pagination>
+          </li>
+        </ul>
+        <el-pagination
+          class="pagination-box"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="listParams.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalNum"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        >
+        </el-pagination>
+      </div>
+      <common-empty v-else />
     </div>
-    <common-empty v-else />
   </div>
 </template>
 
 <script>
 import CommonEmpty from '@/components/common-empty/Empty'
+import { dateConver } from '@/util/date'
 export default {
   name: 'Comment',
   components: {
@@ -95,6 +117,10 @@ export default {
     disableText: {
       type: String,
       default: '您还未学习本课程，暂不能对课程评价，先去学习再来评价哦~'
+    },
+    isComment: {
+      type: Number,
+      default: 0
     }
   },
   data() {
@@ -110,20 +136,19 @@ export default {
         pageNo: 1,
         pageSize: 10
       },
-      commentList: []
+      commentList: [],
+      showComment: true
     }
   },
-  // watch: {
-  //   'scopeParams.scope': {
-  //     handler(val) {
-  //       if (val > 0) {
-  //         this.hasPublish = false
-  //         val = Number(val)
-  //       }
-  //     },
-  //     deep: true
-  //   }
-  // },
+  watch: {
+    isComment: {
+      handler(val) {
+        this.showComment = val < 1
+      },
+      deep: true,
+      immediate: true
+    }
+  },
   created() {
     this.loadList()
   },
@@ -136,10 +161,14 @@ export default {
       this.listParams.pageNo = val
       this.loadList()
     },
-    loadList() {
+    loadList(key) {
       this.load(this.listParams).then(({ data, totalNum }) => {
+        if (key == 'isClick') {
+          this.showComment = false
+        }
         // 转成数字类型
         _.each(data, (item) => {
+          item.createTime = dateConver(item.createTime)
           item.scope = Number(item.scope)
         })
         this.commentList = data
@@ -155,7 +184,7 @@ export default {
           this.hasPublish = true
           this.scopeParams.remark = ''
           this.scopeParams.scope = 0
-          this.loadList()
+          this.loadList('isClick')
         })
       } else {
         this.$message.error('发布内容不能为空！！！')
@@ -167,65 +196,83 @@ export default {
 
 <style scoped lang="scss">
 .comment-styles {
+  .warning {
+    background: #fffce6;
+    border: 1px solid #ffea7a;
+    border-radius: 4px;
+    height: 46;
+    line-height: 46px;
+    padding: 0 16px;
+    margin-bottom: 33px;
+    i {
+      color: #f5c200;
+      margin-right: 6px;
+    }
+    span {
+      font-size: 14px;
+      color: rgba(0, 11, 21, 0.85);
+      letter-spacing: 0;
+      line-height: 22px;
+    }
+  }
   .comment-top {
     margin-bottom: 28px;
-
-    .top-title {
-      display: flex;
-      align-items: center;
-      margin-bottom: 24px;
-      .title {
-        font-weight: 550;
-        font-family: PingFangSC-Medium;
-        font-size: 16px;
+  }
+  .top-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    .title {
+      font-weight: 600;
+      font-family: PingFangSC-Medium;
+      font-size: 16px;
+      color: rgba(0, 11, 21, 0.85);
+    }
+  }
+  .button-box {
+    margin-top: 16px;
+    float: right;
+  }
+}
+.disabled-text {
+  padding: 24px;
+  background-color: #f2f2f2;
+}
+.comment-bottom {
+  .comment-ul {
+    .comment-li {
+      margin-bottom: 25px;
+      &:last-child {
+        margin-bottom: 0;
+      }
+      .li-top {
+        font-family: PingFangSC-Regular;
+        font-size: 14px;
         color: rgba(0, 11, 21, 0.85);
-      }
-    }
-    .button-box {
-      margin-top: 16px;
-      float: right;
-    }
-  }
-  .disabled-text {
-    padding: 24px;
-    background-color: #f2f2f2;
-  }
-  .comment-bottom {
-    .comment-ul {
-      .comment-li {
-        margin-bottom: 25px;
-        &:last-child {
-          margin-bottom: 0;
-        }
-        .li-top {
-          font-family: PingFangSC-Regular;
-          font-size: 14px;
-          color: rgba(0, 11, 21, 0.85);
-          display: flex;
-          align-items: center;
-          margin-bottom: 8px;
-          .title-name {
-            margin-left: 8px;
-          }
-        }
-        .li-middle {
-          font-family: PingFangSC-Regular;
-          font-size: 12px;
-          color: rgba(0, 11, 21, 0.45);
-          margin-bottom: 8px;
-        }
-        .li-bottom {
-          font-family: PingFangSC-Regular;
-          font-size: 14px;
-          color: rgba(0, 11, 21, 0.85);
-          margin-top: 8px;
-          word-break: break-all;
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+        .title-name {
+          margin-left: 8px;
         }
       }
+      .li-middle {
+        font-family: PingFangSC-Regular;
+        font-size: 12px;
+        color: rgba(0, 11, 21, 0.45);
+        margin-bottom: 8px;
+      }
+      .li-bottom {
+        font-family: PingFangSC-Regular;
+        font-size: 14px;
+        color: rgba(0, 11, 21, 0.85);
+        margin-top: 8px;
+        word-break: break-all;
+      }
     }
-    .pagination-box {
-      float: right;
-    }
+  }
+  .pagination-box {
+    float: right;
   }
 }
 </style>

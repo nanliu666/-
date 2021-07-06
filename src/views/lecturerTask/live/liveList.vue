@@ -1,6 +1,6 @@
 <template>
   <div class="index-container">
-    <el-row :gutter="20">
+    <el-row>
       <el-col
         v-for="(item, index) in liveList"
         :key="index"
@@ -12,9 +12,11 @@
         <el-card :body-style="{ padding: '0px' }">
           <div class="item_live_imgBox" style="cursor: pointer">
             <img :src="item.coverImageUrl" class="image_live" @click="goDetail(item.liveId)" />
-            <span v-show="item.status == 'live'" class="item_live_status">直播中</span>
-            <span v-show="item.status == 'end'" class="item_live_status" style="color:#00B061">已结束</span>
-            <span v-show="item.status == 'start'" class="item_live_status" style="color: #fcba00">未开始</span>
+            <span v-if="item.status == 'live'" class="item_live_status start">
+              <svg class="icon" aria-hidden="true">
+                <use xlink:href="#iconzhibo"></use></svg>直播中</span>
+            <!-- <span v-if="item.status == 'end'" class="item_live_status end">已结束</span> -->
+            <span v-else class="item_live_status no-start">未开始</span>
             <div
               v-show="item.status == 'live'"
               class="item_live_playButton"
@@ -83,8 +85,8 @@
         </el-card>
       </el-col>
     </el-row>
-
-    <el-row :gutter="20">
+    <i class="iconzhibo"></i>
+    <el-row>
       <el-col v-if="queryData.totalNum" :span="6" :offset="14">
         <el-pagination
           layout="total,prev,pager,next,sizes,jumper"
@@ -106,7 +108,8 @@
   </div>
 </template>
 <script>
-import { liveStudentList } from '@/api/myTask'
+import { lectureLiveTaskList } from '@/api/lecturerTask'
+import '@/config/iconfont'
 // 直播列表
 export default {
   name: 'LiveList',
@@ -153,7 +156,7 @@ export default {
     // 获取直播列表数据
     // isQuery查询阐述，isFirstPage判断是否从第一页开始查询，除了直接点击切换页面外点击分类等都从第一页开始查询
     async getLiveListData() {
-      let res = await liveStudentList(this.queryData)
+      let res = await lectureLiveTaskList(this.queryData)
       this.liveList = res.data
       this.queryData.totalNum = res.totalNum
     },
@@ -180,9 +183,25 @@ export default {
 <style scoped lang="scss">
 .index-container {
   margin: 25px 0;
-  padding: 0 24px 25px;
-  box-shadow: 0 2px 8px 0 rgba(0, 63, 161, 0.06);
-  background-color: #fff;
+  padding-bottom: 25px;
+  background-color: #f8f9f9;
+  .grid-content.cursorDiv.el-col.el-col-6 {
+    width: 285px !important;
+    height: 282px !important;
+    padding: 0 !important;
+    margin-right: 20px !important;
+    box-shadow: 0 2px 8px 0 rgba(0, 63, 161, 0.06);
+    margin-bottom: 20px;
+  }
+  .el-card.is-always-shadow {
+    margin-top: 0 !important ;
+  }
+  .grid-content.cursorDiv.el-col.el-col-6:nth-of-type(4n) {
+    margin-right: 0 !important;
+  }
+  .el-card.is-always-shadow {
+    height: 100% !important;
+  }
   .image_live {
     width: 100%;
     height: 166px;
@@ -194,16 +213,28 @@ export default {
     position: relative;
     .item_live_status {
       position: absolute;
-      top: 10px;
-      right: 20px;
-      background: #fff;
+      top: 6px;
+      right: 7px;
+      width: 52px;
+      height: 20px;
       font-size: 12px;
-      -webkit-transform: scale(0.9);
-      padding: 5px 8px;
-      border-radius: 3px;
-      color: #01aafc;
+      text-align: center;
+      line-height: 22px;
+      font-weight: 400;
+      border-radius: 4px;
     }
-
+    .start {
+      color: #2875d4;
+      background: #eaf8ff;
+    }
+    .no-start {
+      color: #f5c200;
+      background-color: #fffee6;
+    }
+    .end {
+      color: rgba(0, 11, 21, 0.45);
+      background-color: #f5f5f6;
+    }
     .item_live_playButton {
       position: absolute;
       width: 48px;
@@ -263,15 +294,23 @@ export default {
 
   /deep/.is-always-shadow {
     transition-duration: 0.3s;
-    box-shadow: 0 2px 8px 0 rgba(0, 63, 161, 0.06);
+    box-shadow: 0 2px 8px 0 rgba(0, 61, 112, 0.06);
     margin-top: 10px;
     &:hover {
       transform: translateY(-3px);
-      box-shadow: 0px 9px 12px 2px rgba(0.1, 63, 161, 0.12);
+      box-shadow: 0 8px 20px 0 rgba(0, 63, 112, 0.12);
       .card-cover {
         visibility: visible !important;
       }
     }
+  }
+  .icon {
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+    margin-right: 4px;
   }
 }
 </style>

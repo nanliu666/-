@@ -3,38 +3,47 @@
     <div class="breadcrumb">
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ path: '/lecturerTask/task' }">我的任务</el-breadcrumb-item>
-        <el-breadcrumb-item><span @click="goBack"> 必须课详情</span></el-breadcrumb-item>
+        <el-breadcrumb-item><span @click="goBack"> 必修课详情</span></el-breadcrumb-item>
         <el-breadcrumb-item>考试详情</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
 
     <div class="title_top">
       <div class="title">
-        <span>JAVA编程考试</span>
+        <span>{{ ExamDetail.examName }}</span>
 
         <ul>
-          <li>未开始</li>
-          <li>已结束</li>
-          <li>进行中</li>
+          <li v-if="ExamDetail.status === 1" class="status_1">未开始</li>
+          <li v-if="ExamDetail.status === 3" class="status_3">已结束</li>
+          <li v-if="ExamDetail.status === 2" class="status_2">进行中</li>
         </ul>
       </div>
       <ul class="text">
-        <li><span>考试日期：</span> <span>2020-20-20 ~ 2020-20-20</span></li>
-        <li><span>考试时间：</span> <span>1000分钟</span></li>
-        <li><span>关联用卷：</span> <span>JAVA编程考试</span></li>
-        <li><span>评卷人：</span> <span>名字长长长长期他</span></li>
+        <li>
+          <span>考试日期：</span>
+          <span>{{ `${ExamDetail.startTime || ''}-${ExamDetail.endTime || '-'}` }}</span>
+        </li>
+        <li>
+          <span>考试时间：</span>
+          <span v-if="ExamDetail.reckonTime">{{ ExamDetail.reckonTimeValue }}分钟</span>
+          <span v-else> 无限制 </span>
+        </li>
+        <li>
+          <span>关联用卷：</span> <span>{{ ExamDetail.testPaperName }}</span>
+        </li>
+        <li>
+          <span>评卷人：</span> <span>{{ ExamDetail.reviewerNames }}</span>
+        </li>
       </ul>
     </div>
 
     <div class="table">
       <div class="table_title_box">
-        <span>
-          考生列表
-        </span>
+        <span> 考生列表 </span>
 
-        <span>
+        <!-- <span style="cursor:pointer;" @click="getInfo">
           刷新
-        </span>
+        </span> -->
       </div>
       <common-table
         ref="table"
@@ -46,16 +55,13 @@
         @current-page-change="handleCurrentPageChange"
         @page-size-change="handlePageSizeChange"
       >
-        <!-- 是否通过: 0-否 1-是 -->
-        <template slot="isPass" slot-scope="{ row }">
-          <span v-if="row.isPass == 0">不通过</span>
-          <span v-if="row.isPass == 1"> 通过</span>
+        <!-- 完成时间: 0-否 1-是 -->
+        <template slot="finishTime" slot-scope="{ row }">
+          <span> {{ row.finishTime || '--' }} </span>
         </template>
 
         <template slot="handler" slot-scope="scope">
-          <el-button type="text" @click="toAnswer(scope.row)">
-            考试详情
-          </el-button>
+          <el-button type="text" @click="toAnswer(scope.row)"> 考试详情 </el-button>
         </template>
       </common-table>
     </div>
@@ -63,40 +69,53 @@
 </template>
 
 <script>
+import { getExamineeList, getExamDetail } from '@/api/lecturerTask'
 // 表格属性
 const TABLE_COLUMNS = [
   {
     label: '姓名',
-    prop: 'courseName'
+    prop: 'userName'
   },
   {
     label: '手机号',
-    prop: 'joinNumValue',
-    slot: true
+    prop: 'phoneNum'
   },
   {
     label: '所属部门',
-    prop: 'score'
+    prop: 'orgName'
   },
   {
     label: '状态',
-    prop: 'isPass',
-    slot: true
+    prop: 'examStatus',
+    formatter: (row) => {
+      const END_STATUS = {
+        0: '未开始',
+        1: '缺考',
+        2: '已考试'
+      }
+      return END_STATUS[row.examStatus]
+    }
   },
   {
     label: '完成时间',
-    prop: 'status',
+    prop: 'finishTime',
     slot: true
   },
   {
     label: '成绩',
-    prop: 'status1',
+    prop: 'score',
     slot: true
   },
   {
     label: '是否通过',
-    prop: 'status2',
-    slot: true
+    prop: 'isPass',
+    formatter: (row) => {
+      const END_STATUS = {
+        true: '通过',
+        false: '未通过'
+      }
+      return END_STATUS[row.examStatus]
+    }
   }
 ]
 const TABLE_CONFIG = {
@@ -133,16 +152,17 @@ export default {
       tableColumns: TABLE_COLUMNS,
       tableConfig: TABLE_CONFIG,
       tableData: [],
-      tablePageConfig: TABLE_PAGE_CONFIG
+      tablePageConfig: TABLE_PAGE_CONFIG,
+      ExamDetail: {}
     }
   },
 
   created() {
     this.getInfo()
   },
-  activated() {
-    this.getInfo()
-  },
+  // activated() {
+  //   this.getInfo()
+  // },
   methods: {
     goBack() {
       this.$router.go(-1)
@@ -154,21 +174,22 @@ export default {
       this.getInfo()
     },
     handlePageSizeChange(param) {
+      this.page.pageNo = 1
       this.page.pageSize = param
       this.getInfo()
     },
 
     // 拿数据
     async getInfo() {
-      // currentPage	当前页	body	true
-      // size	页面显示数量	body	true
-      //   let params = {
-      //     type: this.pitch, //考试类型 CurrencyExam-通用考试 CourseExam-课程考试 TrainExam-培训班考试
-      //     name: this.searchInput
-      //   }
-      //   let res = await examList({ ...params, ...this.page })
-      //   this.tableData = res.data
-      //   this.page.total = res.totalNum
+      let params = {
+        examId: this.$route.query.id,
+        ...this.page
+      }
+      let { totalNum, data } = await getExamineeList(params)
+      this.tableData = data
+      this.page.total = totalNum
+      this.ExamDetail = await getExamDetail(params)
+      console.log(this.ExamDetail)
     }
   }
 }
@@ -183,7 +204,7 @@ export default {
     }
   }
   .title_top {
-    margin: 24px 0;
+    margin: 0 0 24px;
     background: #ffffff;
     box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
     padding: 30px 80px;
@@ -197,7 +218,6 @@ export default {
         display: flex;
         li {
           padding: 5px 10px;
-          background-color: pink;
           border-radius: 4px;
           margin-left: 20px;
         }
@@ -228,6 +248,23 @@ export default {
       justify-content: space-between;
       margin: 20px 0;
     }
+  }
+  .status_1 {
+    background: #e7ffee;
+    color: #00b061;
+  }
+  .status_2 {
+    background: #fffce6;
+    color: #fcba00;
+  }
+  .status_3 {
+    background: #e7fbff;
+    color: #01aafc;
+  }
+
+  /deep/.cell:empty::before {
+    content: '--';
+    color: gray;
   }
 }
 </style>

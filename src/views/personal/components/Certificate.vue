@@ -7,16 +7,16 @@
       <div class="search">
         <div class="search_bar">
           <el-input
-            v-model="searchInput"
+            v-model.trim="searchInput"
             class="searchInput"
-            placeholder="查找我的证书"
+            placeholder="输入证书名称搜索"
             suffix-icon="el-icon-search"
           >
           </el-input>
-
+          <!-- 
           <el-button v-show="searchInput" type="primary" size="medium">
             重置
-          </el-button>
+          </el-button> -->
         </div>
       </div>
 
@@ -27,7 +27,7 @@
           class="course_item"
           @click="clickItem(item)"
         >
-          <div class="preview_right_in">
+          <!-- <div class="preview_right_in">
             <div class="preview_right_box">
               <img :src="item.backUrl" alt="" class="bgimg" />
               <div class="name">
@@ -48,7 +48,16 @@
                 <div>{{ item.certificateNo }}</div>
                 <div>{{ item.grantTime }}</div>
               </div>
+              <span v-if="item.status == 3" class="status">
+                已失效
+              </span>
             </div>
+          </div> -->
+          <div class="preview_right_in">
+            <CertificateComponents
+              class="CertificateComponents"
+              :certificate-data="item"
+            ></CertificateComponents>
           </div>
 
           <div class="text">
@@ -75,15 +84,13 @@
         </el-pagination>
       </div>
     </div>
-    <certificate-detail v-show="shuowItem" :sondata="sondata" @ChangeBtn="sonBtn">
-    </certificate-detail>
 
     <!-- 无数据 -->
     <div v-show="!certificateData.length" class="contentShow">
       <div class="content_box">
         <img src="@/assets/images/my_noData.png" alt="" />
         <div class="text">
-          还没有取得的证书
+          暂无数据
         </div>
       </div>
     </div>
@@ -92,10 +99,11 @@
 
 <script>
 import { certificateList } from '@/api/my'
+import CertificateComponents from './CertificateComponents'
 export default {
   name: 'Course',
   components: {
-    certificateDetail: () => import('./CertificateDetail'),
+    CertificateComponents,
     CommonBreadcrumb: () => import('@/components/common-breadcrumb/Breadcrumb')
   },
   data() {
@@ -103,11 +111,11 @@ export default {
       routeList: [
         {
           path: '/personal',
-          title: '个人中心'
+          title: '我的档案'
         },
         {
           path: '',
-          title: _.get(this.$route.meta, 'title', ' ')
+          title: '证书'
         }
       ],
       sondata: {},
@@ -143,8 +151,7 @@ export default {
       this.shuowItem = !br
     },
     clickItem(item) {
-      this.sondata = item
-      this.shuowItem = !this.shuowItem
+      this.$router.push({ path: '/CertificateDetail', query: { item: JSON.stringify(item) } })
     },
     handleSizeChange(val) {
       this.page.pageSize = val
@@ -167,9 +174,9 @@ export default {
     box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
     border-radius: 4px;
 
-    height: 60px;
+    // height: 60px;
     .search_bar {
-      padding-top: 11px;
+      padding: 24px 0;
       /deep/.el-input {
         width: 380px;
         margin-right: 16px;
@@ -183,11 +190,12 @@ export default {
     .course_item {
       width: 285px;
       background: #fff;
+      box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
       border-radius: 4px;
       overflow: hidden;
       margin-top: 20px;
       margin-right: 20px;
-      box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
+
       position: relative;
       &:nth-child(4n) {
         margin-right: 0;
@@ -247,89 +255,22 @@ export default {
   //   padding-top: 20px;
   width: 285px;
   height: 166px;
+  position: relative;
+  .CertificateComponents {
+    position: absolute;
+    top: -226px;
+    left: -303px;
+    transform: scale(0.32, 0.3);
+  }
 
   border-radius: 4px 4px 0 0;
-  .preview_right_box {
-    margin-top: 20px;
-    transform: scale(0.25);
-    // position: relative;
-    position: absolute;
-    top: -305px;
-    left: -436px;
-    border: 1px solid #d9dbdc;
-    width: 1152px;
-    height: 755px;
-    .awardAgency {
-      position: absolute;
-      bottom: 100px;
-      left: 500px;
-      z-index: 99;
-    }
-    .bgimg {
-      display: block;
-      width: 100% !important;
-      height: 100% !important;
-      z-index: -1;
-    }
-    .name {
-      position: absolute;
-      top: 146px;
-      left: 50%;
-      font-size: 64px;
-      color: #ab856a;
-      transform: translateX(-50%);
-      text-align: center;
-      width: 80%;
-      font-weight: 600;
-    }
-    .text {
-      position: absolute;
-      top: 490px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 50%;
-      height: 28%;
-      opacity: 0.65;
-      font-size: 18px;
-      color: #000b15;
-      text-align: auto;
-      line-height: 28px;
-    }
-    .logo {
-      position: absolute;
-      top: 560px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80px;
-      height: 80px;
-    }
-    .studentName {
-      position: absolute;
-      top: 386px;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0.85;
-      font-size: 40px;
-      color: #000b15;
-      text-align: center;
-    }
-    .serial {
-      position: absolute;
-      right: 117px;
-      bottom: 80px;
-      font-size: 14px;
-      color: rgba(0, 11, 21, 0.45);
-      line-height: 28px;
-    }
-  }
 }
 .contentShow {
   background: #ffffff;
   box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
   border-radius: 4px;
-  margin-top: 20px;
-  width: 1200px;
-  height: 627px;
+  width: 100%;
+  height: 500px;
   display: flex;
   display: flex;
   justify-content: center;

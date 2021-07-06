@@ -120,7 +120,7 @@ export default {
       addnote: '',
       note: '',
       current: '',
-      noteType: ['看文章', '看课件', '看资料', '看作业', '看思考'],
+      noteType: ['看文章', '看文档', '看资料', '看作业', '看视频'],
       noteColor: ['#00B061', '#FC7C01', '#FF4329', '#FCBA00', '#00B061']
     }
   },
@@ -150,7 +150,8 @@ export default {
         path: '/course/learn',
         query: {
           courseId: this.$route.query.id || this.$route.query.courseId,
-          chapterId: item.contentId
+          chapterId: item.contentId,
+          seat: Math.ceil(Math.random() * 1000)
         }
       })
     },

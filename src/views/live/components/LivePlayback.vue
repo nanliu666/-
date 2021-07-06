@@ -6,8 +6,8 @@
           <img
             :src="item.coverImageUrl ? item.coverImageUrl : '/img/autol.png'"
             alt=""
-            width="220"
-            height="124"
+            width="210"
+            height="118"
           />
           <div class="header__play"><span class="play-icon"></span></div>
           <div class="playback">直播回放</div>
@@ -17,22 +17,17 @@
         </div>
         <div class="text">
           <h3>直播回放：{{ item.channelName }}</h3>
-          <span>直播分类：{{ item.fullName }}</span>
-          <span>讲师：{{ item.lecturerName }}</span>
-          <span>直播时间：{{ item.startTime }}</span>
+          <span><span class="live-label">直播分类：</span>{{ item.fullName }}</span>
+          <span><span class="live-label">讲师：</span>{{ item.lecturerName }}</span>
+          <span><span class="live-label">直播时间：</span>{{ item.startTime }}</span>
         </div>
         <div class="operation">
-          <!-- <span
-            v-if="item.lecturerDeleted == '1' && identityType == '1'"
-            @click.stop="repRecover(item)"
-            >恢复</span
-          > -->
           <span v-if="item.shelfStatus == '1' && identityType == '1'" @click.stop="repRelease(item)">发布</span>
           <span
             v-if="item.shelfStatus == '0' && identityType == '1'"
             @click.stop="repOffShelf(item)"
           >下架</span>
-          <span @click.stop="repDownload(item)">下载</span>
+          <!-- <span @click.stop="repDownload(item)">下载</span> -->
           <span
             v-if="item.lecturerDeleted == '0' && identityType == '1'"
             @click.stop="repDelete(item)"
@@ -40,7 +35,7 @@
         </div>
       </div>
     </div>
-    <div class="pagePbls">
+    <div v-if="PBLPageObj.totalNum" class="pagePbls">
       <el-pagination
         background
         :page-sizes="PBLPageObj.pageSizes"
@@ -52,9 +47,12 @@
         @current-change="handleCurrentChange"
       />
     </div>
+    <!-- 无数据 -->
+    <common-empty v-else />
   </div>
 </template>
 <script>
+import CommonEmpty from '@/components/common-empty/Empty'
 import { liveReplayList, setReplayStatus } from '@/api/live'
 export default {
   name: 'PlayBackListSingle',
@@ -63,6 +61,7 @@ export default {
   //     return _.get(this.$route, 'query.id', '555')
   //   }
   // },
+  components: { CommonEmpty },
   props: ['detailData'],
   data() {
     return {
@@ -194,24 +193,6 @@ export default {
 }
 </script>
 <style scoped lang="scss">
-// .crumbs {
-//   overflow: hidden;
-//   margin: 0 0 20px 0;
-// }
-// .crumbs span {
-//   float: left;
-// }
-// .crumbs .title {
-//   font-size: 22px;
-//   color: #000b15;
-//   opacity: 0.85;
-// }
-// .crumbs .tip {
-//   font-size: 12px;
-//   color: #000b15;
-//   opacity: 0.45;
-//   padding: 6px 0 0 10px;
-// }
 .PlayBackListSingleC {
   background: #fff;
   padding-top: 23px;
@@ -250,12 +231,14 @@ export default {
     }
   }
   .playback {
-    background: #ecebeb;
+    background: #fffee6;
     position: absolute;
-    right: 0;
-    top: 0;
+    color: #f6ca21;
+    right: 8px;
+    top: 8px;
     font-size: 12px;
-    padding: 5px 10px;
+    padding: 2px 8px;
+    border-radius: 5px;
   }
   .amount-play {
     font-size: 12px;
@@ -266,35 +249,47 @@ export default {
 }
 .PBLS .img {
   position: relative;
-  width: 220px;
+  width: 210px;
   cursor: pointer;
   border-radius: 4px;
 }
 .PBLS .text {
   flex: 1;
   padding: 0 20px 0 27px;
+  .live-label {
+    font-family: PingFangSC-Regular;
+    font-size: 12px;
+    color: rgba(0, 11, 21, 0.45);
+    letter-spacing: 0;
+    line-height: 18px;
+    display: inline-block;
+    width: 60px;
+  }
 }
 .PBLS .text h3 {
   cursor: pointer;
-  color: #000b15;
-  font-size: 16px;
-  opacity: 0.85;
   margin: 0;
   padding: 5px 0 15px 0;
+  font-size: 14px;
+  color: rgba(0, 11, 21, 0.85);
+  letter-spacing: 0;
+  line-height: 24px;
+  font-weight: 600;
 }
 .PBLS .text span {
-  display: block;
-  color: #000b15;
-  opacity: 0.65;
-  padding: 4px 0;
+  font-family: PingFangSC-Regular;
   font-size: 12px;
+  color: rgba(0, 11, 21, 0.85);
+  letter-spacing: 0;
+  line-height: 23px;
+  display: block;
 }
 .PBLS .operation {
   width: 300px;
   text-align: right;
 }
 .PBLS .operation span {
-  color: #01aafc;
+  color: #2875d4;
   font-size: 12px;
   padding: 2px 15px;
   border-right: solid 1px #ebeced;

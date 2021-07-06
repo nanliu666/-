@@ -145,6 +145,7 @@ export default {
       this.loading = true
       await myElectiveCourse(params)
         .then((res) => {
+          this.$emit('ElectiveCourseNumTotal', res.totalNum)
           this.courseData = res.data
           this.pageConfig.total = res.totalNum
         })
@@ -161,10 +162,17 @@ export default {
 
 <style lang="scss" scoped>
 .elective-course {
+  ::v-deep .el-card.is-always-shadow {
+    width: 285px;
+    height: 282px;
+    border-radius: 4px;
+    overflow: hidden;
+    padding-top: 2px;
+  }
   .coverImg {
     position: relative;
     width: 100%;
-    height: 172px;
+    height: 166px;
     .ended {
       position: absolute;
       top: 8px;
@@ -184,22 +192,26 @@ export default {
     padding: 0 16px;
     h1 {
       font-size: 14px;
-      color: #000b15;
-      height: 20px;
+      color: rgba(0, 11, 21, 0.85);
+      line-height: 22px;
+      font-weight: 600;
     }
     .unfinished {
       position: relative;
       padding-bottom: 15px;
       .lecturer {
+        opacity: 0.45;
+        font-family: PingFangSC-Regular;
         font-size: 12px;
-        color: #8c9195;
+        color: rgba(0, 11, 21, 0.85);
+        line-height: 18px;
       }
       .progress {
-        margin-top: 5px;
+        margin-top: 24px;
         /deep/ .el-progress__text {
-          color: #01aafc;
           font-size: 12px !important;
           margin-left: 20px;
+          color: rgba(0, 11, 21, 0.45);
         }
       }
       .success-icon {

@@ -39,7 +39,7 @@
             <div ref="controlScroll" class="left-inner-box">
               <el-card style="margin-bottom: 20px">
                 <div class="avatar-card">
-                  <el-avatar :size="80" :src="userInfo.avatar_url || circleUrl"></el-avatar>
+                  <el-avatar :size="80" :src="userInfo.avatar_url"></el-avatar>
                   <div class="exam-box">
                     <div class="name">
                       {{ userInfo.nick_name }}
@@ -62,7 +62,7 @@
                         v-for="(subItem, subIndex) in item"
                         :key="subItem.id"
                         class="list-li"
-                        @click="navTo(subItem, index, subIndex)"
+                        @click="navTo(subItem, index === subIndex && index === 0)"
                       >
                         <span
                           class="li-content"
@@ -96,7 +96,7 @@
                             v-for="(subItem, subIndex) in groupItem.subQuestions"
                             :key="subItem.id"
                             class="grounp__li__sub list-li"
-                            @click="navTo(subItem, index, subIndex)"
+                            @click="navTo(subItem, index === subIndex && index === 0)"
                           >
                             <span
                               class="li-content"
@@ -127,7 +127,8 @@
             </div>
           </div>
           <el-card class="main-right">
-            <ul v-if="paper.answerMode === 1" class="question-ul">
+            <!-- 逐卷考试 -->
+            <ul v-if="isByPaperMode" class="question-ul">
               <li v-for="(item, index) in questionList" :key="index" class="question-li">
                 <div class="title-box">
                   <div class="question-li-title">
@@ -142,29 +143,31 @@
                 <ul class="content-box">
                   <li
                     v-for="(conItem, topicIndex) in item"
-                    :id="`id${conItem.id}`"
-                    :key="conItem.id"
+                    :id="`id${conItem.paperQuestionId}`"
+                    :key="conItem.paperQuestionId"
                     class="content-li"
                   >
                     <answer-by-question
                       :con-item="conItem"
                       :topic-index="topicIndex"
-                      :con-index="conNum"
-                      :is-show-scope="isShowScope"
                       @setImpeach="setImpeach"
                     />
                   </li>
                 </ul>
               </li>
             </ul>
-            <ul v-if="paper.answerMode === 2" class="question-ul">
-              <li v-for="(item, index) in tempQuestionList" :key="index">
+            <!-- 逐题模式下的右侧答题区 -->
+            <ul v-if="!isByPaperMode" class="question-ul">
+              <li v-for="(item, index) in byOneQuestionList" :key="index">
                 <div v-if="currentQuestion === index" class="question-li">
                   <div class="title-box">
                     <div class="question-li-title">
-                      <span>{{ (getByOneIndex(item).key + 1) | number2zhcn }}、</span>
+                      <span>{{ (getByOneIndex(item.id).key + 1) | number2zhcn }}、</span>
                       <span>{{ item.type | typeFilter }}</span>
-                      <span>（共{{ _.size(getByOneIndex(item).value) }}题)</span>
+                      <span>
+                        <span>（共{{ _.size(getByOneIndex(item.id).value) }}题</span>
+                        <span>, 共{{ getItemTotalScore(getByOneIndex(item.id).value) }}分）</span>
+                      </span>
                     </div>
                     <div class="sub-title">
                       {{ item.title }}
@@ -174,8 +177,8 @@
                     <li class="content-li">
                       <answer-by-question
                         :disabled="disabledByQuestion"
+                        :topic-index="getByOneIndex(item.id).index"
                         :con-item="item"
-                        :con-index="conNum"
                         @setImpeach="setImpeach"
                       />
                     </li>
@@ -207,7 +210,7 @@
         </div>
         <exam-success v-else />
       </div>
-      <the-footer v-if="paper.answerMode !== 2" />
+      <the-footer v-if="isByPaperMode" />
     </section>
     <el-dialog
       title="提交"
@@ -250,7 +253,7 @@ import { mapGetters } from 'vuex'
 export default {
   provide() {
     return {
-      paper: this
+      paperData: this
     }
   },
   filters: {
@@ -281,17 +284,13 @@ export default {
       confirmTips: '',
       centerDialogVisible: false,
       isWarningTimeLine: false,
-      circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
       remainingTime: RETURN_ZERO,
       paper: {},
       questionList: [],
-      tempQuestionList: [],
-      currentQuestion: 0,
-      limitTimeList: [],
-      byOneTimeId: {},
-      nowTimeMs: '',
-      isShowScope: 0,
-      conNum: 0
+      byOneQuestionList: [], //逐题模式下的问题数据
+      currentQuestion: 0, // 当前激活的题目
+      limitTimeList: [], // 维护每一道题目的限时数据
+      byOneTimeId: {}
     }
   },
   computed: {
@@ -300,12 +299,11 @@ export default {
     QUESTION_TYPE_JUDGE: () => QUESTION_TYPE_JUDGE,
     QUESTION_TYPE_BLANK: () => QUESTION_TYPE_BLANK,
     QUESTION_TYPE_SHOER: () => QUESTION_TYPE_SHOER,
-    QUESTION_TYPE_MAP: () => QUESTION_TYPE_MAP,
     QUESTION_TYPE_GROUP: () => QUESTION_TYPE_GROUP,
     ...mapGetters(['userInfo', 'userId']),
     // 逐题答卷最后一题需要置灰按钮
     nextButtonDisabled() {
-      return _.size(this.tempQuestionList) === this.currentQuestion + 1
+      return _.size(this.byOneQuestionList) === this.currentQuestion + 1
     },
     // 逐题答卷的第一题置灰按钮
     prevButtonDisabled() {
@@ -316,6 +314,10 @@ export default {
     },
     disabledByQuestion() {
       return this.currentCountDown && this.currentCountDown === RETURN_ZERO
+    },
+    // 是否是逐卷模式 1逐卷2逐题
+    isByPaperMode() {
+      return _.get(this.paper, 'answerMode') === 1
     }
   },
   watch: {
@@ -345,7 +347,6 @@ export default {
   },
   created() {
     this.initData()
-    this.nowTimeMs = new Date().getTime()
   },
   beforeRouteLeave(from, to, next) {
     if (this.isLeave || this.isSuccess) {
@@ -379,13 +380,14 @@ export default {
       }
     },
     // 获取逐题的大题
-    getByOneIndex(data) {
+    getByOneIndex(sourceId) {
       let parentObj = { key: -1, value: {} }
       _.each(this.questionList, (parentItem, parentIndex) => {
-        _.each(parentItem, (sonItem) => {
-          if (data.id === sonItem.id) {
+        _.each(parentItem, (sonItem, sonIndex) => {
+          if (sourceId === sonItem.id) {
             parentObj.key = parentIndex
             parentObj.value = parentItem
+            parentObj.index = sonIndex
           }
         })
       })
@@ -414,46 +416,45 @@ export default {
       }
     },
     // 点击滚动到对应的题目
-    navTo(data, sonIndex, parentIndex, ref = 'paperScroll') {
-      if (this.paper.answerMode === 1) {
+    /**
+     * data当前题目的数据
+     * isFirst: 整卷滚动是否是第一个
+     */
+    navTo(data, isFirst) {
+      if (this.isByPaperMode) {
         // 整卷移动
-        const isFirst = sonIndex === 0 && parentIndex === 0
-        const scollHeight = isFirst ? 0 : document.getElementById(`id${data.id}`).offsetTop
-        let scrollElement = this.$refs[ref]
+        const scollHeight = isFirst
+          ? 0
+          : document.getElementById(`id${data.paperQuestionId}`).offsetTop
+        let scrollElement = this.$refs.paperScroll
         scrollElement.scrollTo({
           top: scollHeight,
           behavior: 'smooth'
         })
       } else {
         // 逐题移动
-        this.conNum = parentIndex
-        this.currentQuestion = _.findIndex(this.tempQuestionList, (item) => {
-          return item.id === data.id
+        let targetIndex = 0
+        _.each(this.byOneQuestionList, (item, index) => {
+          if (item.type === QUESTION_TYPE_GROUP) {
+            _.each(item.subQuestions, (sunItem) => {
+              if (sunItem.id === data.id) {
+                targetIndex = index
+              }
+            })
+          } else {
+            if (item.id === data.id) {
+              targetIndex = index
+            }
+          }
         })
+        this.currentQuestion = targetIndex
         clearInterval(this.byOneTimeId)
         this.createByOneCountdown()
       }
     },
     // 当前题目是否被做
     currentItemIsInSelected(data) {
-      const getAnswerValue = (value) => {
-        // 是否是试题组
-        const isGroup = value.type === QUESTION_TYPE_GROUP
-        const groupPass = _.every(value.subQuestions, (item) => {
-          return item.answer
-        })
-        const isSelected = isGroup ? groupPass : _.get(value, 'answer')
-        return isSelected
-      }
-      const byTotal = getAnswerValue(data)
-
-      const byOneIndex = _.findIndex(this.tempQuestionList, (item) => {
-        return item.id === data.id && getAnswerValue(item)
-      })
-      const byOne = byOneIndex > -1
-      const isSelected = this.paper.answerMode === 1 ? byTotal : byOne
-
-      return isSelected
+      return _.get(data, 'answer')
     },
     // 当前对象是否存在于存疑数据数组
     currentItemIsInImpeach(data) {
@@ -493,6 +494,9 @@ export default {
         })
       }
     },
+    /**
+     * 获取试题总分
+     */
     getItemTotalScore(data) {
       const addScore = (args) => {
         return args.reduce((prev, curr) => {
@@ -509,23 +513,39 @@ export default {
     carryOut() {
       this.checkSubmit()
     },
+    // 获取未答的题目
+    /**
+     * type：count计算未填写的题目的数值，scroll表示滚动
+     */
     getAnswerCount(type) {
-      let target = []
-      _.each(this.questionList, (que, queIndex) => {
-        _.each(que, (item, index) => {
-          if (type === 'count') {
-            let isAnswer = this.currentItemIsInSelected(item)
-            if (!isAnswer) {
-              target.push(item)
-            }
+      let notAnswerList = []
+      let isAnswer = true
+      _.each(this.questionList, (que) => {
+        _.each(que, (item) => {
+          if (item.type === QUESTION_TYPE_GROUP) {
+            isAnswer = _.every(item.subQuestions, (subItem) => {
+              return this.currentItemIsInSelected(subItem)
+            })
           } else {
-            this.navTo(item, index, queIndex, 'controlScroll')
+            isAnswer = this.currentItemIsInSelected(item)
+          }
+          // 未填的数据才能通过
+          if (!isAnswer) {
+            notAnswerList.push(item)
           }
         })
       })
-      if (type === 'count') {
-        return target
+      if (!_.isEmpty(notAnswerList) && type !== 'count') {
+        let targetItem = {}
+        // 试题组
+        if (_.get(notAnswerList, '[0].type') === QUESTION_TYPE_GROUP) {
+          targetItem = _.get(notAnswerList, '[0].subQuestions[0]')
+        } else {
+          targetItem = _.get(notAnswerList, '[0]')
+        }
+        this.navTo(targetItem, false)
       }
+      return notAnswerList
     },
     // 检测存疑和未作答的题目，页面滚动到相关题目
     checkSubmit() {
@@ -596,9 +616,10 @@ export default {
     },
     // 交卷前先处理成后端想要的参数格式
     handleQustions() {
-      const questionsTemp = _.flattenDeep(_.cloneDeep(this.questionList))
+      const questionList = this.isByPaperMode ? this.questionList : this.byOneQuestionList
+      const questionsTemp = _.flattenDeep(_.cloneDeep(questionList))
       let questions = []
-      const PICK_KEY = ['id', 'answer', 'title', 'type', 'subQuestions']
+      const PICK_KEY = ['id', 'answer', 'title', 'type', 'subQuestions', 'paperQuestionId']
       const loop = (data) => {
         _.each(data, (item) => {
           if (!_.isEmpty(item.subQuestions)) {
@@ -651,17 +672,18 @@ export default {
     },
     async initData() {
       this.paper = await getTakeExam(_.omit(this.$route.query, ['isReNew']))
-      this.initBackAuth()
       // 初始化题目数据处理
       this.initQuestionList()
       // 逐题模式
       this.initAnswerByOne()
       // 初始考试倒计时
       this.initRemainingTime()
-      // 开启监听关闭标签页
-      this.initWatchClose()
       // 开发环境先关闭
       if (process.env.NODE_ENV === 'production') {
+        // 开启监听关闭标签页
+        this.initWatchClose()
+        // 是否有返回权限
+        this.initBackAuth()
         // 闭卷监听
         this.initWatchCloseBookExam()
         // 监听联网断网
@@ -677,8 +699,7 @@ export default {
      * examTimes 最后一次进来应该会返回1
      */
     initBackAuth() {
-      const { isDecoil, joinNum, joinNumValue, examTimes, isShowScope } = this.paper
-      this.isShowScope = isShowScope
+      const { isDecoil, joinNum, joinNumValue, examTimes } = this.paper
       this.hasBack = isDecoil === 1 && (!joinNum || (joinNum && joinNumValue - examTimes > 1))
     },
     initWatchClose() {
@@ -744,7 +765,7 @@ export default {
       })
       EventUtil.addHandler(window, 'offline', () => {
         this.offlineTips()
-        const examDataTemp = this.paper.answerMode === 1 ? this.questionList : this.tempQuestionList
+        const examDataTemp = this.isByPaperMode ? this.questionList : this.byOneQuestionList
         const offLineExam = {
           examId: this.$route.query.examId,
           userId: this.userId,
@@ -760,6 +781,11 @@ export default {
         showClose: false
       })
     },
+    /**
+     * 初始化逐卷考题数据
+     * 通过parentSort分组再排序
+     * 再在内部排序一次
+     */
     initQuestionList() {
       this.questionList = _.chain(_.cloneDeep(this.paper.questions))
         .groupBy('parentSort')
@@ -783,30 +809,20 @@ export default {
     initAnswerByOne() {
       const { answerMode } = this.paper
       if (answerMode !== 2) return
-      const topicList = _.flatten(_.cloneDeep(this.questionList))
-      this.tempQuestionList = topicList
+      // 赋值逐题问卷的数据
+      this.byOneQuestionList = _.flatten(this.questionList)
       this.initByOneTime()
     },
     async initByOneTime() {
-      // this.tempQuestionList.forEach((item,index) => {
-      //    if (item.timeLimit) {
-      //     let temp = {
-      //       index: index,
-      //       key: item.id,
-      //       limit: item.timeLimit,
-      //       // timeLeft: moment.duration(item.timeLimit, 'seconds'),
-      //       timeLeft: item.timeLimit,
-      //       countDown: null
-      //     }
-      //     this.limitTimeList.push(temp)
-      //   }
-      // })
-      this.limitTimeList = this.tempQuestionList.map((item, index) => {
+      const { questionTimeLimit, questionTimeLimitType } = this.paper
+      if (questionTimeLimitType === 0) return // 不计时就不显示
+      this.limitTimeList = _.map(this.byOneQuestionList, (item, index) => {
+        const limit = questionTimeLimitType === 2 ? questionTimeLimit * 60 : item.timeLimit
         let temp = {
           index: index,
           key: item.id,
-          limit: item.timeLimit,
-          timeLeft: item.timeLimit,
+          limit: limit,
+          timeLeft: limit,
           countDown: null
         }
         return temp
@@ -852,17 +868,16 @@ export default {
         this.$message.error('考试页面禁止刷新')
       }
     },
-    // TODO: 考试时间交卷逻辑需要补充
+    // 初始化考试时间
     initRemainingTime() {
       const { reckonTimeValue, strategy, examEndTime, reckonTime } = this.paper
-
       // 不计时不需要进行以下步骤
       if (!reckonTime) return
       // 如果考试时长不计时，并且考试策略为true，最后5分钟需要爆红提示。计时就按照计时的算。
       const canUseUpTime = moment(new Date()).add(reckonTimeValue, 'm')
       var examEndTimeMs = moment(examEndTime, 'YYYY-MM-DD HH:mm:ss').valueOf()
       // 考试结束时间与进入时间差
-      var timeDeffMs = examEndTimeMs - this.nowTimeMs
+      var timeDeffMs = examEndTimeMs - new Date().getTime()
       // 默认设置时间
       var reckonTimeValueTimeMs = reckonTimeValue * 60 * 1000
       let momentTime = ''
@@ -1010,7 +1025,7 @@ $selctColor: #fcba00;
         justify-content: space-between;
         .main-left {
           position: fixed;
-          width: 325px;
+          width: 285px;
           overflow: hidden;
           height: calc(90vh);
           .left-inner-box {
@@ -1025,7 +1040,6 @@ $selctColor: #fcba00;
             width: 100%;
           }
           .avatar-card {
-            width: 285px;
             display: flex;
             align-items: center;
             .exam-box {
@@ -1140,7 +1154,7 @@ $selctColor: #fcba00;
         }
 
         .main-right {
-          margin-left: 355px;
+          margin-left: 305px;
           flex: 1;
           min-height: calc(100vh - 96px);
           .question-ul {

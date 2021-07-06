@@ -12,86 +12,32 @@
           />
         </div>
 
-        <!-- <el-popover
-          placement="bottom-start"
-          width="412"
-          trigger="click"
-          popper-class="course-list-filter-pop"
-          @hide="delExtraParams"
-        >
-          <div class="course-list-filter-pop__wrap">
-            <div class="course-list-filter-pop__label">
-              讲师
-            </div>
-            <lazy-select
-              v-model="extraParams.teacherId"
-              :load="loadTeacher"
-              style="width: 100%"
-              placeholder="请选择"
-              :option-props="{
-                label: 'name',
-                value: 'idStr',
-                key: 'idStr'
-              }"
-            ></lazy-select>
-            <div class="course-list-filter-pop__footer">
-              <el-button type="primary" size="medium" @click="refreshData">
-                确定
-              </el-button>
-              <el-button size="medium" @click="resetExtraParams">
-                重置
-              </el-button>
-            </div>
-          </div>
-          <el-button slot="reference" size="medium">
-            高级检索
-          </el-button>
-        </el-popover> -->
-
         <div class="course-list-filter-pop__wrap">
-          <div class="course-list-filter-pop__label">
-            讲师：
-          </div>
+          <div class="course-list-filter-pop__label">讲师：</div>
           <div>
             <lazy-select
               v-model="extraParams.teacherId"
               :load="loadTeacher"
               style="width: 100%"
               placeholder="请选择"
+              searchable
+              :remote-method="loadTeacher"
               :option-props="{
                 label: 'name',
                 value: 'idStr',
                 key: 'idStr'
               }"
+              popper-class="father"
             ></lazy-select>
           </div>
           <div class="course-list-filter-pop__footer">
-            <el-button type="primary" size="mini" @click="refreshData">
-              确定
-            </el-button>
-            <el-button size="mini" @click="resetExtraParams">
-              重置
-            </el-button>
+            <el-button type="primary" size="mini" @click="refreshData"> 确定 </el-button>
+            <el-button class="Reset" size="mini" @click="resetExtraParams"> 重置 </el-button>
           </div>
         </div>
       </div>
       <div class="course-list__filter-divider"></div>
       <category-select :load="loadCategory" @change="handleCategoryChange"></category-select>
-      <!--<div class="course-list__filter-type">-->
-      <!--<span class="course-list__filter-label">-->
-      <!--类型：-->
-      <!--</span>-->
-      <!--<ul>-->
-      <!--<li-->
-      <!--v-for="item in COURSE_TYPE_LIST"-->
-      <!--:key="item.value"-->
-      <!--:class="{ active: item.value === params.type }"-->
-      <!--@click="handleCourseTypeChange(item.value)"-->
-      <!--&gt;-->
-      <!--{{ item.label }}-->
-      <!--</li>-->
-      <!--</ul>-->
-      <!--</div>-->
     </div>
     <div class="course-list-choice course-list__block">
       <ul>
@@ -128,7 +74,7 @@
                 }}</span>
               </div>
             </div>
-            <div class="course-list__list__divider"></div>
+
             <div class="course-list__list__rate">
               各项评分：<el-rate
                 :value="calcRate(item.scope)"
@@ -261,11 +207,12 @@ export default {
     loadCategory({ id }) {
       return getCategories({ id })
     },
-    loadTeacher() {
+    loadTeacher(i) {
       return new Promise((resolve, reject) => {
         listForegroundTeacherComboBox({
-          // currentPage: params.pageNo,
-          // size: params.pageSize,
+          pageNo: 1,
+          pageSize: 10,
+          name: i.search
           // likeQuery: params.search
         })
           .then((res) => {
@@ -313,7 +260,9 @@ export default {
   }
   &__input {
     width: 380px;
-    margin-right: 16px;
+    /deep/.el-input__icon {
+      line-height: 32px;
+    }
   }
   &__filter-label {
     margin-right: 16px;
@@ -342,9 +291,10 @@ export default {
 }
 .course-list-choice {
   margin-top: 20px;
-  padding: 16px 24px;
+  padding: 20px 24px;
 
-  color: rgba($primaryFontColor, 0.85);
+  color: #000b15;
+  opacity: 0.85;
   ul {
     display: inline;
     li {
@@ -353,15 +303,15 @@ export default {
       display: inline-block;
       margin-right: 32px;
       &.active {
-        color: $primaryColor;
+        color: #2875d4;
         font-weight: 500;
         &::after {
           content: ' ';
           height: 2px;
-          background-color: $primaryColor;
+          background-color: #2875d4;
           width: 100%;
           position: absolute;
-          bottom: -16px;
+          bottom: -20px;
           left: 0;
         }
       }
@@ -387,7 +337,7 @@ export default {
   ul {
     display: grid;
     grid-gap: 20px;
-    grid-template: repeat(2, 300px) / repeat(4, 1fr);
+    grid-template: repeat(2, 280px) / repeat(4, 1fr);
   }
   li {
     border-radius: 4px;
@@ -396,6 +346,14 @@ export default {
     display: flex;
     flex-direction: column;
     cursor: pointer;
+    transition-duration: 0.3s;
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0px 9px 12px 2px rgba(0.1, 63, 161, 0.12);
+      .card-cover {
+        visibility: visible !important;
+      }
+    }
   }
   &__img {
     height: 170px;
@@ -425,7 +383,7 @@ export default {
   &__content {
     font-size: 12px;
     padding: 16px 16px 0 16px;
-    flex-grow: 1;
+    // flex-grow: 1;
     display: flex;
     flex-direction: column;
   }
@@ -448,13 +406,9 @@ export default {
     float: right;
     background-color: #f5f5f6;
   }
-  &__divider {
-    height: 1px;
-    background-color: $mainLineGray;
-    margin-top: 9px;
-    margin-bottom: 10px;
-  }
+
   &__rate {
+    margin-top: 16px;
     color: rgba($primaryFontColor, 0.45);
     padding: 0 16px;
     padding-bottom: 12px;
@@ -477,7 +431,7 @@ export default {
     padding: 0;
   }
   &__label {
-    width: 125px;
+    width: 85px;
     text-align: right;
     padding-top: 7px;
   }
@@ -486,6 +440,18 @@ export default {
     margin-left: 24px;
     display: flex;
     justify-content: flex-end;
+    height: 32px;
+    .Reset {
+      margin-left: 16px;
+    }
   }
 }
+/deep/.el-input__inner {
+  height: 32px;
+}
+</style>
+<style lang="sass">
+.father
+  .el-scrollbar__thumb
+    display: none
 </style>

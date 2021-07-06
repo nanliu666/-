@@ -27,6 +27,7 @@
           >
             <el-button type="text" icon="el-icon-upload2" :disabled="isHandle">上传材料</el-button>
           </common-upload>
+          <el-button type="text" style="margin-left:10px;" @click="downLoadAll">打包下载</el-button>
         </template>
         <template slot-scope="scope">
           <el-button type="text" @click="delItem(scope.row)">
@@ -92,6 +93,38 @@ export default {
     },
     downLoadMaterial(data) {
       downLoadFile(data)
+    },
+    // 打包下载
+    downLoadAll() {
+      let params = {
+        filePath: '',
+        fileName: '',
+        zipComment: encodeURIComponent('DownloadFiles.zip'),
+        responseType: 'blob',
+        emulateJSON: true
+      }
+      this.tableData.forEach((item) => {
+        params.filePath += item.filePath + ','
+        params.fileName += item.fileName + ','
+      })
+      let url = `api/common/oss/download/zip?filePath=${params.filePath}&fileName=${params.fileName}
+      &responseType=blob&emulateJSON=true&zipComment=${params.zipComment}`
+      let token = this.$store.getters.token
+      let x = new XMLHttpRequest()
+      x.open('GET', url, true)
+      x.setRequestHeader('accessToken', `bearer  ${token}`)
+      x.responseType = 'blob'
+      x.onprogress = function() {}
+      x.onload = () => {
+        let url = window.URL.createObjectURL(x.response)
+        let a = document.createElement('a')
+        a.href = url
+        a.download = '打包下载文件.zip' //可以填写默认的下载名称
+        a.click()
+        this.isLoading = false
+        this.indexLoading = ''
+      }
+      x.send()
     },
     async delItem(i) {
       let params = {

@@ -5,10 +5,10 @@
         <!-- <img v-if="envVar === 'zehui' && isOrgIdE" src="../assets/images/logoE.png" />
         <img v-else-if="envVar === 'zehui'" src="../assets/images/logoZeHui.png" />
         <img v-else src="../assets/images/logo_yb.png" /> -->
-        <img :src="logoUrl" />
+        <img class="imglogo" :src="logoUrl" width="180" height="40" />
       </div>
       <template v-if="userId">
-        <ul class="header-menu">
+        <ul v-show="!hasSearch" class="header-menu">
           <li
             v-for="item in menu"
             :key="item.path"
@@ -18,7 +18,15 @@
             {{ item.label }}
           </li>
         </ul>
+        <SearchPart v-if="hasSearch" @closeSearch="hasSearch = false" />
         <div class="flex flex-flow flex-items right-menu">
+          <div class="search__wrap">
+            <i
+              v-if="!hasSearch"
+              class="iconimage_icon_search iconfont search__icon"
+              @click="hasSearch = true"
+            ></i>
+          </div>
           <div class="iconimage_icon_help iconfont help"></div>
           <Notification />
           <el-popover class="dropdown-avatar" width="256" trigger="click">
@@ -29,19 +37,23 @@
                   class="top-bar__img"
                   :src="userInfo.avatar_url"
                 />
-                <i v-else class="iconimage_icon_headportrait iconfont" /> </span></el-button>
+                <i v-else class="iconimage_icon_headportrait iconfont" /> </span
+            ></el-button>
             <div class="dialogContent">
               <div class="topMenu">
                 <div class="fristLine">
                   <div>
                     <span class="iconwodedangan iconfont"></span>
-                    <el-button type="text" @click.native="toRouter('/my/record')">
+                    <el-button type="text" @click.native="toRouter('/personal')">
                       我的档案
                     </el-button>
                   </div>
                   <div>
                     <span class="icongerenshezhi iconfont"></span>
-                    <el-button type="text" @click.native="toRouter('/my/info')">
+                    <el-button
+                      type="text"
+                      @click.native="toRouter('/personal', 'PersonalSettings')"
+                    >
                       个人设置
                     </el-button>
                   </div>
@@ -60,7 +72,7 @@
               <div class="centerMenu">
                 <div>
                   <span class="iconshenpizhongxin iconfont"></span>
-                  <el-button type="text" @click.native="toRouter('/approvalCenter/center')">
+                  <el-button type="text" @click.native="toRouter('/approvalCenter/approveIndex')">
                     审批中心
                   </el-button>
                 </div>
@@ -74,6 +86,19 @@
                   <span class="iconhoutaiguanli iconfont"></span>
                   <el-button type="text" @click.native="toRouter('', 'backstage')">
                     后台管理
+                  </el-button>
+                </div>
+
+                <!-- <div>
+                  <span class="el-icon-user"></span>
+                  <el-button type="text" @click.native="toRouter('/personal')">
+                    个人中心
+                  </el-button>
+                </div> -->
+                <div v-if="role == 1">
+                  <span class="el-icon-user"></span>
+                  <el-button type="text" @click.native="lecturerBtn()">
+                    {{ `${rolePage === false ? '讲师端' : '学员端'}` }}
                   </el-button>
                 </div>
               </div>
@@ -123,33 +148,53 @@
 </template>
 
 <script>
-const menu = [
-  { label: '首页', path: '/home' },
-  // { label: '我的任务', path: '/learn' },
-  { label: '我的任务', path: '/myTask' },
-  { label: '企业知识', path: '/course' },
-  { label: '知识分享', path: '/knowledge' },
-  { label: '考试中心', path: '/exam' },
-  { label: '新闻公告', path: '/news' },
-  { label: '培训中心', path: '/train' },
-  { label: '直播中心', path: '/live' }
-]
+// let menu = [
+//   { label: '首页', path: '/home' },
+//   // { label: '我的任务', path: '/learn' },
+//   // { label: '我的任务', path: '/myTask' },
+//   { label: '讲师任务', path: '/lecturerTask' },
+//   { label: '企业知识', path: '/course' },
+//   { label: '知识分享', path: '/knowledge' },
+//   { label: '考试中心', path: '/exam' },
+//   { label: '新闻公告', path: '/news' },
+//   { label: '培训中心', path: '/train' },
+//   { label: '直播中心', path: '/live' }
+// ]
 import Notification from './Notification'
 import { mapGetters } from 'vuex'
 import { backBaseUrl } from '@/config/env'
 import { getStore } from '@/util/store'
+import { judgeTeacherStudent } from '@/api/lecturerTask'
+import SearchPart from './components/searchPart'
 export default {
   name: 'Header',
   components: {
-    Notification
+    Notification,
+    SearchPart
   },
   data() {
     return {
-      menu,
+      menu: [
+        { label: '首页', path: '/home' },
+        // { label: '我的任务', path: '/learn' },
+        // { label: '我的任务', path: '/myTask' },
+        { label: '我的任务', path: '/myTask' },
+        { label: '课程资源', path: '/course' },
+        { label: '知识分享', path: '/knowledge' },
+        { label: '培训中心', path: '/train' },
+        { label: '直播中心', path: '/live' },
+        { label: '考试中心', path: '/exam' },
+        { label: '社区', path: '/community' },
+        { label: '新闻中心', path: '/news' }
+      ],
+      hasSearch: false,
+      // menu,
       logoUrl: '',
       activePath: '/home',
       routerTo: '',
-      isOrgIdE: false
+      isOrgIdE: false,
+      role: '',
+      rolePage: false
     }
   },
   computed: {
@@ -196,6 +241,7 @@ export default {
   },
   created() {
     // this.isOrgIdEFn()
+    this.isJudgeTeacherStudent()
   },
   mounted() {
     this.$nextTick(() => {
@@ -207,6 +253,7 @@ export default {
   },
   activated() {
     // this.isOrgIdEFn()
+    // this.isJudgeTeacherStudent()
   },
   methods: {
     // isOrgIdEFn() {
@@ -216,6 +263,54 @@ export default {
     //   this.orgIdsD = orgIdsVuex || getStore({ name: 'orgIds' })
     //   this.isOrgIdE = this.orgIdsD.indexOf('5263') !== -1 ? true : false
     // },
+
+    lecturerBtn() {
+      let roleData = sessionStorage.getItem('role')
+      this.rolePage = roleData == 1 ? false : true
+      if (this.rolePage) {
+        sessionStorage.setItem('role', 1)
+        let item = { label: '讲师任务', path: '/lecturerTask' }
+        this.roleSwitch()
+        this.handleMenuClick(item)
+      } else {
+        sessionStorage.setItem('role', 0)
+        let item = { label: '我的任务', path: '/myTask' }
+        this.roleSwitch()
+        this.handleMenuClick(item)
+      }
+    },
+    // 判断讲师/学员角色 0 学员 1 讲师
+    isJudgeTeacherStudent() {
+      let roleData = sessionStorage.getItem('role')
+      this.role = sessionStorage.getItem('identity')
+      this.rolePage = roleData == 1 ? true : false
+
+      // 如果角色为空才去请求
+      if (roleData === null) {
+        judgeTeacherStudent().then((res) => {
+          // 保存到内存
+          sessionStorage.setItem('role', res.identity)
+          sessionStorage.setItem('identity', res.identity)
+          this.role = res.identity
+          this.rolePage = res.identity == 1 ? true : false
+          this.roleSwitch()
+        })
+      } else {
+        this.roleSwitch()
+      }
+    },
+
+    roleSwitch() {
+      let roleData = sessionStorage.getItem('role')
+      if (roleData == 1) {
+        this.menu[1].label = '讲师任务'
+        this.menu[1].path = '/lecturerTask'
+      } else {
+        this.menu[1].label = '我的任务'
+        this.menu[1].path = '/myTask'
+      }
+    },
+
     // 个人中心跳转
     toRouter(data, i) {
       if (i === 'backstage') {
@@ -254,6 +349,8 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        sessionStorage.removeItem('role')
+        sessionStorage.removeItem('identity')
         this.$store.dispatch('LogOut').then(() => {
           this.$router.push({ path: '/login' })
         })
@@ -265,6 +362,7 @@ export default {
 
 <style lang="scss" scoped>
 .header {
+  position: relative;
   align-self: flex-start;
   height: $headerHeight;
   width: 100%;
@@ -277,6 +375,10 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    .imglogo {
+      width: 180px;
+      height: 40px;
+    }
   }
   .right-menu {
     .help {
@@ -304,9 +406,9 @@ export default {
   }
 
   .header-menu {
-    height: 100%;
+    height: 60px;
     display: flex;
-
+    opacity: 1;
     li {
       opacity: 0.65;
       font-size: 16px;
@@ -314,7 +416,7 @@ export default {
       text-align: center;
       line-height: $headerHeight;
       position: relative;
-      margin-right: 48px;
+      margin-right: 30px;
       cursor: pointer;
       &:last-of-type {
         margin-right: 0;
@@ -333,6 +435,19 @@ export default {
           background-color: $primaryColor;
         }
       }
+    }
+  }
+  .search__wrap {
+    width: 30px;
+    height: 20px;
+    display: flex;
+    justify-content: flex-end;
+    position: relative;
+    margin-right: 24px;
+    .search__icon {
+      color: #8c9195;
+      cursor: pointer;
+      margin-top: 2px;
     }
   }
 }

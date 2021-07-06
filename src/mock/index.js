@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import Mock from 'mockjs'
+import train from './modules/train'
 const modules = require.context('./modules/', true, /\.js$/)
 
 /**

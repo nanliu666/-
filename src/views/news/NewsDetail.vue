@@ -2,12 +2,8 @@
   <div class="newsDetails">
     <div class="breadcrumb">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/news/list' }">
-          新闻中心
-        </el-breadcrumb-item>
-        <el-breadcrumb-item style="color:rgba(0,11,21,0.85);">
-          文章详情
-        </el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/news/list' }"> 新闻中心 </el-breadcrumb-item>
+        <el-breadcrumb-item style="color: rgba(0, 11, 21, 0.85)"> 文章详情 </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
 
@@ -19,12 +15,12 @@
           </el-button>
         </div>
         <div class="btnBar_to">
-          <div>
+          <div class="btnBar_to_l">
             <el-button size="small" icon="el-icon-arrow-left" @click="cutInfo(0)">
               &nbsp;上一页
             </el-button>
           </div>
-          <div>
+          <div class="btnBar_to_R">
             <el-button size="small" @click="cutInfo(1)">
               下一页&nbsp;<i class="el-icon-arrow-right el-icon--right"></i>
             </el-button>
@@ -52,15 +48,11 @@
 
       <div class="download">
         <div v-for="(item, index) in data.attachment" :key="index">
-          <el-button
-            type="text"
-            icon="el-icon-paperclip"
-            style="font-size: 12px;"
-            @click="isdownload(index)"
-          >
-            附件下载
+          <el-button type="text" @click="isdownload(index)">
+            <!-- 附件下载 -->
+            <i class="el-icon-paperclip"></i>
+            <span>{{ item.localName }}</span>
           </el-button>
-          <span>{{ item.localName }}</span>
           <a ref="file" href="#" :download="item.url"></a>
         </div>
       </div>
@@ -170,6 +162,16 @@ export default {
       justify-content: space-between;
       .btnBar_to {
         display: flex;
+        .btnBar_to_l {
+          /deep/.el-button {
+            border-radius: 4px 0 0 4px;
+          }
+        }
+        .btnBar_to_R {
+          /deep/.el-button {
+            border-radius: 0 4px 4px 0;
+          }
+        }
       }
       button {
         line-height: 16px;
@@ -183,27 +185,30 @@ export default {
       }
     }
     .content_title {
-      opacity: 0.85;
       font-family: PingFangSC-Medium;
-      font-size: 22px;
-      color: #000b15;
-      line-height: 34px;
+      font-size: 18px;
+      color: rgba(0, 11, 21, 0.85);
+      letter-spacing: 0;
+      line-height: 28px;
+      font-weight: 500;
       margin-top: 24px;
     }
     .content_title_info {
       display: flex;
-      font-size: 14px;
+      font-family: PingFangSC-Regular;
+      font-size: 12px;
       color: rgba(0, 11, 21, 0.45);
-
+      line-height: 18px;
+      font-weight: 400;
+      margin-top: 26px;
       .info_box {
-        margin-right: 24px;
-        margin-top: 16px;
+        margin-right: 40px;
       }
     }
     .download {
       font-size: 12px;
       color: rgba(0, 11, 21, 0.45);
-      border-bottom: 1px solid #ebeced;
+      border-bottom: 1px dashed rgba(0, 11, 21, 0.08);
       margin-bottom: 25px;
       padding-bottom: 20px;
       div {

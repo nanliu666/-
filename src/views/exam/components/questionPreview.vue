@@ -34,7 +34,10 @@
       </div>
       <!-- 多选题 -->
       <div
-        v-if="[QUESTION_TYPE_MULTIPLE].includes(data.type) && !_.isEmpty(data.options)"
+        v-if="
+          [QUESTION_TYPE_MULTIPLE, QUESTION_TYPE_RANDOM].includes(data.type) &&
+            !_.isEmpty(data.options)
+        "
         class="qustion__options"
       >
         <li class="group-container">
@@ -82,7 +85,12 @@
     <div v-else class="view-contain-box">
       <select-view
         v-if="
-          [QUESTION_TYPE_MULTIPLE, QUESTION_TYPE_SINGLE, QUESTION_TYPE_JUDGE].includes(data.type)
+          [
+            QUESTION_TYPE_MULTIPLE,
+            QUESTION_TYPE_SINGLE,
+            QUESTION_TYPE_JUDGE,
+            QUESTION_TYPE_RANDOM
+          ].includes(data.type)
         "
         :is-view-results="isViewResults"
         :data="data"
@@ -106,13 +114,13 @@ import GapAndShort from './GapAndShort'
 import { addLine } from '@/util/util'
 import {
   QUESTION_PREFACE,
-  QUESTION_TYPE_MAP,
   QUESTION_TYPE_MULTIPLE,
   QUESTION_TYPE_SINGLE,
   QUESTION_TYPE_JUDGE,
   QUESTION_TYPE_SHOER,
   QUESTION_TYPE_BLANK,
-  QUESTION_TYPE_GROUP
+  QUESTION_TYPE_GROUP,
+  QUESTION_TYPE_RANDOM
 } from '@/const/exam'
 export default {
   name: 'QustionPreview',
@@ -153,13 +161,13 @@ export default {
     }
   },
   computed: {
+    QUESTION_TYPE_RANDOM: () => QUESTION_TYPE_RANDOM,
     QUESTION_PREFACE: () => QUESTION_PREFACE,
     QUESTION_TYPE_MULTIPLE: () => QUESTION_TYPE_MULTIPLE,
     QUESTION_TYPE_SINGLE: () => QUESTION_TYPE_SINGLE,
     QUESTION_TYPE_JUDGE: () => QUESTION_TYPE_JUDGE,
     QUESTION_TYPE_BLANK: () => QUESTION_TYPE_BLANK,
     QUESTION_TYPE_SHOER: () => QUESTION_TYPE_SHOER,
-    QUESTION_TYPE_MAP: () => QUESTION_TYPE_MAP,
     QUESTION_TYPE_GROUP: () => QUESTION_TYPE_GROUP
   },
   watch: {
@@ -170,6 +178,9 @@ export default {
             this.handleBlankValue(value)
             break
           case QUESTION_TYPE_MULTIPLE:
+            this.handleMulipleValue(value)
+            break
+          case QUESTION_TYPE_RANDOM:
             this.handleMulipleValue(value)
             break
         }
