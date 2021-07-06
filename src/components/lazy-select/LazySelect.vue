@@ -9,6 +9,7 @@
     :default-first-option="allowCreate"
     :remote-method="remoteMethod"
     :multiple="multiple"
+    :popper-class="popperClass"
     @change="handleChange"
     @visible-change="visibleChange"
   >
@@ -88,6 +89,10 @@ export default {
     searchable: {
       type: Boolean,
       default: false
+    },
+    popperClass: {
+      type: String,
+      default: ''
     }
   },
   data() {

@@ -7,7 +7,7 @@
       </div>
     </div>
     <div class="banner">
-      <el-carousel :interval="5000" height="536px" arrow="always">
+      <el-carousel :interval="5000" height="520px" arrow="never">
         <!-- 临时添加徐工挖掘机组织自定义banner,先通过组织id判断 -->
         <el-carousel-item v-for="item in banner" :key="item.bannerId">
           <a :href="item.linkUrl">
@@ -31,6 +31,7 @@
             :hot-course-data="hotCourseData"
             :train-list-data="trainListData"
             :news-list-data="newsListData"
+            :system-list-data="systemListData"
           >
           </component>
         </div>
@@ -160,23 +161,32 @@
 
 <script>
 import TheHeader from '@/page/TheHeader'
-import HomeMyTask from '@/views/home/homeMyTask'
+import HomeTask from '@/views/home/homeTask'
 import HomeRight from '@/views/home/homeRight'
 import HomeLive from '@/views/home/homeLive'
 import HomeHotCourse from '@/views/home/homeHotCourse'
 import HomeTrain from '@/views/home/homeTrain'
 import HomeNews from '@/views/home/homeNews'
+import HomeSystemList from '@/views/home/homeSystemList'
+
 import { queryCourseList } from '@/api/course'
-import { homeQueryTrainList, homeNewsList, homeMyLiveList, getBanners } from '@/api/home'
+import {
+  homeQueryTrainList,
+  homeNewsList,
+  homeMyLiveList,
+  getBanners,
+  getHomeSystemList
+} from '@/api/home'
 import { mapGetters } from 'vuex'
 // import HomeLive from './home/homeLive.vue'
 export default {
   name: 'Home',
   components: {
     TheHeader,
-    HomeMyTask,
+    HomeTask,
     HomeRight,
     HomeLive,
+    HomeSystemList,
     HomeHotCourse,
     HomeTrain,
     HomeNews
@@ -188,11 +198,12 @@ export default {
         nub: 0
       },
       diyBaseConfig: {
-        diyPcL1: { coms: 'HomeMyTask', name: '我的任务' },
+        diyPcL1: { coms: 'HomeTask', name: '我的任务' },
         diyPcL2: { coms: 'HomeLive', name: '最新直播' },
         diyPcL3: { coms: 'HomeHotCourse', name: '热门课程' },
         diyPcL4: { coms: 'HomeTrain', name: '培训中心' },
-        diyPcL5: { coms: 'HomeNews', name: '新闻中心' }
+        diyPcL5: { coms: 'HomeNews', name: '新闻中心' },
+        diyPcL6: { coms: 'HomeSystemList', name: '制度清单' }
         // diyPcR1: { coms: 'HomeNews', name: '个人信息' },
         // diyPcR2: { coms: 'HomeNews', name: '学习中的课程' },
         // diyPcR3: { coms: 'HomeNews', name: '月度积分排行榜' },
@@ -214,6 +225,7 @@ export default {
       trainListData: [], // 培训中心
       newsListData: [], // 新闻
       myLiveData: [], // 我的直播
+      systemListData: [], //制度清单
       banner: [
         // {
         //   css: {
@@ -291,6 +303,7 @@ export default {
     this.getTrainList()
     this.getNewsList()
     this.getHomeMyLive()
+    this.getSystemList() //制度清单
     // this.isOrgIdEFn()
   },
   methods: {
@@ -334,17 +347,28 @@ export default {
     async getHotCourse() {
       // 热门课程
       let res = await queryCourseList({ pageSize: 5, pageNo: 1, type: 1 })
+      res.data.forEach((element) => {
+        element.scope = element.scope?Number(element.scope.toFixed(1)):0
+      })
       this.hotCourseData = res.data
     },
     async getTrainList() {
       // 培训中心
       let res = await homeQueryTrainList({ pageSize: 3, pageNo: 1 })
+      res.records.forEach((element) => {
+        element.composite = Number(element.composite).toFixed(1)
+      })
       this.trainListData = res.records
     },
     async getNewsList() {
       // 获取新闻列表
       let res = await homeNewsList({ pageSize: 3, pageNo: 1 })
       this.newsListData = res.data
+    },
+    async getSystemList() {
+      // 获取制度清单列表
+      let res = await getHomeSystemList({ pageSize: 6, pageNo: 1, type: '1' })
+      this.systemListData = res.data
     }
   }
 }
@@ -400,13 +424,13 @@ export default {
 }
 /deep/ .LMTitle {
   float: left;
-  padding: 46px 0 21px 0;
+  padding: 56px 0 16px 0;
   clear: both;
   width: 100%;
   margin: 0;
 }
 /deep/ .LMTitle .span1 {
-  font-size: 22px;
+  font-size: 24px;
   // font-family: 'Arial', 'Microsoft YaHei', '黑体', '宋体', sans-serif;
   color: #000b15;
   font-weight: normal;
@@ -444,7 +468,7 @@ export default {
   cursor: pointer;
 }
 /deep/ .LMTitle a {
-  font-size: 14px;
+  font-size: 12px;
   // font-family: 'Arial', 'Microsoft YaHei', '黑体', '宋体', sans-serif;
   color: #000b15;
   font-weight: normal;
@@ -455,47 +479,110 @@ export default {
 
 /deep/ .LModule {
   width: 897px;
-  overflow-x: hidden;
+  // overflow-x: hidden;
 }
 /deep/ .LModule2 {
   width: 920px;
+  display: flex;
+  flex-wrap: wrap;
 }
 /deep/ .homeCourse {
   float: left;
   width: 285px;
-  height: 306px;
-  overflow: hidden;
+  height: 282px;
+  // overflow: hidden;
   background: #fff;
   box-shadow: 0 2px 12px 0 rgba(0, 88, 121, 0.08);
-  margin: 0 20px 20px 0;
+  margin: 0 20px 0px 0;
   border-radius: 4px;
+}
+/deep/ .homeCourse a {
+  width: 100%;
+  height: 100%;
+  display: inline-flex;
+  position: relative;
+}
+/deep/ .homeCourse .adiv {
+  width: 100%;
+  height: 100%;
 }
 /deep/ .homeCourse .homeCourseTitle {
   text-align: left;
   font-size: 14px;
-  height: 55px;
   margin: 23px 0 10px 0;
-  line-height: 180%;
-  color: #000b15;
+  color: #fff;
   display: -webkit-box;
   overflow: hidden;
   text-overflow: ellipsis;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   font-weight: bold;
+  position: relative;
 }
 /deep/ .homeCourseImg {
-  height: 168px;
+  height: 166px;
 }
-/deep/ .homeCourseText {
-  padding: 0 15px;
-  overflow: hidden;
+/deep/.homenews {
+  width: 285px;
+  box-shadow: 0 2px 12px 0 rgba(0, 88, 121, 0.08);
+  margin: 0 20px 0px 0;
+  border-radius: 4px;
+  position: relative;
 }
-/deep/ .homeCourse .hCWatchNumber {
+/deep/ .homenewsImg img {
+  width: 100%;
+  height: 220px;
+  border-radius: 4px;
+}
+/deep/.homenews .homenewsText {
+  position: absolute;
+  bottom: 4px;
+  width: 100%;
+  padding: 0 16px 15px 16px;
+  border-radius: 4px;
+  background-image: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.5) 100%);
+}
+/deep/ .homenews .hCWatchNumber {
+  width: 100%;
   float: left;
   font-size: 12px;
-  color: #000b15;
+  color: rgba(255, 255, 255, 0.65);
   opacity: 0.65;
+  display: inline-flex;
+  justify-content: space-between;
+}
+/deep/ .homeCourseText {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 0 16px 15px 16px;
+}
+/deep/.homenews .homenewsTitle {
+  text-align: left;
+  font-size: 14px;
+  margin: 23px 0 10px 0;
+  color: #fff;
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  font-weight: bold;
+}
+/deep/ .homenews .hCWatchNumber .num {
+  margin-left: -110px;
+}
+/deep/ .homeCourse .hCWatchNumber {
+  width: 100%;
+  float: left;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+  opacity: 0.65;
+  display: inline-flex;
+  justify-content: space-between;
+}
+/deep/ .homeCourse .hCWatchNumber .num {
+  margin-left: -110px;
 }
 /deep/ .homeCourse .homeCourseTime {
   padding-top: 5px;
@@ -528,7 +615,7 @@ export default {
   float: left;
   padding: 4px 0 0 4px;
   font-size: 12px;
-  color: #000b15;
+  color: rgba(255, 255, 255, 0.8);
   opacity: 0.65;
 }
 /deep/ .homeCourse .livePerInfo .userIcon {
@@ -537,11 +624,11 @@ export default {
 
 /deep/ .recommendCourse {
   width: 590px;
-  height: 276px;
+  height: 282px;
   float: left;
   background: #fff;
   box-shadow: 0 2px 12px 0 rgba(0, 88, 121, 0.08);
-  margin: 0 20px 20px 0;
+  margin: 0 20px 18px 0;
   border-radius: 4px;
 }
 /deep/ .recommendCourse .recommendCourseTextP {
@@ -562,18 +649,29 @@ export default {
   opacity: 0.55;
   padding: 10px 15px;
   box-sizing: border-box;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 1%, rgba(0, 0, 0, 0.32) 82%);
 }
 /deep/ .recommendCourse .recommendCourseTitle {
   display: block;
   font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 /deep/ .recommendCourse .recommendGrade {
   float: left;
-  transform: scale(0.8);
-  margin: 10px 0 0 -14px;
+  font-size: 12px;
+  line-height: 18px;
+  margin-top: 8px;
 }
 /deep/ .recommendCourse .learnNub {
   float: right;
+  margin-top: 6px;
+}
+/deep/ .recommendCourse .learnNub .el-rate__text {
+  margin-top: 4px;
+  display: inline-block;
+  color: #fff !important;
 }
 /deep/ .recommendCourse .userIcon {
   font-size: 12px;
@@ -582,75 +680,68 @@ export default {
 
 /deep/ .homeTrain {
   cursor: pointer;
-  width: 285px;
-  height: 172px;
   text-align: left;
   background: #fff;
   box-shadow: 0 2px 12px 0 rgba(0, 88, 121, 0.08);
   margin: 0 20px 20px 0;
   border-radius: 4px;
   float: left;
-  background: url('/img/bgicon.png') repeat-x 0px 0px #fff;
-}
-/deep/ .homeTrain .homeTrainTitle {
   width: 285px;
-  font-size: 16px;
-  font-weight: normal;
-  padding: 0 15px;
-  margin: 30px 0 2px 0;
+}
+/deep/ .homeTrain .img {
+  cursor: pointer;
+  width: 285px;
+  height: 166px;
+}
+/deep/ .homeTrainTitle {
+  font-size: 14px;
+  color: rgba(0, 11, 21, 0.85);
+  padding: 16px;
+  font-weight: bold;
+}
+/deep/ .homeTrainTitle .title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  // background: url('../assets/images/icon.png') no-repeat 0 -206px;
-  color: #000b15;
+  text-align: left;
 }
-/deep/ .homeTrain .homeTrainTitle::before {
-  float: left;
-  content: '';
-  display: block;
-  width: 30px;
-  height: 30px;
-  margin: 1px 15px 0 0;
-  background: url('/img/bgicon.png') repeat-x 0px -178px #fff;
-}
-/deep/ .homeTrain .homeTrainTextItem {
+/deep/ .homeTrainText {
   color: #73797f;
-  display: block;
-  overflow: hidden;
-  padding: 10px 15px 0 62px;
+  margin: 8px 0 18px;
   font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+  color: rgba(0, 11, 21, 0.45);
 }
-/deep/ .homeTrain .homeTrainTextItem img {
-  border-radius: 50%;
-  float: left;
-  margin: 0 5px 0 0;
+/deep/.line {
+  width: 1px;
+  height: 10px;
+  display: inline-flex;
+  margin: 0 8px;
+  background: #ebeced;
+}
+/deep/ .homeTrainTextItem {
+  color: #73797f;
+  overflow: hidden;
+  font-size: 12px;
+  color: rgba(0, 11, 21, 0.45);
+  display: flex;
+  justify-content: space-between;
+}
+/deep/ .homeTrainTextItem .el-rate__text {
+  display: inline-block;
+  margin-top: 4px;
 }
 
-/deep/ .homeTrain .homeTraining {
-  float: right;
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-/deep/ .homeTrain .ing {
-  background: #e7fbff;
-  color: #01aafc;
-}
-/deep/ .homeTrain .future {
-  background: #e7ffee;
-  color: #00b061;
-}
-/deep/ .homeTrain .traingIcon {
+/deep/.homeTrainTextItem .tag {
   font-size: 12px;
-  float: left;
-  margin: 1px 5px 0 0;
-}
-/deep/ .homeTrain .homeTrainTextItem2 {
-  float: left;
-  overflow: hidden;
-  display: block;
-  width: 200px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  padding: 1px 8px;
+  color: rgba(0, 11, 21, 0.45);
+  text-align: center;
+  background: #f5f5f6;
+  border-radius: 4px;
 }
 
 /deep/ .homeRight {
@@ -666,15 +757,17 @@ export default {
   padding: 12px 10px;
 }
 .home .banner .el-carousel__button {
-  opacity: 0.6;
-  width: 16px;
-  height: 16px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.3);
 }
 .home .banner .el-carousel__indicator.is-active button {
-  background: #01aafc;
+  background: #fff;
   opacity: 1;
+  opacity: 0.5;
+  border-radius: 6px;
+  width: 30px;
 }
 .foot {
   height: 124px;

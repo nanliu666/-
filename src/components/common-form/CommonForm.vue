@@ -41,6 +41,9 @@
             v-if="column.itemType == 'select'"
             v-model="model[column.prop]"
             v-bind="itemAttrs(column)"
+            :filterable="column.filterable"
+            :remote="column.remote"
+            :remote-method="column.remoteMethod"
             :placeholder="column.placeholder ? column.placeholder : `请选择${column.label}`"
           >
             <el-option
@@ -52,6 +55,7 @@
                     item[column.props.label || 'label']
                   : item.label
               "
+              :disabled="column.props.disabled ? item[column.props.disabled] : false"
               :value="item[(column.props && column.props.value) || 'value']"
             />
           </el-select>

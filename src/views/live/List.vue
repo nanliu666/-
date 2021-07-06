@@ -96,11 +96,15 @@
           class="grid-content cursorDiv"
         >
           <el-card :body-style="{ padding: '0px' }">
-            <div class="item_live_imgBox" style="cursor: pointer">
-              <img :src="item.coverImageUrl" class="image_live" @click="goDetail(item.liveId)" />
-              <span v-show="item.status == 'live'" class="item_live_status">直播中</span>
-              <span v-show="item.status == 'start'" class="item_live_status" style="color:#00B061">未开始</span>
-              <span v-show="item.status == 'end'" class="item_live_status" style="color: #fcba00">已结束</span>
+            <div class="item_live_imgBox" style="cursor: pointer" @click="goDetail(item.liveId)">
+              <div class="watchnum">
+                <img src="../../assets/images/playicon.png" width="48" height="48" alt="">
+                <span class="num"><i class="iconfont iconimage_icon_user"></i>{{item.viewersNumber || 0}}</span>
+              </div>
+              <img :src="item.coverImageUrl" class="image_live"  />
+              <span v-if="item.status == 'live'" class="item_live_status">直播中</span>
+              <!-- <span v-show="item.status == 'start'" class="item_live_status" style="color:#00B061">未开始</span> -->
+              <span v-else class="item_live_status" style="color: #fcba00">未开始</span>
               <div
                 v-show="item.status == 'live'"
                 class="item_live_playButton"
@@ -114,62 +118,7 @@
             <div style="padding: 10px 14px; height: 93px">
               <h3 class="showText">{{ item.channelName }}</h3>
               <p class="department">{{ item.categoryName }}</p>
-              <el-tooltip
-                class="item"
-                effect="dark"
-                content="Bottom Center 提示文字"
-                placement="top"
-              >
-                <p v-if="item.planTime.length > 0" class="department">
-                  {{ item.lecturerName }} |
-
-                  <span v-if="item.batchDeclare == 'plural' || item.batchDeclare == 'single'">
-                    {{ item.planTime[0].split('~')[0] }} ~ {{ item.planTime[0].split('~')[1] }}
-                  </span>
-
-                  <span v-if="item.cycleInfo.cycleMode == 'day'">
-                    <span>每天 </span>
-                  </span>
-                  <span v-if="item.cycleInfo.cycleMode == 'week'">
-                    <span>每周 </span>
-                    <span v-for="(item, index) in item.cycleInfo.cycleTime.split(',')" :key="index">周{{ item }}/</span>
-                  </span>
-                  <span v-if="item.cycleInfo.cycleMode == 'month'">
-                    <span>每月 </span>
-                    <span v-for="(item, index) in item.cycleInfo.cycleTime.split(',')" :key="index">{{ item }}号/</span>
-                  </span>
-                  <span>
-                    {{ item.planTime[0].split('~')[0].split(' ')[1] }} ~
-                    {{ item.planTime[0].split('~')[1].split(' ')[1] }}</span>
-                </p>
-                <p v-else class="department" style="padding: 10px 14px; height: 96px">
-                  <span> &nbsp; </span>
-                </p>
-
-                <div slot="content">
-                  <div v-if="item.batchDeclare == 'plural' || item.batchDeclare == 'single'">
-                    <p v-for="(i, index) in item.planTime" :key="index">
-                      第{{ index + 1 }}次：{{ i.split('~')[0] }} ~ {{ i.split('~')[1] }}
-                    </p>
-                  </div>
-                  <p v-if="item.cycleInfo.cycleMode == 'day'">每天</p>
-                  <p v-if="item.cycleInfo.cycleMode == 'week'">
-                    每周
-                    <span v-for="(item, index) in item.cycleInfo.cycleTime.split(',')" :key="index">周{{ item }}/</span>
-                  </p>
-                  <p v-if="item.cycleInfo.cycleMode == 'month'">
-                    每月
-                    <span v-for="(item, index) in item.cycleInfo.cycleTime.split(',')" :key="index">{{ item }}号/</span>
-                  </p>
-
-                  <div v-if="item.batchDeclare == 'cycle'">
-                    <p v-for="(i, index) in item.planTime" :key="index">
-                      第{{ index + 1 }}次：{{ i.split('~')[0].split(' ')[1] }} ~
-                      {{ i.split('~')[1].split(' ')[1] }}
-                    </p>
-                  </div>
-                </div>
-              </el-tooltip>
+              <live-time-tips :item="item" />
             </div>
           </el-card>
         </el-col>
@@ -198,9 +147,11 @@
 
 <script>
 import { getcategoryTree, getLiveList } from '@/api/live'
+import LiveTimeTips from '@/views/live/components/LiveTimeTips'
 // 直播列表
 export default {
   name: 'LiveList',
+  components: { LiveTimeTips },
   data() {
     return {
       queryData: {
@@ -263,7 +214,7 @@ export default {
         // 判断分类是否超出1行
         if (this.$refs.liveTypes.$el.offsetHeight > 43) {
           this.moreLiveTypeButton = true
-          this.$refs.liveTypes.$el.style.height = '30px'
+          this.$refs.liveTypes.$el.style.height = '35px'
         }
       })
     }
@@ -336,10 +287,10 @@ export default {
     },
     // 更多按钮，控制分类超过两行是否显示
     showAllLiveType() {
-      if (this.$refs.liveTypes.$el.style.height == '30px') {
+      if (this.$refs.liveTypes.$el.style.height == '35px') {
         this.$refs.liveTypes.$el.style.height = 'auto'
       } else {
-        this.$refs.liveTypes.$el.style.height = '30px'
+        this.$refs.liveTypes.$el.style.height = '35px'
       }
     },
     // input输入搜索
@@ -428,10 +379,10 @@ export default {
           background: #f5f5f6;
           display: inline-block;
           .label {
-            color: #01aafc;
+            color: #2875D4;
           }
           .close {
-            color: #01aafc;
+            color: #2875D4;
             margin-left: 10px;
           }
           .right {
@@ -454,7 +405,7 @@ export default {
           cursor: pointer;
         }
         .active_type {
-          color: #01aafc;
+          color: #2875D4;
         }
         .more_type {
           float: right;
@@ -475,6 +426,29 @@ export default {
     }
     .item_live_imgBox {
       position: relative;
+      .watchnum{
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        justify-content: center;
+        display: flex;
+        align-items: center;
+        .num{
+          position: absolute;
+          bottom: 9px;
+          right: 9px;
+          background: rgba(0,11,21,0.45);
+          border-radius: 4px;
+          padding: 3px 9px;
+          color: #fff;
+          .iconfont{
+            font-size: 12px;
+            margin-right: 5px;
+          }
+        }
+      }
       .item_live_status {
         position: absolute;
         top: 10px;
@@ -484,7 +458,7 @@ export default {
         -webkit-transform: scale(0.9);
         padding: 5px 8px;
         border-radius: 3px;
-        color: #01aafc;
+        color: #2875D4;
       }
 
       .item_live_playButton {

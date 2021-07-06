@@ -1,0 +1,15 @@
+.common-title {
+    font-family: PingFangSC-Medium;
+    font-size: 18px;
+    color: rgba(0, 11, 21, 0.85);
+    font-weight: bold;
+    .tip {
+      width: 2px;
+      height: 16px;
+      display: inline-block;
+      background: #2875d4;
+      border-radius: 4px;
+      vertical-align: -2px;
+      margin-right: 8px;
+    }
+  }

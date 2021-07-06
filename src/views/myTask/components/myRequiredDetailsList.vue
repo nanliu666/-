@@ -21,7 +21,6 @@
                 :onerror="errorImg"
                 class="course_img"
               />
-              <!-- <div class="mask" v-show="showExam"> -->
               <div class="mask">
                 <div v-show="item.status == 2" class="hoverButton finger" @click="goLearn(item)">
                   {{ item.totalPrecent ? '继续学习' : '立即学习' }}
@@ -38,14 +37,16 @@
                   </li>
                   <li class="other">
                     <span class="lecturer">{{ item.teacherName ? item.teacherName : '--' }}</span>
-                    <span class="i">|</span>
-                    <span class="course_date">{{ item.startDate ? item.startDate : '--' }} -
-                      {{ item.entDate ? item.entDate : '--' }}</span>
+                    <span class="course_date">
+                      学习人数:
+                      {{ item.studyNum ? item.studyNum : 0 }}
+                      人
+                    </span>
                   </li>
                   <!-- 进度条 -->
                   <li class="progress">
                     <div class="progress_bar">
-                      <div class=" outer">
+                      <div class="outer">
                         <div class="inside" :style="'width:' + item.totalPrecent + '%'"></div>
                       </div>
                     </div>
@@ -56,71 +57,51 @@
                 </ul>
               </div>
               <!-- 考试信息 -->
-              <div
-                class="course_exam"
-                @click="handleShowExam(item, item.id, external_i, internal_i)"
-              >
-                <div>关联考试：</div>
+              <div class="course_exam" @click="handleShowExam(item, internal_i)">
+                <div class="label">关联考试：</div>
                 <div class="exam_num">{{ item.examList.length }}个</div>
-                <i v-show="item.isShow && item.examList.length" class="el-icon-arrow-down"></i>
-                <i v-show="!item.isShow && item.examList.length" class="el-icon-arrow-up"></i>
+                <i v-show="item.isShow && item.examList.length" class="el-icon-arrow-up"></i>
+                <i v-show="!item.isShow && item.examList.length" class="el-icon-arrow-down"></i>
               </div>
             </div>
             <!-- 状态 -->
             <div class="course_status">
               <span v-if="item.status == 1" class="base_status status_1">未开始</span>
-              <span v-if="item.status == 2" class="base_status status_2">进行中</span>
-              <span v-if="item.status == 3" class="base_status status_3">已结束</span>
+              <span v-if="item.status == 2" class="base_status status_6">进行中</span>
+              <span v-if="item.status == 3" class="base_status status_5">已结束</span>
+            </div>
+            <!-- 考试列表 -->
+            <div v-show="item.showExam" class="exam_list">
+              <!-- 列表内容 -->
+              <ul class="exam_list_ul">
+                <li
+                  v-for="(item, index) in item.examList"
+                  :key="index + Math.floor(Math.random() * 100000) + 'd'"
+                  class="exam_list_li"
+                >
+                  <ul class="exam_info">
+                    <li class="exam_name">
+                      <el-button type="text" :disabled="item.isDisabled" @click="goExam(item)">
+                        {{ item.examName }}
+                      </el-button>
+                    </li>
+                    <li class="status">
+                      <span v-if="item.isPass == '1'" class="base_status status_1 exam_status">未通过</span>
+                      <span v-if="item.isPass == '2'" class="base_status status_2 exam_status">待发布</span>
+                      <span v-if="item.isPass == '3'" class="base_status status_3 exam_status">已通过</span>
+                      <!-- <span v-if="item.status == '4'" class="base_status status_4 exam_status">缺考</span> -->
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+              <!-- 三角形 -->
+              <div class="arrows" :style="'left:' + triangularPosition + 'px'"></div>
             </div>
           </div>
           <div
             v-for="(item, index) in 4 - external.list.length"
             :key="index + Math.floor(Math.random() * 100000) + 'c'"
           ></div>
-        </div>
-        <!-- 考试列表 -->
-        <div v-show="external.showExam" class="exam_list">
-          <!-- 列表内容 -->
-          <ul class="exam_list_ul">
-            <li
-              v-for="(item, index) in examListData"
-              :key="index + Math.floor(Math.random() * 100000) + 'd'"
-              class="exam_list_li"
-            >
-              <ul class="exam_info">
-                <li class="exam_name">
-                  <span class="exam_info_c2 exam_title">{{ item.examName }}</span>
-                  <span v-if="item.status == '1'" class="base_status status_1 exam_status">未开始</span>
-                  <span
-                    v-if="item.status == '2' || (item.isPass == 1 && item.status == '3')"
-                    class="base_status status_4 exam_status"
-                  >未通过</span>
-                  <span
-                    v-if="item.status == '3' && item.isPass == 3"
-                    class="base_status status_3 exam_status"
-                  >已通过</span>
-                  <span v-if="item.status == '4'" class="base_status status_5 exam_status">缺考</span>
-                </li>
-                <li class="exam_date_time">
-                  <span class="exam_info_c1">考试时间：</span><span class="exam_info_c2">{{ item.examBeginTime }}~{{ item.examEndTime }}</span>
-                </li>
-                <li class="time_long">
-                  <span class="exam_info_c1">考试时长：</span><span class="exam_info_c2">{{
-                    item.reckonTime ? item.reckonTimeValue + '分钟' : '不限时'
-                  }}</span>
-                </li>
-                <li class="achievement">
-                  <span class="exam_info_c1">成绩：</span><span class="exam_info_c2">{{ item.score ? item.score : '--' }}</span>
-                </li>
-                <!-- <li class="text_button" @click="goExam(item)">进入考试</li> disabled-->
-                <li class="text_button">
-                  <el-button type="text" :disabled="item.isDisabled" @click="goExam(item)">进入考试</el-button>
-                </li>
-              </ul>
-            </li>
-          </ul>
-          <!-- 三角形 -->
-          <div class="arrows" :style="'left:' + triangularPosition + 'px'"></div>
         </div>
       </div>
     </section>
@@ -144,7 +125,6 @@ export default {
   },
   data() {
     return {
-      temId: null,
       examListData: [], //考试列表
       triangularPosition: 132, // 考试列表三角形位置
       errorImg: 'this.src="' + require('@/assets/images/required_bg.png') + '"'
@@ -153,33 +133,29 @@ export default {
   created() {},
   methods: {
     // 考试列表切换
-    handleShowExam(item, id, external_i, internal_i) {
-      // 计算考试列表三角形位置
-      this.triangularPosition = 132 + internal_i * 294
+    handleShowExam(item, index) {
+      this.$set(this.dataInfo[0].list[index], 'isShow', !this.dataInfo[0].list[index].isShow)
+      this.$set(this.dataInfo[0].list[index], 'showExam', !this.dataInfo[0].list[index].showExam)
+      // this.triangularPosition = 132 + internal_i * 294
+      // //只展示当前点击的卡片
+      // let currentTab = this.dataInfo[external_i]
 
-      for (let i = 0; i < this.dataInfo.length; i++) {
-        // 处理考试列表展示
-        if ((i == external_i && id == this.temId) || (i == external_i && this.temId == null)) {
-          this.dataInfo[i].showExam = !this.dataInfo[i].showExam
-        } else if (i == external_i) {
-          this.dataInfo[i].showExam = true
-        } else {
-          this.dataInfo[i].showExam = false
-        }
-        if (item.examList.length == 0) {
-          this.dataInfo[i].showExam = false
-        }
-        // debugger
-        // 处理考试列表图标方向
-        for (let v = 0; v < this.dataInfo[i].list.length; v++) {
-          if (v == internal_i && i == external_i) {
-            this.dataInfo[i].list[v].isShow = !this.dataInfo[i].list[v].isShow
-          } else {
-            this.dataInfo[i].list[v].isShow = false
-          }
-        }
-      }
-      this.temId = id
+      // currentTab.list.forEach(o=>{
+      //   o.showExam = o.showExam?o.showExam : false
+      //   if(o.id===id){
+      //     o.showExam = !o.showExam
+      //   }
+      // })
+      // this.$set(this.dataInfo,external_i,currentTab)
+      // for (let i = 0; i < this.dataInfo.length; i++) {
+      //   for (let v = 0; v < this.dataInfo[i].list.length; v++) {
+      //     if (v == internal_i && i == external_i) {
+      //       this.dataInfo[i].list[v].isShow = !this.dataInfo[i].list[v].isShow
+      //     } else {
+      //       this.dataInfo[i].list[v].isShow = false
+      //     }
+      //   }
+      // }
       // 处理是否可点击进去考试
       if (item.examList.length > 0) {
         let nowTem = new Date().getTime()
@@ -218,7 +194,10 @@ export default {
     // 去学习
     goLearn(e) {
       if (this.isStatus(e)) return
-      this.$router.push({ path: '/course/learn', query: { courseId: e.id } })
+      this.$router.push({
+        path: '/course/learn',
+        query: { courseId: e.id, studyPlanId: JSON.parse(this.$route.query.item).id }
+      })
       // 阻止冒泡
       window.event ? (window.event.cancelBubble = true) : e.stopPropagation()
     },
@@ -226,7 +205,10 @@ export default {
     // 去课程详情
     goCourseDetails(item) {
       if (this.isStatus(item)) return
-      this.$router.push({ path: '/course/detail', query: { id: item.id } })
+      this.$router.push({
+        path: '/course/detail',
+        query: { id: item.id, studyPlanId: JSON.parse(this.$route.query.item).id }
+      })
     },
     // 考试列表--进去考试
     goExam(item) {
@@ -297,7 +279,7 @@ export default {
 $timeHead: rgba(139, 155, 168, 0.65);
 
 .myRequiredDetailsList {
-  margin-top: 24px;
+  padding-top: 24px;
   p {
     margin: 0;
   }
@@ -312,43 +294,61 @@ $timeHead: rgba(139, 155, 168, 0.65);
     line-height: 20px;
   }
   .status_1 {
-    background: #e7ffee;
-    color: #00b061;
+    color: #f5c200;
+    background-color: #fffee6;
   }
   .status_2 {
-    background: #fffce6;
-    color: #fcba00;
+    background: #fff6f0;
+    color: #f5623b;
   }
   .status_3 {
-    background: #e7fbff;
-    color: #01aafc;
+    background: #f3fced;
+    color: #50bd35;
   }
   .status_4 {
-    background: #fff4f0;
-    color: #d92919;
+    background: #fff6f0;
+    color: #f5623b;
   }
   .status_5 {
-    background: #f5f5f6;
     color: rgba(0, 11, 21, 0.45);
+    background-color: #f5f5f6;
+  }
+  .status_6 {
+    color: #2875d4;
+    background-color: #f0f9ff;
   }
   .finger {
     cursor: pointer;
   }
   .Level_1_cycle {
-    margin-bottom: 24px;
-    .Level_2_cycle > div {
-      width: 273px;
-      margin: 0 10px;
-    }
+    width: 100%;
+    background-color: #f7f8f8;
+    padding-bottom: 225px;
+    padding-left: 5px;
+    width: 100%;
+    height: 100%;
     .Level_2_cycle {
+      width: 100%;
+      height: 100%;
       display: flex;
-      justify-content: space-between;
+      flex-wrap: wrap;
+      position: relative;
       .course {
-        height: 298px;
+        background-color: #fff;
+        width: 280px;
+        height: 314px;
         border-radius: 4px;
-        box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
-        // background: $timeHead;
+        box-shadow: 0 2px 8px 0 rgba(0, 61, 112, 0.08);
+        flex-shrink: 0;
+        margin-right: 18px;
+        margin-bottom: 20px;
+        transition: all 0.3s;
         position: relative;
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 9px 12px 0 rgba(0, 63, 161, 0.12);
+        }
+
         .top {
           position: relative;
           height: 172px;
@@ -369,7 +369,7 @@ $timeHead: rgba(139, 155, 168, 0.65);
             border-radius: 4px;
             color: #ffffff;
             // 控制显示遮罩
-            opacity: 0;
+            visibility: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -386,12 +386,12 @@ $timeHead: rgba(139, 155, 168, 0.65);
         }
         // 鼠标移上去事件
         .top:hover .mask {
-          opacity: 1;
+          visibility: visible;
         }
         .bottom {
           height: 126px;
           .course_info {
-            height: 87px;
+            height: 100px;
             box-sizing: border-box;
             padding: 10px 16px;
             .course_info_ul {
@@ -404,17 +404,19 @@ $timeHead: rgba(139, 155, 168, 0.65);
                 -webkit-box-orient: vertical;
                 -webkit-line-clamp: 1;
                 overflow: hidden;
-                color: #000b15;
-                // font-weight: bold;
+                font-size: 14px;
+                color: rgba(0, 11, 21, 0.85);
+                line-height: 22px;
+                font-weight: 600;
               }
               .other {
-                opacity: 0.65;
+                opacity: 0.45;
+                font-family: PingFangSC-Regular;
                 font-size: 12px;
-                color: #000b15;
-                .i {
-                  margin: 0 8px;
-                  position: relative;
-                  top: -1px;
+                color: rgba(0, 11, 21, 0.85);
+                line-height: 18px;
+                span {
+                  margin-right: 17px;
                 }
               }
               .progress {
@@ -425,19 +427,22 @@ $timeHead: rgba(139, 155, 168, 0.65);
                   align-items: center;
                 }
                 .progress_num {
-                  width: 35px;
-                  margin-left: 16px;
-                  color: rgba(1, 170, 252, 1);
+                  width: 22px;
+                  font-size: 12px;
+                  color: rgba(0, 11, 21, 0.45);
+                  letter-spacing: 0;
+                  line-height: 18px;
+                  text-align: right;
                 }
                 .outer {
                   height: 6px;
                   width: 100%;
-                  background: rgba(1, 170, 252, 0.11);
-                  border-radius: 3px;
+                  background: rgba(0, 11, 21, 0.04);
+                  border-radius: 2.5px;
                   .inside {
                     height: 100%;
                     width: 0%;
-                    background: #01aafc;
+                    background: #2875d4;
                     border-radius: 3px;
                   }
                 }
@@ -454,8 +459,19 @@ $timeHead: rgba(139, 155, 168, 0.65);
             box-sizing: border-box;
             padding: 0 16px;
             .exam_num {
-              color: rgba(0, 11, 21, 1);
+              opacity: 0.85;
+              font-family: PingFangSC-Regular;
+              font-size: 12px;
+              color: rgba(0, 11, 21, 0.85);
+              line-height: 18px;
               margin-right: 5px;
+            }
+            .label {
+              opacity: 0.45;
+              font-family: PingFangSC-Regular;
+              font-size: 12px;
+              color: rgba(0, 11, 21, 0.85);
+              line-height: 18px;
             }
           }
         }
@@ -463,53 +479,40 @@ $timeHead: rgba(139, 155, 168, 0.65);
           position: absolute;
           top: 8px;
           right: 8px;
-          // span{
-          //   display: inline-block;
-          //   border-radius: 4px;
-          //   height: 20px;
-          //   width: 52px;
-          //   font-size: 12px;
-          //   text-align: center;
-          //   line-height: 20px;
-          // }
         }
+      }
+      & > div:nth-of-type(4n) {
+        margin: 0;
       }
     }
     .exam_list {
-      position: relative;
-      margin: 20px 12px;
-      // width: 100%;
+      width: 280px;
+      max-height: 215px;
+      overflow-y: auto;
+      position: absolute;
+      box-shadow: 0 2px 8px 0 rgba(0, 61, 112, 0.08);
+      top: 318px;
+      left: 0px;
       background: #ffffff;
-      box-shadow: 0px 4px 12px 5px rgba(0, 63, 161, 0.1);
       border-radius: 4px;
-      .exam_list_ul {
-        padding: 0 24px;
-      }
-      .exam_list_li {
-        padding: 13px 0;
-        border-bottom: 1px solid #ebeced;
+      z-index: 1;
+      &::-webkit-scrollbar {
+        display: none;
       }
       .exam_list_li:last-child {
         border-bottom: 0;
       }
       .exam_info {
+        height: 50px;
         display: flex;
-        justify-content: space-between;
-
-        .exam_info_c1 {
-          color: rgba(0, 11, 21, 0.65);
-        }
-        .exam_info_c2 {
-          color: rgba(0, 11, 21, 0.85);
-        }
+        align-items: center;
+        padding: 0 32px 0 24px;
+        border-bottom: 1px solid #ebeced;
         .exam_name {
           width: 200px;
           display: flex;
           .exam_title {
             flex: 1;
-            // display: -webkit-box;
-            // -webkit-box-orient: vertical;
-            // -webkit-line-clamp: 1;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -518,19 +521,8 @@ $timeHead: rgba(139, 155, 168, 0.65);
             margin-left: 5px;
           }
         }
-        .exam_date_time {
-          width: 350px;
-        }
-        .time_long {
-          width: 150px;
-        }
-        .achievement {
-          width: 100px;
-        }
         .text_button {
-          // width: 100px;
           color: rgba(1, 170, 252, 1);
-          // cursor:pointer;
           /deep/ .el-button {
             padding: 0;
             display: inline;
@@ -542,9 +534,7 @@ $timeHead: rgba(139, 155, 168, 0.65);
         width: 0;
         height: 0;
         border: 10px solid;
-        // border-color: transparent transparent #FFFFFF;
         border-color: transparent transparent #ffffff;
-        // box-shadow: 0 2px 12px 0 rgba(0,61,112,0.08);
         position: absolute;
         top: -20px;
         left: 132px;

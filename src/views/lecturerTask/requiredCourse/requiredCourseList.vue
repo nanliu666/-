@@ -16,21 +16,24 @@
         </div>
 
         <div class="item_title">
-          {{ item.menuName }}
+          {{ item.name }}
         </div>
 
-        <div class="item_time">{{ '赵老师' }} &nbsp; | &nbsp; {{ '2020/12/30 - 2021/01/30' }}</div>
+        <div class="item_time">
+          {{ item.teacherName }} &nbsp; | &nbsp;
+          {{ `${showTime(item.startTime)} - ${showTime(item.endTime)}` }}
+        </div>
 
         <div class="item_Rate">
           <el-rate
-            v-model="valueRate"
+            v-model="item.composite"
             disabled
             show-score
             text-color="#ff9900"
-            score-template="{value}"
+            score-template="{value}分"
           >
           </el-rate>
-          <span> 大数据 </span>
+          <span> {{ item.knowledgeSystemName || ' -- ' }} </span>
         </div>
 
         <div v-if="item.totalPrecent == 100" class="item_complete">
@@ -58,7 +61,7 @@
   </div>
 </template>
 <script>
-import { myCourseCatalog } from '@/api/myTask'
+import { getRequiredList } from '@/api/lecturerTask'
 ;('requiredCourseList')
 export default {
   data() {
@@ -80,21 +83,23 @@ export default {
     // this.getmyCourseCatalog()
   },
   methods: {
+    showTime(tade) {
+      let time = tade.split(' ')
+      return time[0]
+    },
     returnimgFn(img) {
       return img || require('@/assets/images/required_bg.png')
     },
     // 跳转详情页
     goDetail(item) {
-      this.$router.push({ path: '/requiredCourseDetail', query: { item: JSON.stringify(item) } })
+      this.$router.push({ path: '/requiredCourseDetail', query: { id: item.id } })
     },
     async getmyCourseCatalog() {
       let params = {
-        courseType: 0,
-        studyType: 0,
         ...this.page
       }
 
-      let res = await myCourseCatalog(params)
+      let res = await getRequiredList(params)
       this.listData = res.data
       this.total = res.totalNum
     },
@@ -115,18 +120,18 @@ export default {
 <style scoped lang="scss">
 .myRequiredList {
   margin: 25px 0;
-  padding: 0 24px 25px;
-  box-shadow: 0 2px 8px 0 rgba(0, 63, 161, 0.06);
-  background-color: #fff;
+  padding-bottom: 25px;
+  box-shadow: 0 2px 8px 0 rgba(0, 61, 112, 0.06);
+  background-color: #f8f9f9;
   .items {
     display: flex;
     flex-wrap: wrap;
     .item {
-      width: 273px;
-      height: 285px;
+      width: 285px;
+      height: 282px;
       border-radius: 4px;
       overflow: hidden;
-      box-shadow: 0 2px 8px 0 rgba(0, 63, 161, 0.06);
+      box-shadow: 0 2px 8px 0 rgba(0, 61, 112, 0.06);
       transition-duration: 0.3s;
       margin-right: 20px;
       margin-top: 20px;
@@ -137,7 +142,7 @@ export default {
       }
       &:hover {
         transform: translateY(-3px);
-        box-shadow: 0 9px 12px 0 rgba(0, 63, 161, 0.12);
+        box-shadow: 0 8px 20px 0 rgba(0, 63, 112, 0.12);
         .card-cover {
           visibility: visible !important;
         }
@@ -150,46 +155,46 @@ export default {
           width: 100%;
           height: 100%;
         }
-        .span1 {
+        .span3 {
           position: absolute;
           top: 8px;
           right: 8px;
-          background: #e7ffee;
+          background: #f5f5f6;
           border-radius: 4px;
           font-size: 10px;
           width: 52px;
           height: 20px;
           line-height: 20px;
           text-align: center;
-          color: #00b061;
+          color: rgba(0, 11, 21, 0.45);
+          font-style: none;
+        }
+        .span1 {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          background: #fffee6;
+          border-radius: 4px;
+          font-size: 10px;
+          width: 52px;
+          height: 20px;
+          line-height: 20px;
+          text-align: center;
+          color: #f5c200;
           font-style: none;
         }
         .span2 {
           position: absolute;
           top: 8px;
           right: 8px;
-          background: #fffce6;
+          background: #f0f9ff;
           border-radius: 4px;
           font-size: 10px;
           width: 52px;
           height: 20px;
           line-height: 20px;
           text-align: center;
-          color: #fcba00;
-          font-style: none;
-        }
-        .span3 {
-          position: absolute;
-          top: 8px;
-          right: 8px;
-          background: #e7fbff;
-          border-radius: 4px;
-          font-size: 10px;
-          width: 52px;
-          height: 20px;
-          line-height: 20px;
-          text-align: center;
-          color: #01aafc;
+          color: #2875d4;
           font-style: none;
         }
       }

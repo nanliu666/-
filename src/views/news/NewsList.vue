@@ -47,13 +47,11 @@
             <span class="info_val">{{ item.hits }}</span>
           </div>
         </div>
-        <div v-show="item.isTop && pitch == 0" class="showTop">
-          置顶
-        </div>
+        <div v-show="item.isTop && pitch == 0" class="showTop">置顶</div>
       </div>
     </div>
 
-    <div class="page" v-show="data.length">
+    <div v-show="data.length" class="page">
       <el-pagination
         :page-sizes="[10, 20, 30, 50, 100]"
         layout="total, sizes, prev, pager, next, jumper"
@@ -68,9 +66,7 @@
     <div v-show="!data.length" class="content">
       <div class="content_box">
         <img src="@/assets/images/my_noData.png" alt="" />
-        <div class="text">
-          暂无数据
-        </div>
+        <div class="text">暂无数据</div>
       </div>
     </div>
   </div>
@@ -118,7 +114,10 @@ export default {
 
     tonewsDetails(row, index) {
       // this.$router.push({ path: '/pressDetails' })
-
+      if (row.outsideLink && row.outsideLink.length > 0) {
+        window.open(row.outsideLink)
+        return
+      }
       this.$router.push({
         path: '/news/Details',
         query: {
@@ -151,51 +150,47 @@ export default {
 <style lang="scss" scoped>
 .newsList {
   width: 100%;
+  background: #ffffff;
+  box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
   .title {
-    width: 1200px;
-    height: 145px;
     margin: 20px auto 0;
     padding: 24px 24px 0;
-    background: #ffffff;
-    box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.1);
-    border-radius: 4px;
+
     .search {
       .searchInput {
         width: 380px;
-        margin-bottom: 16px;
       }
-      border-bottom: 1px solid #ebeced;
     }
     .btnBar {
-      padding-top: 25px;
-      border-radius: 0;
+      margin-top: 10px;
+      border-bottom: 1px solid rgba(0, 11, 21, 0.08);
       .btn {
-        border-radius: 0;
+        font-family: PingFangSC-Regular;
         font-size: 16px;
         color: rgba(0, 11, 21, 0.65);
         letter-spacing: 0;
-        font-weight: bold;
+        line-height: 24px;
+        font-weight: 400;
+        margin-right: 40px;
       }
       .pitch {
-        border-bottom: 2px solid #01aafc;
-        color: #01aafc;
-        font-weight: 600;
+        border-radius: 0;
+        border-bottom: 2px solid #2875d4;
+        font-family: PingFangSC-Medium;
+        font-size: 16px;
+        color: #2875d4;
+        line-height: 24px;
+        font-weight: 500;
       }
     }
   }
   .list {
-    background: #ffffff;
-    box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.1);
-    border-radius: 4px;
-    width: 1200px;
-    height: 134px;
     padding: 24px;
-    margin-top: 20px;
     display: flex;
     position: relative;
     .list_box_l {
-      width: 114px;
-      height: 86px;
+      width: 210px;
+      height: 118px;
       border-radius: 4px;
       overflow: hidden;
       img {
@@ -206,19 +201,30 @@ export default {
     .list_box_r {
       margin-left: 24px;
       .list_box_r_title {
-        font-size: 18px;
-        color: #000b15;
-        line-height: 28px;
-        font-weight: bold;
-        padding-top: 10px;
+        font-family: PingFangSC-Medium;
+        font-size: 14px;
+        color: rgba(0, 11, 21, 0.85);
+        line-height: 24px;
+        font-weight: 500;
       }
       .list_box_r_info {
-        display: flex;
-        font-size: 14px;
+        margin-top: 24px;
+        font-family: PingFangSC-Regular;
+        font-size: 12px;
         color: rgba(0, 11, 21, 0.45);
+        letter-spacing: 0;
+        line-height: 18px;
+        font-weight: 400;
+        margin-right: 16px;
         .info_box {
-          margin-right: 24px;
-          margin-top: 16px;
+          margin-top: 8px;
+          .info_val {
+            font-size: 12px;
+            color: rgba(0, 11, 21, 0.85);
+            letter-spacing: 0;
+            line-height: 18px;
+            font-weight: 400;
+          }
         }
       }
     }
@@ -230,10 +236,13 @@ export default {
       height: 20px;
       line-height: 20px;
       text-align: center;
-      border: 1px solid #d9dbdc;
+      background-image: linear-gradient(136deg, #f3d84f 0%, #ffb905 100%);
+      background: #ffb905;
       border-radius: 4px;
+      font-family: PingFangSC-Regular;
       font-size: 12px;
-      color: rgba(0, 11, 21, 0.45);
+      color: #ffffff;
+      font-weight: 400;
     }
   }
   .page {
@@ -247,7 +256,7 @@ export default {
     }
   }
   .content {
-    box-shadow: 0 2px 12px 0 rgba(0,61,112,0.08);
+    box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
     background: #ffffff;
     border-radius: 4px;
     width: 1200px;
@@ -272,5 +281,10 @@ export default {
       }
     }
   }
+}
+.el-input__inner {
+  color: #000b15;
+  opacity: 0.25;
+  font-family: PingFangSC-Medium;
 }
 </style>

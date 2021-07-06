@@ -175,16 +175,7 @@ export default {
   },
   data() {
     return {
-      routeList: [
-        {
-          path: '/exam',
-          title: '考试'
-        },
-        {
-          path: '',
-          title: _.get(this.$route.meta, 'title', ' ')
-        }
-      ],
+      routeList: [],
       examDetail: {},
       questionList: [],
       queryInfo: {
@@ -194,12 +185,8 @@ export default {
   },
   computed: {
     id() {
-      const id = _.get(this.$route, 'query.id', null)
-      const route = `${id ? `${this.$route.path}?id=${id}` : `${this.$route.path}`}`
-      _.set(this.routeList, '[1].path', route)
-      return id
+      return _.get(this.$route, 'query.id', null)
     },
-    QUESTION_TYPE_MAP: () => QUESTION_TYPE_MAP,
     QUESTION_TYPE_GROUP: () => QUESTION_TYPE_GROUP
   },
   watch: {
@@ -211,6 +198,25 @@ export default {
       immediate: true
     }
   },
+  activated() {
+    const examIds = _.get(this.$route, 'query.examIds')
+    const noMiddleRoutes = [
+      {
+        path: '/exam',
+        title: '考试'
+      },
+      {
+        path: '',
+        title: '查看答卷'
+      }
+    ]
+    let middleRoutes = _.cloneDeep(noMiddleRoutes)
+    middleRoutes.splice(1, 0, {
+      path: `/exam/middle?id=${this.$route.query.examIds}`,
+      title: this.$route.query.examName
+    })
+    this.routeList = examIds ? middleRoutes : noMiddleRoutes
+  },
   methods: {
     getHTML(content) {
       return addLine(content)
@@ -218,7 +224,9 @@ export default {
     moment,
     async loadData() {
       const loadFun = _.get(this.$route.query, 'examId') ? getViewAnswer : viewAnswerEachSession
-      this.examDetail = await loadFun(_.assign(this.queryInfo, this.$route.query))
+      this.examDetail = await loadFun(
+        _.assign(this.queryInfo, _.omit(this.$route.query, ['examIds', 'examName']))
+      )
       this.initQuestionList()
     },
     addScore(args) {

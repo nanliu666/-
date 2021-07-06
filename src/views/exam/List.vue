@@ -1,10 +1,10 @@
 <template>
   <div class="exam-style">
-    <el-card class="search-card">
+    <el-card v-if="from === 'exam'" class="search-card">
       <el-input
         v-model="queryInfo.examName"
-        :disabled="tableLoading"
         class="input-box"
+        maxlength="32"
         placeholder="输入考试名称搜索"
         prefix-icon="el-icon-search"
         clearable
@@ -67,88 +67,87 @@
         <el-button slot="reference" size="medium"> 高级检索 </el-button>
       </el-popover>
     </el-card>
-    <el-card class="table-style">
-      <common-table
-        id="demo"
-        ref="table"
-        :columns="columnsVisible"
-        :config="tableConfig"
-        :data="tableData"
-        :loading="tableLoading"
-        :page-config="tablePageConfig"
-        :page="page"
-        @current-page-change="handleCurrentPageChange"
-        @page-size-change="handlePageSizeChange"
-      >
-        <template #examTime="{ row }"> {{ row.examBeginTime }} - {{ row.examEndTime }} </template>
-        <template #isPass="{ row }">
-          {{ getPass(row) }}
-        </template>
-        <template #score="{ row }">
-          {{ row.score ? row.score : '--' }}
-        </template>
-        <template #handler="{ row }">
-          <el-button type="text" @click="toDetail(row)">
-            进入考试
-          </el-button>
-        </template>
-      </common-table>
-    </el-card>
+    <div v-if="!_.isEmpty(tableData)" class="exam__main">
+      <ul v-loading="tableLoading" class="exam__ul">
+        <el-card>
+          <li
+            v-for="(item, index) in tableData"
+            :key="index"
+            class="exam__li"
+            @click="toDetail(item)"
+          >
+            <div class="li__container">
+              <div class="li__left">
+                <div class="li__title">
+                  <span v-if="item.examPattern === 'general'" class="title__flag online">在线</span>
+                  <span v-else class="title__flag offline">线下</span>
+                  <span class="title">
+                    {{ item.examName }}
+                  </span>
+                  <!-- 只有通用考试才会显示批次信息 -->
+                  <span v-if="item.examType === 'CurrencyExam'">
+                    <span>（第</span>
+                    <span>{{ (Number(_.get(item, 'batchNumber', 0)) + 1) | number2zhcn }}</span>
+                    <span>批）</span>
+                  </span>
+                </div>
+                <div class="li__time">
+                  <div v-if="from === 'task'" class="source">
+                    <span class="label">来源：</span>
+                    <span class="value">{{ item.examSourceName }} </span>
+                  </div>
+                  <div class="time">
+                    <span class="label">考试时间：</span>
+                    <span class="value">
+                      <span>{{ item.examBeginTime }}</span>
+                      <span> ~ </span>
+                      <span>{{ item.examEndTime }}</span>
+                    </span>
+                  </div>
+                  <div v-if="item.examPattern !== 'general'" class="li__classromm">
+                    <span class="label">考试地点：</span>
+                    <span class="value">
+                      <span>{{ item.roomAddr }}</span>
+                      <span> - </span>
+                      <span>{{ item.roomName }}</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <!-- 非考试中心列表且后端可显示才显示分数 -->
+              <div v-if="from !== 'exam' && item.scoreVisible" class="li__right">
+                <div class="score__content">
+                  <span class="content" :class="[item.isPass === 3 ? 'green' : 'red']">{{
+                    item.score
+                  }}</span>
+                  <span class="text">分</span>
+                </div>
+                <svg class="icon icon__box" aria-hidden="true">
+                  <use v-if="item.isPass === 3" xlink:href="#iconic_biaoqian_yitongguo" />
+                  <use v-if="item.isPass === 1" xlink:href="#iconic_biaoqian_weitongguo" />
+                </svg>
+              </div>
+            </div>
+          </li>
+        </el-card>
+      </ul>
+      <div class="pagination__container">
+        <el-pagination
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="10"
+          :current-page="queryInfo.pageNo"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalNum"
+          @size-change="handlePageSizeChange"
+          @current-change="handleCurrentPageChange"
+        />
+      </div>
+    </div>
+    <CommonEmpty v-else style="margin-top: 20px" />
   </div>
 </template>
 
 <script>
-const TABLE_COLUMNS = [
-  {
-    label: '考试名称',
-    prop: 'examName',
-    minWidth: 150
-  },
-  {
-    label: '来源',
-    prop: 'examSourceName',
-    align: 'center',
-    minWidth: 80
-  },
-  {
-    label: '考试时间',
-    prop: 'examTime',
-    slot: true,
-    align: 'center',
-    minWidth: 240
-  },
-  {
-    label: '参加次数',
-    prop: 'examTimes',
-    align: 'center',
-    minWidth: 100
-  },
-  {
-    label: '考试成绩',
-    slot: true,
-    align: 'center',
-    prop: 'score',
-    minWidth: 100
-  },
-  {
-    label: '是否通过',
-    prop: 'isPass',
-    align: 'center',
-    slot: true,
-    minWidth: 100
-  }
-]
-const TABLE_CONFIG = {
-  rowKey: 'id',
-  showHandler: true,
-  defaultExpandAll: true,
-  showIndexColumn: false,
-  enablePagination: true,
-  enableMultiSelect: false,
-  handlerColumn: {
-    minWidth: 80
-  }
-}
 const PASS_TYPE = [
   {
     label: '全部',
@@ -191,36 +190,46 @@ const STATUS_TYPE = [
 ]
 import { getExamList } from '@/api/exam'
 import moment from 'moment'
-import { mapGetters } from 'vuex'
+const nzhcn = require('nzh/cn')
 export default {
   name: 'ExamList',
+  filters: {
+    number2zhcn(index) {
+      return nzhcn.encodeS(index)
+    }
+  },
+  components: {
+    CommonEmpty: () => import('@/components/common-empty/Empty')
+  },
+  props: {
+    liveId: {
+      type: String,
+      default: ''
+    },
+    from: {
+      type: String,
+      default: 'exam'
+    }
+  },
+
   data() {
     return {
       passTypeOption: PASS_TYPE,
       statusOption: STATUS_TYPE,
-      tablePageConfig: {},
-      page: {
-        currentPage: 1,
-        size: 10,
-        total: 0
-      },
+      totalNum: 0,
       queryInfo: {
         pageNo: 1,
         pageSize: 10,
         examTime: [],
         examName: '',
         isPass: 0,
-        status: 0
+        status: 0,
+        liveId: '', // 如果是直播详情内的考试列表，入参liveId
+        type: 1 // 0我的任务内的考试列表， 1考试中心的列表，
       },
-      activeIndex: '1',
-      columnsVisible: TABLE_COLUMNS,
-      tableConfig: TABLE_CONFIG,
       tableData: [],
       tableLoading: false
     }
-  },
-  computed: {
-    ...mapGetters(['userId'])
   },
   activated() {
     this.loadTableData()
@@ -229,11 +238,6 @@ export default {
     // 去中间页面
     toDetail(row) {
       this.$router.push({ path: '/exam/middle', query: { id: row.batchId } })
-    },
-    getPass(row) {
-      return _.find(PASS_TYPE, (item) => {
-        return item.value === row.isPass
-      }).label
     },
     restSearch() {
       const queryParams = { examTime: [], isPass: '', status: '', pageNo: 1, pageSize: 10 }
@@ -276,11 +280,19 @@ export default {
         const examTime = _.map(examTimeTemp, (item) => {
           return moment(item).format('YYYY-MM-DD HH:mm:ss')
         })
+        // 直播需要入参liveId
+        if (this.from === 'live') {
+          this.queryInfo.liveId = this.liveId
+        }
+        // 直播考试。我的任务-考试type0，考试中心type1
+        if (this.from === 'live' || this.from === 'task') {
+          this.queryInfo.type = 0
+        }
         const params = _.assign(_.cloneDeep(this.queryInfo), { examTime })
         let { totalNum, data } = await getExamList(params)
         this.tableLoading = false
         this.tableData = data
-        this.page.total = totalNum
+        this.totalNum = totalNum
       } catch (error) {
         this.tableLoading = false
         this.$message.error(error.message)
@@ -292,8 +304,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
-/deep/ .el-range-separator {
+.is__hidden {
+  visibility: hidden;
+}
+/deep/ .el-date-editor .el-range-separator {
   padding: 0;
+  width: 50px;
 }
 /deep/ .el-range-editor {
   width: 100%;
@@ -309,8 +325,142 @@ export default {
       margin-right: 16px;
     }
   }
-  .table-style {
+  .exam__main {
     margin-top: 20px;
+    .exam__ul {
+      min-height: 70vh;
+      /deep/ .el-card__body {
+        padding: 0;
+      }
+      .exam__li {
+        cursor: pointer;
+        padding: 24px 0;
+        margin: 0 24px;
+        border-bottom: 1px solid #ebeced;
+        .li__container {
+          display: flex;
+          justify-content: space-between;
+          .li__left {
+          }
+          .li__right {
+            display: flex;
+            .icon__box {
+              margin-left: 20px;
+              font-size: 50px;
+            }
+            .score__content {
+              display: flex;
+              align-items: flex-end;
+              justify-content: center;
+              margin-bottom: 4px;
+              .content {
+                font-size: 40px;
+                font-weight: 550;
+                display: flex;
+              }
+              .green {
+                color: #339900;
+              }
+              .red {
+                color: #d9001b;
+              }
+              .text {
+                margin-bottom: 6px;
+              }
+            }
+          }
+        }
+        .li__title {
+          margin-bottom: 10px;
+          display: flex;
+          align-items: center;
+          .title {
+            font-family: PingFangSC-Medium;
+            font-size: 14px;
+            color: rgba(0, 11, 21, 0.85);
+            font-weight: 550;
+          }
+          .title__flag {
+            border-radius: 2px;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+          }
+          .online {
+            border: 1px solid #2875d4;
+            background: #f0f9ff;
+            font-family: PingFangSC-Regular;
+            font-size: 12px;
+            color: #2875d4;
+            letter-spacing: 0;
+            text-align: center;
+            font-weight: 400;
+          }
+          .offline {
+            font-family: PingFangSC-Regular;
+            font-size: 12px;
+            color: #13a1ad;
+            letter-spacing: 0;
+            text-align: center;
+            font-weight: 400;
+            background: #f0fffd;
+            border: 1px solid #13a1ad;
+            border-radius: 2px 2px 0 2px 2px;
+          }
+        }
+        .li__time {
+          display: flex;
+          .source {
+            position: relative;
+            padding-right: 10px;
+            margin-right: 10px;
+            &::after {
+              position: absolute;
+              content: '';
+              right: 0;
+              bottom: 1px;
+              width: 1px;
+              height: 13px;
+              background-color: #6f7583;
+            }
+          }
+          .li__classromm {
+            color: #a7a7a7;
+            position: relative;
+            padding-left: 10px;
+            margin-left: 10px;
+            &::after {
+              position: absolute;
+              content: '';
+              left: 0;
+              bottom: 1px;
+              width: 1px;
+              height: 13px;
+              background-color: #6f7583;
+            }
+          }
+          .label {
+            font-family: PingFangSC-Regular;
+            font-size: 12px;
+            color: rgba(0, 11, 21, 0.45);
+          }
+          .value {
+            font-family: PingFangSC-Regular;
+            font-size: 12px;
+            color: rgba(0, 11, 21, 0.85);
+            letter-spacing: 0;
+            font-weight: 400;
+          }
+        }
+      }
+    }
+    .pagination__container {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
   }
 }
 </style>

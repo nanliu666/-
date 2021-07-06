@@ -9,18 +9,19 @@ import { loadStyle } from './util/util'
 import * as urls from '@/config/env'
 import Element, { Message } from 'element-ui'
 import { iconfontUrl, iconfontVersion } from '@/config/env'
-import '@/styles/element-custom/theme/index.css'
+import '@/config/theme/index.css'
 import './styles/common.scss'
 import commonTable from 'vue-common-table'
-
 import Permission from '@/directive/pcheck'
 import _ from 'lodash'
 import loadmore from './directive/loadmore'
 import VueClipboard from 'vue-clipboard2'
+import tinymce from '@/components/tinymce'
+import '@/styles/globalStyle.scss'
 Vue.use(VueClipboard)
 Vue.prototype._ = _
-Vue.component('commonTable', commonTable) 
-
+Vue.component('commonTable', commonTable)
+Vue.component('tinymce', tinymce)
 if (process.env.NODE_ENV !== 'production') {
   const mock = require('@/mock')
   mock.default(true)

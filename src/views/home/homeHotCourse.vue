@@ -3,7 +3,7 @@
     <h3 class="LMTitle" style="padding-top:46px">
       <span class="span1">热门课程</span>
       <router-link :to="'/course/list'">
-        更多
+        查看更多
       </router-link>
     </h3>
     <div class="LModule">
@@ -11,18 +11,20 @@
         <template v-for="(item, i) in hotCourseData">
           <div v-if="i > 0" :key="item.courseId" class="homeCourse">
             <router-link :to="'/course/detail?id=' + item.courseId">
-              <div class="homeCourseImg">
-                <img
-                  :src="item.coverUrl ? item.coverUrl : '/img/autoL.png'"
-                  width="285"
-                  height="168"
-                  alt=""
-                />
-              </div>
-              <div class="homeCourseText">
-                <span class="homeCourseTitle" to="">{{ item.courseName }}</span>
-                <div class="grade">
-                  <el-rate
+
+              <div style="width:100%">
+            <img class="img"  width="285" height="166" :src="item.coverUrl ? item.coverUrl : '/img/autoL.png'" alt="" />
+            <div class="homeTrainTitle">
+              <div class="title">
+                {{ item.courseName }}
+            </div>
+            <div class="homeTrainText">
+              <span>讲师：{{ item.teacherName}}</span>
+              <span class="line"></span>
+              <span>学习人数：{{ item.people }}</span>
+            </div>
+            <div  class="homeTrainTextItem">
+               <el-rate
                     v-model="item.scope"
                     disabled
                     show-score
@@ -30,12 +32,10 @@
                     disabled-void-color="#ccc"
                     score-template="{value}"
                   ></el-rate>
-                </div>
-                <div class="livePerInfo">
-                  <span class="iconimage_icon_user iconfont userIcon"></span>
-                  <span style="font-size: 12px">{{ item.people }}人学习</span>
-                </div>
-              </div>
+              <span class="tag" v-if="item.knowledgeSystemName">{{ item.knowledgeSystemName }}</span>
+            </div>
+            </div>
+          </div>
             </router-link>
           </div>
           <div v-if="i == 0" :key="item.courseId" class="recommendCourse">
@@ -43,7 +43,7 @@
               <img
                 :src="item.coverUrl ? item.coverUrl : '/img/autoB.png'"
                 width="590"
-                height="305"
+                height="282"
                 alt=""
                 style="border-radius: 4px;"
               />
@@ -51,7 +51,12 @@
                 <div class="recommendCourseText">
                   <span class="recommendCourseTitle">{{ item.courseName }}</span>
                   <div class="recommendGrade">
-                    <el-rate
+                    <span>讲师：{{ item.teacherName}}</span>
+                    <span class="line"></span>
+                    <span>学习人数：{{ item.people }}人</span>
+                  </div>
+                  <div class="learnNub">
+                   <el-rate
                       v-model="item.scope"
                       disabled
                       show-score
@@ -59,10 +64,6 @@
                       score-template="{value}"
                     >
                     </el-rate>
-                  </div>
-                  <div class="learnNub">
-                    <span class="iconimage_icon_user iconfont userIcon"></span>
-                    <span style="font-size: 12px">{{ item.people }}人学习</span>
                   </div>
                 </div>
               </div>
@@ -86,4 +87,8 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.rate{
+  font-size: 16px;
+}
+</style>

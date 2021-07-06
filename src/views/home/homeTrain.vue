@@ -3,7 +3,7 @@
     <h3 class="LMTitle" style="padding-top:46px">
       <span class="span1">培训中心</span>
       <router-link to="/train/index">
-        更多
+        查看更多
       </router-link>
     </h3>
     <div class="LModule">
@@ -14,29 +14,48 @@
           class="homeTrain"
           @click="toTrainDetaill(item)"
         >
-          <h3 class="homeTrainTitle">
-            <span>{{ item.trainName }}</span>
-          </h3>
-          <div class="homeTrainText">
-            <div class="homeTrainTextItem">
-              <!-- <span class="iconimage_icon_time iconfont traingIcon"></span> -->
-              <span class="homeTrainTextItem2">时间：{{ item.startTime }}</span>
+          <div>
+            <img class="img" :src="imgSrc(item)" alt="" />
+            <div class="homeTrainTitle">
+              <div class="title">
+                {{ item.trainName }}
             </div>
-            <div class="homeTrainTextItem">
-              <!-- <span class="iconimage_icon_address iconfont traingIcon"></span> -->
-              <span class="homeTrainTextItem2">地址：{{ item.address }}</span>
+            <div class="homeTrainText">
+              <span>{{
+                item.trainWay === 2
+                  ? '面授培训'
+                  : item.trainWay === 3
+                    ? '混合培训'
+                    : item.trainWay === 1
+                      ? '在线培训'
+                      : '外训'
+              }}</span>
+              <span class="line"></span>
+              <span>{{ item.startTime | formate }}</span>
             </div>
-            <div class="homeTrainTextItem">
-              <!-- <img
-                    :src="item.avatarUrl ? item.avatarUrl : '/img/userIconBig.png'"
-                    width="24"
-                    height="24"
-                    alt=""
-                  /> -->
-              <span class="homeTrainTextItem2">讲师：{{ item.lecturerName }}</span>
-              <!-- <span
-                    :class="[item.status ? trainStatus[item.status].class : '', homeTraining]"
-                  >{{ trainStatus[item.status].text }}</span> -->
+            <div  class="homeTrainTextItem">
+
+               <el-rate
+               v-if="item.trainScope === 'inside'"
+                    v-model="item.composite"
+                    disabled
+                    show-score
+                    text-color="#72787E"
+                    disabled-void-color="#ccc"
+                    score-template="{value}"
+                  ></el-rate>
+                  <el-tooltip
+                  v-else
+                  class="item"
+                  effect="dark"
+                  :content="item.categoryName"
+                  placement="top-start"
+                  :disabled="item.categoryName.length < 10"
+                >
+                  <span>{{ item.categoryName }}</span>
+                </el-tooltip>
+              <!-- <span class="tag" v-if="item.knowledgeSystemName">{{ item.knowledgeSystemName }}</span> -->
+            </div>
             </div>
           </div>
         </div>
@@ -55,13 +74,39 @@ export default {
       }
     }
   },
+  filters:{
+    getTrainWay(val){
+      let type = {
+        '1':'在线',
+        '2':'面授',
+        '3':'混合',
+        '11':'在职',
+        '12':'脱产',
+        '13':'业余',
+      }
+      return  type[val]
+    },
+    formate(val){
+      return val.toString().replace(/-/g,'/')
+    }
+  },
   methods: {
+    imgSrc(data) {
+        if (data.coverPic) return data.coverPic
+        else if (data.trainWay === 1 && data.trainScope === 'inside')
+          return require('@/assets/images/online.png')
+        else if (data.trainWay === 2 && data.trainScope === 'inside')
+          return require('@/assets/images/Offline.png')
+        else if (data.trainWay === 3 && data.trainScope === 'inside')
+          return require('@/assets/images/mixin.png')
+        else if (data.trainWay === 4 && data.trainScope === 'outer')
+          return require('@/assets/images/outTrain.png')
+    },
     toTrainDetaill(item) {
-      // 调转到培训详情
       const { id: trainId, trainName: title, trainWay, userType } = item
       this.$router.push({
-        name: 'trainDetail',
-        params: {
+        path: '/train/detail',
+        query: {
           title,
           trainId,
           trainWay,
@@ -72,4 +117,6 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+  
+</style>

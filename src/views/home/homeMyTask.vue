@@ -32,7 +32,10 @@
                   <span class="homeMyTaskItemTextItem2" :title="item.address">地址：{{ item.address }}</span>
                 </div>
                 <div v-if="item.type == 1" class="homeMyTaskItemTextItem">
-                  <span class="homeMyTaskItemTextItem2">班主任：{{ item.lecturer }}</span>
+                  <span class="homeMyTaskItemTextItem2">项目经理：{{ item.lecturer }}</span>
+                </div>
+                <div v-if="item.type == 0" class="homeMyTaskItemTextItem">
+                  <span class="homeMyTaskItemTextItem2">考试来源：{{ examTypeShow(item.examType) }}</span>
                 </div>
               </div>
             </div>
@@ -97,11 +100,12 @@ export default {
     return {
       myMissions: [], //我的任务数据
       myMissionsType: { 0: '考试', 1: '培训' },
-      swiperFistPrevBt: false, // 显示隐藏我的任务左边前进后退按钮
+      swiperFistPrevBt: true, // 显示隐藏我的任务左边前进后退按钮
       swiperOptions: {
         initialSlide: 0,
-        slidesPerView: 3,
-        slidesPerGroup: 3,
+        spaceBetween : 20,
+        // slidesPerView: 3,
+        // slidesPerGroup: 3,
         autoplay: false,
         navigation: {
           nextEl: '.swiper-button-next',
@@ -153,6 +157,15 @@ export default {
     //this.swiper.slideTo(3, 1000, false)
   },
   methods: {
+    examTypeShow(i) {
+      const type = {
+        CurrencyExam: '通用考试',
+        CourseExam: '课程考试',
+        TrainExam: '培训班考试',
+        LiveExam: '直播考试'
+      }
+      return type[i] || '--'
+    },
     myTaskToDetaill(item) {
       const { id: trainId, name: title, type: userType } = item
       // type 0:考试,1:培训
@@ -210,8 +223,8 @@ export default {
 }
 .homeMyTaskItem {
   cursor: pointer;
-  width: 298px;
-  height: 172px;
+  width: 285px;
+  height: 162px;
   text-align: left;
   border-right: 1px solid #f5f5f5;
   // border-radius: 4px;

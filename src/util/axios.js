@@ -17,7 +17,7 @@ import 'nprogress/nprogress.css'
 import { Base64 } from 'js-base64'
 
 const instance = axios.create({
-  timeout: 100000, //默认超时时间
+  timeout: 3000000, //默认超时时间(兼容上传延迟，调长了时间)
   withCredentials: false, //跨域请求，允许保存cookie
   validateStatus: function(status) {
     return status >= 200 && status <= 500
@@ -45,7 +45,11 @@ instance.interceptors.request.use(
         : 'learn'
     config.headers.appId = 'Admin'
 
-    if (!config.url.startsWith('/api') && !config.url.startsWith('api')) {
+    if (
+      !config.url.startsWith('/api') &&
+      !config.url.endsWith('eln/upload') &&
+      !config.url.startsWith('api')
+    ) {
       config.url = '/api' + config.url
     }
     if (getToken() && !isToken) {
@@ -126,9 +130,16 @@ instance.interceptors.response.use(
         })
       }
       if (status === 401) store.dispatch('ClearSession').then(() => router.push({ path: '/login' }))
+      //如果是666则跳转到付费页面
+      if (status === '666'){
+        router.push({ path: '/666' })
+      }
       return Promise.reject(new Error(message))
     }
     if (String.prototype.endsWith.call(res.config.url, '/oauth/token')) {
+      return res.data
+    }
+    if (String.prototype.endsWith.call(res.config.url, '/eln/upload')) {
       return res.data
     }
     return res.data.response

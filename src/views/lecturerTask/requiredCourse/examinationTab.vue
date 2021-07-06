@@ -17,15 +17,14 @@
       </template>
 
       <template slot="handler" slot-scope="scope">
-        <el-button type="text" @click="toAnswer(scope.row)">
-          考试详情
-        </el-button>
+        <el-button type="text" @click="toAnswer(scope.row)"> 考试详情 </el-button>
       </template>
     </common-table>
   </div>
 </template>
 
 <script>
+import { getExamSituationList } from '@/api/lecturerTask'
 // 表格属性
 const TABLE_COLUMNS = [
   {
@@ -35,33 +34,50 @@ const TABLE_COLUMNS = [
   },
   {
     label: '考试名称',
-    prop: 'courseName'
+    prop: 'examName'
   },
   {
     label: '考试日期',
-    prop: 'joinNumValue',
-    slot: true
+    prop: 'startTime',
+    width: 220,
+    formatter: (row) => {
+      return row.startTime + '-' + row.endTime
+    }
   },
   {
     label: '状态',
-    prop: 'score'
+    prop: 'status',
+    formatter: (row) => {
+      const END_STATUS = {
+        1: '未开始',
+        2: '进行中',
+        3: '已结束'
+      }
+      return END_STATUS[row.status]
+    }
   },
   {
     label: '考试时长(分钟)',
-    prop: 'isPass',
-    slot: true
+    prop: 'examPeriod',
+    formatter: (row) => {
+      let returnData = '无限制'
+      if (row.reckonTime) returnData = row.reckonTimeValue
+      return returnData
+    }
   },
   {
     label: '通过率',
-    prop: 'status',
-    slot: true
+    prop: 'passRate',
+    formatter: (row) => {
+      return row.passRate + '%'
+    }
   }
 ]
 const TABLE_CONFIG = {
   handlerColumn: {
     width: 200
   },
-  enableMultiSelect: true, //复选框
+  enableMultiSelect: false, //复选框
   enablePagination: true,
   showHandler: true,
   showIndexColumn: false
@@ -90,7 +106,7 @@ export default {
       // query: {},
       tableColumns: TABLE_COLUMNS,
       tableConfig: TABLE_CONFIG,
-      tableData: [{}, {}],
+      tableData: [],
       tablePageConfig: TABLE_PAGE_CONFIG
     }
   },
@@ -98,12 +114,10 @@ export default {
   created() {
     this.getInfo()
   },
-  activated() {
-    this.getInfo()
-  },
+
   methods: {
-    toAnswer() {
-      this.$router.push({ path: '/examinationDetail', query: {} })
+    toAnswer(row) {
+      this.$router.push({ path: '/examinationDetail', query: { id: row.id } })
     },
     //  处理页码改变
     handleCurrentPageChange(param) {
@@ -117,15 +131,13 @@ export default {
 
     // 拿数据
     async getInfo() {
-      // currentPage	当前页	body	true
-      // size	页面显示数量	body	true
-      //   let params = {
-      //     type: this.pitch, //考试类型 CurrencyExam-通用考试 CourseExam-课程考试 TrainExam-培训班考试
-      //     name: this.searchInput
-      //   }
-      //   let res = await examList({ ...params, ...this.page })
-      //   this.tableData = res.data
-      //   this.page.total = res.totalNum
+      let params = {
+        ...this.page,
+        id: this.$route.query.id
+      }
+      let { data, totalNum } = await getExamSituationList(params)
+      this.page.total = totalNum
+      this.tableData = data
     }
   }
 }
@@ -134,5 +146,9 @@ export default {
 <style lang="scss" scoped>
 .examinationTab {
   margin-top: 20px;
+  /deep/.cell:empty::before {
+    content: '--';
+    color: gray;
+  }
 }
 </style>

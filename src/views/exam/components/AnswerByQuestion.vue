@@ -2,7 +2,7 @@
   <div class="li-main">
     <div class="li-main-left">
       <span style="margin-left:5px;">{{ topicIndex + 1 }}.</span>
-      <span v-show="isShowScope === 1">（{{ conItem.score }}分）</span>
+      <span v-show="_.get(paperData, 'paperData.isShowScore') === 1">（{{ conItem.score }}分）</span>
     </div>
     <div class="li-main-right">
       <div>
@@ -41,19 +41,11 @@
 </template>
 
 <script>
-import {
-  QUESTION_TYPE_MAP,
-  QUESTION_TYPE_MULTIPLE,
-  QUESTION_TYPE_SINGLE,
-  QUESTION_TYPE_JUDGE,
-  QUESTION_TYPE_SHOER,
-  QUESTION_TYPE_BLANK,
-  QUESTION_TYPE_GROUP
-} from '@/const/exam'
+import { QUESTION_TYPE_GROUP } from '@/const/exam'
 import QustionPreview from './questionPreview'
 import { addLine } from '@/util/util'
 export default {
-  inject: ['paper'],
+  inject: ['paperData'],
   name: 'AnswerByQuestion',
   components: {
     QustionPreview
@@ -67,15 +59,7 @@ export default {
       type: Object,
       default: () => ({})
     },
-    conIndex: {
-      type: Number,
-      default: 0
-    },
     topicIndex: {
-      type: Number,
-      default: 0
-    },
-    isShowScope: {
       type: Number,
       default: 0
     }
@@ -86,12 +70,6 @@ export default {
     }
   },
   computed: {
-    QUESTION_TYPE_MULTIPLE: () => QUESTION_TYPE_MULTIPLE,
-    QUESTION_TYPE_SINGLE: () => QUESTION_TYPE_SINGLE,
-    QUESTION_TYPE_JUDGE: () => QUESTION_TYPE_JUDGE,
-    QUESTION_TYPE_BLANK: () => QUESTION_TYPE_BLANK,
-    QUESTION_TYPE_SHOER: () => QUESTION_TYPE_SHOER,
-    QUESTION_TYPE_MAP: () => QUESTION_TYPE_MAP,
     QUESTION_TYPE_GROUP: () => QUESTION_TYPE_GROUP
   },
   methods: {
@@ -105,7 +83,7 @@ export default {
       })
     },
     getCurrentImpeach(data) {
-      const temp = _.find(this.paper.impeachList, (item) => {
+      const temp = _.find(this.paperData.impeachList, (item) => {
         if (item.key === data.id) {
           return data.id
         }

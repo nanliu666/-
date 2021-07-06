@@ -1,6 +1,36 @@
 import request, { get } from '@/util/axios'
 import website from '@/config/website'
 
+/**
+ * 获取子组织岗位和直属员工接口
+ * @param {object} params 参数
+ * @param {string} params.parentId 父组织ID，顶级父节点为"0"
+ * @param {string} [params.search] 工号或姓名，支持模糊查询
+ * @returns {{orgs: Array<any>; users: Array<any>}}
+ */
+ export const getPostionUserChild2 = (params) => get('/manage/v1/position/user/child', params)
+/**
+ * 获取子组织架构和直属员工接口
+ * @param {object} params 参数
+ * @param {string} params.parentId 父组织ID，顶级父节点为"0"
+ * @param {string} [params.search] 工号或姓名，支持模糊查询
+ * @returns {{orgs: Array<any>; users: Array<any>}}
+ */
+export const getOrgUserChild = (params) => get('/org/v1/org/user/child', params)
+
+/**
+ * 获取外部用户
+ * @param {object} params 参数
+ * @param {string} params.pageNo
+ * @param {string} params.pageSize
+ */
+export const getOuterUser = (params) => get('/user/v1/user/outer', params)
+
+/**
+ * 获取当前组织下的所有人
+ */
+export const getUserList = (params) => get('/user/v1/user/basis', params)
+
 // 获取用户的组织id（包括当前和当前以上的）
 export const getOrgIds = (params) => {
   return get('/api/manage/v1/web/index/queryOrgIds', params)
@@ -155,3 +185,20 @@ export const userRegister = (params) => {
  * 我们的任务
  * */
 export const queryMyMission = (params) => get('/manage/v1/web/index/queryMyMission', params)
+
+/**
+ * 获取当前岗位下的所有人
+ */
+ export const getPositionUserList1 = (params) => get('/manage/v1/user/info/position', params)
+ export const getPositionUserList = (params) => get('/manage/v1/positions/user/child', params)
+
+ /**
+ * @desc 分组列表
+ */
+export const getGroup = (params) => get('/api/user/v1/usergroup/list', params)
+
+/**
+ * 获取当前分组下的所有人
+ */
+// export const getUsergroupList = (params) => get('/manage/v1/usergroup/queryUserList', params)
+export const getUsergroupList = (params) => get('/api/user/v1/usergroup/queryUserList', params)

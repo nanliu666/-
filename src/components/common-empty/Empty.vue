@@ -1,6 +1,6 @@
 <template>
   <el-card shadow="never" style="border: 0">
-    <div class="empty-class">
+    <div class="empty-class" :style="{ height: !_.isNaN(Number(height)) ? `${height}px` : height }">
       <el-image class="empty-image" :src="src" fit="fill" />
       <div v-text="text" />
     </div>
@@ -12,6 +12,10 @@ import nodata from '@/assets/images/nodata.png'
 export default {
   name: 'CommonEmpty',
   props: {
+    height: {
+      type: String,
+      default: 'auto' // 支持带单位与不带单位，不带单位默认单位为px
+    },
     src: {
       type: String,
       default: nodata
@@ -39,7 +43,7 @@ export default {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  font-size: 18px;
+  font-size: 16px;
   color: #718199;
   box-sizing: border-box;
   // .empty-image {

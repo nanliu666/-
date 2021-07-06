@@ -5,10 +5,15 @@
         v-model="queryInfo.knowledgeName"
         placeholder="请输入知识库名称搜索"
         style="width: 380px"
+        clearable
         @input="searchFun"
       >
         <i slot="suffix" class="el-input__icon el-icon-search"></i>
       </el-input>
+
+      <div style="float: right">
+        <el-button type="primary" class="share-btn" @click="detailShare">一点分享</el-button>
+      </div>
       <div class="split"></div>
       <category-select :load="loadCategory" @change="handleCategoryChange"></category-select>
     </el-card>
@@ -30,10 +35,8 @@
         @current-page-change="handleCurrentPageChange"
         @page-size-change="handlePageSizeChange"
       >
-        <template #handler="{row}">
-          <el-button type="text" @click="handleView(row)">
-            查看
-          </el-button>
+        <template #handler="{ row }">
+          <el-button type="text" @click="handleView(row)"> 查看 </el-button>
         </template>
       </common-table>
     </el-card>
@@ -80,6 +83,7 @@ const TABLE_CONFIG = {
 }
 import { getKnowledgeList, getKnowledgeCatalog } from '@/api/knowledge'
 import CategorySelect from '../course/components/CategorySelect.vue'
+import '@/styles/variables.scss'
 export default {
   name: 'KnowledgeList',
   components: {
@@ -87,7 +91,9 @@ export default {
   },
   data() {
     return {
-      tablePageConfig: {},
+      tablePageConfig: {
+        customClassName: 'pageName'
+      },
       page: {
         currentPage: 1,
         size: 10,
@@ -112,6 +118,7 @@ export default {
   },
   methods: {
     searchFun: _.debounce(function() {
+      this.queryInfo.pageNo = 1
       this.loadTableData()
     }, 500),
     loadCategory(id) {
@@ -143,6 +150,11 @@ export default {
     handleView(row) {
       this.$router.push({ name: 'KnowledgeDetail', query: { id: row.id } })
     },
+
+    //一点分享
+    detailShare() {
+      this.$router.push({ name: 'share' })
+    },
     // 搜索
     handleSearch(params) {
       this.queryInfo = _.assign(this.queryInfo, params)
@@ -161,7 +173,6 @@ export default {
       } catch (error) {
         this.tableLoading = false
         this.$message.error(error.message)
-        window.console.error(JSON.stringify(this.queryInfo))
       }
     }
   }
@@ -169,6 +180,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+/deep/.cell:empty::before {
+  content: '--';
+  color: gray;
+}
 .table-style {
   margin-top: 20px;
   .el-menu {
@@ -181,5 +196,12 @@ export default {
 .split {
   border-bottom: 1px solid #ebeced;
   margin: 16px 0;
+}
+/deep/.pageName {
+  margin-top: 24px;
+}
+.share-btn {
+  line-height: 30px;
+  padding: 0 20px;
 }
 </style>

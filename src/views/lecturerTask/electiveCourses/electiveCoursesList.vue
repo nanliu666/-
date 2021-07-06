@@ -10,29 +10,26 @@
       >
         <div class="item_img">
           <img :src="returnimgFn(item.coverUrl)" :onerror="errorImg" />
-          <span v-if="item.status == 1" class="span1">未开始</span>
-          <span v-if="item.status == 2" class="span2">进行中</span>
-          <span v-if="item.status == 3" class="span3">已结束</span>
         </div>
 
         <div class="item_title">
-          {{ item.menuName }}
+          {{ item.name }}
         </div>
 
         <div class="item_time">
-          {{ '赵老师' }} &nbsp; | &nbsp; <i class="el-icon-user"></i> {{ '999' }}
+          {{ item.teacherName }} &nbsp; | &nbsp; <i class="el-icon-user"></i> {{ item.studyNum }}
         </div>
 
         <div class="item_Rate">
           <el-rate
-            v-model="valueRate"
+            v-model="item.scope"
             disabled
             show-score
             text-color="#ff9900"
-            score-template="{value}"
+            score-template="{value}分"
           >
           </el-rate>
-          <span> 大数据 </span>
+          <!-- <span> 大数据 </span> -->
         </div>
 
         <div v-if="item.totalPrecent == 100" class="item_complete">
@@ -60,7 +57,7 @@
   </div>
 </template>
 <script>
-import { myCourseCatalog } from '@/api/myTask'
+import { queryElectiveCourseList } from '@/api/lecturerTask'
 ;('requiredCourseList')
 export default {
   data() {
@@ -87,18 +84,16 @@ export default {
     },
     // 跳转详情页
     goDetail(item) {
-      this.$router.push({ path: '/myRequiredDetails', query: { item: JSON.stringify(item) } })
+      this.$router.push({ path: '/electiveCoursesDetail', query: { id: item.id, lecturer: true } })
     },
     async getmyCourseCatalog() {
       let params = {
-        courseType: 0,
-        studyType: 0,
         ...this.page
       }
 
-      let res = await myCourseCatalog(params)
-      this.listData = res.data
-      this.total = res.totalNum
+      let { data, totalNum } = await queryElectiveCourseList(params)
+      this.listData = data
+      this.total = totalNum
     },
 
     handleSizeChange(val) {
@@ -117,15 +112,15 @@ export default {
 <style scoped lang="scss">
 .myRequiredList {
   margin: 25px 0;
-  padding: 0 24px 25px;
+  padding-bottom: 25px;
   box-shadow: 0 2px 8px 0 rgba(0, 63, 161, 0.06);
-  background-color: #fff;
+  background-color: #f8f9f9;
   .items {
     display: flex;
     flex-wrap: wrap;
     .item {
-      width: 273px;
-      height: 285px;
+      width: 285px;
+      height: 282px;
       border-radius: 4px;
       overflow: hidden;
       box-shadow: 0 2px 8px 0 rgba(0, 63, 161, 0.06);

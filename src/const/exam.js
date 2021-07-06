@@ -27,13 +27,17 @@ export const QUESTION_TYPE_BLANK = 'blank'
  * 试题组
  */
 export const QUESTION_TYPE_GROUP = 'question_group'
-
+/**
+ * 不定项选择
+ */
+export const QUESTION_TYPE_RANDOM = 'not_sure_choice'
 /**
  * 试题类型字典
  */
 export const QUESTION_TYPE_MAP = {
   single_choice: '单选题',
   multi_choice: '多选题',
+  not_sure_choice: '不定项题',
   judgment: '判断题',
   short_answer: '简答题',
   blank: '填空题',

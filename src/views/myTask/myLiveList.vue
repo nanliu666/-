@@ -12,9 +12,11 @@
         <el-card :body-style="{ padding: '0px' }">
           <div class="item_live_imgBox" style="cursor: pointer">
             <img :src="item.coverImageUrl" class="image_live" @click="goDetail(item.liveId)" />
-            <span v-show="item.status == 'live'" class="item_live_status">直播中</span>
-            <span v-show="item.status == 'end'" class="item_live_status" style="color:#00B061">已结束</span>
-            <span v-show="item.status == 'start'" class="item_live_status" style="color: #fcba00">未开始</span>
+            <span v-show="item.status == 'live'" class="item_live_status blue">
+              <svg class="icon" aria-hidden="true">
+                <use xlink:href="#iconzhibo"></use></svg>直播中</span>
+            <span v-show="item.status == 'end'" class="item_live_status yellow">未开始</span>
+            <!-- <span v-show="item.status == 'start'" class="item_live_status yellow">未开始</span> -->
             <div
               v-show="item.status == 'live'"
               class="item_live_playButton"
@@ -28,12 +30,12 @@
           <div style="padding: 10px 14px; height: 93px">
             <h3 class="showText">{{ item.channelName }}</h3>
             <p class="department">{{ item.categoryName }}</p>
-            <el-tooltip class="item" effect="dark" content="Bottom Center 提示文字" placement="top">
+            <el-tooltip class="item" effect="dark" placement="top">
               <p v-if="item.planTime.length > 0" class="department">
-                {{ item.lecturerName }} |
-
+                {{ item.lecturerName }}
                 <span v-if="item.batchDeclare == 'plural' || item.batchDeclare == 'single'">
-                  {{ item.planTime[0].split('~')[0] }} ~ {{ item.planTime[0].split('~')[1] }}
+                  {{ item.planTime[0].split('~')[0].replace(/-/g, '/') }} -
+                  {{ item.planTime[0].split('~')[1].replace(/-/g, '/') }}
                 </span>
 
                 <span v-if="item.cycleInfo.cycleMode == 'day'">
@@ -107,6 +109,7 @@
 </template>
 <script>
 import { liveStudentList } from '@/api/myTask'
+import '@/config/iconfont'
 // 直播列表
 export default {
   name: 'LiveList',
@@ -156,6 +159,7 @@ export default {
       let res = await liveStudentList(this.queryData)
       this.liveList = res.data
       this.queryData.totalNum = res.totalNum
+      this.$emit('LiveListNumTotal', res.totalNum)
     },
 
     // 跳转直播详情页
@@ -179,7 +183,11 @@ export default {
 
 <style scoped lang="scss">
 .index-container {
-  margin-top: 16px;
+  ::v-deep .el-card.is-always-shadow {
+    width: 285px;
+    height: 282px;
+    padding-top: 2px;
+  }
   .image_live {
     width: 100%;
     height: 166px;
@@ -193,12 +201,13 @@ export default {
       position: absolute;
       top: 10px;
       right: 20px;
-      background: #fff;
+      width: 64px;
+      height: 20px;
       font-size: 12px;
-      -webkit-transform: scale(0.9);
-      padding: 5px 8px;
-      border-radius: 3px;
-      color: #01aafc;
+      text-align: center;
+      line-height: 22px;
+      font-weight: 400;
+      border-radius: 4px;
     }
 
     .item_live_playButton {
@@ -225,6 +234,19 @@ export default {
         transform: rotate(-45deg);
       }
     }
+    .yellow {
+      color: #f5c200;
+      background-color: #fffee6;
+    }
+    .grey {
+      color: rgba(0, 11, 21, 0.45);
+      background-color: #f5f5f6;
+    }
+    .blue {
+      width: 65px;
+      color: #2875d4;
+      background-color: #f0f9ff;
+    }
     .item_live_userNumber {
       position: absolute;
       right: 10px;
@@ -238,8 +260,11 @@ export default {
   }
 
   h3 {
-    margin: 0 0 15px 0;
+    margin: 0;
     font-size: 14px;
+    color: rgba(0, 11, 21, 0.85);
+    line-height: 22px;
+    font-weight: 600;
   }
 
   .showText {
@@ -250,9 +275,12 @@ export default {
   }
 
   .department {
-    color: #ccc;
+    opacity: 0.45;
+    font-family: PingFangSC-Regular;
     font-size: 12px;
-    margin: 5px 0;
+    color: rgba(0, 11, 21, 0.85);
+    line-height: 18px;
+    margin: 5px 0 17px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -261,7 +289,6 @@ export default {
   /deep/.is-always-shadow {
     transition-duration: 0.3s;
     box-shadow: 0 2px 8px 0 rgba(0, 63, 161, 0.06);
-    margin-top: 10px;
     &:hover {
       transform: translateY(-3px);
       box-shadow: 0px 9px 12px 2px rgba(0.1, 63, 161, 0.12);
@@ -270,5 +297,14 @@ export default {
       }
     }
   }
+}
+.icon {
+  flex-shrink: 0;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+  margin-right: 4px;
 }
 </style>

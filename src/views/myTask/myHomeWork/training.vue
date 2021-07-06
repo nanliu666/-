@@ -5,23 +5,7 @@
         <div class="card">
           <div class="card-banner">
             <img :src="item.coverUrl" />
-
-            <!-- <div
-              class="card-status process"
-              :class="{
-                process: item.status === 2,
-                pending: item.status === 1,
-                done: item.status === 3
-              }"
-            >
-              {{ item.status == 1 ? '未开始' : item.status == 2 ? '进行中' : '已结束' }}
-            </div>
-
-            <div class="card-cover">
-              <div class="card-cover-btn">开始学习</div>
-            </div> -->
           </div>
-
           <div class="card-content">
             <div class="card-title">
               {{ item.name.length > 15 ? item.name.slice(0, 15) + '...' : item.name }}
@@ -43,6 +27,7 @@
       <div class="empty-text">暂无数据</div>
     </div>
     <pagination
+      v-if="data.length || queryLoading"
       style="margin-top: 10px"
       :total="totalNum"
       :limit="query.pageSize"
@@ -102,32 +87,32 @@ export default {
   .card-container {
     display: flex;
     flex-wrap: wrap;
-    margin-left: -10px;
-    margin-right: -10px;
     min-height: 297px;
+    justify-content: space-between;
     .card-wrapper {
-      padding: 0 10px;
       margin-bottom: 16px;
+      width: 285px;
+      height: 282px;
     }
     .card {
       cursor: pointer;
       border-radius: 4px;
-      background-color: #fff;
       overflow: hidden;
-      width: 273px;
+      width: 285px;
+      height: 282px;
       box-shadow: 0 2px 8px 0 rgba(0, 63, 161, 0.06);
       transition-duration: 0.3s;
       &:hover {
         transform: translateY(-3px);
-        box-shadow: 0 9px 12px 0 rgba(0, 63, 161, 0.12);
+        box-shadow: 0 8px 20px 0 rgba(0, 61, 112, 0.12);
         .card-cover {
           visibility: visible !important;
         }
       }
       .card-banner {
         position: relative;
-        height: 172px;
-        width: 273px;
+        height: 166px;
+        width: 285px;
         img {
           height: 100%;
           width: 100%;
@@ -187,7 +172,6 @@ export default {
         width: 100%;
         height: 71px;
         box-sizing: border-box;
-        border-bottom: 1px solid #ebeced;
         box-sizing: border-box;
         .complete-icon {
           position: absolute;
@@ -204,10 +188,11 @@ export default {
           text-overflow: ellipsis;
           overflow: hidden;
           font-family: PingFangSC-Regular;
-          font-size: 14px;
-          color: #000b15;
           margin-bottom: 8px;
           line-height: 22px;
+          font-size: 14px;
+          color: rgba(0, 11, 21, 0.85);
+          font-weight: 600;
         }
         .card-submitted {
           opacity: 0.65;
@@ -219,14 +204,12 @@ export default {
       }
     }
   }
+  .card-container:nth-of-type(4n) {
+    margin-right: 0;
+  }
   .empty-tips {
     text-align: center;
-    height: 297px;
     cursor: default;
-    img {
-      width: 220px;
-      height: 220px;
-    }
     .empty-text {
       color: #909090;
     }

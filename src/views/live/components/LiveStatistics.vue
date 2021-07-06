@@ -4,7 +4,7 @@
       <div class="title">
         统计汇总
         <el-popover transition="none" trigger="click">
-          <i slot="reference" class="el-icon-question" style="cursor: pointer;"></i>
+          <i slot="reference" class="el-icon-question" style="cursor: pointer"></i>
           <template slot>
             <div>
               <span>提示一下数据取值时间 待确定</span>
@@ -20,7 +20,7 @@
           <div class="desc">
             观看次数
             <el-popover transition="none" title="数据统计" trigger="click">
-              <i slot="reference" class="el-icon-question" style="cursor: pointer;"></i>
+              <i slot="reference" class="el-icon-question" style="cursor: pointer"></i>
               <template slot>
                 <div>
                   <span>数据来自第三方直播统计后台</span><br /><br />
@@ -52,7 +52,7 @@
           <div class="desc">
             观看人数
             <el-popover transition="none" title="数据统计" trigger="click">
-              <i slot="reference" class="el-icon-question" style="cursor: pointer;"></i>
+              <i slot="reference" class="el-icon-question" style="cursor: pointer"></i>
               <template slot>
                 <div>
                   <span>数据来自第三方直播统计后台</span><br /><br />
@@ -95,9 +95,7 @@
 
     <div class="table-container">
       <div class="table-header">
-        <div class="title">
-          数据统计
-        </div>
+        <div class="title">数据统计</div>
 
         <div class="operate-area">
           <el-checkbox v-model="getData2params.isMerge" class="checkbox">
@@ -280,12 +278,11 @@ export default {
     justify-content: space-between;
     margin-bottom: 40px;
     .title {
-      cursor: default;
-      border-left: 4px solid #01aafc;
-      padding-left: 8px;
+      font-family: PingFangSC-Medium;
       font-size: 14px;
       color: rgba(0, 11, 21, 0.85);
-      line-height: 16px;
+      line-height: 22px;
+      font-weight: 600;
     }
   }
   .data-wrapper {
@@ -305,26 +302,30 @@ export default {
           border-right: 1px solid #ebeced;
         }
         .desc {
-          opacity: 0.45;
           font-size: 14px;
-          color: #000b15;
-          margin-bottom: 8px;
+          color: rgba(0, 11, 21, 0.45);
+          letter-spacing: 0;
+          text-align: center;
+          line-height: 22px;
+          margin-bottom: 12px;
         }
         .data {
           font-size: 28px;
-          color: rgba(0, 11, 21, 0.85);
+          color: #2875d4;
+          font-weight: 700;
           margin-bottom: 16px;
           .unit {
             font-size: 12px;
             color: rgba(0, 11, 21, 0.45);
+            font-weight: 600;
             margin-left: 6px;
           }
         }
         .intro {
           .intro-item {
+            font-family: PingFangSC-Regular;
             font-size: 12px;
             color: rgba(0, 11, 21, 0.45);
-            font-weight: 600;
             &:first-child {
               margin-right: 40px;
             }
@@ -336,7 +337,7 @@ export default {
               overflow: hidden;
               white-space: nowrap;
               font-size: 12px;
-              color: rgba(0, 11, 21, 0.85);
+              color: rgba(0, 11, 21, 0.45);
             }
           }
         }

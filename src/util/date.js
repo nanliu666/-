@@ -49,3 +49,13 @@ export function dateFormat(date, format) {
   }
   return ''
 }
+
+/**
+ * 日期年月日分隔符转化
+ */
+export function dateConver(date) {
+  if (date) {
+    return date.replace(/-/g, '/')
+  }
+  return date
+}

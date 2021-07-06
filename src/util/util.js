@@ -1,12 +1,14 @@
 import { validatenull } from './validate'
 import moment from 'moment'
 import axios from 'axios'
+// import Vue from 'vue'
+
 /**
  * 七牛云下载转成blob弹窗形式
  * @param {string} html
  */
 export const downLoadFile = (data) => {
-  const url = data.url || data.fileUrl || data.filePath
+  const url = data.url || data.fileUrl || data.filePath || data.content
   axios
     .get(
       url,
@@ -19,7 +21,7 @@ export const downLoadFile = (data) => {
     .then((res) => {
       let objectUrl = URL.createObjectURL(res.data)
       const a = document.createElement('a')
-      a.download = data.fileName
+      a.download = data.fileName || data.localName
       a.style.display = 'none'
       a.href = objectUrl
       document.body.appendChild(a)
@@ -719,12 +721,15 @@ export function parseTime(time, cFormat) {
 }
 //计算两数的百分比  并保留小数
 export const toPercent = (point = 0, total = 0, decimal = 0) => {
+  if (point <= 0 || total <= 0) return 0
   let num = Number(point).toFixed(2),
     sum = Number(total).toFixed(2)
   let str = ((Number(num * 100) / Number(sum * 100)) * 100).toFixed(decimal)
-  return Number(str)
+  return isNaN(Number(str)) ? 0 : Number(str)
 }
+
 // office预览
+// const url = 'http://139.9.41.27:9090/fcscloud'
 const url = 'https://convert.zexueyuan.com.cn/fcscloud'
 
 const instance = axios.create({

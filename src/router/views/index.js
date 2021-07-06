@@ -33,6 +33,32 @@ export default [
     }
   },
   {
+    path: '/666',
+    component: () => import(/* webpackChunkName: "page" */ '@/components/error-page/666'),
+    name: '666',
+    meta: {
+      keepAlive: true,
+      isTab: false,
+      isAuth: false
+    }
+  },
+  {
+    path: '/test',
+    name: 'test',
+    component: () => import(/* webpackChunkName: "page" */ '@/views/uploadDemo/test.vue'),
+    meta: {
+      title: '上传demo'
+    }
+  },
+  {
+    path: '/uploadDemo',
+    name: 'uploadDemo',
+    component: () => import(/* webpackChunkName: "page" */ '@/views/uploadDemo/uploadDemo.vue'),
+    meta: {
+      title: '上传demo'
+    }
+  },
+  {
     name: 'WatchLive',
     path: '/watchLive',
     component: () => import('@/views/live/WatchLive.vue'),
@@ -54,6 +80,48 @@ export default [
     component: Layout,
     children: [
       {
+        path: '/search',
+        redirect: '/search/list',
+        component: EmptyLayout,
+        title: '搜索',
+        children: [
+          {
+            path: 'list',
+            name: 'SearchList',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/home/search/list.vue'),
+            meta: {
+              title: '搜索',
+              fullscreen: true
+            }
+          }
+        ]
+      },
+      {
+        path: '/lecturer',
+        redirect: '/lecturer/list',
+        component: EmptyLayout,
+        title: '讲师风采',
+        children: [
+          {
+            path: 'list',
+            name: 'LecturerList',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/home/lecturer/list.vue'),
+            meta: {
+              title: '讲师风采'
+            }
+          },
+          {
+            path: 'detail',
+            name: 'lecturerDetail',
+            component: () =>
+              import(/* webpackChunkName: "page"*/ '@/views/home/lecturer/detail.vue'),
+            meta: {
+              title: '讲师详情'
+            }
+          }
+        ]
+      },
+      {
         path: '/course',
         redirect: '/course/list',
         component: EmptyLayout,
@@ -64,7 +132,7 @@ export default [
             name: 'CourseList',
             component: () => import(/* webpackChunkName: "page"*/ '@/views/course/CourseList.vue'),
             meta: {
-              title: '企业知识'
+              title: '课程资源'
             }
           },
           {
@@ -107,6 +175,14 @@ export default [
             component: () => import(/* webpackChunkName: "page"*/ '@/views/knowledge/Detail.vue'),
             meta: {
               title: '知识详情'
+            }
+          },
+          {
+            path: 'share',
+            name: 'share',
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/knowledge/share.vue'),
+            meta: {
+              title: '一点分享'
             }
           }
         ]
@@ -260,7 +336,7 @@ export default [
             name: 'list',
             component: () => import(/* webpackChunkName: "page" */ '@/views/news/NewsList.vue'),
             meta: {
-              title: '新闻公告'
+              title: '新闻中心'
             }
           },
           {
@@ -269,6 +345,40 @@ export default [
             component: () => import(/* webpackChunkName: "page" */ '@/views/news/NewsDetail.vue'),
             meta: {
               title: '文章详情'
+            }
+          }
+        ]
+      },
+      {
+        path: '/systemList',
+        redirect: '/systemList/trainSystem',
+        component: EmptyLayout,
+        title: '制度清单',
+        children: [
+          {
+            path: 'trainSystem',
+            name: 'trainSystem',
+            component: () =>
+              import(/* webpackChunkName: "page" */ '@/views/systemList/trainSystem.vue'),
+            meta: {
+              title: '制度清单'
+            }
+          }
+        ]
+      },
+      {
+        path: '/ranking',
+        redirect: '/ranking/rankIntegralList',
+        component: EmptyLayout,
+        title: '排行榜',
+        children: [
+          {
+            path: 'rankIntegralList',
+            name: 'rankIntegralList',
+            component: () =>
+              import(/* webpackChunkName: "page" */ '@/views/ranking/rankIntegralList.vue'),
+            meta: {
+              title: '排行榜'
             }
           }
         ]
@@ -338,6 +448,18 @@ export default [
         }
       },
       {
+        path: '/CertificateDetail',
+        name: 'CertificateDetail',
+        component: () =>
+          import(
+            /* webpackChunkName: "page" */
+            '@/views/personal/components/CertificateDetail.vue'
+          ),
+        meta: {
+          title: '证书详情'
+        }
+      },
+      {
         path: '/train', // 培训页面
         redirect: '/train/index',
         component: EmptyLayout,
@@ -353,7 +475,10 @@ export default [
           {
             path: 'detail',
             name: 'trainDetail',
-            component: () => import('@/views/train/detail')
+            meta: {
+              title: '培训详情'
+            },
+            component: () => import(/* webpackChunkName: "page"*/ '@/views/train/detail')
           }
         ]
       },
@@ -380,6 +505,120 @@ export default [
         component: EmptyLayout,
         title: '审批中心',
         children: [
+          {
+            path: 'approveIndex',
+            name: 'approveIndex',
+            component: () =>
+              import(/* webpackChunkName: "page" */ '@/views/approvalCenter/approveIndex.vue'),
+            meta: {
+              title: '审批中心'
+            }
+          },
+          {
+            path: 'submitSucceed',
+            name: 'submitSucceed',
+            component: () =>
+              import(/* webpackChunkName: "page" */ '@/views/application/submitSucceed.vue'),
+            meta: {
+              title: '申请已提交'
+            }
+          },
+          {
+            path: 'applyError',
+            name: 'applyError',
+            component: () =>
+              import(/* webpackChunkName: "page" */ '@/views/application/applyError.vue'),
+            meta: {
+              title: '申请失败'
+            }
+          },
+          {
+            path: 'applyBuyTrain',
+            name: 'applyBuyTrain',
+            component: () =>
+              import(/* webpackChunkName: "page" */ '@/views/application/applyBuyTrain.vue'),
+            meta: {
+              title: '外购培训申请'
+            }
+          },
+          {
+            path: 'applyCourseDev',
+            name: 'applyCourseDev',
+            component: () =>
+              import(/* webpackChunkName: "page" */ '@/views/application/applyCourseDev.vue'),
+            meta: {
+              title: '课程开发申请'
+            }
+          },
+          {
+            path: 'applyTutorDenti',
+            name: 'applyTutorDenti',
+            component: () =>
+              import(/* webpackChunkName: "page" */ '@/views/application/applyTutorDenti.vue'),
+            meta: {
+              title: '导师认证申请'
+            }
+          },
+          {
+            path: 'applyTeacherIdentification',
+            name: 'applyTeacherIdentification',
+            component: () =>
+              import(
+                /* webpackChunkName: "page" */
+                '@/views/application/applyTeacherIdentification.vue'
+              ),
+            meta: {
+              title: '讲师认证申请'
+            }
+          },
+          {
+            path: 'applyStudyDoctorate',
+            name: 'applyStudyDoctorate',
+            component: () =>
+              import(/* webpackChunkName: "page" */ '@/views/application/applyStudyDoctorate.vue'),
+            meta: {
+              title: '在职读博申请'
+            }
+          },
+          {
+            path: 'applyOutsideTrainBookbuilding',
+            name: 'applyOutsideTrainBookbuilding',
+            component: () =>
+              import(
+                /* webpackChunkName: "page" */
+                '@/views/application/applyOutsideTrainBookbuilding.vue'
+              ),
+            meta: {
+              title: '外派培训申请'
+            }
+          },
+          {
+            path: 'applyLeave',
+            name: 'applyLeave',
+            component: () =>
+              import(/* webpackChunkName: "page" */ '@/views/application/applyLeave.vue'),
+            meta: {
+              title: '培训请假申请'
+            }
+          },
+          {
+            path: 'outsideTraining',
+            name: 'outsideTraining',
+            component: () =>
+              import(/* webpackChunkName: "page" */ '@/views/application/outsideTraining.vue'),
+            meta: {
+              title: '外训报名申请'
+            }
+          },
+          {
+            path: 'trainingNeeds',
+            name: 'trainingNeeds',
+            component: () =>
+              import(/* webpackChunkName: "page" */ '@/views/application/trainingNeeds.vue'),
+            meta: {
+              title: '培训需求申请'
+            }
+          },
           {
             path: 'center',
             name: 'center',
@@ -472,7 +711,49 @@ export default [
           // }
         ]
       },
-
+      {
+        path: '/ExternalTraining',
+        name: 'ExternalTraining',
+        component: () => import('@/views/lecturerTask/train/ExternalTraining.vue'),
+        meta: {
+          title: '培训详情-外训'
+        }
+      },
+      {
+        path: '/InternalTraining',
+        name: 'InternalTraining',
+        component: () => import('@/views/lecturerTask/train/InternalTraining.vue'),
+        meta: {
+          title: '培训详情-内训'
+        }
+      },
+      // 必修上报材料
+      {
+        path: '/materials',
+        name: 'materials',
+        component: () => import('@/views/lecturerTask/requiredCourse/materials.vue'),
+        meta: {
+          title: '查看上报材料'
+        }
+      },
+      // 选修上报材料
+      {
+        path: '/electiveMaterials',
+        name: 'electiveMaterials',
+        component: () => import('@/views/lecturerTask/electiveCourses/electiveMaterials.vue'),
+        meta: {
+          title: '查看上报材料'
+        }
+      },
+      // 培训上报材料
+      {
+        path: '/trainMaterials',
+        name: 'trainMaterials',
+        component: () => import('@/views/lecturerTask/train/stuff/trainMaterials.vue'),
+        meta: {
+          title: '查看上报材料'
+        }
+      },
       {
         path: '/requiredCourseDetail',
         name: 'requiredCourseDetail',
@@ -489,7 +770,22 @@ export default [
           title: '考试详情'
         }
       },
-
+      {
+        path: '/liveExaminationDetail',
+        name: 'liveExaminationDetail',
+        component: () => import('@/views/lecturerTask/live/liveExaminationDetail.vue'),
+        meta: {
+          title: '考试详情'
+        }
+      },
+      {
+        path: '/electiveCoursesDetail',
+        name: 'electiveCoursesDetail',
+        component: () => import('@/views/lecturerTask/electiveCourses/electiveCoursesDetail.vue'),
+        meta: {
+          title: '必修课详情'
+        }
+      },
       {
         path: '/myTask',
         redirect: '/myTask/myLearn',
@@ -604,6 +900,63 @@ export default [
         meta: {
           title: '作业-查看问卷'
         }
+      },
+      //   社区模块
+      {
+        path: '/community',
+        redirect: '/community/recommended',
+        component: EmptyLayout,
+        title: '社区',
+        children: [
+          {
+            name: 'recommended',
+            path: 'recommended',
+            component: () => import('@/views/community'),
+            meta: {
+              title: '推荐'
+            }
+          },
+          {
+            name: 'communityDetails',
+            path: 'communityDetails',
+            component: () => import('@/views/community/components/communityDetails'),
+            meta: {
+              title: '社区详情'
+            }
+          },
+          {
+            name: 'otherHomePage',
+            path: 'otherHomePage',
+            component: () => import('@/views/community/components/otherHomePage'),
+            meta: {
+              title: '他人主页'
+            }
+          },
+          {
+            name: 'zoneHomePage',
+            path: 'zoneHomePage',
+            component: () => import('@/views/community/components/zoneHomePage'),
+            meta: {
+              title: '社区主页'
+            }
+          },
+          {
+            name: 'postDetails',
+            path: 'postDetails',
+            component: () => import('@/views/community/components/postDetails'),
+            meta: {
+              title: '帖子详情'
+            }
+          },
+          {
+            name: 'knowledge-system',
+            path: '/knowledge-system',
+            component: () => import('@/views/knowledge-system/index.vue'),
+            meta: {
+              title: '知识体系'
+            }
+          }
+        ]
       },
       ...(process.env.NODE_ENV === 'development' ? demoRoutes : [])
     ]

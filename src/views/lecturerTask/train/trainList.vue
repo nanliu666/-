@@ -19,18 +19,21 @@
           {{ item.menuName }}
         </div>
 
-        <div class="item_time">{{ '赵老师' }} &nbsp; | &nbsp; {{ '2020/12/30 - 2021/01/30' }}</div>
+        <div class="item_time">
+          {{ showTrainWay(item.trainWay) }} &nbsp; | &nbsp;
+          {{ `${showTime(item.startTime)} - ${showTime(item.endTime)}` }}
+        </div>
 
         <div class="item_Rate">
           <el-rate
-            v-model="valueRate"
+            v-model="item.composite"
             disabled
             show-score
             text-color="#ff9900"
-            score-template="{value}"
+            score-template="{value}分"
           >
           </el-rate>
-          <span> 大数据 </span>
+          <!-- <span> 大数据 </span> -->
         </div>
 
         <div v-if="item.totalPrecent == 100" class="item_complete">
@@ -58,7 +61,7 @@
   </div>
 </template>
 <script>
-import { myCourseCatalog } from '@/api/myTask'
+import { queryTrainList } from '@/api/lecturerTask'
 ;('requiredCourseList')
 export default {
   data() {
@@ -80,21 +83,37 @@ export default {
     // this.getmyCourseCatalog()
   },
   methods: {
+    showTime(tade) {
+      let time = tade.split(' ')
+      return time[0]
+    },
+    showTrainWay(i) {
+      let WAY = {
+        1: '在线',
+        2: '面授',
+        3: '混合'
+      }
+      return WAY[i]
+    },
     returnimgFn(img) {
       return img || require('@/assets/images/required_bg.png')
     },
     // 跳转详情页
     goDetail(item) {
-      this.$router.push({ path: '/myRequiredDetails', query: { item: JSON.stringify(item) } })
+      // item.trainScope 内训inside,外训outer
+      if (item.trainScope == 'inside') {
+        this.$router.push({ path: '/InternalTraining', query: { id: item.id } })
+        // this.$router.push({ path: '/ExternalTraining', query: { id: item.id } }) // 内训
+      } else if (item.trainScope == 'outer') {
+        this.$router.push({ path: '/ExternalTraining', query: { id: item.id } }) //外训
+      }
     },
     async getmyCourseCatalog() {
       let params = {
-        courseType: 0,
-        studyType: 0,
         ...this.page
       }
 
-      let res = await myCourseCatalog(params)
+      let res = await queryTrainList(params)
       this.listData = res.data
       this.total = res.totalNum
     },
@@ -115,29 +134,29 @@ export default {
 <style scoped lang="scss">
 .myRequiredList {
   margin: 25px 0;
-  padding: 0 24px 25px;
-  box-shadow: 0 2px 8px 0 rgba(0, 63, 161, 0.06);
-  background-color: #fff;
+  padding-bottom: 25px;
+  background-color: #f9fafa;
   .items {
     display: flex;
     flex-wrap: wrap;
     .item {
-      width: 273px;
-      height: 285px;
+      flex-direction: 0;
+      width: 285px;
+      height: 282px;
       border-radius: 4px;
       overflow: hidden;
       box-shadow: 0 2px 8px 0 rgba(0, 63, 161, 0.06);
       transition-duration: 0.3s;
+      margin-bottom: 20px;
       margin-right: 20px;
-      margin-top: 20px;
       position: relative;
       cursor: pointer;
-      &:nth-child(4n) {
+      &:nth-of-type(4n) {
         margin-right: 0;
       }
       &:hover {
         transform: translateY(-3px);
-        box-shadow: 0 9px 12px 0 rgba(0, 63, 161, 0.12);
+        box-shadow: 0 8px 20px 0 rgba(0, 63, 112, 0.12);
         .card-cover {
           visibility: visible !important;
         }
@@ -154,43 +173,46 @@ export default {
           position: absolute;
           top: 8px;
           right: 8px;
-          background: #e7ffee;
-          border-radius: 4px;
-          font-size: 10px;
           width: 52px;
           height: 20px;
-          line-height: 20px;
+          font-size: 12px;
           text-align: center;
-          color: #00b061;
+          line-height: 22px;
+          font-weight: 400;
+          border-radius: 4px;
           font-style: none;
+          color: #f5c200;
+          background-color: #fffee6;
         }
         .span2 {
           position: absolute;
           top: 8px;
           right: 8px;
-          background: #fffce6;
-          border-radius: 4px;
-          font-size: 10px;
           width: 52px;
           height: 20px;
-          line-height: 20px;
+          font-size: 12px;
           text-align: center;
-          color: #fcba00;
+          line-height: 22px;
+          font-weight: 400;
+          border-radius: 4px;
           font-style: none;
+          color: #2875d4;
+          background-color: #f0f9ff;
         }
         .span3 {
           position: absolute;
           top: 8px;
           right: 8px;
-          background: #e7fbff;
-          border-radius: 4px;
-          font-size: 10px;
           width: 52px;
           height: 20px;
-          line-height: 20px;
+          font-size: 12px;
           text-align: center;
-          color: #01aafc;
+          line-height: 22px;
+          font-weight: 400;
+          border-radius: 4px;
           font-style: none;
+          color: rgba(0, 11, 21, 0.45);
+          background-color: #f5f5f6;
         }
       }
       &_title {

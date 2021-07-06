@@ -15,7 +15,7 @@
         <div class="right">
           <ul class="info">
             <li>
-              <span class="sort_title">{{ detailParams.menuName }}</span>
+              <span class="sort_title">{{ detailParams.name }}</span>
               <span v-if="detailParams.status == '1'" class="sort_status status_1">未开始</span>
               <span v-if="detailParams.status == '2'" class="sort_status status_2">进行中</span>
               <span v-if="detailParams.status == '3'" class="sort_status status_3">已结束</span>
@@ -28,7 +28,7 @@
                   }}</span>
                 </li>
                 <li>
-                  学习时间：<span class="middle_data">{{ detailParams.startDate }} - {{ detailParams.entDate }}</span>
+                  有效时间：<span class="middle_data">{{ detailParams.startTime }} - {{ detailParams.endTime }}</span>
                 </li>
                 <li>
                   主办单位：<span class="middle_data">{{
@@ -38,16 +38,27 @@
               </ul>
             </li>
             <li class="info_bottom">
-              <span class="info_bottom_details"><i class="iconimage_icon_user iconfont iconInfo"></i>{{ detailParams.peopleNum ? detailParams.peopleNum + '人' : '--' }}</span>
-              <span class="info_bottom_details"><i class="iconimage_icon_time1 iconfont iconInfo"></i>{{ detailParams.period ? detailParams.period + '小时' : '--' }}</span>
-              <span v-if="false" class="info_bottom_details"><i class="iconjifen iconfont iconInfo"></i>{{ detailParams.credit ? detailParams.credit + '积分' : '--' }}</span>
+              <span class="info_bottom_details"><i class="iconimage_icon_user iconfont iconInfo"></i>{{ detailParams.peopleNum ? detailParams.peopleNum : '--' }}</span>
+              <span class="info_bottom_details"><i class="iconimage_icon_time1 iconfont iconInfo"></i>{{ detailParams.period ? detailParams.period + 'h' : '--' }}</span>
+              <span class="info_bottom_details"><i class="iconjifen iconfont iconInfo"></i>{{ detailParams.credit ? detailParams.credit : '--' }}</span>
             </li>
           </ul>
+          <div class="composite">
+            <el-rate
+              :v-model="detailParams.composite"
+              disabled
+              show-score
+              text-color="#rgba(0,11,21,0.45)"
+              score-template="{value}"
+            >
+            </el-rate>
+            <span>分</span>
+          </div>
         </div>
       </div>
       <!-- 课程分类 -->
       <div class="classification">
-        <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tabs v-model="activeName">
           <el-tab-pane
             v-for="(item, index) in activeList"
             :key="index"
@@ -78,7 +89,7 @@ import situationTab from './situationTab' //学习情况
 import courseTab from './courseTab' //学习课程
 import examinationTab from './examinationTab' //考试情况
 import moment from 'moment'
-
+import { getRequiredDetail } from '@/api/lecturerTask'
 export default {
   components: { situationTab, courseTab, examinationTab },
 
@@ -115,16 +126,16 @@ export default {
     }
   },
   created() {
-    this.detailParams = JSON.parse(this.$route.query.item)
+    // this.detailParams = JSON.parse(this.$route.query.item)
+    this.isgetRequiredDetail()
     this.detailParams.startDate = moment(this.detailParams.startTime).format('yyyy-MM-DD')
     this.detailParams.entDate = moment(this.detailParams.endTime).format('yyyy-MM-DD')
     // console.log('params----', this.detailParams)
     this.getData()
   },
   methods: {
-    // tabs点击
-    handleClick(tab, event) {
-      console.log(tab, event)
+    async isgetRequiredDetail() {
+      this.detailParams = await getRequiredDetail({ id: this.$route.query.id })
     },
     // 处理数据
     handleProcessedData() {
@@ -171,23 +182,7 @@ export default {
       this.getData()
     },
     // 获取数据
-    getData() {
-      // console.log('getData')
-      // let params = {
-      //   courseType: '0',
-      //   id: this.detailParams.id,
-      //   status: status || '', //状态（1：未开始；2：进行中；3：已结束），默认为空，表示全部
-      //   ...this.page
-      // }
-      //   getRequireCourse(params).then((res) => {
-      //     // console.log('getRequireCourse----res', res)
-      //     this.total = res.totalNum
-      //     this.resData = res.data
-      //     this.processedData = []
-      //     this.handleProcessedData()
-      //     // this.dataInfo
-      //   })
-    }
+    getData() {}
   }
 }
 </script>
@@ -216,30 +211,30 @@ $timeHead: rgba(139, 155, 168, 0.65);
     }
   }
   .status_1 {
-    background: #e7ffee;
-    color: #00b061;
+    background: #fffee6;
+    color: #f5c200;
   }
   .status_2 {
-    background: #fffce6;
-    color: #fcba00;
+    color: #2875d4;
+    background: #eaf8ff;
   }
   .status_3 {
-    background: #e7fbff;
-    color: #01aafc;
+    background: #f5f5f6;
+    color: rgba(0, 11, 21, 0.45);
   }
   .sort {
     // 必修课种类详情
-    height: 214px;
+    height: 318px;
     padding: 24px;
     // width: 100%;
     background: #ffffff;
-    box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
     border-radius: 4px;
     display: flex;
+    box-shadow: 0 2px 8px 0 rgba(0, 61, 112, 0.06);
     .left {
       // 左边图片
-      height: 100%;
-      width: 273px;
+      width: 480px;
+      height: 270px;
       margin-right: 24px;
       background: #7498fe;
       border-radius: 4px;
@@ -253,16 +248,29 @@ $timeHead: rgba(139, 155, 168, 0.65);
       // 右边详细详细
       flex: 1;
       color: #000b15;
+      position: relative;
+      .composite {
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: flex;
+        color: rgba(0, 11, 21, 0.45);
+        font-size: 12px;
+      }
       .info {
         display: flex;
         height: 100%;
         flex-direction: column;
-        justify-content: space-between;
-        // align-items: stretch;
+        & > li:nth-of-type(2) {
+          margin-top: 40px;
+          margin-bottom: 24px;
+        }
         .sort_title {
           font-size: 18px;
-          font-weight: bold;
-          opacity: 0.85;
+          color: #000b15;
+          letter-spacing: 0;
+          line-height: 28px;
+          font-weight: 600;
         }
         .sort_status {
           margin-left: 16px;
@@ -287,17 +295,21 @@ $timeHead: rgba(139, 155, 168, 0.65);
             color: rgba(0, 11, 21, 0.45);
           }
           .middle_data {
-            color: rgba(0, 11, 21, 0.85);
+            font-family: PingFangSC-Regular;
+            font-size: 14px;
+            color: #000b15;
+            letter-spacing: 0;
           }
         }
         .info_bottom {
           font-size: 14px;
-          color: rgba(0, 11, 21, 0.45);
+          color: rgba(0, 11, 21, 0.85);
+          letter-spacing: 0.5px;
           .info_bottom_details {
             margin-right: 25px;
           }
           .iconInfo {
-            // font-size: 14px;
+            color: #8c9196;
             margin-right: 8px;
           }
         }

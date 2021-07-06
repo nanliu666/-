@@ -44,7 +44,9 @@
                 <div slot="label" class="label-box">
                   <span class="label-box-title">{{ k + 1 + '.' + z.content }}</span>
                   <span class="label-box-type">【多选题】</span>
-                  <span class="label-box-tip">最少可选{{ z.multiMin }},最多可选{{ z.multiMax }}项</span>
+                  <span class="label-box-tip"
+                    >最少可选{{ z.multiMin }},最多可选{{ z.multiMax }}项</span
+                  >
                 </div>
                 <el-checkbox-group v-model="questionnaireForm[z.questionId]" disabled>
                   <el-checkbox
@@ -52,16 +54,17 @@
                     :key="i"
                     :label="v.questionOptionId"
                     style="display: block"
-                  >{{ v.content }}</el-checkbox>
+                    >{{ v.content }}</el-checkbox
+                  >
                 </el-checkbox-group>
               </el-form-item>
             </div>
           </el-form>
         </div>
         <!-- 提交按钮 -->
-        <div class="submitBtn">
+        <!-- <div class="submitBtn">
           <el-button type="primary" size="medium" :disabled="true">提交问卷</el-button>
-        </div>
+        </div> -->
       </div>
     </template>
   </div>
@@ -82,7 +85,7 @@ export default {
   },
   computed: {
     //   答题总数量
-    questionNum: function() {
+    questionNum: function () {
       let num = 0
       this.questionList.map((v) => {
         if (v.status) num += 1
@@ -90,7 +93,7 @@ export default {
       return num
     }
   },
-  created() {
+  activated() {
     this.initQuestionnaireSurvey()
   },
   methods: {

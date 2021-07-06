@@ -1,5 +1,7 @@
 const getters = {
   userInfo: (state) => state.user.userInfo,
+  comSearchText: (state) => state.common.comSearchText,
+  historyList: (state) => state.common.historyList,
   unreadCount: (state) => state.user.unreadCount,
   userId: (state) => state.user.userInfo.user_id,
   companyId: (state) => state.user.userInfo.company_id,

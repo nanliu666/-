@@ -3,7 +3,7 @@
     <div class="ranking">
       <div class="homeRightTitle">
         <span>月度学时排行榜</span>
-        <!-- <router-link to="">更多</router-link> -->
+        <router-link :to="{ path: '/ranking/rankIntegralList', query: { name: 'interHour' } }">更多</router-link>
       </div>
       <div v-for="(item, i) in monthlyPeriodData" :key="item.id" class="rankingItem">
         <div :class="['rankingIndex', 'rankingIndex' + i]">0{{ i + 1 }}</div>

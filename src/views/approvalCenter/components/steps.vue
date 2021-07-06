@@ -31,38 +31,20 @@
                 <span style="margin:0 12px;display: inline-block">{{ item.approveTime }}</span>
                 <span v-if="item.type !== 'copy'">
                   <span
-                    v-if="item.nodeId !== 'start' && item.nodeType !== 'or'"
+                    v-if="item.nodeId !== 'start'"
                     :class="[item.result, !item.result ? 'result' : '']"
                   >
                     {{ item | result }}
                   </span>
-                  <!--提示信息放上来-->
                   <span
-                    v-if="item.nodeType === 'or' || _.get(item, 'properties.counterSign') == false"
-                    class="tip"
+                    v-else
+                    class="start"
                   >
                     <span
-                      v-if="
-                        (item.nodeType === 'and' ||
-                          _.get(item, 'properties.counterSign') == true) &&
-                          _.size(item.userList) > 1
-                      "
-                    >
-                      需所有审批人同意
-                    </span>
-                    <span
-                      v-if="
-                        item.nodeType === 'or' || _.get(item, 'properties.counterSign') == false
-                      "
-                      class="tip"
-                    >
-                      一人同意即可
-                    </span>
-                  </span>
-
-                  <span v-else class="start">
-                    <span v-if="item.result === 'Cancel'" class="Cancel">审批已撤回</span>
-                    <span v-if="index === 0">发起 </span>
+                      v-if="item.result === 'Cancel'"
+                      class="Cancel"
+                    >审批已撤回</span>
+                    <span v-else>发起</span>
                   </span>
                 </span>
               </div>
@@ -214,6 +196,23 @@
               </div>
             </div>
           </div>
+        </el-step>
+        <el-step v-if="progress && progress.length == 1">
+          <!-- 自定义图标 -->
+          <template slot="icon" class="icon">
+            <div>
+              <div class="img-box">
+                <el-avatar src="/svg/approveAuto.svg" />
+              </div>
+            </div>
+          </template>
+          <template slot="title">
+            <div class="title">
+              <div>
+                <span>系统自动通过</span>
+              </div>
+            </div>
+          </template>
         </el-step>
       </el-steps>
     </div>

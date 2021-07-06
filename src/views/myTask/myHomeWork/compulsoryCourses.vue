@@ -99,12 +99,13 @@ export default {
 
 <style scoped lang="scss">
 .compulsoryCourses {
+  background-color: #f9fafa;
   .items {
     display: flex;
     flex-wrap: wrap;
     .item {
-      width: 273px;
-      height: 250px;
+      width: 285px;
+      height: 282px;
       border-radius: 4px;
       overflow: hidden;
       box-shadow: 0 2px 8px 0 rgba(0, 63, 161, 0.06);

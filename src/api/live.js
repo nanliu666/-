@@ -12,6 +12,11 @@ export const getLiveList = (params) => get('/api/common/v1/live/list', params)
  * */
 export const getLiveDetail = (params) => get('/common/v1/live', params)
 /**
+ * 学员报名直播
+ * */
+export const userLiveApplyJoin = (params) => post('/common/v1/live/userLiveApplyJoin', params)
+
+/**
  * 查询评论列表
  * */
 export const getCommentList = (params) => get('/common/v1/live/comment/commentList', params)

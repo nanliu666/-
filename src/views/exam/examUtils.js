@@ -1,15 +1,21 @@
 import moment from 'moment'
 class ExamUtils {
   constructor() {}
+  /**
+   * 参加考试置灰条件
+   * 未开考(status1)、
+   * 缺考(status4)、
+   * 已考试且考试成绩为未发布(isPass2)、
+   * 已考试(status3)考试次数到达其上限(joinNum&&joinNumValue>=examTimes),
+   * 考试结束时间在今天之前
+   * @param {*} row 当前的考试的数据
+   * @returns 是否置灰参加考试的按钮
+   */
   JoinDisabled(row) {
-    // 参加考试置灰条件：
-    // 未开考(status1)、缺考(status4)、已考试且考试成绩为未发布(isPass2)、已考试(status3)考试次数到达其上限(joinNum&&joinNumValue>=examTimes),考试结束时间在今天之前
-    const isJoinDisabled =
-      row.status === 1 ||
-      row.status === 4 ||
-      row.isPass === 2 ||
-      moment(moment(row.examEndTime)).diff(new Date(), 'seconds') < 0 ||
-      (row.status === 3 && row.joinNum && row.joinNumValue === row.examTimes)
+    const conditionOne = row.status === 1 || row.status === 4 || row.isPass === 2
+    const conditionTwo = moment(moment(row.examEndTime)).diff(new Date(), 'seconds') < 0
+    const conditionThree = row.status === 3 && row.joinNum && row.joinNumValue >= row.examTimes
+    const isJoinDisabled = conditionOne || conditionTwo || conditionThree
     return isJoinDisabled
   }
   // 参加考试前的逻辑判断

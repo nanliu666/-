@@ -1,15 +1,15 @@
 <template>
   <div class="center">
-    <div class="header">审批中心</div>
+    <!-- <div class="header">审批中心</div> -->
     <div class="center_bar">
-      <div class="bar_btn">
+      <!-- <div class="bar_btn">
         <div :class="{ pitch: pitch == 1 }" @click="setPitch(1)">
           待我审批 <span class="bar_btn_num">{{ totalNum }}</span>
         </div>
         <div :class="{ pitch: pitch == 2 }" @click="setPitch(2)">我已审批</div>
         <div :class="{ pitch: pitch == 3 }" @click="setPitch(3)">抄送我的</div>
         <div :class="{ pitch: pitch == 4 }" @click="setPitch(4)">我发起的</div>
-      </div>
+      </div> -->
       <div class="bar_search">
         <div cclass="search_input">
           <el-input
@@ -23,14 +23,14 @@
         <div class="search_popover">
           <el-popover v-model="visible" placement="bottom" width="428">
             <div class="popover_box">
-              <el-form ref="form" :model="searchForm" label-position="top">
+              <el-form ref="formRef" :model="searchForm" label-position="top">
                 <el-form-item label="流程类型">
                   <el-select v-model="searchForm.categoryId" placeholder="请选择">
                     <el-option
-                      v-for="(item, index) in tableData"
+                      v-for="(item, index) in categoryOptions"
                       :key="index"
-                      :label="item.processName"
-                      :value="item.categoryId"
+                      :label="item.label"
+                      :value="item.value"
                     ></el-option>
                   </el-select>
                 </el-form-item>
@@ -104,9 +104,9 @@
         </template>
 
         <!-- 流程类型 现在只有课程审批，先写死 -->
-        <template slot="processName">
-          课程审批
-        </template>
+        <!-- <template slot="processName" slot-scope="{ row }">
+          {{ row.processName }}
+        </template> -->
 
         <!-- 当前审批人 -->
         <template slot="approveUser" slot-scope="{ row }">
@@ -128,7 +128,8 @@
 
 <script>
 import { waitApproveList, hasApproveList, myApproveList, ccApproveList } from '@/api/approvalCenter'
-
+import { categoryOptions, baseFormKey } from '@/const/approve'
+import { dateConver } from '@/util/date'
 // 表格属性
 let TABLE_COLUMNS = [
   {
@@ -137,8 +138,8 @@ let TABLE_COLUMNS = [
   },
   {
     label: '流程类型',
-    prop: 'processName',
-    slot: true,
+    prop: 'categoryId',
+    formatter: (row) => baseFormKey[row.formKey] || '',
     width: '130px'
   },
   {
@@ -148,11 +149,17 @@ let TABLE_COLUMNS = [
   },
   {
     label: '申请时间',
-    prop: 'applyTime'
+    prop: 'applyTime',
+    formatter: (row) => {
+      return dateConver(row.applyTime)
+    }
   },
   {
     label: '完成时间',
-    prop: 'completeTime'
+    prop: 'completeTime',
+    formatter: (row) => {
+      return dateConver(row.completeTime)
+    }
   },
   {
     label: '当前状态',
@@ -184,6 +191,7 @@ export default {
   },
   data() {
     return {
+      categoryOptions,
       totalNum: '0',
       searchInput: '',
       visible: false,
@@ -209,11 +217,15 @@ export default {
       this.page.pageSize = 10
       this.page.total = 0
       this.getTableData()
-    }, 600)
+    }, 600),
+    pitch() {
+      this.searchForm = {}
+      //this.$refs.formRef.resetFields()
+    }
   },
 
   activated() {
-    this.setPitch(1)
+    this.setPitch(this.pitch)
   },
   methods: {
     searchBtn() {
@@ -227,18 +239,21 @@ export default {
     //   导航栏btn
     setPitch(i, beginApplyTime, endApplyTime) {
       this.pitch = i
-      this.searchInput = ''
-      this.searchForm = {}
+      // this.searchInput = ''
+      // this.searchForm = {}
       this.page.pageNo = 1
       this.page.pageSize = 10
       this.page.total = 0
       if (i == 1) {
-        TABLE_COLUMNS.splice(4, 1)
-        TABLE_COLUMNS.splice(5, 1)
+        let columnsVisible2 = ['apprNo', 'categoryId', 'userName', 'applyTime', 'approveUser']
+        TABLE_COLUMNS = this.$options.filters['columnsFilter'](columnsVisible2)
       } else {
         TABLE_COLUMNS[4] = {
           label: '完成时间',
-          prop: 'completeTime'
+          prop: 'completeTime',
+          formatter: (row) => {
+            return dateConver(row.completeTime)
+          }
         }
         TABLE_COLUMNS[5] = {
           label: '当前状态',
@@ -251,7 +266,9 @@ export default {
           slot: true
         }
       }
-      this.getTableData(beginApplyTime, endApplyTime)
+      this.$nextTick(() => {
+        this.getTableData(beginApplyTime, endApplyTime)
+      })
     },
     //切换导航栏查询数据
     getTableData(beginApplyTime, endApplyTime) {
@@ -259,7 +276,7 @@ export default {
         ...this.page,
         ...this.searchForm,
         search: this.searchInput,
-        categoryId: '1', //分类ID
+        //categoryId: '1', //分类ID
         beginApplyTime: beginApplyTime,
         endApplyTime: endApplyTime
       }
@@ -292,11 +309,9 @@ export default {
       }
     },
     toDetails(item) {
-      //   window.console.log(id)
-
       this.$router.push({
         path: '/approvalCenter/details',
-        query: { apprNo: item.apprNo }
+        query: { apprNo: item.apprNo, key: item.formKey }
       })
     },
     //  处理页码改变
@@ -315,7 +330,9 @@ export default {
 <style lang="scss" scoped>
 .center {
   font-family: PingFangSC-Medium;
-
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
   .header {
     margin: 24px 0 16px;
     font-size: 14px;
@@ -326,7 +343,6 @@ export default {
     background: #ffffff;
     box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
     border-radius: 4px;
-    height: 160px;
     padding: 24px;
     .bar_btn {
       font-size: 16px;
@@ -360,7 +376,6 @@ export default {
     }
     .bar_search {
       display: flex;
-      padding-top: 24px;
       .search_input {
         width: 240px;
       }
@@ -370,10 +385,12 @@ export default {
     }
   }
   .center_table {
+    flex: 1;
     padding: 24px;
     background: #ffffff;
     box-shadow: 0 2px 12px 0 rgba(0, 61, 112, 0.08);
     border-radius: 4px;
+    min-height: 100%;
     margin-top: 20px;
     .status1 {
       background: #e7fbff;

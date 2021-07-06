@@ -30,8 +30,8 @@
       </ul> -->
       <ul ref="industryRef" style="flex: 1" :class="{ hidde: !bussinessType }">
         <li v-for="item in categoryList" :key="item[valueKey]" @click="handleCategoryClick(item)">
-          <div v-if="item[labelKey] == '全部'" style="color: #01aafc">{{ item[labelKey] }}</div>
-          <div v-else><span style="color:#ccc">| &nbsp;</span> {{ item[labelKey] }}</div>
+          <div v-if="item[labelKey] == '全部'" style="color: #2875d4">{{ item[labelKey] }}</div>
+          <div v-else><span class="_line">|</span> {{ item[labelKey] }}</div>
         </li>
       </ul>
 
@@ -78,9 +78,28 @@ export default {
 
   watch: {
     categoryList: function() {
+      this.toUpdateClient()
+    },
+    selected: function() {
+      this.toUpdateClient()
+    }
+  },
+
+  mounted() {
+    this.loadCategory(null)
+  },
+  methods: {
+    toUpdateClient() {
       this.$nextTick(function() {
         let cur = this.$refs['industryRef']
-        if (cur.clientHeight != 30 && cur.clientHeight != 22) {
+        console.log(cur.clientHeight)
+
+        if (cur.clientHeight > 30 && cur.clientHeight != 22) {
+          // 是否显示btn
+          this.industryHeight = true
+          // // 是否显示分类
+          this.bussinessType = false
+        } else if (cur.clientHeight == 22) {
           // 是否显示btn
           this.industryHeight = true
           // // 是否显示分类
@@ -91,26 +110,7 @@ export default {
         }
       })
     },
-    selected: function() {
-      this.$nextTick(function() {
-        let cur = this.$refs['industryRef']
-        if (cur.clientHeight != 30 && cur.clientHeight != 22) {
-          // 是否显示btn
-          this.industryHeight = true
-          // // 是否显示分类
-          this.bussinessType = false
-        } else {
-          this.industryHeight = false
-          this.bussinessType = true
-        }
-      })
-    }
-  },
 
-  mounted() {
-    this.loadCategory(null)
-  },
-  methods: {
     loadCategory(id) {
       this.load({ id }).then((list) => {
         this.categoryList = list
@@ -136,6 +136,7 @@ export default {
       this.loadCategory(category[this.valueKey])
     },
     handleDelete(index) {
+      this.toUpdateClient()
       this.selected = this.selected.slice(0, index)
       this.active = _.last(this.selected) || {}
       this.loadCategory(this.active[this.valueKey])
@@ -162,6 +163,7 @@ export default {
       padding: 0 8px;
       line-height: 24px;
       border-radius: 4px;
+      background-color: #f0f9ff;
     }
     &--title {
       color: rgba($primaryFontColor, 0.45);
@@ -176,7 +178,7 @@ export default {
         line-height: 24px;
 
         i.close {
-          color: $primaryColor;
+          color: #8c9195;
           font-size: 8px;
           margin-left: 4px;
           cursor: pointer;
@@ -189,7 +191,7 @@ export default {
     }
   }
   &__list {
-    margin-bottom: 8px;
+    // margin-bottom: 8px;
     ul {
       display: inline;
       li {
@@ -203,19 +205,31 @@ export default {
 }
 .moreBtn {
   font-size: 12px;
-  color: #01aafc;
+  color: $primaryColor;
   .moreBtn_box {
     border: 1px solid #ccc;
-    padding: 0 5px;
+    height: 24px;
+    line-height: 24px;
+    width: 64px;
+    padding-left: 10px;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 12px;
+    color: rgba(0, 11, 21, 0.85);
+    &:hover {
+      color: #2875d4;
+    }
   }
   .text {
-    margin-left: 5px;
+    margin-right: 12px;
   }
 }
 .hidde {
   overflow: hidden;
   height: 22px;
+}
+._line {
+  color: #ccc;
+  margin: 0 24px 0 12px;
 }
 </style>
