@@ -1,21 +1,22 @@
 // 配置编译环境和线上环境之间的切换
 var systemName = '易宝教育学习平台' // 系统名称
-var isQiNiu=false // 判断是用七牛(true)还是用内部(false)上传
+var isQiNiu = true // 判断是用七牛(true)还是用内部(false)上传
 let frontBaseUrl = '' // 用户前台地址
 let backBaseUrl = '' //（后台管理）
-let baseUploadUrl ={ // 内部上传服务，各环境上传地址
-  dev:'https://file-test.epro-edu.com',
-  sit:'https://file-test.epro-edu.com',
-  pro:'https://file-test.epro-edu.com',
-  zehui:'https://file-test.epro-edu.com',
-  xugong:'https://xlms-file.xcmg.com:11443'
+let baseUploadUrl = {
+  // 内部上传服务，各环境上传地址
+  dev: 'https://file-test.epro-edu.com',
+  sit: 'https://file-test.epro-edu.com',
+  pro: 'https://file-test.epro-edu.com',
+  zehui: 'https://file-test.epro-edu.com',
+  xugong: 'https://xlms-file.xcmg.com:11443'
 }
 let iconfontVersion = ['2232073_6h9r7g5f38i']
 
 let iconfontUrl = '//at.alicdn.com/t/font_2232073_4b2mujufyjk.css'
 let codeUrl = `${frontBaseUrl}/code`
 const env = process.env
-let uploadUrl=env.VUE_APP_ENV?baseUploadUrl[env.VUE_APP_ENV]:baseUploadUrl.sit
+let uploadUrl = env.VUE_APP_ENV ? baseUploadUrl[env.VUE_APP_ENV] : baseUploadUrl.sit
 
 if (env.VUE_APP_ENV == 'dev') {
   frontBaseUrl = 'http://172.16.4.55:7071' // 深圳本地开发环境地址（用户前台）
@@ -32,16 +33,14 @@ if (env.VUE_APP_ENV == 'dev') {
   systemName = '徐工学习平台'
 }
 
-
-
-let backBaseUrls={
-  dev:'http://172.16.4.55:8081', // 深圳本地开发环境地址(后台管理)
-  sit:'https://admin-test.epro-edu.com', // 深圳本地开发环境地址(后台管理)
-  pro:'http://172.16.0.16:8081', //生产环境地址(后台管理)
-  zehui:'http://admin.zexueyuan.com.cn', //泽汇生产环境地址（后台管理）
-  xugong:'https://xlms-manager.xcmg.com:12443' //徐工环境地址（后台管理）
+let backBaseUrls = {
+  dev: 'http://172.16.4.55:8081', // 深圳本地开发环境地址(后台管理)
+  sit: 'https://admin-test.epro-edu.com', // 深圳本地开发环境地址(后台管理)
+  pro: 'http://172.16.0.16:8081', //生产环境地址(后台管理)
+  zehui: 'http://admin.zexueyuan.com.cn', //泽汇生产环境地址（后台管理）
+  xugong: 'https://xlms-manager.xcmg.com:12443' //徐工环境地址（后台管理）
 }
-backBaseUrl=env.VUE_APP_ENV?backBaseUrls[env.VUE_APP_ENV]:backBaseUrls.sit
+backBaseUrl = env.VUE_APP_ENV ? backBaseUrls[env.VUE_APP_ENV] : backBaseUrls.sit
 // if (env.VUE_APP_ENV == 'dev') {
 //   backBaseUrl = 'http://172.16.4.55:8081' // 深圳本地开发环境地址(后台管理)
 // } else if (env.VUE_APP_ENV == 'sit') {
@@ -53,4 +52,14 @@ backBaseUrl=env.VUE_APP_ENV?backBaseUrls[env.VUE_APP_ENV]:backBaseUrls.sit
 // } else if (env.VUE_APP_ENV == 'xugong') {
 //   backBaseUrl = 'https://xlms-manager.xcmg.com:12443' //徐工环境地址（后台管理）
 // }
-export { frontBaseUrl, backBaseUrl, iconfontUrl, iconfontVersion, codeUrl, env, systemName, isQiNiu, uploadUrl }
+export {
+  frontBaseUrl,
+  backBaseUrl,
+  iconfontUrl,
+  iconfontVersion,
+  codeUrl,
+  env,
+  systemName,
+  isQiNiu,
+  uploadUrl
+}
