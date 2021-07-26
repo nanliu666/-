@@ -280,7 +280,9 @@ export default {
     border-radius: 3px;
   }
   .capture {
-    padding-left: 135px;
+    // margin: 0 auto;
+    // width: 1169px;
+    // margin-left: -8px;
   }
 }
 </style>

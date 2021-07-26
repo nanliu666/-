@@ -56,9 +56,9 @@
           <span class="name">费用预算：</span>
           <span class="wContent">{{ '￥' + formDetaill.budget }}</span>
         </el-col>
-        <el-col :span="8" class="experienceList">
+        <el-col :span="24" class="experienceList">
           <span class="name">研修成果：</span>
-          <span class="wContent">{{ formDetaill.trainResult }}</span>
+          <span class="wContent">{{ getTrainResultStr(formDetaill)}}</span>
         </el-col>
         <el-col :span="24" class="experienceList">
           <span class="name">研修目的：</span>
@@ -156,6 +156,16 @@ export default {
   },
   mounted() {},
   methods: {
+    getTrainResultStr(obj){
+      let type = {
+        1:'课程开发',
+        2:'经验交流',
+        3:'课程攻关',
+        4:'其他形式'
+      }
+      let content = obj.trainResult === '4' ? `${obj.trainResultContent?'('+obj.trainResultContent+')':''}` : ''
+      return `${type[obj.trainResult]} ${content}` 
+    },
     dateConver(date) {
       return dateConver(date)
     },

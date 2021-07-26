@@ -2,7 +2,7 @@
   <div v-loading="loading" class="applyCourseDev">
     <!-- 面包屑 -->
     <el-breadcrumb separator="/" style="padding: 25px 0 20px">
-      <el-breadcrumb-item>业务申请</el-breadcrumb-item>
+      <el-breadcrumb-item to="/approvalCenter/approveIndex">业务申请</el-breadcrumb-item>
       <el-breadcrumb-item>课程开发申请</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 主体内容 -->
@@ -31,7 +31,7 @@
             <div class="title">课程开发责任人</div>
             <el-table :data="memberdata" style="width: 100%" row-key="id" max-height="400">
               <el-table-column prop="name" label="姓名" width="180"> </el-table-column>
-              <el-table-column prop="department" label="所属部门"> </el-table-column>
+              <el-table-column prop="orgName" label="所属部门"> </el-table-column>
               <el-table-column prop="positionName" label="岗位名称"> </el-table-column>
               <el-table-column label="职责分工">
                 <template slot-scope="scope">
@@ -149,9 +149,9 @@ export default {
           itemType: 'datePicker',
           label: '开发周期',
           span: 10,
-          type: 'datetimerange',
+          type: 'daterange',
           required: true,
-          valueFormat: 'yyyy-MM-dd HH:mm:ss',
+          valueFormat: 'yyyy-MM-dd',
           pickerOptions: {
             // disabledDate(time) {
             //   return moment(new Date()).isAfter(time, 'day')
@@ -173,7 +173,7 @@ export default {
             treeParams: {
               data: [
                 { name: '干部' },
-                { name: '后背干部' },
+                { name: '后备干部' },
                 { name: '技术人员' },
                 { name: '技能人员' },
                 { name: '营销人员' },
@@ -201,6 +201,8 @@ export default {
           label: '主要内容',
           span: 24,
           rows: 6,
+          maxlength: 1000,
+          showWordLimit:true,
           type: 'textarea'
         }
       ],

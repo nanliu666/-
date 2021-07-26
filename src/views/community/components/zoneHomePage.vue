@@ -12,7 +12,7 @@
         <div
           class="top-header"
           :style="{
-            background: `url(${zoneInfomation.coverPic}) 0% 0%/cover no-repeat`
+            background: `url(${zoneInfomation.coverPic}) 0% 0%/100% 100% no-repeat`
           }"
         ></div>
         <!-- 社区信息 -->
@@ -39,11 +39,18 @@
                 </div>
               </el-row>
               <div class="describe">
-                {{
-                  zoneInfomation.introduce && zoneInfomation.introduce.length > 50
-                    ? zoneInfomation.introduce.slice(0, 50) + '...'
-                    : zoneInfomation.introduce
-                }}
+                <el-tooltip
+                  effect="dark"
+                  :content="zoneInfomation.introduce"
+                  placement="top"
+                  :manual="zoneInfomation.introduce && zoneInfomation.introduce.length <= 50"
+                >
+                  <span>{{
+                    zoneInfomation.introduce && zoneInfomation.introduce.length > 50
+                      ? zoneInfomation.introduce.slice(0, 50) + '...'
+                      : zoneInfomation.introduce
+                  }}</span>
+                </el-tooltip>
               </div>
             </div>
             <el-button
@@ -150,24 +157,28 @@
               @click="releasePost"
               >发布</el-button
             >
-            <el-checkbox v-model="postForm.expertsChecked"
+            <el-checkbox v-model="postForm.expertsChecked" v-if="zoneInfomation.isExpert"
               >求助专家（勾选后将会有专区专家为您进行解答）</el-checkbox
             >
           </el-col>
         </el-row>
       </div>
     </el-card>
+    <!-- 检查禁言模态框 -->
+    <banned-judgment ref="bannedJudgment"></banned-judgment>
   </div>
 </template>
 
 <script>
 import postList from './postList.vue'
 import { queryAreaDetail, addTopic, areaFollow, cancelAreaFollow } from '@/api/community'
+import bannedJudgment from './bannedJudgment.vue'
 export default {
   name: 'ZoneHomePage',
   components: {
     postList,
-    CommonUpload: () => import('@/components/common-upload/CommonUpload')
+    CommonUpload: () => import('@/components/common-upload/CommonUpload'),
+    bannedJudgment
   },
   data() {
     return {
@@ -238,7 +249,10 @@ export default {
       }
     },
     // 发布帖子
-    releasePost() {
+    releasePost: _.debounce(async function () {
+      // 判断是否禁言
+      await this.$refs.bannedJudgment.checkBanned(this.$route.query.areaId)
+      if (this.$refs.bannedJudgment.flagBanned) return
       this.$refs.ruleForm.validate(async (valid) => {
         if (!valid) return
         let params = {
@@ -264,7 +278,7 @@ export default {
             this.postLoading = false
           })
       })
-    },
+    }, 300),
     // 上传图片校验
     beforeUpload(file) {
       let types = ['image/jpeg', 'image/gif', 'image/bmp', 'image/png']
@@ -272,7 +286,7 @@ export default {
       const isLt5M = file.size / 1024 / 1024 < 5
 
       if (!isLt5M) {
-        this.$message.error('上传头像大小不能超过 5MB!')
+        this.$message.error('上传图片大小不能超过 5MB!')
         return false
       }
       if (!isImage) {
@@ -286,7 +300,7 @@ export default {
     },
     // 移除图片
     handleRemove(file, fileList) {
-      this.postForm.imgUrl = fileList
+      this.postForm.imgUrl = fileList.filter((v) => v.fileName)
     },
     changeTabs() {
       this.requestParameters.isExpert = this.activeName == 'expertsPost' ? 'Y' : ''

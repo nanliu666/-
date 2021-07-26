@@ -70,7 +70,7 @@
               </li>
               <li class="evalute__li">
                 <span class="li__left">
-                  <span class="label">答辩回报：</span>
+                  <span class="label">答辩汇报：</span>
                   <span>{{
                     evaluateData.defenseReport !== 0
                       ? `${evaluateData.defenseReport1 === 0 ? 0 : evaluateData.defenseReport}分`

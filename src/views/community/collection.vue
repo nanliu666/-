@@ -7,6 +7,7 @@
       :showAudit="true"
       :requestParameters="requestParameters"
       :isShowTag="true"
+      :isCollection="true"
     ></post-list>
   </div>
 </template>

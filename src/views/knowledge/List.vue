@@ -104,6 +104,7 @@ export default {
         pageSize: 10,
         catalogId: '',
         knowledgeName: '',
+        knowledgeSystemId: '',
         sortChoice: '' //排序选项 1：综合排序；2：最新上传；3：评分最高
       },
       activeIndex: '1',
@@ -124,8 +125,9 @@ export default {
     loadCategory(id) {
       return getKnowledgeCatalog(id)
     },
-    handleCategoryChange(category) {
-      this.queryInfo.catalogId = category.id
+    handleCategoryChange(res) {
+      this.queryInfo.catalogId = res.category.id
+      this.queryInfo.knowledgeSystemId = res.knowledge.idStr
       this.loadTableData()
     },
     /**

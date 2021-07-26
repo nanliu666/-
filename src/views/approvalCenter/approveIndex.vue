@@ -64,6 +64,11 @@ export default {
       this.defaultActive='3-1'
       this.initApproveList(1)
     }
+    if(this.$route.query.name==='mySend'){
+      this.$refs.elMenu.activeIndex = '2'
+      this.defaultActive='2'
+      this.initApproveList(4)
+    }
     this.initData()
   },
   methods: {

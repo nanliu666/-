@@ -234,6 +234,8 @@ export default {
           const item = this.tableData[i]
           if (item.forbitEndTime > 0) {
             item.forbitEndTime = item.forbitEndTime - 1000
+          } else {
+            this.$set(item, 'status', 1)
           }
         }
       }, 1000)
@@ -266,7 +268,7 @@ export default {
           if (minutes > 0) {
             result = `${minutes}分${seconds}秒`
           } else {
-            if (seconds > 0) {
+            if (seconds >= 0) {
               result = `${seconds}秒`
             }
           }
@@ -277,6 +279,7 @@ export default {
     // 筛选
     searchName: _.debounce(function (val) {
       this.keyword = val
+      this.page.pageNo = 1
       this.initAreaUserList()
     }, 300),
     // 禁言

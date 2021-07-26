@@ -2,7 +2,7 @@
   <div class="outsideTraining">
     <!-- 面包屑 -->
     <el-breadcrumb separator="/" style="padding: 25px 0 20px">
-      <el-breadcrumb-item>业务申请</el-breadcrumb-item>
+      <el-breadcrumb-item to="/approvalCenter/approveIndex">业务申请</el-breadcrumb-item>
       <el-breadcrumb-item>讲师认证申请</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 主体内容 -->
@@ -188,6 +188,8 @@ export default {
           label: '申请说明',
           span: 24,
           rows: 6,
+          maxlength: 1000,
+          showWordLimit:true,
           type: 'textarea'
         }
       ],

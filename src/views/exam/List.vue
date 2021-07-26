@@ -79,8 +79,10 @@
             <div class="li__container">
               <div class="li__left">
                 <div class="li__title">
-                  <span v-if="item.examPattern === 'general'" class="title__flag online">在线</span>
-                  <span v-else class="title__flag offline">线下</span>
+                  <span v-if="from !== 'live'">
+                    <span v-if="item.examPattern === 'general'" class="title__flag online">在线</span>
+                    <span v-else class="title__flag offline">线下</span>
+                  </span>
                   <span class="title">
                     {{ item.examName }}
                   </span>

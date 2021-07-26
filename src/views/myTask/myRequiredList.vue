@@ -15,9 +15,7 @@
           <span v-if="item.status == 3" class="span3">已结束</span>
         </div>
 
-        <div class="item_title">
-          {{ item.menuName }}
-        </div>
+        <div class="item_title">{{ item.menuName }}</div>
 
         <div class="item_time">
           {{ item.startTime.split(' ')[0].replace(/-/g, '/') }} -
@@ -25,14 +23,15 @@
         </div>
 
         <div class="item_Rate">
-          <!-- <el-rate
-            v-model="valueRate"
+          <el-rate
+            v-model="item.composite"
             disabled
             show-score
             text-color="#ff9900"
-            score-template="{value}"
+            score-template="{value}分"
           >
-          </el-rate> -->
+          </el-rate>
+          <span v-if="item.knowledgeSystemName" class="know"> {{ item.knowledgeSystemName }}</span>
         </div>
 
         <div v-if="item.totalPrecent == 100" class="item_complete">
@@ -217,6 +216,16 @@ export default {
       }
       &_Rate {
         padding: 4px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .know {
+          font-size: 12px;
+          background-color: #f2f2f2;
+          padding: 3px 10px;
+          border-radius: 4px;
+          color: #999999;
+        }
       }
       &_complete {
         position: absolute;

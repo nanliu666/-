@@ -32,7 +32,7 @@
                 <div class="attachment-upload">
                   <span>附件上传</span>
                   <span>
-                    支持单次或文件批量上传，最多可上传20个文件，且每个文件大小不超过10M，图片大小不超过5M
+                    支持单次或文件批量上传，最多可上传20个文件，且每个文档大小不超过50M，视频大小不超过2G
                   </span>
                 </div>
               </template>
@@ -95,7 +95,7 @@
                 </ul>
               </template>
               <template #type>
-                <el-select v-model="formData.type" :disabled="!!formData.attachments.length">
+                <el-select v-model="formData.type" :disabled="!!progressList.length">
                   <el-option
                     v-for="(item, index) in typeArr"
                     :key="index"
@@ -127,8 +127,10 @@
 import '@/config/iconfont'
 import CommonUpload from '@/components/common-upload/CommonUpload'
 import { getNextCatalogsById, addKnowledge, getDetailsById, updateKnowledge } from '@/api/knowledge'
+import { fileType } from '@/util/util'
 import { categoryMap } from '@/const/approve'
 import ApprSubmit from '@/components/appr-submit/ApprSubmit'
+import { getKonwList } from 'src/api/train'
 const FORM_COLUMNS = [
   {
     itemType: 'input',
@@ -169,31 +171,28 @@ const FORM_COLUMNS = [
     }
   },
   {
-    itemType: 'treeSelect',
     label: '知识体系',
+    itemType: 'treeSelect',
     prop: 'knowledgeSystemId',
+    required: false,
     span: 24,
     offset: 0,
     props: {
-      props: {
-        selectParams: {
-          placeholder: '请选择所在分类',
-          multiple: false
-        },
-        treeParams: {
-          'check-strictly': true,
-          'default-expand-all': false,
-          'expand-on-click-node': false,
-          clickParent: true,
-          data: [],
-          filterable: false,
-          props: {
-            children: 'children',
-            label: 'name',
-            value: 'id',
-            disabled: 'disabled'
-          },
-          required: true
+      selectParams: {
+        placeholder: '请选择知识体系',
+        multiple: false
+      },
+      treeParams: {
+        'check-strictly': true,
+        'default-expand-all': false,
+        'expand-on-click-node': false,
+        clickParent: true,
+        data: [],
+        filterable: true,
+        props: {
+          children: 'children',
+          label: 'name',
+          value: 'id'
         }
       }
     }
@@ -263,6 +262,7 @@ export default {
     CommonForm: () => import('@/components/common-form/CommonForm'),
     CommonUpload,
     ApprSubmit
+    // eltreeSelect: () => import('@/components/el-tree-select/ElTreeSelect')
   },
   data() {
     return {
@@ -275,11 +275,6 @@ export default {
         { value: 2, label: '文档' },
         { value: 3, label: '资料下载' }
       ],
-      word: /\.(txt|doc|wps|rtf|docx)$/, // 文档格式
-      video: /\.(avi|wmv|mp4|3gp|rm|rmvb|mov)$/, // 视频格式
-      image: /\.(jpg|jpeg|png|GIF|gif|bmp)$/, // 图片
-      compress: /\.(rar|zip)$/, // 压缩包
-      audio: /\.(mp3|wma|wav)$/, // 音频
       // 批量生成进度条
       progressList: [],
       pageTitle: '',
@@ -299,8 +294,7 @@ export default {
       localColumns: [...FORM_COLUMNS, ...uploadConfigList],
       onlineColumns: [...FORM_COLUMNS, ...UPLOAD_ONLINE],
       autoSubmit: false,
-      formKey: 'applyKnowledgeShare',
-      formDataClone: null
+      formKey: 'applyKnowledgeShare'
     }
   },
 
@@ -320,17 +314,19 @@ export default {
     },
     iconType() {
       return (type) => {
-        const ppt = /\.(ppt)$/
+        type = type.toLowerCase()
+        const { flag } = fileType(type)
+        const ppt = /\.(ppt|pptx)$/
         const pdf = /\.(pdf)$/
         const xls = /\.(xls|xlsx)$/
-        if (this.image.test(type)) return false
-        else if (this.video.test(type)) return '#iconvi'
-        else if (this.compress.test(type)) return '#iconyasuobao'
-        else if (this.word.test(type)) return '#icondoc'
+        if (flag === 2) return '#iconimage'
+        else if (flag === 0) return '#iconvi'
+        else if (flag === 3) return '#iconyasuobao'
         else if (ppt.test(type)) return '#iconppt'
         else if (pdf.test(type)) return '#iconpdf'
-        else if (this.audio.test(type)) return '#iconyinpin'
+        else if (flag === 4) return '#iconyinpin'
         else if (xls.test(type)) return '#iconxls'
+        else if (flag === 1) return '#icondoc'
         else return '#iconppt'
       }
     },
@@ -357,6 +353,7 @@ export default {
   },
   mounted() {
     this.initData()
+    this.initRelatedKnowledgeList()
     this.pageTitle = this.id ? '编辑我的分享' : '一点分享'
     if (this.catalogId) {
       this.formData.catalogId = this.catalogId
@@ -370,12 +367,24 @@ export default {
       })
     }
   },
-  created() {
-    this.formDataClone = _.cloneDeep(this.formData)
+  beforeRouteEnter(to, from, next) {
+    console.log(to)
+    to.meta.keepAlive = false
+    next()
   },
   methods: {
+    //   初始化知识体系列表
+    async initRelatedKnowledgeList() {
+      let knowledgeSystemId = _.find(this.formColumns, {
+        prop: 'knowledgeSystemId'
+      })
+      await getKonwList({ name: '' }).then((res) => {
+        knowledgeSystemId.props.treeParams.data = res
+      })
+    },
     // 提交审批
     async submitApply() {
+      this.isLoading = false
       let id = null
       if (this.id) {
         await updateKnowledge(this._formData)
@@ -383,7 +392,6 @@ export default {
       } else {
         id = await addKnowledge(this._formData)
       }
-      // this.formData.catalogName = this.parentOrgIdLabel
       this.$refs.apprSubmit
         .submit({
           formId: id,
@@ -391,7 +399,6 @@ export default {
           formKey: this.formKey
         })
         .then(() => {
-          this.formData = _.cloneDeep(this.formDataClone)
           this.$message.success('已发布成功。')
           setTimeout(() => {
             this.id ? history.go(-1) : this.$router.push('/knowledge/list')
@@ -419,7 +426,6 @@ export default {
               if (this.id) await updateKnowledge(this._formData)
               else await addKnowledge(this._formData)
               this.$message.success('已发布成功。')
-              this.formData = _.cloneDeep(this.formDataClone)
               setTimeout(() => {
                 this.id ? history.go(-1) : this.$router.push('/knowledge/list')
                 this.isLoading = false
@@ -431,8 +437,6 @@ export default {
     },
     // 取消事件
     cancel() {
-      this.formData = _.cloneDeep(this.formDataClone)
-      this.$refs.formData.resetFields()
       history.go(-1)
     },
     initData() {
@@ -475,34 +479,17 @@ export default {
     },
     // 上传格式校验
     beforeUpload(file) {
-      const fileName = file.name.toLowerCase()
-      let regx = /\S/
+      const flieObj = fileType(file.name, file.size)
       let tips = null
-      let err = null
       if (this.formData.type === 1) {
-        regx = /\.(avi|wmv|mp4|3gp|rm|rmvb|mov)/
-        err = '只支持上传视频格式文件'
+        tips = flieObj.flag === 0 ? null : '只支持上传视频格式文件'
       } else if (this.formData.type === 2) {
-        regx = /\.(txt|doc|wps|rtf|docx|ppt|pdf|jpg|jpeg|png|GIF|BMP)/
-        err = '只支持上传文档、ppt、pdf、图片格式文件'
+        tips =
+          flieObj.flag === 1 || flieObj.flag === 2 ? null : '只支持上传文档、ppt、pdf、图片格式文件'
       }
-      const imageRe = /\.(jpg|jpeg|png|GIF|BMP)/
-
-      if (regx.test(fileName)) {
-        if (imageRe.test(fileName)) {
-          if (file.size / 1024 / 1024 > 5) tips = '图片大小不能超过5M'
-        } else {
-          if (file.size / 1024 / 1024 > 10) tips = '文件大小不能超过10M'
-        }
-      } else {
+      if (flieObj.err || tips) {
         setTimeout(() => {
-          this.$message.error(err)
-        }, 200)
-        return false
-      }
-      if (tips) {
-        setTimeout(() => {
-          this.$message.error(tips)
+          this.$message.error(tips ? tips : flieObj.err)
         }, 200)
         return false
       }

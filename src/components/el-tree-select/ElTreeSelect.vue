@@ -3,7 +3,7 @@
  * @Author: dawdler
  * @Date: 2018-12-19 14:03:03
  * @LastModifiedBy: dawdler
- * @LastEditTime: 2020-03-13 16:18:32
+ * @LastEditTime: 2021-07-21 14:50:09
  -->
 <template>
   <div class="el-tree-select" :class="selectClass">
@@ -79,7 +79,7 @@
 .el-tree-select-popper {
   max-height: 400px;
   overflow: auto;
-  padding: 12px 2px;
+  padding: 12px;
 }
 .el-tree-select-popper.disabled {
   display: none !important;

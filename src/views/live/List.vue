@@ -15,22 +15,40 @@
         </el-input>
       </div>
       <div class="filter-wrapper">
-        <el-row v-show="navigation.length != 0" class="breadcrumb_navigation">
+        <el-row
+          v-show="navigation.length != 0 || knowledgeNavigation.length != 0"
+          class="breadcrumb_navigation"
+        >
           <el-col :span="24">
-            <span class="title">已选条件：</span>
-            <span class="type">分类：</span>
-            <div v-for="(item, index) in navigation" :key="index" class="type_list">
-              <span class="label">{{ item.children.name }}</span>
-              <span v-show="navigation.length - 1 == index" class="close"><i
-                class="el-icon-close"
-                @click="close_breadcrumb_navigation(navigation, item, index)"
-              ></i></span>
-              <span v-show="navigation.length - 1 != index" class="right"><i class="el-icon-arrow-right"></i></span>
+            <div>
+              <span class="title">已选条件：</span>
+              <span class="type">分类：</span>
+              <div v-for="(item, index) in navigation" :key="index" class="type_list">
+                <span class="label">{{ item.children.name }}</span>
+                <span v-show="navigation.length - 1 == index" class="close"><i
+                  class="el-icon-close"
+                  @click="close_breadcrumb_navigation(navigation, item, index, 'classify')"
+                ></i></span>
+                <span v-show="navigation.length - 1 != index" class="right"><i class="el-icon-arrow-right"></i></span>
+              </div>
+            </div>
+            <div style="margin-left:80px;margin-top:10px">
+              <span class="type">知识体系：</span>
+              <div v-for="(item, index) in knowledgeNavigation" :key="index" class="type_list">
+                <span class="label">{{ item.children.name }}</span>
+                <span v-show="knowledgeNavigation.length - 1 == index" class="close"><i
+                  class="el-icon-close"
+                  @click="
+                    close_breadcrumb_navigation(knowledgeNavigation, item, index, 'knowledge')
+                  "
+                ></i></span>
+                <span v-show="knowledgeNavigation.length - 1 != index" class="right"><i class="el-icon-arrow-right"></i></span>
+              </div>
             </div>
           </el-col>
         </el-row>
         <el-row ref="liveTypes" class="filter-item">
-          <el-col :span="1"> 分类： </el-col>
+          <el-col :span="2"> 分类： </el-col>
           <el-col :span="20">
             <!-- 如果当前选中的id等于父级id则高亮全部，或在最顶级分类无任何选中时高亮，面包屑导航数组中最后一个则为当前分类的父级分类并且存有id -->
             <span
@@ -40,7 +58,7 @@
                   ? 'active_type'
                   : ''
               "
-              @click="showThisLiveAllType()"
+              @click="showThisLiveAllType('classify')"
             >
               全部
             </span>
@@ -48,20 +66,50 @@
               v-for="(item, index) in liveClassification"
               :key="index"
               :class="queryData.liveType_select == item.idStr ? 'active_type' : ''"
-              @click="toggle_type(liveClassification, item)"
+              @click="toggle_type(liveClassification, item, 'classify')"
             >{{ item.name }}</span>
           </el-col>
           <el-col v-show="moreLiveTypeButton" :span="2">
-            <el-button size="small" class="more_type" @click="showAllLiveType()">
+            <el-button size="small" class="more_type" @click="showAllLiveType('classify')">
               更多
               <i class="el-icon-arrow-down"></i>
             </el-button>
           </el-col>
         </el-row>
-
+        <el-row ref="knowledgeTypes" class="filter-item">
+          <el-col :span="2"> 知识体系： </el-col>
+          <el-col :span="20">
+            <!-- 如果当前选中的id等于父级id则高亮全部，或在最顶级分类无任何选中时高亮，面包屑导航数组中最后一个则为当前分类的父级分类并且存有id -->
+            <span
+              :class="
+                queryData.knowledgeClass_select ==
+                  (knowledgeNavigation.length > 0
+                    ? knowledgeNavigation[knowledgeNavigation.length - 1].children.idStr
+                    : '')
+                  ? 'active_type'
+                  : ''
+              "
+              @click="showThisLiveAllType('knowledge')"
+            >
+              全部
+            </span>
+            <span
+              v-for="(item, index) in knowledgeClassifyList"
+              :key="index"
+              :class="queryData.knowledgeClass_select == item.idStr ? 'active_type' : ''"
+              @click="toggle_type(knowledgeClassifyList, item, 'knowledge')"
+            >{{ item.name }}</span>
+          </el-col>
+          <el-col v-show="moreKnowledgeTypeButton" :span="2">
+            <el-button size="small" class="more_type" @click="showAllLiveType('knowledge')">
+              更多
+              <i class="el-icon-arrow-down"></i>
+            </el-button>
+          </el-col>
+        </el-row>
         <el-row class="filter-item">
-          <el-col :span="1"> 状态： </el-col>
-          <el-col :span="23">
+          <el-col :span="2"> 状态： </el-col>
+          <el-col :span="20">
             <span
               v-for="(item, index) in liveStatus"
               :key="index"
@@ -98,27 +146,45 @@
           <el-card :body-style="{ padding: '0px' }">
             <div class="item_live_imgBox" style="cursor: pointer" @click="goDetail(item.liveId)">
               <div class="watchnum">
-                <img src="../../assets/images/playicon.png" width="48" height="48" alt="">
-                <span class="num"><i class="iconfont iconimage_icon_user"></i>{{item.viewersNumber || 0}}</span>
+                <img src="../../assets/images/playicon.png" width="48" height="48" alt="" />
+                <span class="num"><i class="iconfont iconimage_icon_user"></i>{{ item.viewersNumber || 0 }}</span>
               </div>
-              <img :src="item.coverImageUrl" class="image_live"  />
+              <img :src="item.coverImageUrl" class="image_live" />
               <span v-if="item.status == 'live'" class="item_live_status">直播中</span>
               <!-- <span v-show="item.status == 'start'" class="item_live_status" style="color:#00B061">未开始</span> -->
               <span v-else class="item_live_status" style="color: #fcba00">未开始</span>
-              <div
+              <!-- <div
                 v-show="item.status == 'live'"
                 class="item_live_playButton"
                 @click="goDetail(item.liveId)"
               >
                 <span @click="goDetail(item.liveId)"></span>
-              </div>
-              <span v-show="item.status == 'live'" class="item_live_userNumber"><i class="el-icon-user"></i> {{ item.viewersNumber }}</span>
+              </div> -->
+              <!-- <span v-show="item.status == 'live'" class="item_live_userNumber"><i class="el-icon-user"></i> {{ item.viewersNumber }}</span> -->
             </div>
 
-            <div style="padding: 10px 14px; height: 93px">
+            <div style="padding: 16px 14px; height: 93px">
               <h3 class="showText">{{ item.channelName }}</h3>
               <p class="department">{{ item.categoryName }}</p>
-              <live-time-tips :item="item" />
+
+              <div class="footer">
+                <live-time-tips :item="item" />
+                <div class="tag" style="position:relative;">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="item.knowledgeSystemName"
+                    placement="top-start"
+                    :disabled="item.isShow"
+                  >
+                    <span
+                      v-if="item.knowledgeSystemName"
+                      :ref="'tag' + index"
+                      @mouseover="isShow(index)"
+                    >{{ item.knowledgeSystemName }}</span>
+                  </el-tooltip>
+                </div>
+              </div>
             </div>
           </el-card>
         </el-col>
@@ -147,7 +213,9 @@
 
 <script>
 import { getcategoryTree, getLiveList } from '@/api/live'
+import { getAllKnowledgeCatalogList } from '@/api/knowledge'
 import LiveTimeTips from '@/views/live/components/LiveTimeTips'
+// import CategorySelect from '@/views/course/components/CategorySelect'
 // 直播列表
 export default {
   name: 'LiveList',
@@ -159,6 +227,7 @@ export default {
         search_liveName: '', // input 搜索
         liveType_select: '', // 直播分类
         liveStatus_select: '', // 直播状态
+        knowledgeClass_select: '', //直播知识体系
         activeName: '1', // 直播任务类型
         totalNum: 10,
         totalNo: 1,
@@ -188,8 +257,11 @@ export default {
         // }
       ],
       moreLiveTypeButton: false, // 根据分类长度判断是否显示更多按钮
+      moreKnowledgeTypeButton: false, // 根据分类长度判断是否显示更多按钮
       liveClassification: [], // 获取所有直播分类
+      knowledgeClassifyList: [], //获取知识体系分类
       navigation: [], //   面包屑导航，包含本层级的所有分类和当前项
+      knowledgeNavigation: [], //   知识体系面包屑导航，包含本层级的所有分类和当前项
       liveList: [],
       liveTypeTabs: [
         // tabs选项卡
@@ -205,7 +277,8 @@ export default {
           title: '全部直播',
           name: '3'
         }
-      ]
+      ],
+      flag: false
     }
   },
   watch: {
@@ -215,6 +288,15 @@ export default {
         if (this.$refs.liveTypes.$el.offsetHeight > 43) {
           this.moreLiveTypeButton = true
           this.$refs.liveTypes.$el.style.height = '35px'
+        }
+      })
+    },
+    knowledgeClassifyList: function() {
+      this.$nextTick(function() {
+        // 判断分类是否超出1行
+        if (this.$refs.knowledgeTypes.$el.offsetHeight > 43) {
+          this.moreKnowledgeTypeButton = true
+          this.$refs.knowledgeTypes.$el.style.height = '35px'
         }
       })
     }
@@ -231,6 +313,9 @@ export default {
         }
       })
     })
+    getAllKnowledgeCatalogList({ id: '0' }).then((res) => {
+      this.knowledgeClassifyList = res
+    })
 
     // 默认获取我的直播任务,如果为空隐藏该tabs
     getLiveList({
@@ -246,6 +331,9 @@ export default {
     })
   },
   methods: {
+    getNavigationByType(type) {
+      return _.filter(this.navigation, { type })
+    },
     // 获取直播列表数据
     // isQuery查询阐述，isFirstPage判断是否从第一页开始查询，除了直接点击切换页面外点击分类等都从第一页开始查询
     getLiveListData(isQuery, isFirstPage) {
@@ -260,6 +348,9 @@ export default {
           ? (params.categoryId = this.queryData.liveType_select)
           : ''
         params.pageSize = this.queryData.pageSize
+        this.queryData.knowledgeClass_select != ''
+          ? (params.knowledgeSystemId = this.queryData.knowledgeClass_select)
+          : ''
         // 是否从第一页开始查询
         if (isFirstPage) {
           params.pageNo = this.queryData.totalNo
@@ -273,24 +364,28 @@ export default {
       } else {
         getLiveList().then((res) => {
           this.liveList = res.data
-          console.log(res.data)
           this.queryData.totalNum = res.totalNum
         })
       }
     },
     // 点击全部分类获取当前分类的父级分类id
     // 获取父级id下的所有视频
-    showThisLiveAllType() {
-      this.queryData.liveType_select =
-        this.navigation.length > 0 ? this.navigation[this.navigation.length - 1].children.idStr : ''
+    showThisLiveAllType(type) {
+      let queryKkey = type === 'classify' ? 'liveType_select' : 'knowledgeClass_select',
+        navigationKey = type === 'classify' ? 'navigation' : 'knowledgeNavigation'
+      this.queryData[queryKkey] =
+        this[navigationKey].length > 0
+          ? this[navigationKey][this[navigationKey].length - 1].children.idStr
+          : ''
       this.getLiveListData(true, false)
     },
     // 更多按钮，控制分类超过两行是否显示
-    showAllLiveType() {
-      if (this.$refs.liveTypes.$el.style.height == '35px') {
-        this.$refs.liveTypes.$el.style.height = 'auto'
+    showAllLiveType(type) {
+      let key = type === 'classify' ? 'liveTypes' : 'knowledgeTypes'
+      if (this.$refs[key].$el.style.height == '35px') {
+        this.$refs[key].$el.style.height = 'auto'
       } else {
-        this.$refs.liveTypes.$el.style.height = '35px'
+        this.$refs[key].$el.style.height = '35px'
       }
     },
     // input输入搜索
@@ -302,11 +397,15 @@ export default {
       this.getLiveListData(true, false)
     },
     // 点击分类如果有下级显示下级并且将当前级别显示在面包屑导航上
-    toggle_type(obj, item) {
-      this.queryData.liveType_select = item.idStr
+    toggle_type(obj, item, type) {
+      let key = type === 'classify' ? 'liveClassification' : 'knowledgeClassifyList',
+        queryKkey = type === 'classify' ? 'liveType_select' : 'knowledgeClass_select',
+        navigationKey = type === 'classify' ? 'navigation' : 'knowledgeNavigation'
+      this.queryData[queryKkey] = item.idStr
       if (item.children) {
-        this.liveClassification = item.children.filter((i) => i.status === 1) // 只显示不被禁用的分类
-        this.navigation.push({
+        this[key] =
+          type === 'classify' ? item.children.filter((i) => i.status === 1) : item.children // 只显示不被禁用的分类
+        this[navigationKey].push({
           sameLevel: obj,
           children: item
         })
@@ -323,11 +422,16 @@ export default {
       this.$router.push({ path: '/live/Detail', query: { id: id } })
     },
     // 删除面包屑导航
-    close_breadcrumb_navigation(arr, item, index) {
+    close_breadcrumb_navigation(arr, item, index, type) {
       arr.splice(index, 1)
-      this.liveClassification = item.sameLevel
-      this.queryData.liveType_select =
-        this.navigation.length > 0 ? this.navigation[this.navigation.length - 1].children.idStr : ''
+      let key = type === 'classify' ? 'liveClassification' : 'knowledgeClassifyList',
+        queryKkey = type === 'classify' ? 'liveType_select' : 'knowledgeClass_select',
+        navigationKey = type === 'classify' ? 'navigation' : 'knowledgeNavigation'
+      this[key] = item.sameLevel
+      this.queryData[queryKkey] =
+        this[navigationKey].length > 0
+          ? this[navigationKey][this[navigationKey].length - 1].children.idStr
+          : ''
     },
     // 分页切换到某一页面
     toggle_page(index) {
@@ -338,6 +442,9 @@ export default {
     toggle_pageSize(size) {
       this.queryData.pageSize = size
       this.getLiveListData(true, false)
+    },
+    isShow(index) {
+      this.$set(this.liveList[index], 'isShow', this.$refs['tag' + index][0].offsetWidth <= 72)
     }
   }
 }
@@ -379,17 +486,15 @@ export default {
           background: #f5f5f6;
           display: inline-block;
           .label {
-            color: #2875D4;
+            color: #2875d4;
           }
           .close {
-            color: #2875D4;
+            color: #2875d4;
             margin-left: 10px;
           }
           .right {
             margin-left: 5px;
           }
-        }
-        .type {
         }
       }
       .filter-item {
@@ -398,6 +503,7 @@ export default {
         line-height: 25px;
         overflow: hidden;
         height: auto;
+        width: 100%;
         span {
           height: 35px;
           display: inline-block;
@@ -405,7 +511,7 @@ export default {
           cursor: pointer;
         }
         .active_type {
-          color: #2875D4;
+          color: #2875d4;
         }
         .more_type {
           float: right;
@@ -426,7 +532,7 @@ export default {
     }
     .item_live_imgBox {
       position: relative;
-      .watchnum{
+      .watchnum {
         position: absolute;
         top: 0;
         left: 0;
@@ -435,15 +541,15 @@ export default {
         justify-content: center;
         display: flex;
         align-items: center;
-        .num{
+        .num {
           position: absolute;
           bottom: 9px;
           right: 9px;
-          background: rgba(0,11,21,0.45);
+          background: rgba(0, 11, 21, 0.45);
           border-radius: 4px;
           padding: 3px 9px;
           color: #fff;
-          .iconfont{
+          .iconfont {
             font-size: 12px;
             margin-right: 5px;
           }
@@ -458,9 +564,8 @@ export default {
         -webkit-transform: scale(0.9);
         padding: 5px 8px;
         border-radius: 3px;
-        color: #2875D4;
+        color: #2875d4;
       }
-
       .item_live_playButton {
         position: absolute;
         width: 48px;
@@ -512,7 +617,7 @@ export default {
     .department {
       color: #ccc;
       font-size: 12px;
-      margin: 5px 0;
+      margin: 8px 0 10px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -535,6 +640,28 @@ export default {
         height: 45px;
       }
     }
+  }
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .tag {
+      text-align: center;
+      flex-shrink: 0;
+      max-width: 88px;
+      background: #f5f5f6;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 12px;
+
+      color: rgba(0, 11, 21, 0.45);
+    }
+  }
+  ::v-deep .el-card__body {
+    height: 282px;
   }
 }
 </style>

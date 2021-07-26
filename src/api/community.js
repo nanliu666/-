@@ -4,7 +4,7 @@
  * @Autor: Xie Mingwei
  * @Date: 2021-06-16 09:27:16
  * @LastEditors: Xie Mingwei
- * @LastEditTime: 2021-06-29 15:03:48
+ * @LastEditTime: 2021-07-07 17:12:44
  */
 
 import request, { get, post } from '@/util/axios'
@@ -341,3 +341,17 @@ export const deleteReply = (replyId) => {
         method: 'post'
     })
 }
+
+/**
+ * @description: 查询登陆用户信息
+ * @param {*}
+ * @return {*}
+ */
+export const loginUserInfo = (params) => get(`${baseUrl}topic/loginUserInfo`, params)
+
+/**
+ * @description: 检查禁言
+ * @param {*}
+ * @return {*}
+ */
+export const checkForbidPost = (params) => get(`${baseUrl}area/checkForbidPost`, params)

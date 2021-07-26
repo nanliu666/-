@@ -77,6 +77,17 @@ export default {
           query = { query: { clickDataIn: 'myTrainList' } }
           targetPath = _.assign(targetPath, query)
         }
+        if(data.type === 'TrainJoinFail'){
+          query = { query: { trainId: data.bizId,userType: sessionStorage.getItem('role') } }
+          targetPath = _.assign(targetPath, query)
+        }
+        if(data.type === 'ExamNotify'){
+          query = { query: { clickData: 'myExamList'} }
+          targetPath = _.assign(targetPath, query)
+        }
+        if(data.type === 'revokeCertificate' || data.type === 'revokeCertificateExam' || data.type === 'ExamHandworkNotify'){
+          return false
+        }
         if (
           data.type === 'LiveBroadcastEveryOne' ||
           data.type === 'LiveBroadcastPlanGust' ||
@@ -86,6 +97,14 @@ export default {
           data.type === 'LiveRemindToTeachers'
         ) {
           query = { query: { id: data.id } }
+          targetPath = _.assign(targetPath, query)
+        }
+        if(data.type === 'FlowPass' || data.type === 'FlowReject'){
+          query = { query: { name: 'mySend' } }
+          targetPath = _.assign(targetPath, query)
+        }
+        if(data.type === 'FlowUrge'){
+          query = { query: { name: 'message' } }
           targetPath = _.assign(targetPath, query)
         }
         this.$router.push(targetPath)

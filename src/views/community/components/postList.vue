@@ -5,7 +5,7 @@
       <div v-for="(item, index) in dynamicList" :key="index" class="dynamic-container-item">
         <!-- 标题 -->
         <el-row type="flex" justify="space-between" style="align-items: center">
-          <div class="title" @click="goPostDetails(item)">
+          <div class="title" @click="item.status && goPostDetails(item)">
             {{ item.title }}
             <el-tag
               v-if="showAudit && !item.status"
@@ -44,11 +44,11 @@
                   class="iconfont"
                   :class="item.userHit ? 'iconoperating_ic_clickon_like' : 'iconoperating_ic_like'"
                   :style="{ color: item.userHit ? '#2875D4' : '' }"
-                  @click="giveLike(item, index)"
+                  @click="item.status && giveLike(item, index)"
                 ></span
                 >{{ item.topicHit > 999 ? '999+' : item.topicHit }}
               </li>
-              <li @click="showTinymce(item.id)">
+              <li @click="item.status && showTinymce(item)">
                 <span class="iconoperating_ic_comment iconfont"></span
                 >{{ item.replyCount > 999 ? '999+' : item.replyCount }}
               </li>
@@ -59,7 +59,7 @@
                     item.userCollect ? 'iconcommunity_ic_favorites' : 'iconoperating_ic_favorites'
                   "
                   :style="{ color: item.userCollect ? '#2875D4' : '' }"
-                  @click="collection(item, index)"
+                  @click="item.status && collection(item, index)"
                 ></span
                 >{{ item.topicCollect > 999 ? '999+' : item.topicCollect }}
               </li>
@@ -67,7 +67,7 @@
           </div>
         </el-row>
         <!-- 描述 -->
-        <div class="describe" @click="goPostDetails(item)">{{ item.content }}</div>
+        <div class="describe" @click="item.status && goPostDetails(item)">{{ item.content }}</div>
         <!-- 图片放大预览 -->
         <div v-if="item.imgUrl" class="previewPicture">
           <img
@@ -166,7 +166,7 @@
                 @click="releaseReply(item, index)"
                 >发布</el-button
               >
-              <el-button size="medium" @click="showTinymce(item.id)">取消</el-button>
+              <el-button size="medium" @click="showTinymce(item)">取消</el-button>
             </div>
           </div>
         </el-collapse-transition>
@@ -200,6 +200,8 @@
     >
       <el-button size="medium" :loading="loadMoreLoading" @click="loadMore">加载更多</el-button>
     </div>
+    <!-- 检查禁言模态框 -->
+    <banned-judgment ref="bannedJudgment"></banned-judgment>
   </div>
 </template>
 
@@ -220,10 +222,12 @@ import {
   queryTopicById
 } from '@/api/community'
 import { mapGetters } from 'vuex'
+import bannedJudgment from './bannedJudgment.vue'
 export default {
   name: 'PostList',
   components: {
-    CommonUpload: () => import('@/components/common-upload/CommonUpload')
+    CommonUpload: () => import('@/components/common-upload/CommonUpload'),
+    bannedJudgment
   },
   props: {
     emptyTip: {
@@ -244,6 +248,11 @@ export default {
     },
     isShowTag: {
       // 是否显示帖子标签
+      type: Boolean,
+      default: false
+    },
+    isCollection: {
+      // 是否是收藏列表,收藏列表取消收藏需要刷新列表
       type: Boolean,
       default: false
     },
@@ -416,6 +425,9 @@ export default {
     },
     // 点赞
     async giveLike(item, index) {
+      // 判断是否禁言
+      await this.$refs.bannedJudgment.checkBanned(item.areaId)
+      if (this.$refs.bannedJudgment.flagBanned) return
       // 是否点赞 0否 1是
       if (item.userHit) {
         await cancelTopicHit(item.id).then(() => {
@@ -431,6 +443,9 @@ export default {
     },
     // 收藏
     async collection(item, index) {
+      // 判断是否禁言
+      await this.$refs.bannedJudgment.checkBanned(item.areaId)
+      if (this.$refs.bannedJudgment.flagBanned) return
       // 是否点赞 0否 1是
       if (item.userCollect) {
         await cancelTopicCollect(item.id).then(() => {
@@ -440,6 +455,9 @@ export default {
             'topicCollect',
             this.dynamicList[index].topicCollect - 1
           )
+          if (this.isCollection) {
+            this.initTopic()
+          }
         })
       } else {
         await topicCollect(item.id).then(() => {
@@ -453,11 +471,14 @@ export default {
       }
     },
     // 判断是否显示输入框
-    showTinymce(id) {
-      if (this.isShowTinymce.includes(id)) {
-        this.isShowTinymce.splice(this.isShowTinymce.indexOf(id), 1)
+    async showTinymce(item) {
+      // 判断是否禁言
+      if (this.isShowTinymce.includes(item.id)) {
+        this.isShowTinymce.splice(this.isShowTinymce.indexOf(item.id), 1)
       } else {
-        this.isShowTinymce.push(id)
+        await this.$refs.bannedJudgment.checkBanned(item.areaId)
+        if (this.$refs.bannedJudgment.flagBanned) return
+        this.isShowTinymce.push(item.id)
       }
     },
     // 上传图片校验
@@ -481,7 +502,7 @@ export default {
     },
     // 移除图片
     handleRemove(file, fileList, id) {
-      this.quillEditorInfo[id].imgUrl = fileList
+      this.quillEditorInfo[id].imgUrl = fileList.filter((v) => v.fileName)
     },
 
     // 加载更多
@@ -507,7 +528,7 @@ export default {
       await replyTopic(params)
         .then(() => {
           this.quillEditorInfo[item.id] = { content: '', imgUrl: [] }
-          this.showTinymce(item.id)
+          this.showTinymce(item)
           this.$set(this.dynamicList[index], 'replyCount', this.dynamicList[index].replyCount + 1)
           //   判断是不是帖子详情回复，需要刷新回复
           if (this.isPostDetail) {
@@ -528,6 +549,11 @@ export default {
       }).then(async () => {
         await deleteTopic(data.id).then(() => {
           this.$message.success('删除成功!')
+          //   判断是否是加载更多
+          if (this.showLoadMore) {
+            this.pageConfig.pageNo = 1
+            this.dynamicList = []
+          }
           this.initQueryTopics()
         })
       })
@@ -611,6 +637,9 @@ export default {
         line-height: 24px;
         .avatar {
           cursor: pointer;
+          /deep/ .el-avatar > img {
+            width: 100%;
+          }
         }
         .zoneName {
           cursor: pointer;

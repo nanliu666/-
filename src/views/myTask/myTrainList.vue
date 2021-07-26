@@ -59,6 +59,9 @@
                 show-score
                 score-template="{value}分"
               ></el-rate>
+              <span v-if="item.knowledgeSystemName" class="know">
+                {{ item.knowledgeSystemName }}
+              </span>
             </div>
           </div>
         </div>
@@ -292,6 +295,16 @@ export default {
       .card-rate {
         box-sizing: border-box;
         padding: 7px 16px 17px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .know {
+          font-size: 12px;
+          background-color: #f2f2f2;
+          padding: 3px 10px;
+          border-radius: 4px;
+          color: #999999;
+        }
       }
     }
   }

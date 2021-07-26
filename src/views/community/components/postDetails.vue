@@ -32,11 +32,18 @@
               </el-row>
               <!-- 专区描述 -->
               <div class="section-describes">
-                {{
-                  zoneInfomation.introduce && zoneInfomation.introduce.length > 50
-                    ? zoneInfomation.introduce.slice(0, 50) + '...'
-                    : zoneInfomation.introduce
-                }}
+                <el-tooltip
+                  effect="dark"
+                  :content="zoneInfomation.introduce"
+                  placement="top"
+                  :manual="zoneInfomation.introduce && zoneInfomation.introduce.length <= 50"
+                >
+                  <span>{{
+                    zoneInfomation.introduce && zoneInfomation.introduce.length > 50
+                      ? zoneInfomation.introduce.slice(0, 50) + '...'
+                      : zoneInfomation.introduce
+                  }}</span>
+                </el-tooltip>
               </div>
             </div>
           </el-row>
@@ -58,7 +65,7 @@
           <el-tab-pane label="只看专家" name="2"> </el-tab-pane>
           <el-tab-pane label="只看发帖人" name="3"> </el-tab-pane>
         </el-tabs>
-        <div v-if="Object.keys(postInfo).length" class="zoneTabs-top">
+        <div v-if="Object.keys(postInfo).length && isAreaManagement == 'Y'" class="zoneTabs-top">
           <el-button
             type="text"
             :loading="topLoading"
@@ -101,7 +108,8 @@ import {
   cancelTop,
   placedTop,
   cancelFine,
-  highQualityFine
+  highQualityFine,
+  loginUserInfo
 } from '@/api/community'
 import postReplyList from './postReplyList.vue'
 import postList from './postList.vue'
@@ -124,7 +132,8 @@ export default {
       focusLoading: false,
       topLoading: false,
       highLoading: false,
-      postInfo: {} // 帖子详情
+      postInfo: {}, // 帖子详情
+      isAreaManagement: 'N'
     }
   },
   activated() {
@@ -134,6 +143,7 @@ export default {
       this.topicId = this.$route.query.topicId
       this.initAreaDetail()
     }
+    this.initLoginUserInfo()
   },
   methods: {
     // 获取专区详情
@@ -146,6 +156,12 @@ export default {
         .finally(() => {
           this.zoneLoading = false
         })
+    },
+    // 判断当前用户是不是专区管理员
+    async initLoginUserInfo() {
+      await loginUserInfo().then((res) => {
+        this.isAreaManagement = res
+      })
     },
     // 关注专区
     async attentionZone(flag) {

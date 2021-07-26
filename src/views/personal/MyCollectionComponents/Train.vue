@@ -1,40 +1,70 @@
 <template>
-  <div class="Train">
+  <div class="Course">
     <ul>
-      <li v-for="(item, index) in 20" :key="index">
-        <div class="title">
-          <div>JAVA编辑培训</div>
-          <span>进行中</span> <span>已完成</span> <span>未开始</span>
+      <li v-for="(item, index) in list" :key="index"  :class="{'active':item.id===currentCourse.id}" @mouseenter="showCancelCollection(item)" @mouseleave="closeCancelCollection(item)">
+        <img  class="img" :src="imgSrc(item)" alt="" />
+        <div
+              class="status"
+              :class="item.status === 2 ? 'blue' : item.status === 3 ? 'grey' : 'yellow'"
+            >
+              {{ item.status === 2 ? '进行中' : item.status === 3 ? '已结办' : '未开始' }}
         </div>
-
-        <div class="row">
-          <div class="type">
-            <span class="type_nth">培训类型：</span>
-            <span class="type_">在线</span>
-          </div>
-          <div class="btn">
-            <el-button size="medium" type="primary"> 前往学习 </el-button>
-          </div>
+        <div class="title line-clamp1">{{item.trainName}}</div>
+        <div class="info line-clamp1">
+          <span class="name">{{
+                item.trainWay === 2
+                  ? '面授培训'
+                  : item.trainWay === 3
+                    ? '混合培训'
+                    : item.trainWay === 1
+                      ? '在线培训'
+                      : '外训'
+              }}</span>
+          <span class="line"></span>
+          <span class="study">{{item | trainTime}}</span>
         </div>
-
-        <div class="text">
-          <div><span>培训时间：</span> <span>2018年10月10日 —2018年11月11日</span></div>
-          <div><span>培训讲师：</span> <span>马云</span></div>
+        <div class="score">
+          <el-rate
+            v-if="item.trainScope === 'inside'"
+            :value="item.composite ? +item.composite : 0"
+            disabled
+            show-score
+            text-color="#ff9900"
+            :score-template="item.composite ? item.composite + '分' : '0分'"
+          >
+          </el-rate>
+          <el-tooltip
+            v-else
+            class="item"
+            effect="dark"
+            :content="item.categoryName"
+            placement="top-start"
+            :disabled="item.categoryName.length < 10"
+          >
+            <span>{{ item.categoryName }}</span>
+          </el-tooltip>
+          <span class="tag line-clamp1" v-if="item.knowledgeSystemName">{{item.knowledgeSystemName}}</span>
         </div>
-
-        <span class="star" @click="Collection">
-          <i class="el-icon-star-on"> </i>
-        </span>
+        <div class="cancelcollection" @click="toDetail(item)" v-if="item.id===currentCourse.id">
+          <span class="star" @click.stop="Collection(item)">
+            <i class="iconfont iconoperating_ic_favorites"> </i>
+          </span>
+        </div>
       </li>
     </ul>
-
-    <div class="page">
+    <div v-if="list.length<=0">
+        <div  style="text-align: center">
+          <img src="../../../assets/images/nodata.png" />
+          <div class="btn" @click="goList">去收藏</div>
+        </div>
+      </div>
+    <div class="page" v-else>
       <el-pagination
         :current-page="page.pageNo"
         :page-sizes="[10, 20, 30, 40]"
         :page-size="page.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="page.totalNum"
+        :total="totalNum"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       >
@@ -44,27 +74,86 @@
 </template>
 
 <script>
+import{getCollectionTrainList,cancelTrainCollect} from "@/api/train"
 export default {
   data() {
     return {
+      currentCourse: '',
+      imgUrl: require('@/assets/images/required_bg.png'),
+      totalNum: 0,
+      list:[],
       page: {
-        pageSize: 20,
-        totalNum: 0,
+        pageSize: 10,
         pageNo: 1
       }
     }
   },
+  filters:{
+    trainTime(val){
+      return val.startTime.replace(/-/g,'/').split(' ')[0] + ' - ' +  val.endTime.replace(/-/g,'/').split(' ')[0]
+    }
+  },
+  computed:{
+    imgSrc() {
+      return (data) => {
+        if (data.coverPic) return data.coverPic
+        else if (data.trainWay === 1 && data.trainScope === 'inside')
+          return require('@/assets/images/online.png')
+        else if (data.trainWay === 2 && data.trainScope === 'inside')
+          return require('@/assets/images/Offline.png')
+        else if (data.trainWay === 3 && data.trainScope === 'inside')
+          return require('@/assets/images/mixin.png')
+        else if (data.trainWay === 4 && data.trainScope === 'outer')
+          return require('@/assets/images/outTrain.png')
+      }
+    }
+  },
+  mounted(){
+    this.loadCourseList()
+  },
   methods: {
-    Collection() {
+    goList(){
+      this.$router.push({ path: '/train/index'})
+    },
+    toDetail(item) {
+      if(item.invalid){
+        this.$message({
+          type:'info',
+          message:'当前培训已失效'
+        })
+        return
+      }
+      const { id: trainId, userType } = item
+      this.$router.push({
+        path: '/train/detail',
+        query: {
+          trainId,
+          userType
+        }
+      })
+    },
+    showCancelCollection(obj){
+      this.currentCourse = obj
+    },
+    closeCancelCollection(){
+      this.currentCourse = ''
+    },
+    Collection(obj) {
       this.$confirm('确定要取消收藏该课程吗？?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          this.$message({
-            type: 'success',
-            message: '已操作成功!'
+          cancelTrainCollect({
+            trainId:obj.id,
+            type:sessionStorage.getItem('role'),
+          }).then(res=>{
+              this.$message({
+                type: 'success',
+                message: '取消收藏成功!'
+              })
+              this.loadCourseList()
           })
         })
         .catch(() => {
@@ -76,72 +165,156 @@ export default {
     },
     handleSizeChange(val) {
       this.page.pageSize = val
-      this.refreshData()
+      this.loadCourseList()
     },
     handleCurrentChange(val) {
       this.page.pageNo = val
       this.loadCourseList()
-    }
+    },
+    loadCourseList() {
+    getCollectionTrainList({
+      ...this.page,
+      devType:sessionStorage.getItem('role'),
+    }).then(({totalNum,data})=>{
+      this.list = data
+      this.totalNum = totalNum
+    })
+  }
   },
-  loadCourseList() {}
+  
 }
 </script>
 
 <style lang="scss" scoped>
-.Train {
+.Course {
+  
   ul {
+   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  width: 100%;
     li {
-      margin-top: 24px;
-      position: relative;
+      width: 285px;
+      margin-top: 20px;
+      margin-right:20px;
       background-color: #fff;
       box-shadow: 0 2px 8px 0 rgba(0, 63, 161, 0.06);
-      padding: 24px;
+      border-radius: 4px;
       position: relative;
+      &:nth-child(3n) {
+        margin-right: 0;
+      }
+      /* 一行否则出现省略号 */
+      .line-clamp1 {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+      }
+      .img {
+        width: 100%;
+        border-radius: 4px 4px 0 0;
+        height: 166px;
+      }
+      .status {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 52px;
+            height: 20px;
+            font-size: 12px;
+            text-align: center;
+            line-height: 22px;
+            font-weight: 400;
+            border-radius: 4px;
+          }
+          .yellow {
+            color: #f5c200;
+            background-color: #fffee6;
+          }
+          .grey {
+            color: rgba(0, 11, 21, 0.45);
+            background-color: #f5f5f6;
+          }
+          .blue {
+            color: #2875d4;
+            background-color: #f0f9ff;
+          }
       .title {
-        display: flex;
-        div {
-          font-size: 18px;
-          font-weight: bold;
-          color: #666;
-          height: 40px;
-          line-height: 40px;
-        }
-        span {
-          margin-left: 24px;
-          margin-top: 9px;
-          width: 60px;
-          height: 25px;
-          line-height: 25px;
-          font-size: 12px;
-          text-align: center;
-          background-color: pink;
-          color: #f30;
+        font-size: 14px;
+        color: rgba(0,11,21,0.85);
+        font-weight: bold;
+        margin: 16px 16px 8px 16px;
+      }
+      .info {
+        font-size: 12px;
+        color: rgba(0,11,21,0.45);
+        padding: 0 16px;
+        .line{
+          display: inline-block;
+          width: 1px;
+          height: 10px;
+          background: #EBECED;
+          margin: 0 8px;
         }
       }
-      .row {
+      .score {
         display: flex;
         justify-content: space-between;
-        .type_ {
-          color: #207efa;
-          margin-left: 10px;
+        padding: 18px 16px;
+        .tag {
+          font-size: 12px;
+          color: #878C90;
+          text-align: center;
+          padding: 1px 8px;
+          background: #F5F5F6;
+          border-radius: 4px;
+          width: 90px;
         }
       }
-      .text {
-        display: flex;
-        div {
-          width: 50%;
+      &.active{
+        position: relative;
+        .cancelcollection{
+           position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,11,21,0.45);
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            .star{
+              cursor: pointer;
+              background: #FFFFFF;
+              width: 44px;
+              height: 44px;
+              border-radius: 50%;
+              padding-top: 8px;
+              display: inline-block;
+              text-align: center;
+              .iconfont{
+                font-size: 30px;
+                color: #8C9195;
+              }
+            }
         }
-      }
-      .star {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        font-size: 22px;
-        color: red;
-        cursor: pointer;
       }
     }
+    
   }
+  .btn{
+        width: 100px;
+        height: 40px;
+        line-height: 40px;
+        border-radius: 20px;
+        color: #2875D4;
+        border: 1px solid #2875D4;
+        margin: auto;
+        cursor: pointer;
+    }
   .page {
     margin-top: 24px;
     text-align: right;

@@ -2,7 +2,7 @@
   <div class="applyTutorDenti">
     <!-- 面包屑 -->
     <el-breadcrumb separator="/" style="padding: 25px 0 20px">
-      <el-breadcrumb-item>业务申请</el-breadcrumb-item>
+      <el-breadcrumb-item to="/approvalCenter/approveIndex">业务申请</el-breadcrumb-item>
       <el-breadcrumb-item>导师认证申请</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 主体内容 -->
@@ -210,6 +210,8 @@ export default {
           label: '申请说明',
           span: 24,
           rows: 6,
+          maxlength: 1000,
+          showWordLimit:true,
           type: 'textarea'
         }
       ],
@@ -271,6 +273,7 @@ export default {
           required: true,
           label: '工作内容',
           maxlength: 500,
+          showWordLimit:true,
           span: 24,
           rows: 6,
           type: 'textarea'

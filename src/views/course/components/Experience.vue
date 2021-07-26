@@ -81,7 +81,8 @@ export default {
         creatorId: this.$route.query.id, // 默认值    创建人id
         createTime: newVal[newVal.length - 1].updateTime, // 默认值    创建时间
         updateId: this.$route.query.id, // 默认值    最后修改人
-        updateTime: newVal[newVal.length - 1].updateTime // 默认值    最后修改时间
+        updateTime: newVal[newVal.length - 1].updateTime, // 默认值    最后修改时间
+        trainId: this.$route.query.trainId || ''
       }
       saveExperience(params).then(() => {
         this.getInfo()

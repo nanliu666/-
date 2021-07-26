@@ -114,7 +114,7 @@ export default {
         signUpId: [],
         type: type,
         rejectDesc: '',
-        trainId: this.$route.query.id // '1397804680091906050' //
+        liveId: this.$route.query.id // '1397804680091906050' //
       }
       selection.forEach((item) => {
         params.signUpId.push(item.signUpId)

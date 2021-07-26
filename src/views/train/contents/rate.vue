@@ -122,7 +122,12 @@
             </div>
           </div>
         </div>
-        <el-button type="primary" size="medium" @click.native="toScore">
+        <el-button
+          type="primary"
+          size="medium"
+          :disabled="data.status === 1"
+          @click.native="toScore"
+        >
           我要评分
         </el-button>
       </div>

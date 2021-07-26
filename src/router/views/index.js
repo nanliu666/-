@@ -51,6 +51,14 @@ export default [
     }
   },
   {
+    path: '/flatTreDemo',
+    name: 'flatTreDemo',
+    component: () => import(/* webpackChunkName: "page" */ '@/views/demo/flatTreDemo.vue'),
+    meta: {
+      title: '扁平树下拉组件Demo'
+    }
+  },
+  {
     path: '/uploadDemo',
     name: 'uploadDemo',
     component: () => import(/* webpackChunkName: "page" */ '@/views/uploadDemo/uploadDemo.vue'),
@@ -138,8 +146,7 @@ export default [
           {
             path: 'detail',
             name: 'CourseDetail',
-            component: () =>
-              import(/* webpackChunkName: "page"*/ '@/views/course/CourseDetail.vue'),
+            component: () => import('@/views/course/CourseDetail.vue'),
             meta: {
               title: '课程详情'
             }
@@ -172,7 +179,7 @@ export default [
           {
             path: 'detail',
             name: 'KnowledgeDetail',
-            component: () => import(/* webpackChunkName: "page"*/ '@/views/knowledge/Detail.vue'),
+            component: () => import('@/views/knowledge/Detail.vue'),
             meta: {
               title: '知识详情'
             }
@@ -478,7 +485,7 @@ export default [
             meta: {
               title: '培训详情'
             },
-            component: () => import(/* webpackChunkName: "page"*/ '@/views/train/detail')
+            component: () => import('@/views/train/detail')
           }
         ]
       },

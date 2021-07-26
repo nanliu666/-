@@ -120,11 +120,13 @@
 
           <el-tree-select
             v-if="column.itemType == 'treeSelect'"
+            ref="treeSelect"
             v-model="model[column.prop]"
             :select-params="column.props && column.props.selectParams"
             :tree-params="column.props && column.props.treeParams"
             v-bind="itemAttrs(column)"
             :placeholder="column.placeholder ? column.placeholder : `请选择${column.label}`"
+            @searchFun="searchTreeFun($event, column.treeKey)"
           />
           <lazy-select
             v-if="column.itemType === 'lazySelect'"
@@ -202,6 +204,15 @@ export default {
   },
   mounted() {},
   methods: {
+      searchTreeFun(data, treeKey) {
+      //   搜索需要指定一个treeKey，拿到对应的component，返回过滤后的值
+      this.$refs.treeSelect.map((v, i) => {
+        if (v.$attrs.treeKey == treeKey) {
+          const searchTarget = _.get(this.$refs, `treeSelect[${i}].$refs.tree`)
+          searchTarget.filter(data)
+        }
+      })
+    },
     elFormItemAttrs(column) {
       const copy = {}
       for (const key in column) {

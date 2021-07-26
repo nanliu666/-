@@ -66,9 +66,7 @@
             </div>
           </div>
 
-          <div class="particulars">
-            查看详情
-          </div>
+          <div class="particulars">查看详情</div>
         </div>
       </div>
 
@@ -89,9 +87,7 @@
     <div v-show="!certificateData.length" class="contentShow">
       <div class="content_box">
         <img src="@/assets/images/my_noData.png" alt="" />
-        <div class="text">
-          暂无数据
-        </div>
+        <div class="text">暂无数据</div>
       </div>
     </div>
   </div>
@@ -132,6 +128,7 @@ export default {
   },
   watch: {
     searchInput: function() {
+      this.page.pageNo = 1
       this.getInfo()
     }
   },
@@ -155,9 +152,11 @@ export default {
     },
     handleSizeChange(val) {
       this.page.pageSize = val
+      this.getInfo()
     },
     handleCurrentChange(val) {
       this.page.pageNo = val
+      this.getInfo()
     }
   }
 }
@@ -258,9 +257,9 @@ export default {
   position: relative;
   .CertificateComponents {
     position: absolute;
-    top: -226px;
-    left: -303px;
-    transform: scale(0.32, 0.3);
+    top: -260px;
+    left: -357px;
+    transform: scale(0.28, 0.27);
   }
 
   border-radius: 4px 4px 0 0;

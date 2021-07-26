@@ -2,7 +2,7 @@
   <div class="outsideTraining">
     <!-- 面包屑 -->
     <el-breadcrumb separator="/" style="padding: 25px 0 20px">
-      <el-breadcrumb-item>业务申请</el-breadcrumb-item>
+      <el-breadcrumb-item to="/approvalCenter/approveIndex">业务申请</el-breadcrumb-item>
       <el-breadcrumb-item>外购培训申请</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 主体内容 -->
@@ -14,21 +14,11 @@
             <div class="title">申请人信息</div>
             <el-row>
               <el-col :span="8"><span class="name">姓名：</span>{{ personInfor.name }}</el-col>
-              <el-col :span="8"
-                ><span class="name">性别：</span>{{ personInfor.sex === 1 ? '男' : '女' }}</el-col
-              >
-              <el-col :span="8"
-                ><span class="name">出生年月：</span>{{ personInfor.birthDate }}</el-col
-              >
-              <el-col :span="8"
-                ><span class="name">所属部门：</span>{{ personInfor.orgName }}</el-col
-              >
-              <el-col :span="8"
-                ><span class="name">工作岗位：</span>{{ personInfor.position }}</el-col
-              >
-              <el-col :span="8"
-                ><span class="name">职业资格/职称：</span>{{ personInfor.positionTitle }}</el-col
-              >
+              <el-col :span="8"><span class="name">性别：</span>{{ personInfor.sex === 1 ? '男' : '女' }}</el-col>
+              <el-col :span="8"><span class="name">出生年月：</span>{{ personInfor.birthDate }}</el-col>
+              <el-col :span="8"><span class="name">所属部门：</span>{{ personInfor.orgName }}</el-col>
+              <el-col :span="8"><span class="name">工作岗位：</span>{{ personInfor.position }}</el-col>
+              <el-col :span="8"><span class="name">职业资格/职称：</span>{{ personInfor.positionTitle }}</el-col>
             </el-row>
           </div>
           <!-- 申请信息 -->
@@ -47,15 +37,21 @@
                   :max="9999999999.99"
                 />
                 <a class="inputNumber-icon">￥</a>
-              </template></common-form
-            >
+              </template>
+              <template slot="internalization">
+                <el-radio-group v-model="formData.internalization">
+                <el-radio :label="1">课程开发</el-radio>
+                <el-radio :label="2">经验交流</el-radio>
+                <el-radio :label="3">其他形式</el-radio>
+              </el-radio-group>
+              <el-input v-if="formData.internalization===3" max="100" v-model="formData.internalizationContent" placeholder="请输入内容"></el-input>
+              </template>
+              </common-form>
           </div>
           <!-- 提交按钮 -->
           <div class="submit-btn">
             <el-button type="primary" size="medium" @click="submitFn">提交申请</el-button>
-            <el-button style="margin-left: 10px" size="medium" @click="toApproveIndex"
-              >取消</el-button
-            >
+            <el-button style="margin-left: 10px" size="medium" @click="toApproveIndex">取消</el-button>
           </div>
         </div>
       </el-card>
@@ -91,6 +87,7 @@ export default {
         trainConent: '',
         joinNum: '',
         internalization: '',
+        internalizationContent:'',
         projectName: '',
         introduce: '',
         trainTime: [],
@@ -213,27 +210,11 @@ export default {
         },
         {
           prop: 'internalization',
-          hide: true,
-          itemType: 'radio',
+          itemType: 'slot',
           label: '内化形式',
           offset: 0,
           required: true,
           span: 24,
-          type: 'radio',
-          options: [
-            {
-              label: '课程开发',
-              value: 1
-            },
-            {
-              label: '经验交流',
-              value: 2
-            },
-            {
-              label: '其他形式',
-              value: 3
-            }
-          ]
         },
         {
           prop: 'trainTarget',
@@ -241,6 +222,8 @@ export default {
           required: true,
           label: '培训目标',
           span: 24,
+          maxlength: 1000,
+          showWordLimit:true,
           rows: 6,
           type: 'textarea'
         },
@@ -250,6 +233,8 @@ export default {
           required: true,
           label: '培训内容',
           span: 24,
+          maxlength: 1000,
+          showWordLimit:true,
           rows: 6,
           type: 'textarea'
         },
@@ -259,6 +244,8 @@ export default {
           required: true,
           label: '讲师/机构介绍',
           span: 24,
+          maxlength: 1000,
+          showWordLimit:true,
           rows: 6,
           type: 'textarea'
         }

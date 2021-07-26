@@ -16,7 +16,7 @@
       <el-row>
         <el-col :span="8" class="experienceList"><span class="name">课程名称：</span><span class="wContent">{{ formDetaill.courseName }}</span></el-col>
         <el-col :span="8" class="experienceList"><span class="name">开发方式：</span><span class="wContent">{{ formDetaill.devType }}</span></el-col>
-        <el-col :span="8" class="experienceList"><span class="name">开发周期：</span><span class="wContent">{{ dateConver(formDetaill.devStartTime) }} 至 {{ dateConver(formData.devEndTime) }}</span></el-col>
+        <el-col :span="8" class="experienceList"><span class="name">开发周期：</span><span class="wContent">{{ dateConver(formDetaill.devStartTime) }} 至 {{ dateConver(formDetaill.devEndTime) }}</span></el-col>
         <el-col :span="8" class="experienceList"><span class="name">培训对象：</span><span class="wContent">{{ formDetaill.trainObject }}</span></el-col>
         <el-col :span="24" class="experienceList"><span class="name">主要内容：</span><span class="wContent">{{ formDetaill.conent }}</span></el-col>
       </el-row>

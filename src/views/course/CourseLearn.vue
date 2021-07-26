@@ -9,12 +9,8 @@
     <div class="course-learn__main">
       <div :class="['left-bar', { hidden: leftHidden }]">
         <el-menu :default-active="activeIndex" mode="horizontal" @select="handleMenuChange">
-          <el-menu-item index="1">
-            目录
-          </el-menu-item>
-          <el-menu-item index="2">
-            笔记
-          </el-menu-item>
+          <el-menu-item index="1"> 目录 </el-menu-item>
+          <el-menu-item index="2"> 笔记 </el-menu-item>
         </el-menu>
         <div class="left-bar__main">
           <div v-show="activeIndex === '1'" class="chapters">
@@ -112,7 +108,7 @@
         ></div>
         <!-- 课件 -->
         <div v-if="currentChapter.type == '2'" class="content--iframe">
-          <div style=" height:100%">
+          <div style="height: 100%">
             <!-- <video
               v-if="isVideo"
               ref="videoRef"
@@ -125,7 +121,7 @@
               :width="contentWidth"
               style="width:100%;"
             ></video> -->
-            <div v-if="!isVideo" style=" height:100%">
+            <div v-if="!isVideo" style="height: 100%">
               <!-- <div v-if="getFileType(currentChapter.content) == 'txt'" ref="currentTXT"></div> -->
               <img
                 v-if="
@@ -135,7 +131,7 @@
                 "
                 ref="currentImg"
                 :src="currentChapter.content"
-                style="display: block;margin: 0 auto;"
+                style="display: block; margin: 0 auto"
               />
               <iframe
                 v-if="
@@ -169,6 +165,24 @@
             </div>
             <!-- <a target="_blank" :href="currentChapter.content" > -->
             <el-button type="primary" size="medium" @click="downLoadImg(currentChapter)">立即下载</el-button>
+
+            <el-dialog
+              title="下载进度"
+              :visible.sync="dialogVisible"
+              width="30%"
+              :before-close="handleClose"
+            >
+              <el-progress
+                :text-inside="true"
+                :stroke-width="20"
+                :percentage="progressEvent"
+                class="progressEvent"
+              ></el-progress>
+              <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="dialogVisible = false">关闭</el-button>
+              </span>
+            </el-dialog>
+
             <!-- </a> -->
           </div>
         </div>
@@ -198,7 +212,7 @@
             :src="currentChapter.content"
             :height="contentHeight"
             :width="contentWidth"
-            style="width:100%;"
+            style="width: 100%"
             class="isVideo"
           ></video>
 
@@ -268,7 +282,7 @@ import { COURSE_CHAPTER_TYPE_MAP } from './config'
 import Task from './components/Task'
 import TextOverTooltip from './components/TextOverTooltip'
 import Note from './components/Note'
-import { downLoadFile } from '@/util/util'
+// import { downLoadFile } from '@/util/util'
 // import { clearInterval } from 'tinymce/themes/silver/theme'
 const axios = require('axios/index')
 
@@ -277,6 +291,9 @@ export default {
   components: { Task, TextOverTooltip, Note },
   data() {
     return {
+      dialogVisible: false,
+      progressEventInt: false,
+      progressEvent: 0,
       sliderData: 0,
       contentWidth: '100%',
       contentHeight: '100%',
@@ -389,9 +406,11 @@ export default {
         let videoDom = document.querySelector('video')
         this.chapters.forEach((item, index) => {
           if (oldVal.contentId == item.contentId) {
-            this.chapters[index].period = parseInt(videoDom.currentTime)
-            // console.log(this.chapters[index].period);
-            // console.log(oldVal);
+            if (videoDom) {
+              this.chapters[index].period = parseInt(videoDom.currentTime)
+              // console.log(this.chapters[index].period);
+              // console.log(oldVal);
+            }
           }
         })
 
@@ -471,8 +490,52 @@ export default {
 
     downLoadImg(data) {
       // 下载
-      downLoadFile(data)
+      this.downLoadFile(data)
     },
+
+    downLoadFile(data) {
+      this.progressEvent = 0
+      // 节流
+      if (this.progressEventInt) {
+        this.$message({
+          message: '请等待上一次下载任务完成！',
+          type: 'warning'
+        })
+      }
+      if (this.progressEventInt) return
+      const url = data.url || data.fileUrl || data.filePath || data.content
+      this.progressEventInt = true
+      this.dialogVisible = true
+      axios
+        .get(
+          url,
+          // 将responseType的默认json改为blob
+          {
+            responseType: 'blob',
+            emulateJSON: true,
+            // 进度条
+            onDownloadProgress: (progress) => {
+              this.progressEvent = Math.round((progress.loaded / progress.total) * 100)
+            }
+          }
+        )
+        .then((res) => {
+          // loading.close()
+          this.progressEventInt = false
+          this.dialogVisible = false
+
+          let objectUrl = URL.createObjectURL(res.data)
+          const a = document.createElement('a')
+          a.download = data.fileName || data.localName
+          a.style.display = 'none'
+          a.href = objectUrl
+          document.body.appendChild(a)
+          a.click()
+          a.remove()
+          window.URL.revokeObjectURL(objectUrl)
+        })
+    },
+
     getFileType(url) {
       let type = url.split('.')
       type = type[type.length - 1]
@@ -614,7 +677,7 @@ export default {
       //     videoRef.playbackRate = 1
       //   })
       // })
-
+      this.progressEvent = 0
       this.breakpoint(chapter)
 
       await this.updateVideoProgress()
@@ -1098,6 +1161,9 @@ export default {
             color: $primaryFontColor;
             font-size: 18px;
             margin-bottom: 24px;
+          }
+          .progressEvent {
+            width: 100%;
           }
         }
         &--iframe {

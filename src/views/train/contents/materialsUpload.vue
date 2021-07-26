@@ -17,7 +17,7 @@
       </el-table-column>
       <el-table-column label="" prop="updateTime"> </el-table-column>
       <el-table-column align="right">
-        <template slot="header">
+        <template #header>
           <common-upload
             v-model="uploadData"
             :before-upload="beforeUpload"
@@ -27,7 +27,12 @@
           >
             <el-button type="text" icon="el-icon-upload2" :disabled="isHandle">上传材料</el-button>
           </common-upload>
-          <el-button type="text" style="margin-left:10px;" @click="downLoadAll">打包下载</el-button>
+          <el-button
+            type="text"
+            style="margin-left:10px;"
+            :disabled="tableData.length < 1"
+            @click="downLoadAll"
+          >打包下载</el-button>
         </template>
         <template slot-scope="scope">
           <el-button type="text" @click="delItem(scope.row)">

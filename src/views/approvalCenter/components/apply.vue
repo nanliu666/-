@@ -2,14 +2,14 @@
   <div class="apply">
     <div class="content">
       <div class="lists">
-        <!-- <div class="list">
+        <div class="list">
           <router-link to="/approvalCenter/outsideTraining">
             <span class="applyIcon applyIconS1"></span>
             <span class="title">
               外训报名申请
             </span>
           </router-link>
-        </div> -->
+        </div>
         <div class="list">
           <router-link to="/approvalCenter/trainingNeeds">
             <span class="applyIcon applyIconS2"></span>
@@ -27,7 +27,7 @@
           </router-link>
         </div>
       </div>
-      <!-- <div class="lists">
+      <div class="lists">
         <div class="list">
           <router-link to="/approvalCenter/applyOutsideTrainBookbuilding">
             <span class="applyIcon applyIconS4"></span>
@@ -44,7 +44,7 @@
             </span>
           </router-link>
         </div>
-      </div> -->
+      </div>
       <div class="lists">
         <div class="list">
           <router-link to="/approvalCenter/applyTeacherIdentification">
@@ -71,7 +71,7 @@
           </router-link>
         </div>
       </div>
-      <!-- <div class="lists" style="border:0">
+      <div class="lists" style="border:0">
         <div class="list">
           <router-link to="/approvalCenter/applyBuyTrain">
             <span class="applyIcon applyIconS9"></span>
@@ -80,7 +80,7 @@
             </span>
           </router-link>
         </div>
-      </div> -->
+      </div>
     </div>
   </div>
 </template>

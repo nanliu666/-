@@ -1,6 +1,6 @@
 // 配置编译环境和线上环境之间的切换
 var systemName = '易宝教育学习平台' // 系统名称
-var isQiNiu = true // 判断是用七牛(true)还是用内部(false)上传
+var isQiNiu = false // 判断是用七牛(true)还是用内部(false)上传
 let frontBaseUrl = '' // 用户前台地址
 let backBaseUrl = '' //（后台管理）
 let baseUploadUrl = {
@@ -52,6 +52,7 @@ backBaseUrl = env.VUE_APP_ENV ? backBaseUrls[env.VUE_APP_ENV] : backBaseUrls.sit
 // } else if (env.VUE_APP_ENV == 'xugong') {
 //   backBaseUrl = 'https://xlms-manager.xcmg.com:12443' //徐工环境地址（后台管理）
 // }
+const previewUrl = 'https://convert.zexueyuan.com.cn/fcscloud/composite/httpfile'
 export {
   frontBaseUrl,
   backBaseUrl,
@@ -61,5 +62,6 @@ export {
   env,
   systemName,
   isQiNiu,
-  uploadUrl
+  uploadUrl,
+  previewUrl
 }

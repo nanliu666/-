@@ -33,7 +33,7 @@
             score-template="{value}分"
           >
           </el-rate>
-          <span> {{ item.knowledgeSystemName || ' -- ' }} </span>
+          <span v-if="item.knowledgeSystemName" class="know"> {{ item.knowledgeSystemName }}</span>
         </div>
 
         <div v-if="item.totalPrecent == 100" class="item_complete">
@@ -227,9 +227,9 @@ export default {
         span {
           font-size: 12px;
           background-color: #f2f2f2;
-          padding: 2px 5px;
-          border-radius: 2px;
-          color: #666;
+          padding: 3px 10px;
+          border-radius: 4px;
+          color: #999999;
         }
       }
       &_complete {

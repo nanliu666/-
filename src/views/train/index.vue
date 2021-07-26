@@ -14,15 +14,9 @@
         </el-input>
       </div>
       <div class="filter-wrapper">
-        <!-- <div class="filter-item">
-          知识体系：
-          <span
-            class="filter-radio"
-            :class="{ selected: !filterForm.trainWay }"
-            @click="filterForm.trainWay = ''"
-            >全部</span
-          >
-        </div> -->
+        <div class="filter-item">
+          <knowSelect :filter-form="filterForm" />
+        </div>
         <div class="filter-item">
           类型：
           <span
@@ -45,11 +39,11 @@
             :class="{ selected: filterForm.trainWay === 3 }"
             @click="type(3)"
           >混合</span>
-          <!-- <span
+          <span
             class="filter-radio"
             :class="{ selected: filterForm.trainScope === 'outer' }"
             @click="type(4)"
-          >外训</span> -->
+          >外训</span>
         </div>
         <div class="filter-item">
           状态：
@@ -134,6 +128,9 @@
                   <span>{{ item.categoryName }}</span>
                 </el-tooltip>
               </div>
+              <div v-if="item.knowledgeSystemName" class="right">
+                <span>{{ item.knowledgeSystemName }}</span>
+              </div>
             </div>
           </div>
         </li>
@@ -162,7 +159,8 @@ import { getList } from 'src/api/train'
 export default {
   name: 'Train',
   components: {
-    Pagination
+    Pagination,
+    knowSelect: () => import('./components/treeSelect.vue')
   },
   data() {
     return {
@@ -175,6 +173,7 @@ export default {
         startTime: '',
         endTime: '',
         trainScope: '',
+        knowledgeSystemId: '',
         pageNo: 1,
         pageSize: 10
       },
@@ -182,7 +181,8 @@ export default {
       total: 0,
       cacheSatus: '',
       cacheTrainWay: '',
-      trainScope: 'inside'
+      trainScope: 'inside',
+      knowList: []
     }
   },
   computed: {
@@ -247,9 +247,9 @@ export default {
           break
       }
       if (
-        this.filterForm.status != this.cacheSatus ||
-        this.filterForm.trainWay != this.cacheTrainWay ||
-        this.filterForm.trainScope != this.trainScope
+        this.filterForm.status !== this.cacheSatus ||
+        this.filterForm.trainWay !== this.cacheTrainWay ||
+        this.filterForm.trainScope !== this.trainScope
       ) {
         this.filterList()
         this.cacheTrainWay = this.filterForm.trainWay
@@ -279,16 +279,13 @@ export default {
         this.data = this.sortList(records)
         this.total = total
       })
-      // getKonwList({}).then(() => {})
     },
     toDetail(item) {
-      const { id: trainId, trainName: title, trainWay, userType } = item
+      const { id: trainId, userType } = item
       this.$router.push({
         path: '/train/detail',
         query: {
-          title,
           trainId,
-          trainWay,
           userType
         }
       })
@@ -421,7 +418,7 @@ export default {
             font-size: 12px;
             color: rgba(0, 11, 21, 0.45);
             .left {
-              width: 100%;
+              flex: 1;
               span {
                 display: inline-block;
                 width: 50%;
@@ -431,11 +428,12 @@ export default {
               }
             }
             .right {
+              flex-shrink: 0;
               font-size: 12px;
               color: rgba(0, 11, 21, 0.45);
               border-radius: 4px;
               background-color: #f5f5f6;
-              padding: 1px 8px;
+              padding: 3px 8px;
             }
             /deep/span.el-rate__text {
               font-size: 12px;

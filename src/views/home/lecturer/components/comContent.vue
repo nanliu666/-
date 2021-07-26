@@ -35,7 +35,7 @@
         <span class="label">专业分类：</span>
         <span>{{ PROFE_MAP[data.professionalCata] }}</span>
       </div>
-      <div class="split__class skill__content" v-if="!skilledFields">
+      <div v-if="!skilledFields" class="split__class skill__content">
         <span class="label">擅长领域：</span>
         <ul v-if="!_.isEmpty(data.skilledFields)" class="skilledFields__ul">
           <li
@@ -49,19 +49,19 @@
         <span v-else>--</span>
       </div>
     </div>
-    <div class="split__class_de skill__content_de" v-if="skilledFields">
-        <span class="label">擅长领域：</span>
-        <ul v-if="!_.isEmpty(data.skilledFields)" class="skilledFields__ul">
-          <li
-            v-for="(skillItem, skillIndex) in data.skilledFields"
-            :key="skillIndex"
-            class="skill__li"
-          >
-            {{ skillItem }}
-          </li>
-        </ul>
-        <span v-else>--</span>
-      </div>
+    <div v-if="skilledFields" class="split__class_de skill__content_de">
+      <span class="label">擅长领域：</span>
+      <ul v-if="!_.isEmpty(data.skilledFields)" class="skilledFields__ul">
+        <li
+          v-for="(skillItem, skillIndex) in data.skilledFields"
+          :key="skillIndex"
+          class="skill__li"
+        >
+          {{ skillItem }}
+        </li>
+      </ul>
+      <span v-else>--</span>
+    </div>
   </div>
 </template>
 <script>
@@ -78,13 +78,13 @@ const LECTURER_LEVEL = {
 const PROFE_MAP = {
   '01': '技术类',
   '02': '管理类',
-  '03': '营销服务类',
-  '04': ''
+  '03': '营销类',
+  '04': '技能类'
 }
 export default {
   name: 'ComContent',
   props: {
-    skilledFields:{
+    skilledFields: {
       type: Boolean,
       default: false
     },
@@ -129,8 +129,8 @@ export default {
         justify-content: center;
         font-family: PingFangSC-Regular;
         font-size: 12px;
-        color: #CF9E00;
-        background-color: rgba(245,194,0,.15);
+        color: #cf9e00;
+        background-color: rgba(245, 194, 0, 0.15);
         width: 64px;
         height: 20px;
         border-radius: 2px;
@@ -150,11 +150,11 @@ export default {
     .split {
       // margin-right: 33px;
     }
-    .line{
+    .line {
       width: 2px;
       height: 10px;
       margin: auto 16px;
-      background: #EBECED;  
+      background: #ebeced;
     }
   }
   .list__middle {
@@ -210,46 +210,46 @@ export default {
     }
   }
   .split__class_de {
-      margin-right: 40px;
-      // margin-bottom: 20px;
-      .label {
-        font-family: PingFangSC-Medium;
-        font-size: 14px;
-        color: rgba(0, 11, 21, 0.45);
-      }
-      .value {
-        font-family: PingFangSC-Medium;
-        font-size: 14px;
-        color: rgba(0, 11, 21, 0.85);
-      }
-      .skilledFields__ul {
-        display: flex;
-        flex-wrap: wrap;
-        flex: 1;
-        .skill__li {
-          min-width: 52px;
-          height: 20px;
-          padding: 0 6px;
-          border-radius: 4px;
-          // margin-bottom: 10px;
-          background: rgba(0, 11, 21, 0.04);
-          font-family: PingFangSC-Regular;
-          font-size: 12px;
-          color: rgba(0, 11, 21, 0.45);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          margin-right: 8px;
-        }
-      }
+    margin-right: 40px;
+    // margin-bottom: 20px;
+    .label {
+      font-family: PingFangSC-Medium;
+      font-size: 14px;
+      color: rgba(0, 11, 21, 0.45);
     }
-    .skill__content_de {
+    .value {
+      font-family: PingFangSC-Medium;
+      font-size: 14px;
+      color: rgba(0, 11, 21, 0.85);
+    }
+    .skilledFields__ul {
       display: flex;
-      margin-right: 0;
-      margin-top: 8px;
-      .label {
-        width: 71px;
+      flex-wrap: wrap;
+      flex: 1;
+      .skill__li {
+        min-width: 52px;
+        height: 20px;
+        padding: 0 6px;
+        border-radius: 4px;
+        // margin-bottom: 10px;
+        background: rgba(0, 11, 21, 0.04);
+        font-family: PingFangSC-Regular;
+        font-size: 12px;
+        color: rgba(0, 11, 21, 0.45);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 8px;
       }
     }
+  }
+  .skill__content_de {
+    display: flex;
+    margin-right: 0;
+    margin-top: 8px;
+    .label {
+      width: 71px;
+    }
+  }
 }
 </style>
