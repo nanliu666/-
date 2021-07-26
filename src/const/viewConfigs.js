@@ -5,7 +5,7 @@ const TYPE_PATH_MAP = {
   // LiveBroadcastEveryOne: '/live/list', // 直播计划安排通知: 所有人或通过验证码观看
   LearnCompulsoryNotify: '/learn/list', // 学习必修安排通知
   LearnCompulsoryRemind: '/learn/list', // 学习必修安排提醒
-  GrantCertificate: '/my/record', // 证书发放通知
+  GrantCertificate: '/Certificate', // 证书发放通知,跳转证书列表
   GetCreditCompleteCourse: '/my/record', // 学分获得通知: 完成课程获得学分
   GetCreditCompleteExam: '/my/record', // 学分获得通知: 完成考试获得学分
   GetCreditCompleteTrain: '/my/record', // 学分获得通知: 完成培训获得学分
@@ -16,8 +16,9 @@ const TYPE_PATH_MAP = {
   PassApproval: '/approvalCenter/center', // 审批通过通知: 申请人审批通过
   ApprovalNotify: '/approvalCenter/center', // 审批通知: 有新的审批代办
   // FlowWaitApprove: '/approvalCenter/center', // 审批通知: 有新的审批代办
-  FlowPass: '/approvalCenter/center', // 审批通过通知: 申请人审批通过
-  FlowReject: '/approvalCenter/center', // 审批通知
+  FlowPass: '/approvalCenter/approveIndex', // 审批通过通知: 申请人审批通过
+  FlowReject: '/approvalCenter/approveIndex', // 审批通知
+  FlowUrge: '/approvalCenter/approveIndex', //催一下，跳转审批中心  待我审批
   ApprovalReturn: '/approvalCenter/center', // 审批退回通知: 申请人审批被退回
   ExamAchievement: '/approvalCenter/center', // 考试成绩通知: 发布考试成绩
   // ExamNotify: '/exam/middle', // 考试通知: 考试发布
@@ -26,15 +27,22 @@ const TYPE_PATH_MAP = {
   CourseRemind: '/myTask/myLearn', // 课程学习提醒: 课程开始前N分钟
   // TrainArrange: '/train/index', // 培训安排的通知: 发布培训安排
   QuestionnaireArrangement: '/myTask/myLearn?clickData=questionnaire', // 培训安排的通知: 发布培训安排
+  TrainJoinFail: '/train/detail', //培训报名被拒绝消息
+  revokeCertificate: '',  //培训证书撤回  不跳转
+  revokeCertificateExam: '', //考试证书撤回不跳
+  ExamHandworkNotify: '', //去评卷不跳转
+  GrantCertificateExam: '/Certificate',  //证书发放
+
 
   LiveBroadcastBegin: '/live/list', //直播中心-直播详情页
+  LiveApplySuccess: '/myTask/myLearn', //直播中心-直播详情页
   LiveBroadcastPlanGust: '/live/list', //直播中心-直播详情页
   LiveBroadcastPlan: '/live/list', //直播中心-直播详情页
   LiveBroadcastEveryOne: '/live/list', //直播中心-直播详情页
   LiveRemindToStudents: '/live/list', //直播开始前通知学生
   LiveRemindToTeachers: '/live/list', //直播开始前通知老师
   TrainArrange: '/myTask/myLearn', //我的任务
-  ExamNotify: '/exam/list', //考试中心
+  ExamNotify: '/myTask/myLearn', //学院端  我的任务 考试
   ExamRemind: '/exam/list', //考试中心
   FlowWaitApprove: '/approvalCenter/approveIndex?name=message', //审批中心
   ScoreGetOfLogin: '/personal/personal', //登录积分

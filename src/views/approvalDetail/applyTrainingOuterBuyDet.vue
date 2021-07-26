@@ -76,9 +76,9 @@
           <span class="name">联系方式：</span>
           <span class="wContent">{{ formDetaill.contactInfo }}</span>
         </el-col>
-        <el-col :span="8" class="experienceList">
+        <el-col :span="24" class="experienceList">
           <span class="name">内化形式：</span>
-          <span class="wContent">{{ formDetaill.internalization }}</span>
+          <span class="wContent">{{ getTrainResultStr(formDetaill) }}</span>
         </el-col>
         <el-col :span="24" class="experienceList">
           <span class="name">培训目标：</span>
@@ -112,6 +112,16 @@ export default {
       formDetaill: {}
     }
   },
+  filters:{
+    internalizationFilter(val){
+      let type = {
+        1:'课程开发',
+        2:'经验交流',
+        3:'其他形式'
+      }
+      return type[val]
+    }
+  },
   computed: {
     formData() {
       return this.applyDetail.formData && this.applyDetail.formData.length > 0
@@ -129,6 +139,15 @@ export default {
   },
   mounted() {},
   methods: {
+    getTrainResultStr(obj){
+      let type = {
+        1:'课程开发',
+        2:'经验交流',
+        3:'其他形式'
+      }
+      let content = obj.internalization === '3' ? `${obj.internalizationContent?'('+obj.internalizationContent+')':''}` : ''
+      return `${type[obj.internalization]} ${content}`
+    },
     dateConver(date) {
       return dateConver(date)
     },

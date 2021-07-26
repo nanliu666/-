@@ -100,10 +100,7 @@ export default {
       }
     },
     toKnowledgeSystem() {
-      this.$message.error('开发中...')
-      if (process.env.NODE_ENV === 'development') {
-        this.$router.push({ path: '/knowledge-system' })
-      }
+      this.$router.push({ path: '/knowledge-system' })
     }
   }
 }

@@ -56,8 +56,10 @@
               </el-rate>
             </div>
             <div class="collection">
-              <i class="el-icon-star-off"></i>
-              <span>收藏</span>
+              <span @click="collection" class="collection">
+                <i class="iconoperating_ic_favorites iconfont" :class="{'iconoperating_ic_favorites_active':isCollection}"></i>
+                {{isCollection?'取消收藏':'收藏'}}
+              </span>
             </div>
           </div>
         </div>
@@ -191,7 +193,7 @@
 <script>
 import { Rate, Intro, Schedule, Trainee, Arrangement, MaterialsUpload } from './contents'
 import TextOverTooltip from '../course/components/TextOverTooltip'
-import { getDetail, signUp, trainNum } from 'src/api/train'
+import { getDetail, signUp, trainNum, trainCollect, cancelTrainCollect, queryFavoriteStatus } from 'src/api/train'
 import globalKey from 'src/config/website'
 import moment from 'moment'
 export default {
@@ -219,7 +221,8 @@ export default {
       activeComponent: '',
       isApplyJoin: false,
       flag: false,
-      isJoin: false
+      isJoin: false,
+      isCollection:false
     }
   },
   computed: {
@@ -274,6 +277,7 @@ export default {
   },
   activated() {
     this.getData()
+    this.getIsCollectTrain()
     this.$nextTick(() => {
       this.flag = true
     })
@@ -283,6 +287,33 @@ export default {
     this.activeComponent = ''
   },
   methods: {
+    //获取是否收藏
+    getIsCollectTrain(){
+       const params = this.$route.query
+      const { trainId } = params
+      queryFavoriteStatus({
+        trainId,
+        type:sessionStorage.getItem('role'),
+      }).then(res=>{
+        this.isCollection = res
+      })
+    },
+    //收藏
+    collection(){
+      let fun = this.isCollection?cancelTrainCollect:trainCollect
+      const params = this.$route.query
+      const { trainId } = params
+      fun({
+        type:sessionStorage.getItem('role'),
+        trainId
+      }).then(res=>{
+        this.$message({
+          type:'success',
+          message:`${this.isCollection?'取消收藏成功':'收藏成功'}`
+        })
+        this.getIsCollectTrain()
+      })
+    },
     handleSelect(tab) {
       this.data.activeComponent = tab.name
       localStorage.setItem(globalKey.trainDataKey, JSON.stringify(this.data))
@@ -403,6 +434,9 @@ export default {
         .collection {
           font-size: 16px;
           cursor: pointer;
+            .iconoperating_ic_favorites_active{
+              color: rgb(247, 186, 42);
+            }
         }
         .right {
           display: flex;

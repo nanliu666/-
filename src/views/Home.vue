@@ -148,10 +148,10 @@
     </div>
     <div class="foot">
       <div class="foot2">
-        <span style="opacity: 0.35;">v2.1.0_20210410_Release &nbsp; &nbsp; &nbsp;</span>
+        <span style="opacity: 0.35;">{{version}} &nbsp; &nbsp; &nbsp;</span>
         <span class="policeLogo"><img src="../../public/img/policeLogo.png" alt="" /></span>
         <span style="opacity: 0.35;"><a href="https://ythzxfw.miit.gov.cn" target="_blank">
-          备案号：苏ICP备19010525号-2
+          {{num}}
         </a></span>
       </div>
     </div>
@@ -193,6 +193,7 @@ export default {
   },
   data() {
     return {
+      copy:'',
       // isOrgIdE: false,
       myTaskInfo: {
         nub: 0
@@ -282,7 +283,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['diyInfor'])
+    ...mapGetters(['diyInfor','tenantContent'])
   },
   watch: {
     diyInfor: {
@@ -298,6 +299,12 @@ export default {
     // }
   },
   mounted() {
+    this.copy =
+      (this.tenantContent && JSON.parse(this.tenantContent).copyright) ||
+      'v2.0.1_20210401_Release  备案号：苏ICP备19010525号-2'
+      this.copy = this.copy.replace(/\s+/g,' ')
+      this.version = this.copy.split(' ')[0]
+      this.num = this.copy.split(' ')[1]
     this.getBannersFn()
     this.getHotCourse()
     this.getTrainList()

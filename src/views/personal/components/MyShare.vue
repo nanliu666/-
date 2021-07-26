@@ -7,7 +7,7 @@
           <span>一点分享</span>
         </div>
       </li>
-      <li v-for="(item, index) in listData" :key="index" @click="toDetail(item)">
+      <li v-for="(item, index) in listData" :key="index" class="share-list" @click="toDetail(item)">
         <div class="top_box">
           <div class="title">
             {{ item.resName }}
@@ -34,9 +34,16 @@
 
         <div class="dialog_box">
           <div>
-            <span v-if="showDel(item)" class="el-icon-delete" @click="deleteItem(item)"></span>
-            <span v-if="showEdit(item)" class="el-icon-edit-outline" @click="editItem(item)"></span>
+            <span v-if="showDel(item)" class="el-icon-delete" @click.stop="deleteItem(item)"></span>
+            <span
+              v-if="showEdit(item)"
+              class="el-icon-edit-outline"
+              @click.stop="editItem(item)"
+            ></span>
           </div>
+        </div>
+        <div :class="approveClass(item.approveStatus)" class="status">
+          {{ approveStatus(item.approveStatus) }}
         </div>
       </li>
     </ul>
@@ -81,6 +88,40 @@ export default {
         if (data.approveStatus == 0) return false
         else if (data.approveStatus == 1) return false
         else return true
+      }
+    },
+    approveClass() {
+      return (status) => {
+        let str = ''
+        switch (status) {
+          case 0:
+            str = 'blue'
+            break
+          case 2:
+            str = 'red'
+            break
+          case 3:
+            str = 'grey'
+            break
+        }
+        return str
+      }
+    },
+    approveStatus() {
+      return (status) => {
+        let str = ''
+        switch (status) {
+          case 0:
+            str = '审批中'
+            break
+          case 2:
+            str = '已拒绝'
+            break
+          case 3:
+            str = '已撤回'
+            break
+        }
+        return str
       }
     }
   },
@@ -297,6 +338,29 @@ export default {
   .pagination_box {
     padding: 24px 0;
     text-align: right;
+  }
+
+  .red {
+    color: #f13e3e;
+    background-color: #f5dbdb;
+  }
+  .grey {
+    color: rgba(0, 11, 21, 0.45);
+    background-color: #f6f5f5;
+  }
+  .blue {
+    color: #2875d4;
+    background-color: #f0f9ff;
+  }
+  .share-list {
+    position: relative;
+  }
+  .status {
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    padding: 1px 6px;
+    border-radius: 4px;
   }
 }
 </style>

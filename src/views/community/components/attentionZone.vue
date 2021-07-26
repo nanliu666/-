@@ -48,9 +48,16 @@
             shape="square"
             :size="32"
             :src="temp.headImg"
-            style="vertical-align: middle; margin-right: 5px"
+            style="vertical-align: middle; margin-right: 10px"
           ></el-avatar>
-          {{ temp.name.length > 8 ? temp.name.slice(0, 8) : temp.name }}
+          <el-tooltip
+            effect="dark"
+            :content="temp.name"
+            placement="top"
+            :manual="temp.name.length <= 8"
+          >
+            <span>{{ temp.name.length > 8 ? temp.name.slice(0, 8) + '...' : temp.name }}</span>
+          </el-tooltip>
         </div></swiper-slide
       >
     </swiper>
@@ -203,5 +210,8 @@ export default {
       color: rgba(0, 11, 21, 0.25);
     }
   }
+}
+/deep/ .el-avatar > img {
+  width: 100%;
 }
 </style>

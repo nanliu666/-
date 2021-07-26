@@ -51,6 +51,10 @@
             >
             </el-rate>分
           </span>
+          <span @click="collection" class="collection">
+            <i class="iconoperating_ic_favorites iconfont" :class="{'iconoperating_ic_favorites_active':courseData.isCollect}"></i>
+            {{courseData.isCollect?'取消收藏':'收藏'}}
+          </span>
         </div>
         <div v-if="courseData.credit" class="course-detail__info__column">
           <span class="course-detail__info__label"> 分类： </span>
@@ -61,6 +65,17 @@
             ref-name="testName1"
             class-name="fs20"
             :content="courseData.catalogName"
+          ></text-over-tooltip>
+        </div>
+        <div v-if="courseData.credit" class="course-detail__info__column">
+          <span class="course-detail__info__label"> 知识体系： </span>
+
+          <text-over-tooltip
+            class="course-detail__info__value"
+            style="width: 520px"
+            ref-name="testName1"
+            class-name="fs20"
+            :content="courseData.knowledgeSystemName"
           ></text-over-tooltip>
         </div>
         <div class="course-detail__info__column">
@@ -187,7 +202,9 @@ import {
   getLearnRecord,
   addViewLog,
   addStudyTimes,
-  getCourseStudyDetail
+  getCourseStudyDetail,
+  cancelCollectionCourse,
+  collectionCourse
 } from '@/api/course'
 import Comment from '@/components/common-comment/Comment'
 import { COURSE_CHAPTER_TYPE_MAP, COURSE_TYPE_MAP } from './config'
@@ -240,6 +257,17 @@ export default {
   },
   mounted() {},
   methods: {
+    collection(){
+      let fun = this.courseData.isCollect?cancelCollectionCourse:collectionCourse
+      let params = this.courseData.isCollect?{sourceId:this.courseData.id}:{ type:sessionStorage.getItem('role'),sourceId:this.courseData.id}
+      fun(params).then(res=>{
+        this.$message({
+          type:'success',
+          message:`${this.courseData.isCollect?'取消收藏成功':'收藏成功'}`
+        })
+         this.loadDetail()
+      })
+    },
     totalNum(i) {
       this.noteTotalNum = i
     },
@@ -361,6 +389,20 @@ export default {
       flex: 1;
       display: block;
       padding-left: 24px;
+      .collection{
+          font-size: 12px;
+          color: rgba(0, 11, 21, 0.45);
+          letter-spacing: 0;
+          line-height: 18px;
+          margin-left: 25px;
+          cursor: pointer;
+          .iconoperating_ic_favorites_active{
+          color: rgb(247, 186, 42);
+        }
+          .iconfont{
+            margin-top: 10px;
+          }
+      }
     }
     &__name {
       font-size: 18px;
@@ -375,7 +417,7 @@ export default {
         font-size: 12px;
         line-height: 19px;
         color: #878c91;
-        margin-right: 92px;
+        // margin-right: 92px;
       }
     }
 

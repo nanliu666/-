@@ -12,7 +12,7 @@
         <div
           class="top-header"
           :style="{
-            background: `url(${communityInfomation.coverPic}) 0% 0%/cover no-repeat`
+            background: `url(${communityInfomation.coverPic}) 0% 0%/100% 100% no-repeat`
           }"
         ></div>
         <!-- 社区信息 -->
@@ -39,11 +39,20 @@
                 </div>
               </el-row>
               <div class="describe">
-                {{
-                  communityInfomation.introduce && communityInfomation.introduce.length > 50
-                    ? communityInfomation.introduce.slice(0, 50) + '...'
-                    : communityInfomation.introduce
-                }}=
+                <el-tooltip
+                  effect="dark"
+                  :content="communityInfomation.introduce"
+                  placement="top"
+                  :manual="
+                    communityInfomation.introduce && communityInfomation.introduce.length <= 50
+                  "
+                >
+                  <span>{{
+                    communityInfomation.introduce && communityInfomation.introduce.length > 50
+                      ? communityInfomation.introduce.slice(0, 50) + '...'
+                      : communityInfomation.introduce
+                  }}</span>
+                </el-tooltip>
               </div>
             </div>
             <el-button type="primary" size="medium" @click="goZoneHome">专区查看</el-button>

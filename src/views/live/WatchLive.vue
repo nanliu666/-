@@ -25,8 +25,8 @@ export default {
             `?userid=${userid}&ts=${ts}&sign=${sign}&nickname=${decodeURIComponent(
               userName
             )}&avatar=${avatar}`
-          : url
-      return url
+          : url + `?name=${userid}`
+      return url 
     }
   }
 }

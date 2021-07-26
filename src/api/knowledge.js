@@ -56,3 +56,14 @@ export const updateKnowledge = (params) =>
   post('/api/blade-manage/v1/knowledge/front/update', params)
 // 下载次数
 export const loadNum = (params) => put('/api/manage/v1/web/knowledge/downloadOperate', params)
+
+export const getKnowledgeCatalogList = (params) =>
+  post('/api/blade-resource/v1/category/getKnowledgeCatalogList', params)
+
+export const getTrainList = (params) => get('/v1/web/getTrainList', params)
+
+export const collectOperate = (params) => get('/api/manage/v1/knowledge/manage/collectOperate',params)
+//查询前台知识搜藏列表
+export const getCollectionList = (params) => get('/api/manage/v1/user/collect/knowledge/list',params)
+//查询前台知识搜藏列表(返回全部的数据)
+export const getAllKnowledgeCatalogList = (params) => post('/api/blade-resource/v1/category/getAllKnowledgeCatalogList',params)

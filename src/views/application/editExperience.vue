@@ -117,6 +117,8 @@ export default {
           label: '申请说明',
           span: 24,
           rows: 6,
+          maxlength: 1000,
+          showWordLimit:true,
           type: 'textarea'
         }
       ]

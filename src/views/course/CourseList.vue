@@ -76,13 +76,16 @@
             </div>
 
             <div class="course-list__list__rate">
-              各项评分：<el-rate
+              <span class="textLable">各项评分：</span>              
+              <el-rate
                 :value="calcRate(item.scope)"
+                style="float:left;"
                 disabled
                 show-score
                 score-template="{value}"
               >
               </el-rate>
+              <span class="knowledgeSystemName" :title="item.knowledgeSystemName">{{ item.knowledgeSystemName }}</span>
             </div>
           </li>
         </ul>
@@ -134,6 +137,7 @@ export default {
         // 查询课程列表初始化参数
         catalogId: null,
         courseName: '',
+        knowledgeSystemId:'',
         type: 1,
         pageSize: 20,
         choice: '1'
@@ -221,8 +225,9 @@ export default {
           .catch(reject)
       })
     },
-    handleCategoryChange(category) {
-      this.params.catalogId = category.id
+    handleCategoryChange(res) {
+      this.params.catalogId = res.category.id
+      this.params.knowledgeSystemId = res.knowledge.idStr
     },
     handleCourseTypeChange(type) {
       this.params.type = type
@@ -424,7 +429,10 @@ export default {
     text-align: right;
   }
 }
-
+.course-list__list__rate .textLable{float: left;}
+.course-list__list__rate /deep/ .el-rate__item{transform:scale(0.7);}
+.course-list__list__rate /deep/ .el-rate__icon{margin-right: 0px;}
+.course-list__list__rate .knowledgeSystemName{float: right;display: block;width: 72px;overflow: hidden;text-overflow: ellipsis;word-wrap: inherit;text-align: right;}
 .course-list-filter-pop {
   &__wrap {
     display: flex;

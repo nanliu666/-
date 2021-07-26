@@ -13,8 +13,8 @@
                   style="margin-right: 3px; vertical-align: middle"
                 ></el-avatar>
                 {{ item.userFromName }}
-                <el-tag v-if="item.isExpert" type="warning" size="mini">专家</el-tag>
               </div>
+              <span v-if="item.isExpert" class="iconbiaoqian-zhuanjia iconfont experts"></span>
               <el-divider direction="vertical"></el-divider>
               <div class="zoneName" @click="goZoneHome(item)">
                 <el-tag size="mini">{{ item.areaName }}</el-tag>
@@ -23,8 +23,8 @@
           </div>
           <div class="reply-time">
             <el-row type="flex" style="align-items: center">
-              <span class="reply-time-info">{{ formatReplyTime(item.createTime) }}</span>
-              <span class="reply-time-toggle" @click="replyHandler(item.id)">{{
+              <span class="reply-time-info">{{ item.createTime }}</span>
+              <span class="reply-time-toggle" @click="replyHandler(item)">{{
                 replyIdTemp.includes(item.id) ? '收起回复' : '回复'
               }}</span>
             </el-row>
@@ -33,6 +33,15 @@
         <div class="describe">
           <span v-if="item.isAit" class="describe-isMe">{{ '@' + item.userToName }}</span>
           <span class="describe-info">{{ item.content }}</span>
+          <div v-if="item.replyImgUrl" class="previewPicture">
+            <img
+              v-for="(src, index) in item.replyImgUrl.split(',').slice(0, 3)"
+              :key="index"
+              :src="src"
+              class="previewPicture-img"
+              @click="previewImgObject(item.replyImgUrl.split(','), index)"
+            />
+          </div>
         </div>
         <div class="content">
           <!-- parentId = 0 是对帖子的回复 -->
@@ -95,16 +104,21 @@
     <div v-if="!(noticeList.length < pageConfig.pageNo * pageConfig.pageSize)" class="load-more">
       <el-button size="medium" :loading="loadMoreLoading" @click="loadMore">加载更多</el-button>
     </div>
+    <!-- 检查禁言模态框 -->
+    <banned-judgment ref="bannedJudgment"></banned-judgment>
   </div>
 </template>
 
 <script>
 import 'viewerjs/dist/viewer.css' // 图片预览插件
 import { api as viewerApi } from 'v-viewer'
-import moment from 'moment'
 import { getNotificationList, replyTopic, updateBeenRead } from '@/api/community'
+import bannedJudgment from './components/bannedJudgment.vue'
 export default {
   name: 'Notice',
+  components: {
+    bannedJudgment
+  },
   data() {
     return {
       noticeList: [],
@@ -154,32 +168,22 @@ export default {
       this.pageConfig.pageNo++
       this.initNotificationList()
     },
-    // 格式化时间
-    formatReplyTime(localTime) {
-      // 时间显示规则 时间为当天的时候，仅显示小时分钟  例如 20:12 不是当天，但是是当年的，仅显示月份和日期  例如  03-24 不是当年的，显示具体的年月日  例如2012-03-24
-      let today = moment().startOf('day')
-      if (moment(localTime).isSame(today, 'd')) {
-        // 判断是否今天
-        return moment(localTime).format('HH:mm')
-      } else if (moment(localTime).year() == new Date().getFullYear()) {
-        // 判断是否是今年
-        return moment(localTime).format('MM-DD')
-      } else {
-        return moment(localTime).format('YYYY-MM-DD')
-      }
-    },
-    replyHandler(id) {
-      this.replyIdTemp.includes(id)
-        ? (this.replyIdTemp.splice(this.replyIdTemp.indexOf(id), 1), (this.replyInfoTemp[id] = ''))
-        : this.replyIdTemp.push(id)
+    async replyHandler(item) {
+      await this.$refs.bannedJudgment.checkBanned(item.areaId)
+      if (this.$refs.bannedJudgment.flagBanned) return
+      this.replyIdTemp.includes(item.id)
+        ? (this.replyIdTemp.splice(this.replyIdTemp.indexOf(item.id), 1),
+          (this.replyInfoTemp[item.id] = ''))
+        : this.replyIdTemp.push(item.id)
     },
     // 回复信息
     async releaseInfo(item) {
       let params = {
         topicId: item.topicId,
         content: this.replyInfoTemp[item.id],
-        parentId: item.replyId,
-        userToId: item.userFrom
+        parentId: item.parentId == '0' ? item.replyId : item.parentId,
+        userToId: item.userFrom,
+        isAit: item.parentId == '0' ? '0' : '1'
       }
       //   回复消息不能为空
       if (!this.replyInfoTemp[item.id]) {
@@ -190,7 +194,7 @@ export default {
       await replyTopic(params)
         .then(() => {
           this.replyInfoTemp[item.id] = ''
-          this.replyHandler(item.id)
+          this.replyHandler(item)
           this.$message.success('评论成功!')
         })
         .finally(() => {
@@ -232,6 +236,11 @@ export default {
         cursor: pointer;
         font-size: 16px;
       }
+      .experts {
+        margin-left: 5px;
+        color: #f5623b;
+        font-size: 24px;
+      }
       .zoneName {
         cursor: pointer;
       }
@@ -266,6 +275,17 @@ export default {
         word-break: break-all;
         &-isMe {
           margin-right: 10px;
+        }
+        .previewPicture {
+          margin-top: 5px;
+          height: 54px;
+          &-img {
+            width: 96px;
+            height: 100%;
+            border-radius: 5px;
+            margin-right: 10px;
+            cursor: pointer;
+          }
         }
       }
       .content {

@@ -2,7 +2,7 @@
   <div class="outsideTraining">
     <!-- 面包屑 -->
     <el-breadcrumb separator="/" style="padding: 25px 0 20px">
-      <el-breadcrumb-item>业务申请</el-breadcrumb-item>
+      <el-breadcrumb-item to="/approvalCenter/approveIndex">业务申请</el-breadcrumb-item>
       <el-breadcrumb-item>外派培训申请</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 主体内容 -->
@@ -37,6 +37,15 @@
                   :max="9999999999.99"
                 />
                 <a class="inputNumber-icon">￥</a>
+              </template>
+              <template slot="trainResult">
+                <el-radio-group v-model="formData.trainResult">
+                <el-radio :label="1">课程开发</el-radio>
+                <el-radio :label="2">经验交流</el-radio>
+                <el-radio :label="3">课程攻关</el-radio>
+                <el-radio :label="4">其他形式</el-radio>
+              </el-radio-group>
+              <el-input v-if="formData.trainResult===4" max="100" v-model="formData.trainResultContent" placeholder="请输入内容"></el-input>
               </template>
             </common-form>
           </div>
@@ -151,6 +160,7 @@ export default {
       formData: {
         address: '',
         trainTarget: '',
+        trainResultContent:'',
         introduce: '',
         trainTime: [],
         trainStartTime: '',
@@ -209,32 +219,40 @@ export default {
         },
         {
           prop: 'trainResult',
-          hide: true,
-          itemType: 'radio',
+          itemType: 'slot',
           label: '研修成果',
           offset: 0,
           required: true,
           span: 24,
-          type: 'radio',
-          options: [
-            {
-              label: '课程开发',
-              value: 1
-            },
-            {
-              label: '经验交流',
-              value: 2
-            },
-            {
-              label: '课程攻关',
-              value: 3
-            },
-            {
-              label: '其他形式',
-              value: 4
-            }
-          ]
         },
+        // {
+        //   prop: 'trainResult',
+        //   hide: true,
+        //   itemType: 'radio',
+        //   label: '研修成果',
+        //   offset: 0,
+        //   required: true,
+        //   span: 24,
+        //   type: 'radio',
+        //   options: [
+        //     {
+        //       label: '课程开发',
+        //       value: 1
+        //     },
+        //     {
+        //       label: '经验交流',
+        //       value: 2
+        //     },
+        //     {
+        //       label: '课程攻关',
+        //       value: 3
+        //     },
+        //     {
+        //       label: '其他形式',
+        //       value: 4
+        //     }
+        //   ]
+        // },
         {
           prop: 'trainTarget',
           itemType: 'input',
@@ -242,6 +260,8 @@ export default {
           label: '研修目的',
           span: 24,
           rows: 6,
+          maxlength: 1000,
+          showWordLimit:true,
           type: 'textarea'
         },
         {
@@ -251,6 +271,8 @@ export default {
           label: '研修内容',
           span: 24,
           rows: 6,
+          maxlength: 1000,
+          showWordLimit:true,
           type: 'textarea'
         },
         {
@@ -260,6 +282,8 @@ export default {
           label: '讲师/机构介绍',
           span: 24,
           rows: 6,
+          maxlength: 1000,
+          showWordLimit:true,
           type: 'textarea'
         }
       ],

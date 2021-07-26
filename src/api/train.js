@@ -178,3 +178,44 @@ export function trainNum(params) {
     params
   })
 }
+// 培训收藏
+export function trainCollect(params) {
+  return request({
+    url: `api/manage/v1/train/trainCollect?type=${params.type}&trainId=${params.trainId}`,
+    method: 'post',
+    params
+  })
+}
+
+// 取消培训收藏
+export function cancelTrainCollect(params) {
+  return request({
+    url: `api/manage/v1/train/cancelTrainCollect?type=${params.type}&trainId=${params.trainId}`,
+    method: 'post',
+    params
+  })
+}
+// 用户培训收藏列表
+export function getCollectionTrainList(params) {
+  return request({
+    url: 'api/manage/v1/user/collect/train/list',
+    method: 'get',
+    params
+  })
+}
+// 查询是否收藏
+export function queryFavoriteStatus(params) {
+  return request({
+    url: 'api/blade-manage/v1/train/queryFavoriteStatus',
+    method: 'get',
+    params
+  })
+}
+// 获取知识体系
+export function getKnowList(data) {
+  return request({
+    url: 'api/blade-resource/v1/category/getKnowledgeCatalogList',
+    method: 'post',
+    data
+  })
+}

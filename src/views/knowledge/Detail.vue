@@ -5,30 +5,29 @@
       <div class="card-title">
         <div class="left">{{ konwledgeDetail.resName }}</div>
         <div class="right">
-          <el-rate
-            :value="+konwledgeDetail.evaluateScore"
-            disabled
-            show-score
-            text-color="#ff9900"
-            score-template="{value}分"
-          >
-          </el-rate>
-          <span>
-            <i class="iconoperating_ic_favorites iconfont"></i>
-            收藏
+          <span @click="collectionCourse">
+            <i
+              class="iconoperating_ic_favorites iconfont"
+              :class="{ iconoperating_ic_favorites_active: konwledgeDetail.isCollect }"
+            ></i>
+            {{ konwledgeDetail.isCollect ? '取消收藏' : '收藏' }}
           </span>
         </div>
       </div>
+      <el-rate
+        :value="+konwledgeDetail.evaluateScore"
+        disabled
+        show-score
+        text-color="#ff9900"
+        score-template="{value}分"
+      >
+      </el-rate>
       <ul class="detail-ul">
         <li class="detail-li">
           <span class="li-label">提供人：</span>
           <span class="li-value">{{
             konwledgeDetail.providerName ? konwledgeDetail.providerName : '--'
           }}</span>
-        </li>
-        <li class="detail-li">
-          <span class="li-label">所在分类：</span>
-          <span class="li-value">{{ konwledgeDetail.catalogName }}</span>
         </li>
         <li class="detail-li">
           <span class="li-label">知识类型：</span>
@@ -38,8 +37,14 @@
           <span class="li-label">更新时间：</span>
           <span class="li-value">{{ konwledgeDetail.updateTime }}</span>
         </li>
+      </ul>
+      <ul class="online">
         <li class="detail-li">
-          <span class="li-label">知识体系:</span>
+          <span class="li-label" style="min-width:70px;">所在分类:</span>
+          <span class="li-value">{{ konwledgeDetail.catalogName }}</span>
+        </li>
+        <li class="detail-li">
+          <span class="li-label" style="min-width:70px;">知识体系:</span>
           <span class="li-value">{{ konwledgeDetail.knowledgeSystemFullName || '--' }}</span>
         </li>
       </ul>
@@ -54,7 +59,7 @@
         </li>
         <li>
           <i class="iconoperating_ic_favorites iconfont" />
-          <span>{{ konwledgeDetail.commentNum }}</span>
+          <span>{{ konwledgeDetail.collectNum }}</span>
         </li>
       </ul>
     </el-card>
@@ -65,6 +70,7 @@
             :need-load-num="true"
             :apply-detail="{ formId: $route.query.id }"
             :introduction="false"
+            :is-show-info="false"
           />
         </el-tab-pane>
         <el-tab-pane label="评论" name="3">
@@ -91,6 +97,7 @@ import {
   putWatchOperate,
   getEvaluateList,
   addCourseScope,
+  collectOperate,
   saveKnowledgeOperateCredit
 } from '@/api/knowledge'
 import { dateConver } from '@/util/date'
@@ -104,6 +111,8 @@ export default {
   },
   data() {
     return {
+      text:
+        'sdfdsfsdfsdfsdfsdfsdfsdfsdfdsfxzljclxzjclx四大皆空福利卡死的减肥了绝对是李开复驾驶的飞机上大家从V领行政村滤镜先兆流产出现了可vjljcv;l打错了绝对是拉福建省',
       routeList: [
         {
           path: '/knowledge',
@@ -117,7 +126,9 @@ export default {
       previewSrcList: [],
       fileGroup: {},
       activeIndex: '1',
-      konwledgeDetail: {}
+      konwledgeDetail: {
+        isCollect: false
+      }
     }
   },
   computed: {
@@ -138,9 +149,20 @@ export default {
     this.initData()
   },
   methods: {
+    collectionCourse() {
+      collectOperate({
+        knowledgeId: this.id
+      }).then(() => {
+        this.konwledgeDetail.isCollect = this.konwledgeDetail.isCollect === 1 ? 0 : 1
+        this.$message({
+          type: 'success',
+          message: `${this.konwledgeDetail.isCollect ? '收藏成功' : '取消收藏成功'}`
+        })
+      })
+    },
     initData() {
       // 保存知识库学分
-      saveKnowledgeOperateCredit()
+      saveKnowledgeOperateCredit({ knowledgeId: this.id })
       putWatchOperate({ knowledgeId: this.id })
       getKnowledgeDetails({ id: this.id }).then((res) => {
         this.konwledgeDetail = res
@@ -190,6 +212,7 @@ export default {
   font-family: PingFangSC-Regular;
   display: flex;
   align-items: center;
+  margin-top: 8px;
   .li-label {
     font-size: 14px;
     color: rgba(0, 11, 21, 0.45);
@@ -201,6 +224,7 @@ export default {
     color: rgba(0, 11, 21, 0.85);
     letter-spacing: 0;
     line-height: 22px;
+    word-break: break-all;
   }
 }
 .middle-card {
@@ -211,8 +235,15 @@ export default {
     margin-bottom: 18px;
     display: flex;
     justify-content: space-between;
+    align-items: start;
+
+    .left {
+      flex: 1;
+      word-break: break-all;
+    }
     .right {
       display: flex;
+      flex-shrink: 0;
       align-items: center;
       span {
         font-size: 12px;
@@ -221,6 +252,9 @@ export default {
         line-height: 18px;
         margin-left: 25px;
         cursor: pointer;
+        .iconoperating_ic_favorites_active {
+          color: rgb(247, 186, 42);
+        }
       }
     }
   }
@@ -229,6 +263,7 @@ export default {
     justify-content: flex-start;
     margin-bottom: 18px;
     flex-wrap: wrap;
+    padding-top: 17px;
     li {
       width: 33%;
       flex-shrink: 0;
@@ -263,5 +298,12 @@ export default {
   /deep/ .el-menu--horizontal {
     border-bottom: 1px solid #ebeced !important;
   }
+}
+.online li {
+  display: flex;
+  align-items: start;
+}
+::v-deep .el-tabs__header.is-top {
+  margin-bottom: 28px;
 }
 </style>

@@ -38,15 +38,19 @@
     <el-button type="primary" style="margin-top: 30px" :loading="loading" @click="releasePost"
       >发布</el-button
     >
+    <!-- 检查禁言模态框 -->
+    <banned-judgment ref="bannedJudgment"></banned-judgment>
   </div>
 </template>
 
 <script>
 import { replyTopic } from '@/api/community'
+import bannedJudgment from './bannedJudgment.vue'
 export default {
   name: 'PublishedReply',
   components: {
-    CommonUpload: () => import('@/components/common-upload/CommonUpload')
+    CommonUpload: () => import('@/components/common-upload/CommonUpload'),
+    bannedJudgment
   },
   data() {
     return {
@@ -63,7 +67,7 @@ export default {
       const isLt5M = file.size / 1024 / 1024 < 5
 
       if (!isLt5M) {
-        this.$message.error('上传头像大小不能超过 5MB!')
+        this.$message.error('上传图片大小不能超过 5MB!')
         return false
       }
       if (!isImage) {
@@ -77,10 +81,13 @@ export default {
     },
     // 移除图片
     handleRemove(file, fileList) {
-      this.imgUrl = fileList
+      this.imgUrl = fileList.filter((v) => v.fileName)
     },
     // 发表回复
-    async releasePost() {
+    releasePost: _.debounce(async function () {
+      // 判断是否禁言
+      await this.$refs.bannedJudgment.checkBanned(this.$route.query.areaId)
+      if (this.$refs.bannedJudgment.flagBanned) return
       let params = {
         topicId: this.$route.query.topicId,
         content: this.content,
@@ -104,7 +111,7 @@ export default {
         .finally(() => {
           this.loading = false
         })
-    }
+    }, 300)
   }
 }
 </script>

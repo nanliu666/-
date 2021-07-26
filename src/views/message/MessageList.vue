@@ -21,7 +21,7 @@
       <div class="list">
         <ul>
           <li
-            v-for="(item,index) in listData"
+            v-for="(item, index) in listData"
             :key="index"
             class="flex flex-flow flex-items list__li"
             @click="viewDetails(item)"
@@ -82,7 +82,7 @@ export default {
   name: 'MessageCenter',
   data() {
     return {
-      messageLoading:false,
+      messageLoading: false,
       page: {
         currentPage: 1,
         pageSize: 10,
@@ -117,7 +117,7 @@ export default {
   },
   methods: {
     hasView(data) {
-      if (data) {
+      if (TYPE_PATH_MAP[data]) {
         return data
       } else {
         return false
@@ -138,6 +138,21 @@ export default {
           query = { query: { clickDataIn: 'myTrainList' } }
           targetPath = _.assign(targetPath, query)
         }
+        if (data.type === 'LiveApplySuccess') {
+          query = { query: { clickDataIn: 'myLiveList' } }
+          targetPath = _.assign(targetPath, query)
+        }
+        if(data.type === 'ExamNotify'){
+          query = { query: { clickData: 'myExamList'} }
+          targetPath = _.assign(targetPath, query)
+        }
+        if(data.type === 'TrainJoinFail'){
+          query = { query: { trainId: data.bizId,userType: sessionStorage.getItem('role') } }
+          targetPath = _.assign(targetPath, query)
+        }
+        if(data.type === 'revokeCertificate' || data.type === 'revokeCertificateExam'  || data.type === 'ExamHandworkNotify'){
+          return false
+        }
         if (
           data.type === 'LiveBroadcastEveryOne' ||
           data.type === 'LiveBroadcastPlanGust' ||
@@ -147,6 +162,14 @@ export default {
           data.type === 'LiveRemindToTeachers'
         ) {
           query = { query: { id: data.id } }
+          targetPath = _.assign(targetPath, query)
+        }
+        if (data.type === 'FlowPass' || data.type === 'FlowReject') {
+          query = { query: { name: 'mySend' } }
+          targetPath = _.assign(targetPath, query)
+        }
+        if(data.type === 'FlowUrge'){
+          query = { query: { name: 'message' } }
           targetPath = _.assign(targetPath, query)
         }
         this.$router.push(targetPath)
@@ -179,14 +202,16 @@ export default {
         pageSize: this.page.pageSize,
         isRead: this.searchParams.isRead
       }
-      this.messageLoading=true
-      getMsgNotify(params).then((res) => {
-        const { data, totalNum } = res
-        this.listData = data
-        this.page.total = totalNum
-      }).finally(()=>{
-        this.messageLoading=false
-      })
+      this.messageLoading = true
+      getMsgNotify(params)
+        .then((res) => {
+          const { data, totalNum } = res
+          this.listData = data
+          this.page.total = totalNum
+        })
+        .finally(() => {
+          this.messageLoading = false
+        })
       postMsgNotifyCount({
         userId: this.$store.getters.userId
       }).then((data) => {

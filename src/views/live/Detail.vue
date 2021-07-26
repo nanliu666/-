@@ -36,6 +36,10 @@
                   <span class="label">直播讲师：</span>
                   <span class="value">{{ detailData.lecturerName }}</span>
                 </div>
+                <div class="content">
+                  <span class="label">知识体系：</span>
+                  <span class="value">{{ detailData.knowledgeSystemName || '--' }}</span>
+                </div>
                 <div class="content live__time">
                   <span class="label">直播时间：</span>
                   <span class="value">
@@ -64,7 +68,12 @@
             </div>
             <!-- 讲师端的直播按钮是不需要进行逻辑判断 -->
             <div v-if="!isTrainee">
-              <el-button type="primary" size="medium" @click.native="beginLiveFn">
+              <el-button
+                v-if="currentUserInfo.account"
+                type="primary"
+                size="medium"
+                @click.native="beginLiveFn"
+              >
                 <span v-if="detailData.status === 'live'">继续直播</span>
                 <span v-else>开始直播</span>
               </el-button>
@@ -99,6 +108,13 @@
             <span v-clipboard:copy="watchLiveLink" v-clipboard:success="onCopy" class="qrcode__copy">复制链接</span>
           </div>
         </div>
+        <span class="collection" @click="collection">
+          <i
+            class="iconoperating_ic_favorites iconfont"
+            :class="{ iconoperating_ic_favorites_active: isCollection }"
+          ></i>
+          {{ isCollection ? '取消收藏' : '收藏' }}
+        </span>
       </div>
     </el-card>
     <!-- 讲师端页面tabs -->
@@ -169,7 +185,10 @@ import {
   getCommentList,
   postComment,
   getUserRole,
-  userLiveApplyJoin
+  userLiveApplyJoin,
+  saveCollect,
+  cancelCollect,
+  getIsCollectLive
 } from '@/api/live'
 import Comment from '@/components/common-comment/Comment'
 import CommonBreadcrumb from '@/components/common-breadcrumb/Breadcrumb'
@@ -216,6 +235,7 @@ export default {
   },
   data() {
     return {
+      isCollection: false,
       currentUserInfo: {},
       routeList: [
         {
@@ -285,8 +305,31 @@ export default {
   },
   activated() {
     this.initData()
+    this.getIsCollectLive()
   },
   methods: {
+    getIsCollectLive() {
+      getIsCollectLive({
+        liveId: this.id,
+        type: sessionStorage.getItem('role')
+      }).then((res) => {
+        this.isCollection = res
+      })
+    },
+    //收藏
+    collection() {
+      let fun = this.isCollection ? cancelCollect : saveCollect
+      fun({
+        type: sessionStorage.getItem('role'),
+        liveId: this.detailData.liveId
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: `${this.isCollection ? '取消收藏成功' : '收藏成功'}`
+        })
+        this.getIsCollectLive()
+      })
+    },
     initData() {
       const params = { liveId: this.id }
       getLiveDetail(params).then((res) => {
@@ -412,6 +455,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
     .header__left {
       display: flex;
       .header__logo {
@@ -551,6 +595,24 @@ export default {
           color: #01aafc;
           cursor: pointer;
         }
+      }
+    }
+    .collection {
+      font-size: 12px;
+      color: rgba(0, 11, 21, 0.45);
+      letter-spacing: 0;
+      line-height: 18px;
+      margin-left: 25px;
+      cursor: pointer;
+      position: absolute;
+      right: 0;
+      top: 2px;
+      display: inline-block;
+      .iconoperating_ic_favorites_active {
+        color: rgb(247, 186, 42);
+      }
+      .iconfont {
+        margin-top: 10px;
       }
     }
   }

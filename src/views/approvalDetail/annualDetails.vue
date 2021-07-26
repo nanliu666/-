@@ -215,7 +215,7 @@ export default {
     // 获取培训计划查看详情
     async getTrainPlan() {
       this.loading = true
-      await getTrainPlanAppr({ planId: this.planId, apprNo: this.apprNo})
+      await getTrainPlanAppr({ planId: this.applyDetail.formData, apprNo: this.apprNo})
         .then((res) => {
           this.annualDetails = res
         })

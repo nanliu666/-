@@ -170,7 +170,6 @@ export const saveCourseNotePC = (params) => post('/manage/v1/web/course/saveCour
  * @param {String} params.remark 笔记内容
  */
 export const editCourseNote = (params) => post('api/manage/v1/web/course/editCourseNote', params)
-
 /**
  * 删除课程笔记
  * @param {String} params.id
@@ -182,8 +181,22 @@ export const deleteCourseNote = (params) => get('api/manage/v1/web/course/delete
  */
 export const addStudyTimes = (params) => get('api/manage/v1/web/course/addStudyTimes', params)
 /**
- * 学习详情接口
- * @param {String} params.courseId 课程id
+ * 收藏课程列表
+ * 
  */
-export const getCourseStudyDetail = (params) =>
-  get('api/manage//v1/course/getCourseStudyDetail', params)
+ export const getCollectionCourseList = (params) => get('api/manage/v1/user/collect/course/list', params)
+ /**
+ * 取消收藏课程
+ * 
+ */
+  export const cancelCollectionCourse = (params) => del(`api/manage/v1/collection/cancel`, params)
+  /**
+ * 收藏课程
+ * 
+ */
+ export const collectionCourse = (params) => post('api/manage/v1/collection/save', params)
+ /**
+ * 学习详情接口
+ * 
+ */
+  export const getCourseStudyDetail = (params) => get('api/manage//v1/course/getCourseStudyDetail', params)

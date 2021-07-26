@@ -11,9 +11,16 @@
           :size="32"
           shape="square"
           :src="temp.headImg"
-          style="margin-right: 3px; vertical-align: middle"
+          style="margin-right: 10px; vertical-align: middle"
         ></el-avatar>
-        {{ temp.name.length > 8 ? temp.name.slice(0, 8) + '...' : temp.name }}
+        <el-tooltip
+          effect="dark"
+          :content="temp.name"
+          placement="top"
+          :manual="temp.name.length <= 8"
+        >
+          <span>{{ temp.name.length > 8 ? temp.name.slice(0, 8) + '...' : temp.name }}</span>
+        </el-tooltip>
       </div>
     </el-row>
     <!-- 暂无数据 -->
@@ -86,5 +93,8 @@ export default {
       color: rgba(0, 11, 21, 0.25);
     }
   }
+}
+/deep/ .el-avatar > img {
+  width: 100%;
 }
 </style>

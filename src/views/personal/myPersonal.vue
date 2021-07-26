@@ -54,7 +54,7 @@
       </div>
       <div class="content_item">
         <MyFiles v-show="pitch === 'MyFiles'"></MyFiles>
-        <MyCollection v-show="pitch === 'MyCollection'"></MyCollection>
+        <MyCollection v-if="pitch === 'MyCollection'"></MyCollection>
         <MyNotes v-show="pitch === 'MyNotes'"></MyNotes>
         <MyShare v-show="pitch === 'MyShare'"></MyShare>
         <MyMentor v-show="pitch === 'MyMentor'" @MyMentorSon="MyMentorSonFn"></MyMentor>
@@ -98,10 +98,11 @@ export default {
           name: 'MyFiles',
           icon: 'el-icon-receiving'
         },
-        // {
-        //   title: '我的收藏',
-        //   icon: 'el-icon-paperclip'
-        // },
+        {
+          title: '我的收藏',
+          name: 'MyCollection',
+          icon: 'el-icon-paperclip'
+        },
         {
           title: '我的笔记',
           name: 'MyNotes',

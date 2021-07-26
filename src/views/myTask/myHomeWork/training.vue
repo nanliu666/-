@@ -1,6 +1,6 @@
 <template>
   <div class="train-list">
-    <div v-if="data.length || queryLoading" v-loading="queryLoading" class="card-container">
+    <div v-if="data.length || queryLoading" v-loading="queryLoading.body" class="card-container">
       <div v-for="(item, index) in data" :key="index" class="card-wrapper" @click="toDetail(item)">
         <div class="card">
           <div class="card-banner">
@@ -88,11 +88,14 @@ export default {
     display: flex;
     flex-wrap: wrap;
     min-height: 297px;
-    justify-content: space-between;
     .card-wrapper {
       margin-bottom: 16px;
       width: 285px;
       height: 282px;
+      margin-right: 20px;
+    }
+    .card-wrapper:nth-child(4n) {
+      margin-right: 0;
     }
     .card {
       cursor: pointer;

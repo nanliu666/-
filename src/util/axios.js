@@ -48,6 +48,7 @@ instance.interceptors.request.use(
     if (
       !config.url.startsWith('/api') &&
       !config.url.endsWith('eln/upload') &&
+      !config.url.startsWith('https:') &&
       !config.url.startsWith('api')
     ) {
       config.url = '/api' + config.url

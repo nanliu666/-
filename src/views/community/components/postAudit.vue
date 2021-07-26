@@ -35,6 +35,8 @@
       :data="tableData"
       style="width: 100%; margin-top: 20px"
       @select="handlerSeletion"
+      @select-all="handlerSeletion"
+      ref="mutilTable"
     >
       <el-table-column type="expand">
         <template slot-scope="props">
@@ -59,7 +61,7 @@
               <el-col>
                 <el-row :gutter="20">
                   <el-col>
-                    <div v-if="props.row.imgUrl.split(',').length" class="previewPicture">
+                    <div v-if="props.row.imgUrl" class="previewPicture">
                       <img
                         v-for="(src, index) in props.row.imgUrl.split(',').slice(0, 3)"
                         :key="index"
@@ -136,13 +138,33 @@ export default {
   },
   methods: {
     //   分页筛选
-    handleSizeChange(val) {
+    async handleSizeChange(val) {
       this.pageConfig.pageSize = val
-      this.initUnauditedTopicList()
+      await this.initUnauditedTopicList()
+      //   多选数据分页回显
+      if (this.seleteData.length) {
+        this.tableData.forEach((row) => {
+          for (let i = 0; i < this.seleteData.length; i++) {
+            if (row.id == this.seleteData[i].id) {
+              this.$refs.mutilTable.toggleRowSelection(row, true)
+            }
+          }
+        })
+      }
     },
-    handleCurrentChange(val) {
+    async handleCurrentChange(val) {
       this.pageConfig.pageNo = val
-      this.initUnauditedTopicList()
+      await this.initUnauditedTopicList()
+      //   多选数据分页回显
+      if (this.seleteData.length) {
+        this.tableData.forEach((row) => {
+          for (let i = 0; i < this.seleteData.length; i++) {
+            if (row.id == this.seleteData[i].id) {
+              this.$refs.mutilTable.toggleRowSelection(row, true)
+            }
+          }
+        })
+      }
     },
     // 查询待审核帖子列表
     async initUnauditedTopicList() {
@@ -157,6 +179,7 @@ export default {
       await queryUnauditedTopicList(params)
         .then((res) => {
           this.tableData = res.data
+
           this.pageConfig.total = res.totalNum
         })
         .finally(() => {
@@ -165,71 +188,70 @@ export default {
     },
     changeAuditTime() {
       if (!this.auditTime) this.auditTime = []
+      this.pageConfig.pageNo = 1
       this.initUnauditedTopicList()
     },
     //   通过
-    handleThrough(row) {
-      this.$confirm('确认审批通过吗?', '提醒', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-        beforeClose: async (action, instance, done) => {
-          if (action === 'confirm') {
-            instance.confirmButtonLoading = true
-            instance.confirmButtonText = '执行中...'
-            await approvedTopic(
-              Object.prototype.toString.call(row) === '[object Boolean]'
-                ? this.seleteData.map((v) => v.id).join(',')
-                : row.id
-            )
-              .then(() => {
-                this.seleteData = []
-                this.initUnauditedTopicList()
-                this.$message.success('通过成功!')
-              })
-              .finally(() => {
-                instance.confirmButtonLoading = false
-                done()
-              })
-          } else {
-            done()
-          }
-        }
+    async handleThrough(row) {
+      await approvedTopic(
+        Object.prototype.toString.call(row) === '[object Boolean]'
+          ? this.seleteData.map((v) => v.id).join(',')
+          : row.id
+      ).then(() => {
+        this.seleteData = []
+        this.pageConfig.pageNo = 1
+        this.initUnauditedTopicList()
+        this.$message.success('通过成功!')
       })
     },
     // 拒绝
-    handleRefused(row) {
-      this.$confirm('确认审批拒绝吗?', '提醒', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-        beforeClose: async (action, instance, done) => {
-          if (action === 'confirm') {
-            instance.confirmButtonLoading = true
-            instance.confirmButtonText = '执行中...'
-            await rejectedTopic(
-              Object.prototype.toString.call(row) === '[object Boolean]'
-                ? this.seleteData.map((v) => v.id).join(',')
-                : row.id
-            )
-              .then(() => {
-                this.seleteData = []
-                this.initUnauditedTopicList()
-                this.$message.success('拒绝成功!')
-              })
-              .finally(() => {
-                instance.confirmButtonLoading = false
-                done()
-              })
-          } else {
-            done()
-          }
-        }
+    async handleRefused(row) {
+      await rejectedTopic(
+        Object.prototype.toString.call(row) === '[object Boolean]'
+          ? this.seleteData.map((v) => v.id).join(',')
+          : row.id
+      ).then(() => {
+        this.seleteData = []
+        this.pageConfig.pageNo = 1
+        this.initUnauditedTopicList()
+        this.$message.success('拒绝成功!')
       })
     },
     // 多选
-    handlerSeletion(seletion) {
-      this.seleteData = seletion
+    handlerSeletion(selection, row) {
+      let _this = this
+      // row有值是单选，undefined是多选
+      if (row) {
+        // true就是选中，0或者false是取消选中
+        let selected = selection && selection.indexOf(row) !== -1
+        if (!selected) {
+          for (let i = 0; i < _this.seleteData.length; i++) {
+            if (_this.seleteData[i].id == row.id) {
+              _this.seleteData.splice(i, 1)
+              break
+            }
+          }
+        } else {
+          _this.seleteData.push(row)
+        }
+      } else {
+        if (selection.length) {
+          _this.seleteData = [..._this.seleteData, ...selection]
+          // reduce去重
+          let obj = {}
+          _this.seleteData = _this.seleteData.reduce(function (item, next) {
+            obj[next.id] ? '' : (obj[next.id] = true && item.push(next))
+            return item
+          }, [])
+        } else {
+          // 如果是取消勾选，并把当前页数据存在的在multipleSelection中去掉
+          _this.tableData.forEach((row) => {
+            if (_this.seleteData.indexOf(row) !== -1) {
+              _this.seleteData.splice(_this.seleteData.indexOf(row), 1)
+            }
+          })
+        }
+      }
     },
     // 图片预览
     previewImgObject(images, index) {

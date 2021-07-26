@@ -55,8 +55,12 @@
           ref="attentionZone"
           :requestParameters="requestParameters"
           :clickFlag="false"
+          v-if="isAreaManagement == 'Y'"
         ></attention-zone>
-        <div class="popular-dynamic">
+        <div
+          class="popular-dynamic"
+          :style="{ marginTop: isAreaManagement == 'Y' ? '40px' : '0px' }"
+        >
           <el-row type="flex" justify="space-between" style="align-items: center; padding: 0 25px">
             <div class="common-title">
               <span class="tip"></span>发帖记录<span>（{{ topicNum }}）</span>
@@ -93,7 +97,7 @@
 <script>
 import attentionZone from './attentionZone.vue'
 import postList from './postList.vue'
-import { postUserInfo } from '@/api/community'
+import { postUserInfo, loginUserInfo } from '@/api/community'
 export default {
   name: 'OtherHomePage',
   components: {
@@ -107,7 +111,8 @@ export default {
       postTime: [], // 发帖时间
       userId: '', // 用户id
       requestParameters: {}, // 关注专区请求参数
-      topicNum: 0
+      topicNum: 0,
+      isAreaManagement: 'N'
     }
   },
   watch: {
@@ -137,6 +142,12 @@ export default {
           this.loading = false
         })
     },
+    // 判断当前用户是不是专区管理员
+    async initLoginUserInfo() {
+      await loginUserInfo().then((res) => {
+        this.isAreaManagement = res
+      })
+    },
     // 获取帖子条数
     topicTotal(val) {
       this.topicNum = val
@@ -150,6 +161,7 @@ export default {
   },
   mounted() {
     this.initPostUserInfo()
+    this.initLoginUserInfo()
   }
 }
 </script>
@@ -193,11 +205,11 @@ export default {
     &-info {
       color: rgba(0, 11, 21, 0.85);
       line-height: 22px;
+      word-break: break-all;
     }
   }
   .main-container {
     .popular-dynamic {
-      margin-top: 40px;
       /deep/ .el-date-editor .el-range-separator {
         padding: 0;
       }

@@ -21,12 +21,30 @@
             <div class="zone-content-sort">{{ index < 9 ? '0' + (index + 1) : index + 1 }}</div>
             <div class="zone-content-info">
               <div class="zone-content-info-title">
-                {{ item.name.length > 20 ? item.name.slice(0, 20) + '...' : item.name }}
+                <el-tooltip
+                  effect="dark"
+                  :content="item.name"
+                  placement="top"
+                  :manual="item.name.length <= 20"
+                >
+                  <span>{{
+                    item.name.length > 20 ? item.name.slice(0, 20) + '...' : item.name
+                  }}</span>
+                </el-tooltip>
               </div>
               <div class="zone-content-info-describe">
-                {{
-                  item.introduce.length > 50 ? item.introduce.slice(0, 50) + '...' : item.introduce
-                }}
+                <el-tooltip
+                  effect="dark"
+                  :content="item.introduce"
+                  placement="top"
+                  :manual="item.introduce.length <= 50"
+                >
+                  <span>{{
+                    item.introduce.length > 50
+                      ? item.introduce.slice(0, 50) + '...'
+                      : item.introduce
+                  }}</span>
+                </el-tooltip>
               </div>
               <div class="zone-content-info-tip">
                 <el-row type="flex" style="align-items: center">

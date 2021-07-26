@@ -2,7 +2,7 @@
   <div class="outsideTraining">
     <!-- 面包屑 -->
     <el-breadcrumb separator="/" style="padding: 25px 0 20px">
-      <el-breadcrumb-item>业务申请</el-breadcrumb-item>
+      <el-breadcrumb-item to="/approvalCenter/approveIndex">业务申请</el-breadcrumb-item>
       <el-breadcrumb-item>在职读博申请</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 主体内容 -->

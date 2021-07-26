@@ -101,7 +101,8 @@ export default {
         creatorId: this.$route.query.courseId, // 默认值    创建人id
         createTime: this.uploadData[this.uploadData.length - 1].updateTime, // 默认值    创建时间
         updateId: this.$route.query.courseId, // 默认值    最后修改人
-        updateTime: this.uploadData[this.uploadData.length - 1].updateTime // 默认值    最后修改时间
+        updateTime: this.uploadData[this.uploadData.length - 1].updateTime, // 默认值    最后修改时间
+        trainId: this.$route.query.trainId || ''
       }
       if (this.infoData.length > 1) {
         params.id = this.infoData[1].userFileId

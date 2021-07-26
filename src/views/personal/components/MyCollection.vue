@@ -12,10 +12,11 @@
     </ul>
 
     <div class="content">
-      <Course v-show="pitch === 0"></Course>
-      <Train v-show="pitch === 1"></Train>
-      <Live v-show="pitch === 2"></Live>
-      <Knowledge v-show="pitch === 3"></Knowledge>
+      <Course  v-if="pitch === 0" ></Course>
+      <Train   v-if="pitch === 1"></Train>
+      <Live v-if="pitch === 2"></Live>
+      <Knowledge  v-if="pitch === 3"></Knowledge>
+      
     </div>
   </div>
 </template>
@@ -56,9 +57,11 @@ export default {
     }
     .pitch {
       border-bottom: 2px solid #1677ff;
+      color: #2875D4;
     }
   }
   .content {
+  
   }
 }
 </style>

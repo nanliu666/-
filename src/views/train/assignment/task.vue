@@ -271,11 +271,7 @@ export default {
     // 是否存在请假按钮
     hasLeaveButton() {
       // 培训开始后，且在这节线下课程结束前，并且审核未通过
-      const { auditStatus, startTime } = this.attributeData
-      if (this.trainStatus !== 2) return false
-      else if (auditStatus === 1) return false
-      else if (moment().format('HH:mm:ss') > startTime.split('~')[1]) return false
-      else if (this.selectDate < moment(new Date()).format('YYYY-MM-DD')) return false
+      if (this.attributeData.status === 3) return false
       else return true
     },
     // 请假按钮的文字

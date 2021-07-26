@@ -1,14 +1,31 @@
 <template>
   <div class="footer">
-    <span>v2.1.0_20210410_Release &nbsp; &nbsp; &nbsp;</span>
+    <span>{{version}} &nbsp; &nbsp; &nbsp;</span>
     <span class="policeLogo"><img src="../../public/img/policeLogo.png" alt="" /></span>
-    <span><a href="https://ythzxfw.miit.gov.cn" target="_blank"> 备案号：苏ICP备19010525号-2 </a></span>
+    <span><a href="https://ythzxfw.miit.gov.cn" target="_blank"> {{num}} </a></span>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
-  name: 'Footer'
+  name: 'Footer',
+  computed: {
+    ...mapGetters(['tenantContent'])
+  },
+  data(){
+    return{
+      copy:''
+    }
+  },
+  created() {
+    this.copy =
+      (this.tenantContent && JSON.parse(this.tenantContent).copyright) ||
+      'v2.0.1_20210401_Release  备案号：苏ICP备19010525号-2'
+      this.copy = this.copy.replace(/\s+/g,' ')
+      this.version = this.copy.split(' ')[0]
+      this.num = this.copy.split(' ')[1]
+  },
 }
 </script>
 

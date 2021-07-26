@@ -56,7 +56,9 @@
                   class="delete-info"
                   style="margin-left: 10px"
                   @click="showSecondaryreply(item)"
-                  >{{ packUpReply[item.id] ? '收起回复' : '回复' }}</span
+                  >{{ packUpReply[item.id] ? '收起回复' : '回复' }}（{{
+                    item.replyCount || 0
+                  }}）</span
                 >
               </el-row>
             </div>
@@ -225,6 +227,8 @@
         </el-pagination>
       </div>
     </div>
+    <!-- 检查禁言模态框 -->
+    <banned-judgment ref="bannedJudgment"></banned-judgment>
   </div>
 </template>
 
@@ -242,10 +246,12 @@ import { api as viewerApi } from 'v-viewer'
 import moment from 'moment'
 import vEditDiv from './vEditDiv.vue'
 import { mapGetters } from 'vuex'
+import bannedJudgment from './bannedJudgment.vue'
 export default {
   name: 'PostReplyList',
   components: {
-    vEditDiv
+    vEditDiv,
+    bannedJudgment
   },
   data() {
     return {
@@ -261,7 +267,7 @@ export default {
       subShowInput: {}, // 二级回复双向绑定的值
       subHandlerLoading: {}, // 回复按钮的loading
       subLimitWord: {}, // 回复框字数限制
-      subMaxWord: 200, // 最大字数限制
+      subMaxWord: 500, // 最大字数限制
       subReplyAitBtn: {}, // @用户的按钮
       subReplyAitId: {}, // @用户的Id
       pageConfig: {
@@ -343,14 +349,19 @@ export default {
         })
     },
     // 点击一级回复按钮
-    showSecondaryreply(item) {
+    async showSecondaryreply(item) {
+      // 判断是否禁言
+      if (!this.packUpReply[item.id]) {
+        await this.$refs.bannedJudgment.checkBanned(this.$route.query.areaId)
+        if (this.$refs.bannedJudgment.flagBanned) return
+      }
       this.packUpReply[item.id] = !this.packUpReply[item.id]
       this.subShowAll[item.id] = false
       if (this.isShowInput.includes(item.id)) {
         this.isShowInput.splice(this.isShowInput.indexOf(item.id), 1)
       }
       this.subPageConfig[item.id].pageNo = 1
-      this.initSubReply(item)
+      if (this.packUpReply[item.id]) this.initSubReply(item)
     },
     // 获取二级回复
     async initSubReply(item) {
@@ -375,7 +386,7 @@ export default {
       this.subShowAll[item.id] = true
     },
     // 判断是否显示输入框
-    showInput(id) {
+    async showInput(id) {
       if (this.isShowInput.includes(id)) {
         this.isShowInput.splice(this.isShowInput.indexOf(id), 1)
       } else {
