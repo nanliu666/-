@@ -21,7 +21,7 @@ let uploadUrl = env.VUE_APP_ENV ? baseUploadUrl[env.VUE_APP_ENV] : baseUploadUrl
 if (env.VUE_APP_ENV == 'dev') {
   frontBaseUrl = 'http://172.16.4.55:7071' // 深圳本地开发环境地址（用户前台）
 } else if (env.VUE_APP_ENV == 'sit') {
-  frontBaseUrl = 'https://user-test.epro-edu.com' // 线上sit环境地址（用户前台）
+  frontBaseUrl = 'http://10.134.5.72:7071' // 线上sit环境地址（用户前台）
   systemName = '徐工学习平台' //临时修改
 } else if (env.VUE_APP_ENV == 'pro') {
   frontBaseUrl = 'http://172.16.0.16:7071' //生产环境地址（用户前台）
@@ -35,7 +35,7 @@ if (env.VUE_APP_ENV == 'dev') {
 
 let backBaseUrls = {
   dev: 'http://172.16.4.55:8081', // 深圳本地开发环境地址(后台管理)
-  sit: 'https://admin-test.epro-edu.com', // 深圳本地开发环境地址(后台管理)
+  sit: 'http://10.134.5.72:8081', // 深圳本地开发环境地址(后台管理)
   pro: 'http://172.16.0.16:8081', //生产环境地址(后台管理)
   zehui: 'http://admin.zexueyuan.com.cn', //泽汇生产环境地址（后台管理）
   xugong: 'https://xlms-manager.xcmg.com:12443' //徐工环境地址（后台管理）
