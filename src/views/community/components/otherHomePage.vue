@@ -2,7 +2,11 @@
   <div class="otherHomePage">
     <!-- 面包屑 -->
     <el-breadcrumb separator="/" style="padding: 25px 0 20px">
-      <el-breadcrumb-item>社区首页</el-breadcrumb-item>
+      <el-breadcrumb-item
+        ><span @click="goBack" style="cursor: pointer; font-weight: bold"
+          >社区首页</span
+        ></el-breadcrumb-item
+      >
       <el-breadcrumb-item>{{ postUserInfo.name }}</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 主体内容 -->
@@ -128,6 +132,10 @@ export default {
     }
   },
   methods: {
+    //   返回上一级
+    goBack() {
+      this.$router.go(-1) //返回上一层
+    },
     //   获取当前发帖人信息
     async initPostUserInfo() {
       let params = {
