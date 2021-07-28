@@ -30,11 +30,11 @@
                 <li>
                   有效时间：<span class="middle_data">{{ detailParams.startTime }} - {{ detailParams.endTime }}</span>
                 </li>
-                <li>
+                <!-- <li>
                   主办单位：<span class="middle_data">{{
                     detailParams.sponsor ? detailParams.sponsor : '--'
                   }}</span>
-                </li>
+                </li> -->
               </ul>
             </li>
             <li class="info_bottom">
@@ -290,7 +290,7 @@ $timeHead: rgba(139, 155, 168, 0.65);
           height: 80px;
           display: flex;
           flex-direction: column;
-          justify-content: space-between;
+          justify-content: space-around;
           li {
             color: rgba(0, 11, 21, 0.45);
           }
