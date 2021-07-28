@@ -154,6 +154,16 @@
           <div v-if="data.trainScope === 'outer'" class="intro-item"></div>
         </div>
         <div class="intro-list">
+          <div v-if="data.trainScope !== 'outer'" class="intro-item">
+            <span class="label"> 主办单位：</span>
+            <span class="text">{{ data.sponsor ? data.sponsor : '--' }}</span>
+          </div>
+          <div v-if="data.trainScope !== 'outer'" class="intro-item">
+            <span class="label"> 承办单位：</span>
+            <span class="text">{{ data.organizer ? data.organizer : '--' }}</span>
+          </div>
+        </div>
+        <div class="intro-list">
           <div v-if="data.trainScope === 'outer'" class="intro-item">
             <span class="label"> 项目经理：</span>
             <span class="text">{{ data.headTeacherName ? data.headTeacherName : '--' }}</span>
