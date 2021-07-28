@@ -47,13 +47,13 @@
       </div>
 
       <div class="download">
-        <div v-for="(item, index) in data.attachment" :key="index">
-          <el-button type="text" @click="isdownload(index)">
+        <div v-for="(item, index) in data.attachment" :key="index" @click="isdownload(item)">
+          <el-button type="text" >
             <!-- 附件下载 -->
             <i class="el-icon-paperclip"></i>
             <span>{{ item.localName }}</span>
           </el-button>
-          <a ref="file" href="#" :download="item.url"></a>
+          <!-- <a ref="file" :href="item.url" :download="item.localName"></a> -->
         </div>
       </div>
 
@@ -131,8 +131,15 @@ export default {
       }
     },
 
-    isdownload(index) {
-      this.$refs.file[index].click()
+    isdownload(obj) {
+      let  eleLink = document.createElement('a');
+      eleLink.href = obj.url;
+      eleLink.download = obj.localName;
+      eleLink.style.display = 'none';
+      eleLink.href = obj.url;
+      document.body.appendChild(eleLink);
+      eleLink.click();
+      document.body.removeChild(eleLink);
     },
 
     tonewsList() {
@@ -212,7 +219,7 @@ export default {
       margin-bottom: 25px;
       padding-bottom: 20px;
       div {
-        height: 20px;
+        // height: 20px;
       }
       span {
         margin-left: 10px;
