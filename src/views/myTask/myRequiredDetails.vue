@@ -33,12 +33,12 @@
 
                   <span class="middle_data">{{ detailParams.startDate }} - {{ detailParams.entDate }}</span>
                 </li>
-                <li>
+                <!-- <li>
                   <span class="label"> 主办单位：</span>
                   <span class="middle_data">{{
                     detailParams.sponsor ? detailParams.sponsor : '--'
                   }}</span>
-                </li>
+                </li> -->
               </ul>
             </li>
             <li class="info_bottom">
@@ -290,7 +290,7 @@ $timeHead: rgba(139, 155, 168, 0.65);
           height: 80px;
           display: flex;
           flex-direction: column;
-          justify-content: space-between;
+          justify-content: space-around;
           li {
             .label {
               opacity: 0.45;
