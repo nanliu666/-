@@ -67,3 +67,7 @@ export const collectOperate = (params) => get('/api/manage/v1/knowledge/manage/c
 export const getCollectionList = (params) => get('/api/manage/v1/user/collect/knowledge/list',params)
 //查询前台知识搜藏列表(返回全部的数据)
 export const getAllKnowledgeCatalogList = (params) => post('/api/blade-resource/v1/category/getAllKnowledgeCatalogList',params)
+
+//取消收藏知识库
+export const addCollection = (params) => get('/api/manage/v1/knowledge/manage/collectOperate',params)
+

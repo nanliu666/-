@@ -95,9 +95,9 @@ export default {
       }
       this.$router.push({ name: 'KnowledgeDetail', query: { id: row.id } })
     },
-    sollection(obj){
+    collection(data){
       addCollection({
-            knowledgeId:obj.id
+            knowledgeId:data.id
           }).then(res=>{
               this.$message({
                 type: 'success',
@@ -107,6 +107,7 @@ export default {
           })
     },
     cancelCollection(obj) {
+      let self = this
       this.$confirm('确定要取消收藏该知识库吗？?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -114,7 +115,7 @@ export default {
       })
         .then(res => {
           if(res==='confirm'){
-            this.sollection(obj)
+            self.collection(obj)
           }
         })
     },
