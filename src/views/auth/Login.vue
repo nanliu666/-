@@ -60,9 +60,9 @@
             登录
           </el-button>
           <div class="layout_opations">
-            <!-- <router-link to="/register" tag="span">
+            <router-link to="/register" tag="span">
               立即注册
-            </router-link> -->
+            </router-link>
             <span></span>
             <router-link to="/forgetPassword" tag="span">
               忘记密码?
@@ -265,6 +265,8 @@ export default {
         color: rgba(0, 11, 21, 0.65);
         text-align: left;
         margin-bottom: 210px;
+        display: flex;
+        justify-content: space-between;
         span {
           cursor: pointer;
           display: inline-block;
