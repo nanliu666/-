@@ -91,6 +91,14 @@
             <span>计入积分：</span> <span> {{ TrainDetail.scoreGet || '--' }}分 </span>
           </div>
         </li>
+        <li class="lian_box">
+          <div>
+            <span>主办单位：</span> <span> {{ TrainDetail.sponsor || '--' }} </span>
+          </div>
+          <div>
+            <span>承办单位：</span> <span> {{ TrainDetail.organizer || '--' }} </span>
+          </div>
+        </li>
       </ul>
     </div>
 
