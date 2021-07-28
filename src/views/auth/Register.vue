@@ -132,6 +132,7 @@ export default {
           span: 24,
           label: '密码',
           maxlength: '12',
+          autoComplete:"new-password",
           rules: [
             { min: 6, max: 12, message: '密码长度需要满足6～12字符' },
             {
