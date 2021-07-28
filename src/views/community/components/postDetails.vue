@@ -2,7 +2,11 @@
   <div class="postDetails">
     <!-- 面包屑 -->
     <el-breadcrumb separator="/" style="padding: 25px 0 20px">
-      <el-breadcrumb-item>推荐</el-breadcrumb-item>
+      <el-breadcrumb-item
+        ><span @click="goBack" style="cursor: pointer; font-weight: bold"
+          >推荐</span
+        ></el-breadcrumb-item
+      >
       <el-breadcrumb-item>{{ zoneInfomation.name || '' }}</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 主体内容 -->
@@ -146,6 +150,10 @@ export default {
     this.initLoginUserInfo()
   },
   methods: {
+    //   返回上一级
+    goBack() {
+      this.$router.go(-1) //返回上一层
+    },
     // 获取专区详情
     async initAreaDetail() {
       this.zoneLoading = true

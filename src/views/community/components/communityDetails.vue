@@ -2,7 +2,10 @@
   <div class="communityDetails">
     <!-- 面包屑 -->
     <el-breadcrumb separator="/" style="padding: 25px 0 20px">
-      <el-breadcrumb-item>社区管理</el-breadcrumb-item>
+      <el-breadcrumb-item
+        :to="{ path: '/community/recommended', query: { tagName: 'communityManagement' } }"
+        >社区管理</el-breadcrumb-item
+      >
       <el-breadcrumb-item>{{ communityInfomation.name || '' }}</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 主体内容 -->
