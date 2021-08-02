@@ -72,7 +72,7 @@
                         <div class="li__bottom">
                           <span class="rate__box">
                             <el-rate v-model="item.scope" disabled />
-                            <span class="rate__text">{{ item.scope.toFixed(1) }}分</span>
+                            <span v-if="_.get(item, 'scope')" class="rate__text">{{ item.scope.toFixed(1) }}分</span>
                           </span>
                           <!-- <el-tag v-if="!_.isEmpty(_.get(item, 'tags'))">{{
                             _.get(item, 'tags[0]')
@@ -104,8 +104,13 @@
                             alt=""
                           />
                           <img
-                            v-else
+                            v-if="item.trainWay === 3"
                             :src="require('../../../../public/img/minTrain.png')"
+                            alt=""
+                          />
+                          <img
+                            v-else
+                            :src="require('../../../../public/img/outerTrain.png')"
                             alt=""
                           />
                         </div>
@@ -282,7 +287,7 @@
                       <div class="knowledge__bottom">
                         <span class="rate__box">
                           <el-rate v-model="item.scope" disabled />
-                          <span class="rate__text">{{ item.scope.toFixed(1) }}分</span>
+                          <span v-if="_.get(item, 'scope')" class="rate__text">{{ item.scope.toFixed(1) }}分</span>
                         </span>
                         <span class="knowledge__time">{{ item.createTime | formatter }}</span>
                       </div>
@@ -353,8 +358,8 @@ const NAV_lIST = [
   { key: '新闻', value: 'news' }
 ]
 const TRAIN_WAY = {
-  1: '在线培训',
-  2: '面授培训',
+  1: '线下培训',
+  2: '线上培训',
   3: '混合培训',
   11: '外训',
   12: '外训',
@@ -773,6 +778,7 @@ export default {
                   .content__li {
                     .image__content {
                       position: relative;
+                      width: 100%;
                       .header__play {
                         position: absolute;
                         left: 50%;
