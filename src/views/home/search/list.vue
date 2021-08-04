@@ -74,9 +74,7 @@
                             <el-rate v-model="item.scope" disabled />
                             <span v-if="_.get(item, 'scope')" class="rate__text">{{ item.scope.toFixed(1) }}分</span>
                           </span>
-                          <!-- <el-tag v-if="!_.isEmpty(_.get(item, 'tags'))">{{
-                            _.get(item, 'tags[0]')
-                          }}</el-tag> -->
+                          <custom-tag :item="item" />
                         </div>
                       </div>
                     </li>
@@ -147,9 +145,7 @@
                             <el-rate v-model="item.composite" disabled />
                             <span class="rate__text">{{ Number(item.composite ? item.composite : 0).toFixed(1) }}分</span>
                           </span>
-                          <!-- <el-tag v-if="!_.isEmpty(_.get(item, 'tags'))">{{
-                            _.get(item, 'tags[0]')
-                          }}</el-tag> -->
+                          <custom-tag :item="item" />
                         </div>
                         <div v-else class="li__bottom">
                           <span class="rate__box">
@@ -207,9 +203,7 @@
                               Number(item.trainScope ? item.trainScope : 0).toFixed(1)
                             }}分</span>
                           </span>
-                          <!-- <el-tag v-if="!_.isEmpty(_.get(item, 'tags'))">{{
-                            _.get(item, 'tags[0]')
-                          }}</el-tag> -->
+                          <custom-tag :item="item" />
                         </div>
                       </div>
                     </li>
@@ -260,8 +254,9 @@
                         <div class="li__name live__name">
                           <span>{{ item.categoryName }}</span>
                         </div>
-                        <div class="li__bottom live__bottom">
+                        <div class="live__bottom li__bottom">
                           <live-time-tips :item="item" />
+                          <custom-tag :item="item" />
                         </div>
                       </div>
                     </li>
@@ -289,7 +284,8 @@
                           <el-rate v-model="item.scope" disabled />
                           <span v-if="_.get(item, 'scope')" class="rate__text">{{ item.scope.toFixed(1) }}分</span>
                         </span>
-                        <span class="knowledge__time">{{ item.createTime | formatter }}</span>
+                        <custom-tag :item="item" />
+                        <!-- <span class="knowledge__time">{{ item.createTime | formatter }}</span> -->
                       </div>
                     </li>
                   </ul>
@@ -381,6 +377,7 @@ import { homeSearch } from '@/api/home'
 import CommonEmpty from '@/components/common-empty/Empty'
 import TheFooter from '@/page/TheFooter.vue'
 import LiveTimeTips from '@/views/live/components/LiveTimeTips'
+import CustomTag from './customTag.vue'
 import moment from 'moment'
 export default {
   name: 'SearchList',
@@ -388,7 +385,8 @@ export default {
     TheHeader,
     TheFooter,
     LiveTimeTips,
-    CommonEmpty
+    CommonEmpty,
+    CustomTag
   },
   filters: {
     formatter(date) {
