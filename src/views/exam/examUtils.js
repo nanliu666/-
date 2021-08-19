@@ -14,7 +14,7 @@ class ExamUtils {
   JoinDisabled(row) {
     const conditionOne = row.status === 1 || row.status === 4 || row.isPass === 2
     const conditionTwo = moment(moment(row.examEndTime)).diff(new Date(), 'seconds') < 0
-    const conditionThree = row.status === 3 && row.joinNum && row.examTimes >= row.joinNumValue
+    const conditionThree = row.status === 3 && row.joinNum && row.joinNumValue <= row.examTimes
     const isJoinDisabled = conditionOne || conditionTwo || conditionThree
     return isJoinDisabled
   }
